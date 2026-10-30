@@ -42,12 +42,12 @@ test("PDF independente de window.print começa e termina com estruturas válidas
   for(let i=0;i<8;i++)assert.match(pdf.slice(Number(entries[i].slice(0,10))),new RegExp("^"+(i+1)+" 0 obj"));
 });
 
-test("exporta seis seções e inclui a letra original opcional",async()=>{
+test("exporta quatro seções e inclui a letra original opcional",async()=>{
   const output=CifraEngine.generate("C Am F G");
   const a=await CifraPDF.create({output,title:"Exercício",composer:"",source:"",includeSource:false});
   const b=await CifraPDF.create({output,title:"Exercício",composer:"Igor",source:"C Am F G\nMinha música",includeSource:true});
-  assert.equal(a.pages,6);
-  assert.equal(b.pages,7);
+  assert.equal(a.pages,4);
+  assert.equal(b.pages,5);
   assert.ok((await b.blob.arrayBuffer()).byteLength>(await a.blob.arrayBuffer()).byteLength);
 });
 
