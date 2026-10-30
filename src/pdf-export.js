@@ -97,7 +97,7 @@ function chordCard(ctx,chord,voice,prev,index,x,y,w){
  const symbol=chord.raw,fullName=window.CifraPresentation.name(chord);
  ctx.textBaseline="top";ctx.textAlign="center";
  write(ctx,symbol,center,y+3,21,true);
- fitted(ctx,fullName,x+9,y+30,w-18,19,12,true);
+ fitted(ctx,fullName,center,y+30,w-18,19,12,true);
  ctx.textAlign="left";
  const l="M.E.: "+hand.left;
  const r="M.D.: "+hand.right;
@@ -111,7 +111,7 @@ function chordCard(ctx,chord,voice,prev,index,x,y,w){
  if(voice.omitted.length)fitted(ctx,"Omitida: "+voice.omitted.map(t=>window.CifraPresentation.note(t.name)).join(", "),x+16,y+225,w-32,12,10,false,"#7c3030");
 }
 function addSection(options,name,sub,track,images){
- const chords=options.output.chords,cardW=457,gap=38,rows=4,chunk=8;
+ const chords=options.output.chords,cardW=457,rows=4,chunk=8;
  const total=Math.ceil(chords.length/chunk);
  for(let part=0;part<total;part++){
   const p=page(),ctx=p.ctx;
@@ -119,7 +119,7 @@ function addSection(options,name,sub,track,images){
   const title=options.title;
   ctx.font="bold 32px Arial";
   ctx.fillStyle="#111";ctx.fillText(title,W/2,99);
-  const tw=Math.min(ctx.measureText(title).width,CONTENT);
+  const tw=Math.min(ctx.measureText(title).width,C);
   rule(ctx,(W-tw)/2,142,tw,"#111",2);
   ctx.textAlign="left";
   write(ctx,name+(total>1?" ("+(part+1)+"/"+total+")":""),M,179,25,true);
@@ -128,7 +128,7 @@ function addSection(options,name,sub,track,images){
   for(let r=0;r<rows;r++)for(let c=0;c<2;c++){
     const idx=part*chunk+r*2+c;
     if(idx>=chords.length)continue;
-    const x=left+c*(cardW+gap+30);
+    const x=left+c*(cardW+68);
     chordCard(ctx,chords[idx],track[idx],idx>0?track[idx-1]:null,idx,x,top+r*step,cardW);
   }
   footer(ctx,images.length+1);
