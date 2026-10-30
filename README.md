@@ -69,3 +69,9 @@ Projeto de Igor Morais. Ainda não há licença definida. Não adicionar letras,
 Use a versão do site aberta no Safari. Depois de gerar os acordes, toque em **Gerar PDF para salvar** e, quando terminar, em **Compartilhar / Salvar em Arquivos**. Caso o navegador não ofereça compartilhamento de arquivos, tente **Abrir PDF** e use o menu de compartilhamento do Safari; alternativamente, toque em **Baixar PDF**. A opção **Imprimir pelo navegador (alternativa)** continua disponível, mas não é exigida para exportar.
 
 O arquivo PDF é criado localmente; nenhum trecho da letra ou cifra é enviado a serviços de exportação. O PDF contém imagens das páginas para manter a grafia e os diagramas consistentes no iOS (por isso seu texto não é selecionável no arquivo exportado).
+
+## Padrão visual do material didático
+
+As cartelas do teclado voltaram ao molde editorial do material **CIFRA PRA MIM (3 Adaptações)**, utilizado em *Equalize — Pitty*: cifra centralizada acima; nome do acorde por extenso em português imediatamente abaixo; identificação **M.E. | M.D.** antes de uma linha horizontal; teclado logo abaixo, com **bolinhas e graus escritos nas teclas**, também nas teclas pretas. Duas figuras por linha nos documentos A4. Não há mais mensagens longas sobre a ponta ocupando o espaço das figuras; exceções de condução continuam disponíveis na interface, e o motor preserva as oitavas reais.
+
+As três formas de origem permanecem documentadas separadamente para que a primeira forma de cada adaptação corresponda exatamente à forma de origem da mesma variante. A quantidade de folhas aumenta quando existem muitos acordes; o gerador não deve cortar figuras para forçar uma página.
