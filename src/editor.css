@@ -92,3 +92,29 @@ textarea{min-height:108px;resize:vertical;line-height:1.8;font-family:ui-monospa
   .print-foot{font-size:7pt;margin:6mm 0}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+
+/* Entrada completa da música e importação local */
+.import-area{border:1px solid #888;padding:20px;margin:8px 0 24px}
+.import-area h2{font-family:Georgia,serif;font-size:24px;font-weight:500;margin:0 0 17px}
+.import-area textarea{min-height:200px;white-space:pre;tab-size:4;font-size:13px;line-height:1.5}
+.import-controls{display:flex;align-items:center;flex-wrap:wrap;gap:15px;margin:14px 0}
+.file-label{margin:0;font-size:13px}
+.file-label input{margin-top:8px;width:min(100%,330px);font-size:12px}
+.import-status{color:#31523c;font-size:12px;line-height:1.6;margin:13px 0}
+.import-status.status-error{color:#9e2626}
+.checkbox-label{font-size:12px;font-weight:400;display:flex;gap:9px;align-items:flex-start;margin:13px 0 0}
+.checkbox-label input{width:16px;height:16px;margin:0;flex:0 0 auto}
+.print-source{border-top:1px solid #333;padding:15px 0 25px;margin:0 0 20px}
+.print-source[hidden]{display:none!important}
+.print-source h3{font-family:Georgia,serif;font-size:20px;font-weight:500}
+.print-source pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;line-height:1.5;tab-size:4}
+.piano{height:104px}
+@media(max-width:720px){.import-area{padding:14px}.import-controls{align-items:stretch;flex-direction:column}.piano{height:91px}}
+@media print{
+  .print-source:not([hidden]){display:block;border:0;padding:0;margin:0 0 8mm;break-after:page;page-break-after:always}
+  .print-source h3{font-size:14pt;margin:0 0 3mm}
+  .print-source pre{font-size:8pt;line-height:1.3;white-space:pre-wrap;overflow-wrap:anywhere}
+  .piano{height:31mm;max-height:31mm}
+  .print-source:not([hidden])~#sheets>.arrangement-page:first-child{break-before:auto;page-break-before:auto}
+}
