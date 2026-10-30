@@ -20,9 +20,9 @@ window.CifraImport = (function(){
         continue;
       }
       let cleaned=line.replace(/^\s*(?:intro|introdução|introducao|refrão|refrao|estrofe|verso|ponte|solo|instrumental|final|pré-refrão|pre-refrao)\s*:\s*/i,"");
-      cleaned=cleaned.replace(/\|:|:\||[|;,]+/g," ").replace(/\b(?:x[2-9]|bis)\b/gi," ").trim();
+      cleaned=cleaned.replace(/\|:|:\||[|;]+/g," ").replace(/,(?![^()]*\))/g," ").replace(/\b(?:x[2-9]|bis)\b/gi," ").trim();
       if(!cleaned)continue;
-      const tokens=cleaned.split(/\s+/).map(t=>t.replace(/^[([{]+|[)\]}.,:]+$/g,"")).filter(Boolean);
+      const tokens=cleaned.split(/\s+/).map(t=>t.replace(/^[\[{]+|[\]}.,:;]+$/g,"")).filter(Boolean);
       const matched=tokens.filter(valid);
       if(!matched.length)continue;
       const single=matched.length===1&&tokens.length===1;
