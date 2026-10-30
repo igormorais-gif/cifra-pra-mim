@@ -1,49 +1,60 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#101b2d" />
-    <meta name="description" content="Cifra pra Mim: harmonia, formas e condução de vozes para teclado e cavaquinho." />
-    <title>Cifra pra Mim — laboratório musical</title>
-    <link rel="stylesheet" href="./src/styles.css" />
-    <script src="./src/app.js" defer></script>
-  </head>
-  <body>
-    <header class="topbar wrap">
-      <a class="brand" href="#inicio" aria-label="Cifra pra Mim, página inicial"><span class="brand-mark">C<span>♯</span></span><span>Cifra <em>pra</em> Mim</span></a>
-      <nav aria-label="Módulos"><a href="#teclado">Teclado</a><a href="#cavaquinho">Cavaquinho</a><a href="#laboratorio">Laboratório</a></nav>
-    </header>
-    <main id="inicio" class="wrap">
-      <section class="hero">
-        <p class="eyebrow">ESTÚDIO DE HARMONIA • PROTÓTIPO INICIAL</p>
-        <h1>A cifra é o começo.<br /><span>O movimento é a música.</span></h1>
-        <p class="lede">Entenda de onde cada nota vem, para onde ela vai e como transformar acordes em música. Um espaço de estudo para teclado, cavaquinho e condução de vozes.</p>
-        <a class="primary" href="#laboratorio">Explorar transições <span aria-hidden="true">↗</span></a>
-        <div class="hero-stats" aria-label="Módulos previstos"><span>01 / Teclado</span><span>02 / Cavaquinho</span><span>03 / Laboratório</span></div>
-      </section>
-      <section class="section" id="teclado" aria-labelledby="teclado-title">
-        <div class="section-heading"><div><p class="eyebrow">01 / TECLADO</p><h2 id="teclado-title">Adaptando Pontas</h2></div><span class="status">Exemplo didático</span></div>
-        <p class="section-intro">A primeira forma permanece. A partir do segundo acorde, podemos reorganizar as vozes para a nota mais aguda se mover suavemente.</p>
-        <div class="panel"><div class="panel-top"><strong>Progressão C — Am — F — G</strong><span>M.E. / M.D.</span></div><div id="keyboard-demo" class="chord-grid"></div><p class="helper">Pontas: <b>Sol → Lá → Lá → Si</b> · deslocamentos: +2, 0 e +2 semitons.</p></div>
-      </section>
-      <section class="section" id="cavaquinho" aria-labelledby="cavaquinho-title">
-        <div class="section-heading"><div><p class="eyebrow">02 / CAVAQUINHO</p><h2 id="cavaquinho-title">A forma também conta uma história</h2></div><span class="status">Em planejamento</span></div>
-        <p class="section-intro">Vamos relacionar os desenhos do instrumento aos graus do acorde, à cifra e ao arpejo. As posições reais de cavaquinho serão adicionadas após conferência das digitações.</p>
-        <p><a class="primary" href="./laboratorio-cavaquinho/">Abrir gerador de cavaquinho <span aria-hidden="true">↗</span></a></p>
-        <div class="feature-grid"><div class="feature"><span class="feature-no">I</span><h3>Forma de origem</h3><p>O mesmo desenho inicial guia a transição e evita informações soltas.</p></div><div class="feature"><span class="feature-no">II</span><h3>Graus visíveis</h3><p>Fundamental, terça, quinta e sétima identificadas por função.</p></div><div class="feature"><span class="feature-no">III</span><h3>Movimento cromático</h3><p>A nota que muda fica em destaque, um semitom de cada vez.</p></div></div>
-      </section>
-      <section class="section" id="laboratorio" aria-labelledby="lab-title">
-        <div class="section-heading"><div><p class="eyebrow">03 / LABORATÓRIO</p><h2 id="lab-title">Uma nota muda. Tudo muda.</h2></div><span class="status live">Demonstração interativa</span></div>
-        <p class="section-intro">Selecione uma etapa para observar uma voz descendo um semitom. Escute o arpejo sintetizado e compare a transformação seguinte.</p>
-        <div class="lab panel">
-          <div id="transition-buttons" class="transition-buttons" role="group" aria-label="Selecionar acorde"></div>
-          <div class="lab-detail"><div><p class="eyebrow">ACORDE SELECIONADO</p><h3 id="chord-name">G</h3><p id="movement" class="movement">Forma inicial</p><p id="movement-detail" class="small-note">Fundamental repetida na voz mais aguda.</p></div><div><p class="eyebrow">NOTAS DO ARPEJO</p><div id="notes" class="notes" aria-live="polite"></div><button type="button" id="play" class="secondary">♪ Ouvir arpejo</button></div></div>
-          <p class="helper">A última etapa usa G°7 (tétrade diminuta). A cifra G° pode ser ambígua e também indicar uma tríade diminuta.</p>
-        </div>
-      </section>
-      <section class="closing"><p class="eyebrow">UM PROJETO EM CONSTRUÇÃO</p><h2>Aprender a tocar é aprender a ouvir o caminho.</h2><p>Esta versão é um ponto de partida para validar os exemplos e construir um motor harmônico mais completo.</p></section>
-    </main>
-    <footer class="wrap"><span>© Cifra pra Mim · Projeto de Igor Morais</span><span>Protótipo sem gerador completo de cifras</span></footer>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Arranja pra mim: gere formas originais, três adaptações de pontas e diagramas de teclado a partir dos acordes.">
+  <title>Arranja pra mim — Cifra pra Mim</title>
+  <link rel="stylesheet" href="src/editor.css">
+  <script src="src/engine.js" defer></script>
+  <script src="src/generator.js" defer></script>
+</head>
+<body>
+<header class="site-head">
+  <div class="head-inner">
+    <a class="logo" href="index.html">CIFRA PRA MIM<span> / edição de autor</span></a>
+    <nav aria-label="Navegação"><a href="#gerador">Gerador</a><a href="#metodo">Método</a><a href="laboratorio.html">Laboratório</a></nav>
+  </div>
+</header>
+<main>
+  <section class="intro" id="gerador">
+    <span class="kicker">TECLADO / MÉTODO ADAPTANDO PONTAS</span>
+    <h1>Arranja pra mim</h1>
+    <p>Digite uma progressão para gerar automaticamente as formas originais e três alternativas de condução de vozes, com cifras, graus, mão esquerda e mão direita.</p>
+  </section>
+  <section class="workspace" aria-label="Gerador de arranjos">
+    <form id="generator-form" novalidate>
+      <div class="two-fields">
+        <label>Nome da música<input id="song-title" type="text" placeholder="Ex.: Minha progressão" maxlength="90" autocomplete="off"></label>
+        <label>Compositor(a) / referência<input id="song-author" type="text" placeholder="Opcional" maxlength="90" autocomplete="off"></label>
+      </div>
+      <label for="chords">Acordes, na ordem da música</label>
+      <textarea id="chords" rows="3" spellcheck="false" placeholder="Ex.: F#m7 Bm7 E7" required>F#m7 Bm7 E7</textarea>
+      <div class="hint">Separe os acordes por espaço, barra de compasso (|) ou quebra de linha. Exemplos: C · Am7 · F7M · G7 · C7M/B · Gm7(b5).</div>
+      <div class="actions">
+        <button class="btn-primary" type="submit">Gerar arranjo</button>
+        <button class="btn-outline" type="button" id="print-btn" disabled>Imprimir / Salvar PDF</button>
+        <button class="btn-quiet" type="button" id="sample-btn">Experimentar C – Am – F – G</button>
+      </div>
+      <p id="error" role="alert" class="error" hidden></p>
+    </form>
+    <div class="info" id="metodo">
+      <h2>Como ler o resultado</h2>
+      <p><b>M.E.</b> mostra o baixo; <b>M.D.</b> mostra as notas da mão direita. Os números representam o grau de cada nota em relação à fundamental do acorde.</p>
+      <p>O algoritmo testa inversões e prioriza a proximidade entre as pontas. Quando não houver opção de até dois semitons, escolhe a alternativa mais próxima e a identifica. A primeira forma de cada adaptação repete sua forma de origem.</p>
+      <p class="small">Esta versão trabalha com uma progressão digitada. A importação automática de URLs do Cifra Club ainda depende de uma integração de servidor.</p>
+    </div>
+  </section>
+  <section class="results" id="results" aria-live="polite" hidden>
+    <div class="results-toolbar">
+      <div><span class="kicker">MATERIAL GERADO</span><h2>Seu arranjo</h2><p id="result-stats"></p></div>
+      <button class="btn-outline" type="button" id="print-btn-bottom">Imprimir / Salvar PDF</button>
+    </div>
+    <div class="print-head"><h1 id="print-song-title">Arranja pra mim</h1><p id="print-song-author"></p><p>TECLADO — FORMAS ORIGINAIS E ADAPTANDO PONTAS</p></div>
+    <div id="sheets"></div>
+    <p class="print-foot">Cifra pra Mim · Método Adaptando Pontas · Material de estudo gerado automaticamente. Confira as escolhas de condução conforme o contexto musical.</p>
+  </section>
+</main>
+<footer class="site-footer">Cifra pra Mim · Igor Morais <a href="https://github.com/igormorais-gif/cifra-pra-mim" target="_blank" rel="noopener noreferrer">Código no GitHub</a></footer>
+</body>
 </html>
