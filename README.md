@@ -2,28 +2,30 @@
 
 Gerador de arranjos para teclado baseado no método autoral **Adaptando Pontas**, de Igor Morais.
 
-**Status: primeira versão funcional para progressões digitadas.** A importação por URL, os diagramas de cavaquinho e a publicação como site público ainda estão em desenvolvimento.
+**Status: gerador de teclado com entrada por progressão, colagem de letra/cifra e importação de PDF/TXT.** A importação por URL e os diagramas de cavaquinho ainda não estão disponíveis.
 
 ## O que funciona agora
 
 Abra index.html em um navegador, acompanhado dos arquivos da pasta src.
 
-1. Digite uma progressão, como F#m7 Bm7 E7, C Am F G ou C7M/B Dm7 G7.
-2. Clique em **Gerar arranjo**.
+1. Digite uma progressão (como F#m7 Bm7 E7), **cole uma letra cifrada completa** no quadro superior ou **selecione um PDF/TXT**. PDFs são processados no próprio navegador pela biblioteca PDF.js; somente PDFs com texto selecionável são suportados, sem OCR.
+2. Ao colar uma música, clique em **Extrair acordes e gerar**. Revise a sequência reconhecida; para uma progressão digitada, clique em **Gerar arranjo**.
 3. Consulte as quatro seções: **Formas Originais**, **Adaptando Pontas I**, **Adaptando Pontas II** e **Adaptando Pontas III**.
 4. Visualize teclados SVG, cifras, notas das mãos esquerda e direita e graus.
-5. Clique em **Imprimir / Salvar PDF** para imprimir em A4, com dois teclados por linha.
+5. Clique em **Imprimir / Salvar PDF** para imprimir em A4, com dois teclados por linha. É possível incluir a letra/cifra original antes dos diagramas. No Safari do iPhone, use a visualização de impressão e a opção de compartilhar/salvar em Arquivos para obter o PDF.
 
-A primeira seção apresenta três variantes de forma de origem, correspondentes às três adaptações. A primeira forma de cada adaptação repete exatamente o primeiro voicing da variante correspondente. A partir do segundo acorde o programa prioriza a proximidade das pontas, sinalizando saltos acima de dois semitons.
+**Os diagramas agora compartilham uma referência fixa C3–B5** e cada ponta exibe a nota com a oitava real (por exemplo, G4 e C5). O motor prioriza a menor distância da ponta antes de considerar os outros movimentos. A primeira seção apresenta três variantes de forma de origem, correspondentes às três adaptações. A primeira forma de cada adaptação repete exatamente o primeiro voicing da variante correspondente. A partir do segundo acorde o programa prioriza a proximidade das pontas, sinalizando saltos acima de dois semitons.
 
 O exemplo C7M/B usa baixo B na mão esquerda e E–G–B na direita, sem dobrar C. O motor procura evitar intervalos de segunda ou nona menor entre as mãos; quando precisa omitir alguma nota, indica a omissão.
 
 ## O que ainda não existe
 
 - Importação automática a partir de URL do Cifra Club: precisa de integração de servidor e verificação das condições de uso.
+- OCR de PDFs digitalizados como imagens: PDFs precisam conter texto selecionável. 
+- Reconhecimento perfeito da disposição de acordes na letra: conferir a sequência após a extração, especialmente PDFs com colunas, repetições e diagramas.
 - Gerador de diagramas de posições de cavaquinho.
 - Cobertura de todos os tipos de acorde, voicings e exceções melódicas. **Conferir musicalmente as saídas.**
-- Publicação online: visitar o repositório GitHub mostra o código, não abre um aplicativo rodando.
+- Para abrir o aplicativo hospedado, quando o GitHub Pages estiver ativado: https://igormorais-gif.github.io/cifra-pra-mim/. Visitar o repositório GitHub mostra o código, não executa o site.
 
 ## Rodar e testar
 
@@ -44,11 +46,12 @@ Existe um fluxo de testes em .github/workflows/test.yml.
 - index.html — gerador de arranjos.
 - src/engine.js — parser de cifras e motor de conduções.
 - src/generator.js — campos, resultados e teclados SVG.
+- src/import.js — leitura local de PDF/TXT e extração de acordes de texto cifrado.
 - src/editor.css — Edição de Autor, responsivo e impressão A4.
 - laboratorio.html — protótipo anterior de Laboratório de Transições.
 - src/app.js e src/styles.css — comportamento e estilo do protótipo anterior.
 - docs/HARMONIA.md e docs/ROADMAP.md — regras e roteiro.
-- tests/engine.test.cjs — testes.
+- tests/engine.test.cjs e tests/import.test.cjs — testes.
 
 ## Publicação
 
