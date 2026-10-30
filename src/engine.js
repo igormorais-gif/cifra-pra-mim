@@ -56,7 +56,7 @@ window.CifraEngine = (function createEngine(){
     return {raw:source,root,bass,rootPc:pitch(root),bassPc:pitch(bass),tones:unique,signature:unique.map(t=>t.label).join(" – ")};
   }
   function parseProgression(value){
-    const input=String(value??"").replace(/[|;,\n\r]+/g," ").replace(/\s+/g," ").trim();
+    const input=String(value??"").replace(/[|;\n\r]+/g," ").replace(/,(?![^()]*\))/g," ").replace(/\s+/g," ").trim();
     if(!input)throw Error("Digite pelo menos um acorde.");
     const tokens=input.split(" ").filter(Boolean);
     if(tokens.length>48)throw Error("Limite de 48 acordes por geração.");
