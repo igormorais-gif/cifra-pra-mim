@@ -82,15 +82,17 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
       const sheets=q("sheets");
       sheets.replaceChildren();
       const origin=section(1,"Formas Originais","");
-      ["Forma de origem I","Forma de origem II","Forma de origem III"].forEach((label,i)=>origin.append(shapeSet(label,output.chords,output.originalTracks[i])));
+      // Somente uma forma original para cada acorde: posição fundamental / desenho 1–3–5.
+      origin.append(shapeSet("",output.chords,output.originalTrack));
       sheets.append(origin);
-      ["I","II","III"].forEach((label,i)=>{
+      const labels=["I — 1–3–5","II — 3–5–1","III — 5–1–3"];
+      labels.forEach((label,i)=>{
         const page=section(i+2,"Adaptando Pontas ("+label+")","");
         page.append(shapeSet("",output.chords,output.adapted[i]));
         sheets.append(page);
       });
       const jumps=output.adapted.reduce((sum,track)=>sum+track.slice(1).filter((c,i)=>Math.abs(c.top-track[i].top)>2).length,0);
-      q("result-stats").textContent=output.chords.length+" acordes · 3 formas de origem · 3 adaptações"+(jumps?" · "+jumps+" salto(s) acima de 2 semitons, assinalados":" · todas as pontas dentro de 2 semitons");
+      q("result-stats").textContent=output.chords.length+" acordes · 1 coleção de Formas Originais (1–3–5) · 3 adaptações"+(jumps?" · "+jumps+" salto(s) acima de 2 semitons, assinalados":" · todas as pontas dentro de 2 semitons");
       q("results").hidden=false;
       q("print-btn").disabled=false;
       if(!skipScroll)q("results").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
