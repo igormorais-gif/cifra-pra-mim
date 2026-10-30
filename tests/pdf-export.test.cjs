@@ -6,6 +6,7 @@ const vm=require("node:vm");
 
 const pdfCode=fs.readFileSync(path.join(__dirname,"../src/pdf-export.js"),"utf8");
 const engineCode=fs.readFileSync(path.join(__dirname,"../src/engine.js"),"utf8");
+const presentationCode=fs.readFileSync(path.join(__dirname,"../src/presentation.js"),"utf8");
 const imageBase64="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD2aiiigD//2Q==";
 const context2d={
   fillRect(){},strokeRect(){},beginPath(){},arc(){},fill(){},fillText(){},
@@ -22,6 +23,7 @@ const sandbox={
 };
 vm.createContext(sandbox);
 vm.runInContext(engineCode,sandbox,{filename:"src/engine.js"});
+vm.runInContext(presentationCode,sandbox,{filename:"src/presentation.js"});
 vm.runInContext(pdfCode,sandbox,{filename:"src/pdf-export.js"});
 const {CifraPDF,CifraEngine}=sandbox.window;
 
