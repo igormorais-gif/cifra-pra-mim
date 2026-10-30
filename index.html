@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Arranja pra mim: gere formas originais, três adaptações de pontas e diagramas de teclado a partir dos acordes.">
   <title>Arranja pra mim — Cifra pra Mim</title>
-  <link rel="stylesheet" href="src/editor.css?v=2">
+  <link rel="stylesheet" href="src/editor.css?v=3">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
   <script src="src/engine.js?v=2" defer></script>
   <script src="src/import.js?v=2" defer></script>
-  <script src="src/generator.js?v=2" defer></script>
+  <script src="src/pdf-export.js?v=3" defer></script>
+  <script src="src/generator.js?v=3" defer></script>
 </head>
 <body>
 <header class="site-head">
@@ -40,19 +41,30 @@
           </label>
           <button id="extract-btn" class="btn-outline" type="button">Extrair acordes e gerar</button>
         </div>
-        <p class="hint">PDF com texto selecionável, até 12 MB e 40 páginas. Arquivos digitalizados como imagem ainda não são reconhecidos. Revise os acordes extraídos antes de imprimir.</p>
+        <p class="hint">PDF com texto selecionável, até 12 MB e 40 páginas. Arquivos digitalizados como imagem ainda não são reconhecidos. Revise os acordes extraídos antes de exportar.</p>
         <p id="import-status" class="import-status" role="status" aria-live="polite"></p>
-        <label class="checkbox-label"><input id="include-source" type="checkbox" checked> Incluir letra e cifra originais no PDF impresso</label>
+        <label class="checkbox-label"><input id="include-source" type="checkbox" checked> Incluir letra e cifra originais no PDF exportado</label>
       </section>
       <label for="chords">Acordes reconhecidos / progressão para editar</label>
       <textarea id="chords" rows="3" spellcheck="false" placeholder="Ex.: F#m7 Bm7 E7" required>F#m7 Bm7 E7</textarea>
       <div class="hint">Separe os acordes por espaço, barra de compasso (|) ou quebra de linha. Exemplos: C · Am7 · F7M · G7 · C7M/B · Gm7(b5).</div>
       <div class="actions">
         <button class="btn-primary" type="submit">Gerar arranjo</button>
-        <button class="btn-outline" type="button" id="print-btn">Imprimir / Salvar PDF</button>
+        <button class="btn-outline" type="button" id="print-btn">Gerar PDF para salvar</button>
         <button class="btn-quiet" type="button" id="sample-btn">Experimentar C – Am – F – G</button>
       </div>
       <p id="error" role="alert" class="error" hidden></p>
+      <section id="pdf-panel" class="pdf-panel" hidden aria-label="Arquivo PDF">
+        <h2>Seu arquivo PDF</h2>
+        <p id="pdf-status" role="status" aria-live="polite"></p>
+        <div id="pdf-actions" class="pdf-actions" hidden>
+          <a id="pdf-open" href="#" class="btn-primary" target="_blank" rel="noopener">Abrir PDF</a>
+          <a id="pdf-download" href="#" class="btn-outline" download>Baixar PDF</a>
+          <button id="pdf-share" type="button" class="btn-outline">Compartilhar / Salvar em Arquivos</button>
+        </div>
+        <p class="hint">No iPhone, toque em <b>Compartilhar / Salvar em Arquivos</b>. Se essa opção não aparecer, abra o PDF e use o botão Compartilhar do Safari → <b>Salvar em Arquivos</b>. Não depende da tela de impressão.</p>
+        <button class="btn-quiet" type="button" id="print-legacy">Imprimir pelo navegador (alternativa)</button>
+      </section>
     </form>
     <div class="info" id="metodo">
       <h2>Como ler o resultado</h2>
@@ -65,7 +77,7 @@
   <section class="results" id="results" aria-live="polite" hidden>
     <div class="results-toolbar">
       <div><span class="kicker">MATERIAL GERADO</span><h2>Seu arranjo</h2><p id="result-stats"></p></div>
-      <button class="btn-outline" type="button" id="print-btn-bottom">Imprimir / Salvar PDF</button>
+      <button class="btn-outline" type="button" id="print-btn-bottom">Gerar PDF para salvar</button>
     </div>
     <div class="print-head"><h1 id="print-song-title">Arranja pra mim</h1><p id="print-song-author"></p><p>TECLADO — FORMAS ORIGINAIS E ADAPTANDO PONTAS</p></div>
     <section id="print-source" class="print-source" hidden><h3>Letra e cifra originais</h3><pre id="source-output"></pre></section>
