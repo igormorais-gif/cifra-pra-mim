@@ -83,7 +83,8 @@ function triadFrets(grades){const reference=firstBase(),base=reference.frets,anc
 }
 function chooseBass(triad){const degree=locatorDegree(),number=locatorString(),anchor=state.bassString==='auto'&&state.bassDegree==='auto'?firstBase().bass:null;
  const minPitch=Math.min(...triad.frets.map((f,i)=>OPEN[6-GROUPS[state.strings][i]]+f));
- if(anchor&&anchor.midi<minPitch)return {...anchor,degree};
+ const mean=triad.frets.reduce((a,b)=>a+b,0)/3;
+ if(anchor&&anchor.midi<minPitch&&Math.abs(anchor.fret-mean)<=5)return {...anchor,degree};
  const options=bassCandidatesFor(triad.frets,degree,number);
  if(options.length)return options[0];
  return{string:number,fret:0,midi:OPEN[6-number],degree,score:999,warning:'Não há um baixo abaixo da tríade nessa corda e região.'};
