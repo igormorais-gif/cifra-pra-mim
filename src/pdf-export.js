@@ -167,12 +167,10 @@ async function create(options,progress){
  if(!options.output?.chords?.length)throw Error("Gere o arranjo antes de exportar.");
  const images=[];sourcePages(options,images);
  const groups=[
- ["1) Formas Originais — I","",options.output.originalTracks[0]],
- ["1) Formas Originais — II","",options.output.originalTracks[1]],
- ["1) Formas Originais — III","",options.output.originalTracks[2]],
- ["2) Adaptando Pontas (I)","",options.output.adapted[0]],
- ["3) Adaptando Pontas (II)","",options.output.adapted[1]],
- ["4) Adaptando Pontas (III)","",options.output.adapted[2]]
+ ["1) Formas Originais — 1–3–5","",options.output.originalTrack],
+ ["2) Adaptando Pontas (I — 1–3–5)","",options.output.adapted[0]],
+ ["3) Adaptando Pontas (II — 3–5–1)","",options.output.adapted[1]],
+ ["4) Adaptando Pontas (III — 5–1–3)","",options.output.adapted[2]]
  ];
  for(let i=0;i<groups.length;i++){
   addSection(options,...groups[i],images);
