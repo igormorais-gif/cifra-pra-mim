@@ -116,13 +116,20 @@ window.CifraEngine = (function createEngine(){
   }
   function generate(value){
     const chords=Array.isArray(value)?value:parseProgression(value);
-    const originalTracks=[0,1,2].map(origin=>chords.map(c=>original(c,origin)));
-    const adapted=originalTracks.map(track=>{
-      const result=[track[0]];
+    // Há somente uma seção "Formas Originais": posição fundamental (estrutura 1–3–5)
+    // para cada acorde, com substituições de graus quando a cifra pede extensões.
+    const originalTrack=chords.map(chord=>original(chord,0));
+    // São três pontos de PARTIDA para as adaptações, não três formas originais.
+    // Adaptando Pontas I: primeiro acorde idêntico à Forma Original.
+    // Adaptando Pontas II: primeiro acorde em 3–5–1 (♭3–5–1 no menor).
+    // Adaptando Pontas III: primeiro acorde em 5–1–3 (5–1–♭3 no menor).
+    const anchors=[originalTrack[0],original(chords[0],1),original(chords[0],2)];
+    const adapted=anchors.map(anchor=>{
+      const result=[anchor];
       for(let i=1;i<chords.length;i++)result.push(chooseNext(chords[i],result[i-1]));
       return result;
     });
-    return {chords,originalTracks,adapted};
+    return {chords,originalTrack,adapted};
   }
   return {parseChord,parseProgression,candidates,generate,pitch,spell};
 })();
