@@ -73,7 +73,9 @@ window.CifraEngine = (function createEngine(){
       const order=base.slice(k).concat(base.slice(0,k).map(x=>({...x,midi:x.midi+12})));
       for(const shift of [-24,-12,0,12]){
         const notes=order.map(t=>({...t,midi:t.midi+shift}));
-        if(notes[0].midi<48||notes[notes.length-1].midi>84)continue;
+        // Registro explícito: mão direita de C3 até A5, ponta entre C4 e A5.
+        // Nunca oferecemos a mesma inversão deslocada arbitrariamente para uma oitava extrema.
+        if(notes[0].midi<48||notes[notes.length-1].midi>81||notes[notes.length-1].midi<60)continue;
         const clash=hasClash(bassMidi(chord),notes);
         out.push({notes,top:notes[notes.length-1].midi,rotation:k,omitted:[],clash,bass:bassMidi(chord)});
       }
@@ -103,9 +105,14 @@ window.CifraEngine = (function createEngine(){
       const dist=Math.abs(c.top-prev.top);
       const n=Math.min(c.notes.length,prev.notes.length);
       let sum=0;for(let i=0;i<n;i++)sum+=Math.abs(c.notes[i].midi-prev.notes[i].midi);
-      return (dist>2?50+dist*3:dist*8)+sum+Math.abs(c.notes.length-prev.notes.length)*4+c.omitted.length*25+(c.clash?1000:0);
+      return sum+Math.abs(c.notes.length-prev.notes.length)*4+c.omitted.length*25+(c.clash?1000:0);
     };
-    return options.slice().sort((a,b)=>score(a)-score(b))[0];
+    // A ponta tem prioridade absoluta: primeiro candidatos a até dois semitons.
+    // Só admitimos um salto maior quando não há candidato próximo na tessitura.
+    const close=options.filter(c=>Math.abs(c.top-prev.top)<=2);
+    const pool=close.length?close:options;
+    const smallest=Math.min(...pool.map(c=>Math.abs(c.top-prev.top)));
+    return pool.filter(c=>Math.abs(c.top-prev.top)===smallest).sort((a,b)=>score(a)-score(b))[0];
   }
   function generate(value){
     const chords=Array.isArray(value)?value:parseProgression(value);
