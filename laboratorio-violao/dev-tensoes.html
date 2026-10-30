@@ -61,6 +61,51 @@ function route(){const b=VOICINGS[state.form],out=[{grades:b.slice(),...chordNam
  let d=b.slice();let index=d.indexOf('1');d[index]='7';out.push({grades:d.slice(),...chordNames('7M'),description:'Sétima maior (7) — 1 st abaixo do 1.'});d[index]='♭7';out.push({grades:d.slice(),...chordNames('7'),description:'Sétima menor (♭7) — 2 st abaixo do 1.'});d=d.map(x=>x==='3'?'♭3':x);out.push({grades:d.slice(),...chordNames('7',true),description:'Terça menor (♭3) — 1 st abaixo do 3.'});d=d.map(x=>x==='5'?'♭5':x);out.push({grades:d.slice(),...chordNames('7(♭5)',true),description:'Quinta diminuta (♭5) — 1 st abaixo do 5.'});d=d.map(x=>x==='♭7'?'♭♭7':x);out.push({grades:d.slice(),...chordNames('º'),description:'Sétima diminuta (♭♭7) — 3 st abaixo do 1.'});return out}
 function currentStage(){return route()[Math.min(state.stage,route().length-1)]}
 function degreeColor(g){if(g==='1')return '#e58c42';if(['3','♭3'].includes(g))return '#5c95cd';if(['5','♭5','♯5'].includes(g))return '#6c78db';if(['7','♭7','♭♭7'].includes(g))return '#ad66d0';return '#64ac99'}
+
+const HINTS={'1':{'7':['Sétima maior (7)',-1],'♭7':['Sétima menor (♭7)',-2],'♭9':['Nona menor (♭9)',1],'9':['Nona maior (9)',2],'♯9':['Nona aumentada (♯9)',3],'6':['Sexta maior (6)',-3]},'3':{'♭3':['Terça menor (♭3)',-1],'2':['Segunda suspensa (2)',-2],'4':['Quarta suspensa (4)',1]},'5':{'♭5':['Quinta diminuta (♭5)',-1],'♯5':['Quinta aumentada (♯5)',1],'11':['Décima primeira (11)',-2],'♯11':['Décima primeira aumentada (♯11)',-1],'♭13':['Décima terceira menor (♭13)',1],'6':['Sexta maior (6)',2],'13':['Décima terceira (13)',2]}};
+function degreeHint(from,to){let h=HINTS[from]?.[to];return h?h[0]+' — '+Math.abs(h[1])+' st '+(h[1]<0?'abaixo':'acima')+' do '+from:from+' → '+to}
+function canReplace(from,g){if(from==='1')return ['7','♭7','♭9','9','♯9'].includes(g)||(g==='6'&&state.sixthSource!=='5');if(from==='5')return ['11','♯11','♭13','13','♭5','♯5'].includes(g)||(g==='6'&&state.sixthSource!=='1');return false}
+function namesOfGenerated(grades){
+ let minor=grades.includes('♭3'),susp=grades.includes('2')?'sus2':grades.includes('4')?'sus4':'',seventh=grades.includes('7')?'7M':grades.includes('♭7')?'7':'',sixth=grades.includes('6'),r=root();
+ let symbol=r.symbol+(minor?'m':''),name=r.name+(minor?' Menor':' Maior'),reading=r.name+(minor?' menor':'');
+ if(susp){symbol=r.symbol+susp;name=r.name+' com '+(susp==='sus2'?'Segunda':'Quarta')+' Suspensa';reading=r.name+' '+susp}
+ const halfdim=minor&&seventh==='7'&&grades.includes('♭5');
+ if(halfdim){symbol=r.symbol+'m7(♭5)';name=r.name+' Meio-Diminuto';reading=r.name+' meio-diminuto'}
+ else if(seventh){symbol+=seventh;name+=' com Sétima '+(seventh==='7M'?'Maior':'Menor');reading+=' com Sétima'+(seventh==='7M'?' Maior':'')}
+ if(sixth){symbol+='6';name+=' com Sexta Maior';reading+=' com Sexta'}
+ let extra=['♭9','9','♯9','11','♯11','♭13','13','♭5','♯5'].filter(g=>grades.includes(g)&&!(halfdim&&g==='♭5'));
+ if(extra.length){symbol+=(seventh?'(':'(add')+extra.join(',')+')';name+=' · '+extra.join(' / ')}
+ return {symbol,name,reading};
+}
+function tryGenerate(){
+ const selected=[...state.selected],requested=selected.map(g=>g==='sus2'?'2':g==='sus4'?'4':g),has7=requested.includes('7')||requested.includes('♭7');
+ if(requested.includes('7')&&requested.includes('♭7'))return {error:'Escolha uma sétima de cada vez.'};
+ if(requested.includes('6')&&has7)return {error:'Com sétima, use 13 em vez de 6.'};
+ if(requested.includes('13')&&!has7)return {error:'Sem sétima, use 6 em vez de 13.'};
+ if(requested.includes('2')&&requested.includes('4'))return {error:'Escolha apenas uma suspensão.'};
+ if(state.quality==='minor'&&(requested.includes('2')||requested.includes('4')))return {error:'A suspensão substitui a terça; selecione Maior.'};
+ const original=VOICINGS[state.form],third=requested.includes('2')?'2':requested.includes('4')?'4':state.quality==='minor'?'♭3':'3',
+ adjusted=original.map(g=>g==='3'?third:g),asked=requested.filter(g=>g!=='2'&&g!=='4'),options=[];
+ function walk(i,assign,used){
+  if(i===asked.length){
+    let grades=adjusted.slice();for(let [g,k] of assign)grades[k]=g;
+    let candidates=chordBaseCandidates(grades);if(candidates.length){
+      let fret=triadFrets(grades).frets,anchor=firstBase().frets,score=fret.reduce((v,f,k)=>v+Math.abs(f-anchor[k]),0)+Math.max(...fret)-Math.min(...fret);
+      options.push({grades,assign:assign.slice(),score});
+    }return;
+  }
+  for(let k=0;k<3;k++){if(used.has(k)||!canReplace(original[k],asked[i]))continue;used.add(k);assign.push([asked[i],k]);walk(i+1,assign,used);assign.pop();used.delete(k)}
+ }
+ walk(0,[],new Set());
+ if(!options.length){
+  let ones=asked.filter(g=>['7','♭7','♭9','9','♯9'].includes(g)).length,fives=asked.filter(g=>['11','♯11','♭13','13','♭5','♯5'].includes(g)).length;
+  return {error:ones>1?'A sétima e a nona disputam o mesmo 1 nesta tríade.':fives>1?'Essas tensões disputam o mesmo 5 nesta tríade.':'A combinação não cabe nas três vozes dessa forma. Tente outra seleção.'};
+ }
+ options.sort((a,b)=>a.score-b.score);
+ const winner=options[0],info=namesOfGenerated(winner.grades);
+ let hints=winner.grades.flatMap((g,k)=>g===original[k]?[]:[degreeHint(original[k],g)]);
+ return {...info,grades:winner.grades,assign:winner.assign,description:hints.join(' · ')||'Tríade original mantida.'};
+}
 function chordBaseCandidates(grades){let arr=[],strings=GROUPS[state.strings];for(let j=0;j<3;j++){let mid=OPEN[6-strings[j]],p=pc(root().pc+semis(grades[j])),f=[];for(let k=0;k<=18;k++)if(pc(mid+k)===p)f.push(k);arr.push(f)}const all=[];for(const a of arr[0])for(const b of arr[1])for(const c of arr[2]){let f=[a,b,c],span=Math.max(...f)-Math.min(...f),lo=Math.min(...f),avg=(a+b+c)/3;if(span>5)continue;all.push({frets:f,score:avg*.72+span*4+Math.max(0,lo-9)*2.0+(f.includes(0)?-.85:0)})}return all.sort((a,b)=>a.score-b.score)}
 
 function locatorDegree(){return state.bassDegree==='auto'?'1':state.bassDegree}
@@ -114,8 +159,18 @@ function renderFretboard(c){let all=[...c.frets,c.bass.fret];let lo=Math.min(...
  createSvg('text',{x:LEFT,y:363,fill:'#8e9da9','font-size':13}).textContent='Mi–Lá–Ré–Sol–Si–Mi · 6 cordas · bolinhas com graus';}
 function renderCards(c){const box=$('cards');box.replaceChildren();let arr=c.chord.grades.map((g,i)=>({degree:g,name:c.notes[i],fret:c.frets[i]}));arr.push({degree:c.bass.degree+'B',name:c.bassName,fret:c.bass.fret,bass:true});arr.forEach((a,i)=>{let div=document.createElement('div');div.className='note-card'+(a.bass?' bass':'')+(state.playing===i?' playing':'');let strong=document.createElement('strong');strong.textContent=a.degree;strong.className='grade-title';strong.style.color=a.bass?'#d7bef5':degreeColor(a.degree);div.style.borderColor=a.bass?'#5d5277':degreeColor(a.degree)+'66';let note=document.createElement('span');note.className='name';note.textContent=a.name;let small=document.createElement('small');small.textContent=(a.bass?'Corda '+c.bass.string+' · ':'')+'Casa '+a.fret;div.append(strong,note,small);box.append(div)})}
 function addBadge(text,typ=''){let b=document.createElement('span');b.className='badge'+(typ?' '+typ:'');b.textContent=text;$('badges').append(b)}
+function updateGeneratorControls(){
+ $('tensionPanel').hidden=state.mode!=='gen';
+ document.querySelectorAll('[data-mode]').forEach(b=>{let active=b.dataset.mode===state.mode;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+ document.querySelectorAll('[data-quality]').forEach(b=>b.classList.toggle('active',b.dataset.quality===state.quality));
+ let box=$('tensionButtons');box.replaceChildren();
+ for(let t of TENSIONS){let b=document.createElement('button');b.type='button';b.className=state.selected.has(t)?'selected':'';b.textContent=t;b.setAttribute('aria-pressed',String(state.selected.has(t)));
+ b.onclick=()=>{stop();if(state.selected.has(t)){state.selected.delete(t)}else{for(let [a,z] of [['7','♭7'],['6','13'],['sus2','sus4']]){if(t===a)state.selected.delete(z);if(t===z)state.selected.delete(a)}state.selected.add(t)}state.generated=null;state.stage=0;state.genError='';render()};box.appendChild(b)}
+ $('sixthBox').hidden=!state.selected.has('6');$('sixthSource').value=state.sixthSource;
+ let m=$('genMessage');m.textContent=state.genError|| (state.generated?'Voicing: '+state.generated.grades.join(' · '):'Selecione os graus e toque em Gerar.');m.classList.toggle('error',!!state.genError);
+}
 function renderSteps(){let container=$('stages'),steps=route();container.replaceChildren();steps.forEach((s,i)=>{let b=document.createElement('button');b.className='step'+(i===state.stage?' active':'');b.textContent=s.symbol;b.setAttribute('aria-pressed',i===state.stage);b.onclick=()=>{stop();state.stage=i;render()};container.append(b)})}
-function render(){let c=computed();currentComputed=c;const r=root();let slash=c.bass.degree==='1'?'':'/'+c.bassName.replace(/^Dó/,'C').replace(/^Ré/,'D').replace(/^Mi/,'E').replace(/^Fá/,'F').replace(/^Sol/,'G').replace(/^Lá/,'A').replace(/^Si/,'B').replace('♯','#').replace('♭','b'); // usado só como qualificação da cifra
+function render(){let c=computed();currentComputed=c;const r=root();updateGeneratorControls();let slash=c.bass.degree==='1'?'':'/'+c.bassName.replace(/^Dó/,'C').replace(/^Ré/,'D').replace(/^Mi/,'E').replace(/^Fá/,'F').replace(/^Sol/,'G').replace(/^Lá/,'A').replace(/^Si/,'B').replace('♯','#').replace('♭','b'); // usado só como qualificação da cifra
  $('chord').textContent=c.chord.symbol+slash;$('name').textContent=c.chord.name;$('read').textContent='Lê-se: '+c.chord.reading;
  $('badges').replaceChildren();if(!c.chord.grades.includes('1')&&c.bass.degree!=='1')addBadge('Fundamental omitida','info');if(c.warning)addBadge(c.warning);addBadge(c.bass.degree+'B · '+c.bass.string+'ª corda','info');
  document.querySelectorAll('[data-set]').forEach(x=>x.classList.toggle('active',x.dataset.set===state.strings));document.querySelectorAll('[data-form]').forEach(x=>x.classList.toggle('active',x.dataset.form===state.form));$('tipDegree').textContent=c.chord.grades.at(-1)+'P';$('bassSummary').innerHTML=c.bass.string+'ª corda · <strong>'+c.bass.degree+'B</strong> · casa '+c.bass.fret;renderSteps();renderFretboard(c);renderCards(c);
@@ -130,12 +185,22 @@ async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitA
 async function arpeggio(token){let c=currentComputed;const notes=[...c.noteMidi,c.bass.midi],beats=[.5,.5,1,1],duration=60/state.bpm;for(let i=0;i<4;i++){if(token!==state.token)return;state.playing=i;updatePlaying();pluck(notes[i],beats[i]*duration,i===3);await wait(beats[i]*duration*1000)}if(token===state.token){state.playing=-1;updatePlaying()}}
 async function play(sequence){stop();let token=state.token;if(!await unlock())return;$('playOne').disabled=true;$('playAll').disabled=true;let total=sequence?route().length:1;for(let i=0;i<total;i++){if(token!==state.token)return;if(sequence){state.stage=i;render();if(i)await wait(210);}await arpeggio(token);if(i<total-1)await wait(160)}if(token===state.token)stop()}
 ROOTS.forEach(r=>{let op=document.createElement('option');op.value=r.symbol;op.textContent=r.symbol+' · '+r.name;$('root').append(op)});$('root').value=state.root;
-$('root').onchange=e=>{stop();state.root=e.target.value;render()};$('path').onchange=e=>{stop();state.path=e.target.value;state.stage=Math.min(state.stage,route().length-1);render()};
-document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{stop();state.strings=b.dataset.set;render()});document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{stop();state.form=b.dataset.form;render()});
+function changeKeepingChord(update){stop();const before={root:state.root,strings:state.strings,form:state.form};update();
+ if(state.mode==='gen'&&state.generated){let attempt=tryGenerate();if(attempt.error){Object.assign(state,before);state.genError='A combinação não pôde ser mantida. '+attempt.error}else{state.generated=attempt;state.genError='';}}
+ render()}
+ $('root').onchange=e=>changeKeepingChord(()=>{state.root=e.target.value});$('path').onchange=e=>{stop();state.path=e.target.value;state.stage=Math.min(state.stage,route().length-1);render()};
+document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>changeKeepingChord(()=>{state.strings=b.dataset.set}));
+ document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>changeKeepingChord(()=>{state.form=b.dataset.form}));
+ document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{stop();state.mode=b.dataset.mode;state.stage=0;state.genError='';render()});
+ document.querySelectorAll('[data-quality]').forEach(b=>b.onclick=()=>{stop();state.quality=b.dataset.quality;state.generated=null;state.stage=0;state.genError='';render()});
+ document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{state.selected=new Set(b.dataset.preset?b.dataset.preset.split(','):[]);state.quality='major';state.genError='';state.mode='gen';generateVoicing()});
+ function generateVoicing(){stop();let attempt=tryGenerate();if(attempt.error){state.genError=attempt.error;state.generated=null;state.stage=0}else{state.genError='';state.generated=attempt;state.stage=1}render()}
+ $('sixthSource').onchange=e=>{state.sixthSource=e.target.value;if(state.generated&&state.selected.has('6'))generateVoicing();else render()};
+ $('generateChord').onclick=generateVoicing;
 $('bassString').onchange=e=>{stop();state.bassString=e.target.value;render()};$('bassDegree').onchange=e=>{stop();state.bassDegree=e.target.value;render()};
 $('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmValue').textContent=state.bpm};$('playOne').onclick=()=>play(false);$('playAll').onclick=()=>play(true);$('stop').onclick=stop;
 render();document.documentElement.classList.add('js-ready');
-window.CifraPraMimGuitarDebug={get:()=>{let c=computed();return{root:state.root,form:state.form,strings:state.strings,stage:state.stage,chord:c.chord.symbol,grades:c.chord.grades,notes:c.notes,frets:c.frets,bass:c.bass,rootPc:root().pc,group:GROUPS[state.strings]};},show:(r,g,f,j=0)=>{state.root=r;state.strings=g;state.form=f;state.stage=j;$('root').value=r;render();return window.CifraPraMimGuitarDebug.get();},chooseBass:(string,degree)=>{state.bassString=String(string);state.bassDegree=String(degree);$('bassString').value=state.bassString;$('bassDegree').value=state.bassDegree;render();return window.CifraPraMimGuitarDebug.get();}};
+window.CifraPraMimGuitarDebug={generate:(degrees,quality='major',sixth='auto')=>{state.mode='gen';state.quality=quality;state.selected=new Set(degrees);state.sixthSource=sixth;let a=tryGenerate();state.generated=a.error?null:a;state.genError=a.error||'';state.stage=a.error?0:1;render();return window.CifraPraMimGuitarDebug.get()},get:()=>{let c=computed();return{root:state.root,form:state.form,strings:state.strings,stage:state.stage,chord:c.chord.symbol,grades:c.chord.grades,notes:c.notes,frets:c.frets,bass:c.bass,rootPc:root().pc,group:GROUPS[state.strings]};},show:(r,g,f,j=0)=>{state.root=r;state.strings=g;state.form=f;state.stage=j;$('root').value=r;render();return window.CifraPraMimGuitarDebug.get();},chooseBass:(string,degree)=>{state.bassString=String(string);state.bassDegree=String(degree);$('bassString').value=state.bassString;$('bassDegree').value=state.bassDegree;render();return window.CifraPraMimGuitarDebug.get();}};
 })();
 </script>
 </body></html>
