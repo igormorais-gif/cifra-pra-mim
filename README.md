@@ -1,43 +1,61 @@
-# Cifra pra Mim
+# Cifra pra Mim — Arranja pra mim
 
-**Aprender harmonia enxergando o que muda de um acorde para outro.**
+Gerador de arranjos para teclado baseado no método autoral **Adaptando Pontas**, de Igor Morais.
 
-Projeto autoral de ensino musical com percursos para **teclado**, **cavaquinho** e um **Laboratório de Transições**. A proposta é conectar cifras, formas, graus e movimentos entre vozes, em vez de apresentar acordes como figuras isoladas.
+**Status: primeira versão funcional para progressões digitadas.** A importação por URL, os diagramas de cavaquinho e a publicação como site público ainda estão em desenvolvimento.
 
-> Status: estrutura inicial e protótipo de navegação. Os exemplos musicais são didáticos; ainda não há gerador completo de cifras ou digitações de cavaquinho.
+## O que funciona agora
 
-## Módulos
+Abra index.html em um navegador, acompanhado dos arquivos da pasta src.
 
-### Teclado
-- Tríades maiores e menores; graus 1–3–5 e 1–♭3–5.
-- **Formas Originais → Adaptando Pontas**, com a primeira forma preservada.
-- Estudo do movimento da voz mais aguda, inicialmente com deslocamento de até dois semitons entre acordes consecutivos.
-- Evolução para tétrades, sétimas e extensões.
+1. Digite uma progressão, como F#m7 Bm7 E7, C Am F G ou C7M/B Dm7 G7.
+2. Clique em **Gerar arranjo**.
+3. Consulte as quatro seções: **Formas Originais**, **Adaptando Pontas I**, **Adaptando Pontas II** e **Adaptando Pontas III**.
+4. Visualize teclados SVG, cifras, notas das mãos esquerda e direita e graus.
+5. Clique em **Imprimir / Salvar PDF** para imprimir em A4, com dois teclados por linha.
 
-### Cavaquinho
-- Leitura de formas em graus e associação com a cifra.
-- Progressões organizadas pela **forma de origem**.
-- Representação visual de mudanças cromáticas e dos arpejos correspondentes.
-- Digitações só entrarão no protótipo depois de validação das posições reais no instrumento.
+A primeira seção apresenta três variantes de forma de origem, correspondentes às três adaptações. A primeira forma de cada adaptação repete exatamente o primeiro voicing da variante correspondente. A partir do segundo acorde o programa prioriza a proximidade das pontas, sinalizando saltos acima de dois semitons.
 
-### Laboratório de Transições
-- Cadeia experimental: **G → G7M → G7 → Gm7 → Gm7(♭5) → G°7**.
-- O passo inicial mostra a troca de uma fundamental (1) pela sétima maior (7) na voz superior: **1 → 7, desça 1 semitom**.
-- A última etapa é grafada **G°7** por representar a tétrade diminuta (com sétima diminuta). A cifra **G°**, sem outra indicação, também é usada para uma tríade diminuta; essa ambiguidade deve ser esclarecida ao aluno.
-- Protótipo inclui um arpejo sintetizado simples para cada acorde, acionado pelo usuário.
+O exemplo C7M/B usa baixo B na mão esquerda e E–G–B na direita, sem dobrar C. O motor procura evitar intervalos de segunda ou nona menor entre as mãos; quando precisa omitir alguma nota, indica a omissão.
 
-## Abrir localmente
+## O que ainda não existe
 
-Não é necessário instalar dependências. Basta abrir `index.html` em um navegador moderno. O protótipo é composto por HTML, CSS e JavaScript, sem backend.
+- Importação automática a partir de URL do Cifra Club: precisa de integração de servidor e verificação das condições de uso.
+- Gerador de diagramas de posições de cavaquinho.
+- Cobertura de todos os tipos de acorde, voicings e exceções melódicas. **Conferir musicalmente as saídas.**
+- Publicação online: visitar o repositório GitHub mostra o código, não abre um aplicativo rodando.
+
+## Rodar e testar
+
+Baixe os arquivos mantendo a estrutura de pastas e abra index.html em um navegador moderno. Em um computador com Python, também é possível iniciar um servidor local com:
+
+    python3 -m http.server 8000
+
+E abrir http://localhost:8000 no navegador.
+
+Para conferir o motor com Node.js 22:
+
+    node --test tests/*.test.cjs
+
+Existe um fluxo de testes em .github/workflows/test.yml.
+
+## Arquivos principais
+
+- index.html — gerador de arranjos.
+- src/engine.js — parser de cifras e motor de conduções.
+- src/generator.js — campos, resultados e teclados SVG.
+- src/editor.css — Edição de Autor, responsivo e impressão A4.
+- laboratorio.html — protótipo anterior de Laboratório de Transições.
+- src/app.js e src/styles.css — comportamento e estilo do protótipo anterior.
+- docs/HARMONIA.md e docs/ROADMAP.md — regras e roteiro.
+- tests/engine.test.cjs — testes.
 
 ## Publicação
 
-Como é um site estático, poderá ser publicado com GitHub Pages quando o repositório atender aos requisitos do seu plano (no GitHub Free, é necessário que seja **público**).
+No GitHub Free, o GitHub Pages exige repositório público. Em planos GitHub Pro e superiores, também aceita repositórios privados, mas o site publicado pode continuar acessível publicamente. O repositório foi mantido privado deliberadamente. Nenhuma configuração de visibilidade foi alterada.
 
-## Planejamento
+A fonte de publicação, quando disponível, pode ser configurada em Settings → Pages → Deploy from a branch → main → / (root).
 
-Veja [docs/ROADMAP.md](docs/ROADMAP.md) para a sequência de desenvolvimento e [docs/HARMONIA.md](docs/HARMONIA.md) para a especificação inicial dos exemplos.
+## Direitos e autoria
 
-## Autoria e direitos
-
-Projeto de Igor Morais. **Ainda não há licença de software definida.** Não adicionar letras, áudios, partituras ou bases de dados de terceiros sem verificar as permissões de uso. Uma eventual integração ao Cifra Club precisará observar os termos e os direitos sobre o conteúdo.
+Projeto de Igor Morais. Ainda não há licença definida. Não adicionar letras, partituras, áudios ou bases de terceiros sem verificar as permissões de uso.
