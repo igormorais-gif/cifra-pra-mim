@@ -34,15 +34,22 @@ test("extensões e alterações são reconhecidas",()=>{
   assert.equal(tones("C7(#9,b13)"),"B♭:♭7, E:3, A♭:♭13, D♯:♯9");
 });
 
-test("primeira forma de cada adaptação é idêntica à respectiva origem",()=>{
-  const result=engine.generate("F#m7 Bm7 E7");
-  assert.equal(result.chords.length,3);
-  assert.equal(result.originalTracks.length,3);
+test("Formas Originais é uma coleção única em posição fundamental",()=>{
+  const result=engine.generate("C G Am F");
+  assert.equal(result.chords.length,4);
+  assert.equal(result.originalTrack.length,4);
+  assert.equal(result.originalTracks,undefined);
+  assert.deepEqual(Array.from(result.originalTrack,x=>x.notes.map(n=>n.label).join("-")),
+    ["1-3-5","1-3-5","1-♭3-5","1-3-5"]);
+});
+
+test("três adaptações começam em 135, 351 e 513, sem três formas originais",()=>{
+  const result=engine.generate("F#m Bm E");
   assert.equal(result.adapted.length,3);
-  for(let i=0;i<3;i++){
-    assert.equal(result.originalTracks[i][0],result.adapted[i][0]);
-    assert.equal(result.adapted[i].length,3);
-  }
+  assert.deepEqual(Array.from(result.adapted,t=>t[0].notes.map(n=>n.label).join("-")),
+    ["1-♭3-5","♭3-5-1","5-1-♭3"]);
+  assert.equal(result.adapted[0][0],result.originalTrack[0]);
+  result.adapted.forEach(track=>assert.equal(track.length,3));
 });
 
 test("ponteiros de teclado respeitam a proximidade sempre que há alternativa",()=>{
