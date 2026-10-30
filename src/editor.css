@@ -136,3 +136,69 @@ textarea{min-height:108px;resize:vertical;line-height:1.8;font-family:ui-monospa
   #print-btn{width:100%}
 }
 @media print{.pdf-panel{display:none!important}}
+
+
+/* PADRÃO CLÁSSICO CIFRA PRA MIM — recuperado do material Equalize/Pitty. */
+:root{background:#f8f6f0;color:#242622}
+body{background:#f8f6f0}
+.site-head,.site-footer{border-color:#999a91}
+.logo{font-family:Georgia,"Times New Roman",serif;font-size:24px;font-weight:400;letter-spacing:-.04em}
+.intro h1{font-family:Georgia,"Times New Roman",serif}
+.results{background:#f8f6f0;border-top:1px solid #55574f}
+.results-toolbar h2{font-family:Georgia,"Times New Roman",serif}
+.print-head{background:#fff;text-align:center;padding:51px 16px 28px}
+.print-head h1{display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:27px;font-weight:750;border-bottom:2px solid #111;text-decoration:none;letter-spacing:0}
+.print-head p{font-size:11px}
+#sheets{background:#fff;padding:10px 36px 50px}
+.arrangement-page{padding:23px 0 28px;border-top:0;margin:0}
+.page-title{font-family:Arial,Helvetica,sans-serif;font-size:19px;font-weight:750;letter-spacing:0;margin:0 0 22px}
+.page-subtitle:empty,.shape-set-name:empty{display:none}
+.page-subtitle{font-size:11px}
+.shape-set{margin:11px 0 20px}
+.shape-set-name{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#666;margin:10px 0 13px;letter-spacing:.025em}
+.diagrams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:27px;row-gap:25px}
+.shape{margin:0;padding:8px 2px 16px;border:0;break-inside:avoid;text-align:center;min-width:0}
+.shape-heading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:45px;padding:0 5px}
+.chord-symbol{font-size:16px;letter-spacing:0}
+.chord-fullname{font-size:13px;font-weight:750;line-height:1.25;max-width:100%;overflow-wrap:anywhere}
+.hand-line{display:flex;align-items:center;justify-content:center;gap:12px;white-space:normal;border-bottom:1px solid #313131;font-size:11px;line-height:1.45;min-height:35px;padding:6px 2px 6px;margin:0 10px 17px}
+.hand-left,.hand-right{min-width:0}
+.hand-divider{flex:0 0 auto;color:#555}
+.shape .piano{height:auto;width:100%;max-width:420px;margin:0 auto;display:block;overflow:visible}
+.shape .piano text{paint-order:stroke}
+.shape .omission{font-size:10px;text-align:center;margin:3px auto;color:#8a3434}
+.shape.has-exception .hand-line{border-bottom-style:dotted}
+@media(max-width:700px){
+  #sheets{padding:8px 14px 25px}
+  .diagrams{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:10px;row-gap:16px}
+  .shape{padding:7px 0 14px}
+  .shape-heading{min-height:52px}
+  .hand-line{font-size:9px;gap:4px;margin:0 0 11px;min-height:42px}
+  .chord-symbol{font-size:15px}
+  .chord-fullname{font-size:11px}
+}
+@media(max-width:400px){
+  .diagrams{grid-template-columns:1fr;row-gap:18px}
+  .shape .piano{max-width:320px}
+  .hand-line{font-size:11px;min-height:32px}
+}
+@media print{
+  html,body{background:#fff!important;color:#111!important}
+  #sheets{background:#fff;padding:0}
+  .print-head{padding:6mm 0 9mm}
+  .print-head h1{font-family:Arial,sans-serif;font-size:20pt;text-decoration:none;border-bottom:1px solid #111}
+  .print-head p{font-size:9pt}
+  .arrangement-page{padding:0;margin:0;break-before:page;page-break-before:always}
+  .arrangement-page:first-child{break-before:auto;page-break-before:auto}
+  .page-title{font-size:13pt;margin:0 0 8mm}
+  .shape-set{margin:0 0 6mm}
+  .shape-set-name{font-size:8pt;margin:0 0 4mm}
+  .diagrams{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6mm 8mm}
+  .shape{padding:0 0 2mm;break-inside:avoid;page-break-inside:avoid}
+  .shape-heading{min-height:13mm;gap:.5mm;padding:0}
+  .chord-symbol{font-size:11pt}
+  .chord-fullname{font-size:10pt}
+  .hand-line{font-size:8pt;min-height:7mm;margin:0 0 4mm;border-bottom:1px solid #222;gap:2mm}
+  .shape .piano{height:auto;max-height:26mm;max-width:100%;width:100%;margin:0}
+  .shape .omission{font-size:7pt}
+}
