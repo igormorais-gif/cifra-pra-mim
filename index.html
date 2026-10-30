@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#101b2d" />
+    <meta name="description" content="Cifra pra Mim: harmonia, formas e condução de vozes para teclado e cavaquinho." />
+    <title>Cifra pra Mim — laboratório musical</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+    <script src="./src/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar wrap">
+      <a class="brand" href="#inicio" aria-label="Cifra pra Mim, página inicial"><span class="brand-mark">C<span>♯</span></span><span>Cifra <em>pra</em> Mim</span></a>
+      <nav aria-label="Módulos"><a href="#teclado">Teclado</a><a href="#cavaquinho">Cavaquinho</a><a href="#laboratorio">Laboratório</a></nav>
+    </header>
+    <main id="inicio" class="wrap">
+      <section class="hero">
+        <p class="eyebrow">ESTÚDIO DE HARMONIA • PROTÓTIPO INICIAL</p>
+        <h1>A cifra é o começo.<br /><span>O movimento é a música.</span></h1>
+        <p class="lede">Entenda de onde cada nota vem, para onde ela vai e como transformar acordes em música. Um espaço de estudo para teclado, cavaquinho e condução de vozes.</p>
+        <a class="primary" href="#laboratorio">Explorar transições <span aria-hidden="true">↗</span></a>
+        <div class="hero-stats" aria-label="Módulos previstos"><span>01 / Teclado</span><span>02 / Cavaquinho</span><span>03 / Laboratório</span></div>
+      </section>
+      <section class="section" id="teclado" aria-labelledby="teclado-title">
+        <div class="section-heading"><div><p class="eyebrow">01 / TECLADO</p><h2 id="teclado-title">Adaptando Pontas</h2></div><span class="status">Exemplo didático</span></div>
+        <p class="section-intro">A primeira forma permanece. A partir do segundo acorde, podemos reorganizar as vozes para a nota mais aguda se mover suavemente.</p>
+        <div class="panel"><div class="panel-top"><strong>Progressão C — Am — F — G</strong><span>M.E. / M.D.</span></div><div id="keyboard-demo" class="chord-grid"></div><p class="helper">Pontas: <b>Sol → Lá → Lá → Si</b> · deslocamentos: +2, 0 e +2 semitons.</p></div>
+      </section>
+      <section class="section" id="cavaquinho" aria-labelledby="cavaquinho-title">
+        <div class="section-heading"><div><p class="eyebrow">02 / CAVAQUINHO</p><h2 id="cavaquinho-title">A forma também conta uma história</h2></div><span class="status">Em planejamento</span></div>
+        <p class="section-intro">Vamos relacionar os desenhos do instrumento aos graus do acorde, à cifra e ao arpejo. As posições reais de cavaquinho serão adicionadas após conferência das digitações.</p>
+        <div class="feature-grid"><div class="feature"><span class="feature-no">I</span><h3>Forma de origem</h3><p>O mesmo desenho inicial guia a transição e evita informações soltas.</p></div><div class="feature"><span class="feature-no">II</span><h3>Graus visíveis</h3><p>Fundamental, terça, quinta e sétima identificadas por função.</p></div><div class="feature"><span class="feature-no">III</span><h3>Movimento cromático</h3><p>A nota que muda fica em destaque, um semitom de cada vez.</p></div></div>
+      </section>
+      <section class="section" id="laboratorio" aria-labelledby="lab-title">
+        <div class="section-heading"><div><p class="eyebrow">03 / LABORATÓRIO</p><h2 id="lab-title">Uma nota muda. Tudo muda.</h2></div><span class="status live">Demonstração interativa</span></div>
+        <p class="section-intro">Selecione uma etapa para observar uma voz descendo um semitom. Escute o arpejo sintetizado e compare a transformação seguinte.</p>
+        <div class="lab panel">
+          <div id="transition-buttons" class="transition-buttons" role="group" aria-label="Selecionar acorde"></div>
+          <div class="lab-detail"><div><p class="eyebrow">ACORDE SELECIONADO</p><h3 id="chord-name">G</h3><p id="movement" class="movement">Forma inicial</p><p id="movement-detail" class="small-note">Fundamental repetida na voz mais aguda.</p></div><div><p class="eyebrow">NOTAS DO ARPEJO</p><div id="notes" class="notes" aria-live="polite"></div><button type="button" id="play" class="secondary">♪ Ouvir arpejo</button></div></div>
+          <p class="helper">A última etapa usa G°7 (tétrade diminuta). A cifra G° pode ser ambígua e também indicar uma tríade diminuta.</p>
+        </div>
+      </section>
+      <section class="closing"><p class="eyebrow">UM PROJETO EM CONSTRUÇÃO</p><h2>Aprender a tocar é aprender a ouvir o caminho.</h2><p>Esta versão é um ponto de partida para validar os exemplos e construir um motor harmônico mais completo.</p></section>
+    </main>
+    <footer class="wrap"><span>© Cifra pra Mim · Projeto de Igor Morais</span><span>Protótipo sem gerador completo de cifras</span></footer>
+  </body>
+</html>
