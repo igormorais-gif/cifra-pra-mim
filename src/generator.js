@@ -157,8 +157,74 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
     setStatus("");
     draw();
   });
-  q("print-btn").addEventListener("click",()=>window.print());
-  q("print-btn-bottom").addEventListener("click",()=>window.print());
+  // PDF criado no navegador, sem depender da janela de impressão do iOS.
+  let currentPdf=null,pdfUrl=null,pdfName="";
+  const pdfPanel=q("pdf-panel"),pdfActions=q("pdf-actions"),pdfStatus=q("pdf-status");
+  const pdfButtons=[q("print-btn"),q("print-btn-bottom")];
+  function pdfMessage(message,isError=false){
+    pdfStatus.textContent=message;
+    pdfStatus.classList.toggle("status-error",isError);
+  }
+  function revokePreviousPdf(){
+    if(pdfUrl){URL.revokeObjectURL(pdfUrl);pdfUrl=null;}
+    currentPdf=null;pdfActions.hidden=true;
+  }
+  async function generatePdf(event){
+    if(!window.CifraPDF){pdfPanel.hidden=false;pdfMessage("O exportador de PDF não carregou. Reabra a página no Safari.",true);return;}
+    pdfPanel.hidden=false;
+    pdfActions.hidden=true;
+    pdfButtons.forEach(b=>b.disabled=true);
+    pdfMessage("Preparando PDF A4…");
+    if(event?.currentTarget?.id==="print-btn-bottom")pdfPanel.scrollIntoView({block:"center",behavior:"smooth"});
+    try{
+      if(sourceDirty&&q("source-text").value.trim())extract();
+      const output=window.CifraEngine.generate(q("chords").value);
+      const options={
+        output,
+        title:q("song-title").value.trim()||"Progressão sem título",
+        composer:q("song-author").value.trim(),
+        source:q("source-text").value,
+        includeSource:q("include-source").checked
+      };
+      const result=await window.CifraPDF.create(options,(done,total)=>{
+        pdfMessage("Montando PDF: "+done+" de "+total+" seções prontas…");
+      });
+      revokePreviousPdf();
+      currentPdf=result.blob;
+      pdfName=window.CifraPDF.filename(options.title);
+      pdfUrl=URL.createObjectURL(currentPdf);
+      const open=q("pdf-open"),download=q("pdf-download");
+      open.href=pdfUrl;
+      download.href=pdfUrl;
+      download.download=pdfName;
+      q("pdf-share").hidden=typeof navigator.share!=="function";
+      pdfActions.hidden=false;
+      pdfMessage("PDF criado: "+result.pages+" página(s). Agora abra, baixe ou compartilhe o arquivo.");
+    }catch(error){
+      pdfActions.hidden=true;
+      pdfMessage("Não foi possível gerar o PDF: "+(error?.message||"erro desconhecido"),true);
+    }finally{
+      pdfButtons.forEach(b=>b.disabled=false);
+    }
+  }
+  for(const button of pdfButtons)button.addEventListener("click",generatePdf);
+  q("pdf-share").addEventListener("click",()=>{
+    if(!currentPdf){pdfMessage("Gere o PDF antes de compartilhar.",true);return;}
+    try{
+      const file=new File([currentPdf],pdfName,{type:"application/pdf"});
+      if(typeof navigator.share!=="function"||(navigator.canShare&&!navigator.canShare({files:[file]}))){
+        pdfMessage("Compartilhamento de arquivos indisponível aqui. Toque em 'Abrir PDF', depois Compartilhar → Salvar em Arquivos.",true);
+        return;
+      }
+      // A chamada parte diretamente do clique, requisito do compartilhamento nativo.
+      navigator.share({files:[file],title:pdfName}).catch(error=>{
+        if(error?.name!=="AbortError")pdfMessage("Não foi possível compartilhar. Use 'Abrir PDF' ou 'Baixar PDF'.",true);
+      });
+    }catch(error){
+      pdfMessage("Este navegador não conseguiu compartilhar o arquivo. Use 'Abrir PDF' ou 'Baixar PDF'.",true);
+    }
+  });
+  q("print-legacy").addEventListener("click",()=>window.print());
   // Pré-carrega uma progressão real de teste para que o gerador apareça pronto ao abrir.
   draw(true);
 }));
