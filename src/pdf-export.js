@@ -70,50 +70,70 @@ function header(ctx,label){
 function keyboard(ctx,notes,x,y,width){
  const key=width/21;
  for(let i=0;i<21;i++){
-  ctx.fillStyle="#fff";ctx.fillRect(x+i*key,y,key,67);
-  ctx.strokeStyle="#333";ctx.lineWidth=1;ctx.strokeRect(x+i*key,y,key,67);
+  ctx.fillStyle="#fff";ctx.fillRect(x+i*key,y,key,89);
+  ctx.strokeStyle="#111";ctx.lineWidth=1;ctx.strokeRect(x+i*key,y,key,89);
  }
  for(let oct=0;oct<3;oct++)for(const [pc,j] of Object.entries(black)){
-  ctx.fillStyle="#181818";ctx.fillRect(x+(oct*7+j+1)*key-key*.31,y,key*.62,39);
+  ctx.fillStyle="#111";ctx.fillRect(x+(oct*7+j+1)*key-key*.32,y,key*.64,59);
  }
- for(const note of notes){
-  if(note.midi<48||note.midi>83)continue;
-  const rel=note.midi-48,oct=Math.floor(rel/12),pc=mod(rel,12);
-  const b=Object.prototype.hasOwnProperty.call(black,pc);
-  const xx=b?x+(oct*7+black[pc]+1)*key:x+(oct*7+white[pc]+.5)*key;
-  const yy=y+(b?29:55);
-  ctx.beginPath();ctx.arc(xx,yy,b?7:10,0,Math.PI*2);ctx.fillStyle=b?"#fff":"#111";ctx.fill();
-  ctx.beginPath();ctx.arc(xx,yy,3.5,0,Math.PI*2);ctx.fillStyle=b?"#111":"#fff";ctx.fill();
+ for(const n of notes){
+  if(n.midi<48||n.midi>83)continue;
+  const rel=n.midi-48,oct=Math.floor(rel/12),pc=mod(rel,12);
+  const isBlack=Object.prototype.hasOwnProperty.call(black,pc);
+  const xx=isBlack?x+(oct*7+black[pc]+1)*key:x+(oct*7+white[pc]+.5)*key;
+  const cy=y+(isBlack?37:65);
+  ctx.beginPath();ctx.arc(xx,cy,isBlack?5.5:6.6,0,Math.PI*2);
+  ctx.fillStyle=isBlack?"#fff":"#111";ctx.fill();
+  const degree=window.CifraPresentation.dotLabel(n.label);
+  ctx.font="bold "+(degree.length>2?9:10)+"px Arial";
+  ctx.fillStyle=isBlack?"#fff":"#111";
+  ctx.textBaseline="top";
+  ctx.fillText(degree,xx-ctx.measureText(degree).width/2,y+(isBlack?48:78));
  }
- for(let oct=0;oct<3;oct++)write(ctx,"C"+(3+oct),x+oct*7*key+3,y+73,15,false,"#555");
 }
 function chordCard(ctx,chord,voice,prev,index,x,y,w){
- rule(ctx,x,y,w);
- const px=x+14,usable=w-28;
- fitted(ctx,chord.raw,px,y+13,usable-40,27,17,true);
- write(ctx,String(index+1).padStart(2,"0"),x+w-36,y+19,14,false,"#777");
- keyboard(ctx,voice.notes,px+11,y+60,usable-22);
- const descriptors=[["M.E.",chord.bass],["M.D.",voice.notes.map(n=>n.name).join(" - ")],["Graus",voice.notes.map(n=>n.label).join(" - ")]];
- descriptors.forEach(([tag,value],j)=>{write(ctx,tag,px,y+159+j*26,17,true);fitted(ctx,value,px+78,y+159+j*26,usable-82,18,12);});
- const top=voice.notes[voice.notes.length-1],name=top.name+(Math.floor(top.midi/12)-1);
- const d=prev?voice.top-prev.top:null;
- const suffix=d===null?"início":"movimento "+(d>0?"+":"")+d+" ST"+(Math.abs(d)>2?" · exceção":"");
- fitted(ctx,"Ponta: "+name+" · "+suffix,px,y+242,usable,17,12,true,Math.abs(d??0)>2?"#8b2828":"#111");
- if(voice.omitted.length)fitted(ctx,"Omitida: "+voice.omitted.map(n=>n.name+" ("+n.label+")").join(", "),px,y+270,usable,15,12,false,"#8b2828");
+ // Molde clássico: Cifra / Nome por extenso / M.E. | M.D. / régua / teclado.
+ const center=x+w/2,hand=window.CifraPresentation.hand(chord,voice);
+ const symbol=chord.raw,fullName=window.CifraPresentation.name(chord);
+ ctx.textBaseline="top";ctx.textAlign="center";
+ write(ctx,symbol,center,y+3,21,true);
+ fitted(ctx,fullName,x+9,y+30,w-18,19,12,true);
+ ctx.textAlign="left";
+ const l="M.E.: "+hand.left;
+ const r="M.D.: "+hand.right;
+ ctx.font="15px Arial";
+ const combined=l+"    |    "+r;
+ // Mantém a separação das mãos como na folha antiga.
+ fitted(ctx,combined,x+8,y+64,w-16,15,10);
+ rule(ctx,x+24,y+94,w-48,"#222",1);
+ keyboard(ctx,voice.notes,x+19,y+128,w-38);
+ // Evitar textos grandes abaixo das figuras: os graus estão dentro das teclas.
+ if(voice.omitted.length)fitted(ctx,"Omitida: "+voice.omitted.map(t=>window.CifraPresentation.note(t.name)).join(", "),x+16,y+225,w-32,12,10,false,"#7c3030");
 }
 function addSection(options,name,sub,track,images){
- const chordList=options.output.chords,cardW=(C-30)/2,rows=4,chunk=8;
- const pageCount=Math.ceil(chordList.length/chunk);
- for(let part=0;part<pageCount;part++){
-  const p=page();header(p.ctx,"TECLADO / FORMAS E PONTAS");
-  fitted(p.ctx,options.title,M,134,C,31,23,true);
-  write(p.ctx,name+(pageCount>1?" · "+(part+1)+"/"+pageCount:""),M,196,28,true);
-  fitted(p.ctx,sub,M,235,C,19,14,false,"#555");
-  for(let row=0;row<rows;row++)for(let col=0;col<2;col++){
-   const idx=part*chunk+row*2+col;if(idx>=chordList.length)continue;
-   chordCard(p.ctx,chordList[idx],track[idx],idx>0?track[idx-1]:null,idx,M+col*(cardW+30),290+row*321,cardW);
+ const chords=options.output.chords,cardW=457,gap=38,rows=4,chunk=8;
+ const total=Math.ceil(chords.length/chunk);
+ for(let part=0;part<total;part++){
+  const p=page(),ctx=p.ctx;
+  ctx.textAlign="center";
+  const title=options.title;
+  ctx.font="bold 32px Arial";
+  ctx.fillStyle="#111";ctx.fillText(title,W/2,99);
+  const tw=Math.min(ctx.measureText(title).width,CONTENT);
+  rule(ctx,(W-tw)/2,142,tw,"#111",2);
+  ctx.textAlign="left";
+  write(ctx,name+(total>1?" ("+(part+1)+"/"+total+")":""),M,179,25,true);
+  if(sub)fitted(ctx,sub,M,211,C,15,11,false,"#666");
+  const left=120,top=265,step=296;
+  for(let r=0;r<rows;r++)for(let c=0;c<2;c++){
+    const idx=part*chunk+r*2+c;
+    if(idx>=chords.length)continue;
+    const x=left+c*(cardW+gap+30);
+    chordCard(ctx,chords[idx],track[idx],idx>0?track[idx-1]:null,idx,x,top+r*step,cardW);
   }
-  footer(p.ctx,images.length+1);images.push(jpg(p.canvas));p.canvas.width=p.canvas.height=1;
+  footer(ctx,images.length+1);
+  images.push(jpg(p.canvas));
+  p.canvas.width=p.canvas.height=1;
  }
 }
 function sourcePages(options,images){
@@ -145,12 +165,12 @@ async function create(options,progress){
  if(!options.output?.chords?.length)throw Error("Gere o arranjo antes de exportar.");
  const images=[];sourcePages(options,images);
  const groups=[
- ["Formas Originais I","Primeira forma de origem.",options.output.originalTracks[0]],
- ["Formas Originais II","Segunda forma de origem.",options.output.originalTracks[1]],
- ["Formas Originais III","Terceira forma de origem.",options.output.originalTracks[2]],
- ["Adaptando Pontas I","Primeira forma preservada; pontas aproximadas.",options.output.adapted[0]],
- ["Adaptando Pontas II","Primeira forma preservada; pontas aproximadas.",options.output.adapted[1]],
- ["Adaptando Pontas III","Primeira forma preservada; pontas aproximadas.",options.output.adapted[2]]
+ ["1) Formas Originais — I","",options.output.originalTracks[0]],
+ ["1) Formas Originais — II","",options.output.originalTracks[1]],
+ ["1) Formas Originais — III","",options.output.originalTracks[2]],
+ ["2) Adaptando Pontas (I)","",options.output.adapted[0]],
+ ["3) Adaptando Pontas (II)","",options.output.adapted[1]],
+ ["4) Adaptando Pontas (III)","",options.output.adapted[2]]
  ];
  for(let i=0;i<groups.length;i++){
   addSection(options,...groups[i],images);
