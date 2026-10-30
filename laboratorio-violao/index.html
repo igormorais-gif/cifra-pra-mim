@@ -25,7 +25,7 @@
   <div class="modebar" role="group" aria-label="Módulos"><button class="modebtn active" data-mode="trans" aria-pressed="true">↝ Transições</button><button class="modebtn" data-mode="gen" aria-pressed="false">♬ Gerador de tensões</button></div><div class="lower-controls"><div class="bass-choice"><span class="mini">BAIXO LOCALIZADOR</span><span class="localizer-summary" id="bassSummary">6ª corda · 1B</span></div><div class="form-choice"><span class="mini">PONTA DA FORMA</span><strong id="tipDegree" style="color:#ffcb9b">5P</strong></div></div>
 <section class="panel tension-panel" id="tensionPanel" hidden>
 <div class="tension-layout"><div><span class="label">Terça</span><div class="segmented"><button class="segment active" data-quality="major">Maior</button><button class="segment" data-quality="minor">Menor</button></div><p class="tension-desc">Três vozes na forma; fundamental no 1B.</p></div>
-<div><span class="label">Escolha os graus</span><div id="tensionButtons" class="tension-buttons"></div><div class="presetbar"><button data-preset="7,♯11">7M · ♯11</button><button data-preset="♭7,13">7 · 13</button><button data-preset="9">9</button><button data-preset="6">6</button><button data-preset="">Limpar</button></div><div class="sixth-box" id="sixthBox" hidden><label class="label" for="sixthSource">Origem da sexta</label><select id="sixthSource" class="select"><option value="auto">Automática</option><option value="1">3 st abaixo do 1</option><option value="5">2 st acima do 5</option></select></div></div>
+<div><span class="label">Escolha os graus</span><div id="tensionButtons" class="tension-buttons"></div><div class="presetbar"><button data-preset="7,♯11">7M · ♯11</button><button data-preset="♭7,13">7 · 13</button><button data-preset="9">9</button><button data-preset="6">6</button><button data-preset="">Limpar</button></div><div class="sixth-box" id="seventhBox" hidden><label class="label" for="seventhSource">Origem da sétima</label><select id="seventhSource" class="select"><option value="auto">Automática</option><option value="1">1 → 7 / ♭7 · atrás do 1</option><option value="5">5 → 7 / ♭7 · à frente do 5</option></select></div><div class="sixth-box" id="sixthBox" hidden><label class="label" for="sixthSource">Origem da sexta</label><select id="sixthSource" class="select"><option value="auto">Automática</option><option value="1">3 st abaixo do 1</option><option value="5">2 st acima do 5</option></select></div></div>
 <div><button class="play genapply" id="generateChord">Gerar voicing</button><p id="genMessage" class="genmessage" role="status" aria-live="polite"></p></div></div></section>
   <div id="stages" class="stepbar" aria-label="Etapas da transição"><button class="step active">G</button><button class="step">G7M</button><button class="step">G7</button><button class="step">Gm7</button><button class="step">Gm7(b5)</button><button class="step">Gº</button></div>
   <section class="panel board-panel">
@@ -48,9 +48,10 @@ const OPEN=[40,45,50,55,59,64]; // cordas 6 ... 1, MIDI
 const DEG={'1':[0,0],'♭9':[1,1],'2':[1,2],'9':[1,2],'♯9':[1,3],'♭3':[2,3],'3':[2,4],'4':[3,5],'11':[3,5],'♯11':[3,6],'♭5':[4,6],'5':[4,7],'♯5':[4,8],'♭13':[5,8],'6':[5,9],'13':[5,9],'♭♭7':[6,9],'♭7':[6,10],'7':[6,11]};
 const GROUPS={'432':[4,3,2],'321':[3,2,1]}; // ordem grave -> aguda
 const VOICINGS={'135':['1','3','5'],'351':['3','5','1'],'513':['5','1','3']};
-const LOCATOR_STRING={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':5}}; // 1B = fundamental: mapa fixo por grupo de cordas e forma
+const LOCATOR_STRING={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':5}}; // 1B: fundamental por grupo e forma
+const CORRELATED_FORM={'432':{'135':'351','351':'513','513':'135'},'321':{'351':'135','513':'351','135':'513'}}; // forma correlata ao mesmo 1B ao mudar de grupo
 const TENSIONS=['7','♭7','♭9','9','♯9','11','♯11','6','♭13','13','♭5','♯5','sus2','sus4'];
-const state={root:'G',strings:'432',form:'135',path:'sevenths',stage:0,mode:'trans',quality:'major',selected:new Set(),sixthSource:'auto',generated:null,genError:'',bassString:'auto',bassDegree:'auto',bpm:100,playing:-1,token:0};
+const state={root:'G',strings:'432',form:'135',path:'sevenths',stage:0,mode:'trans',quality:'major',selected:new Set(),sixthSource:'auto',seventhSource:'auto',generated:null,genError:'',bassString:'auto',bassDegree:'auto',bpm:100,playing:-1,token:0};
 let audio=null,visNodes=[],playButtons=[],view={start:1,end:12},currentComputed=null;
 function pc(n){return (n%12+12)%12}
 function root(){return ROOTS.find(r=>r.symbol===state.root)}
@@ -62,9 +63,9 @@ function route(){const b=VOICINGS[state.form],out=[{grades:b.slice(),...chordNam
 function currentStage(){return route()[Math.min(state.stage,route().length-1)]}
 function degreeColor(g){if(g==='1')return '#e58c42';if(['3','♭3'].includes(g))return '#5c95cd';if(['5','♭5','♯5'].includes(g))return '#6c78db';if(['7','♭7','♭♭7'].includes(g))return '#ad66d0';return '#64ac99'}
 
-const HINTS={'1':{'7':['Sétima maior (7)',-1],'♭7':['Sétima menor (♭7)',-2],'♭9':['Nona menor (♭9)',1],'9':['Nona maior (9)',2],'♯9':['Nona aumentada (♯9)',3],'6':['Sexta maior (6)',-3]},'3':{'♭3':['Terça menor (♭3)',-1],'2':['Segunda suspensa (2)',-2],'4':['Quarta suspensa (4)',1]},'5':{'♭5':['Quinta diminuta (♭5)',-1],'♯5':['Quinta aumentada (♯5)',1],'11':['Décima primeira (11)',-2],'♯11':['Décima primeira aumentada (♯11)',-1],'♭13':['Décima terceira menor (♭13)',1],'6':['Sexta maior (6)',2],'13':['Décima terceira (13)',2]}};
+const HINTS={'1':{'7':['Sétima maior (7)',-1],'♭7':['Sétima menor (♭7)',-2],'♭9':['Nona menor (♭9)',1],'9':['Nona maior (9)',2],'♯9':['Nona aumentada (♯9)',3],'6':['Sexta maior (6)',-3]},'3':{'♭3':['Terça menor (♭3)',-1],'2':['Segunda suspensa (2)',-2],'4':['Quarta suspensa (4)',1]},'5':{'♭5':['Quinta diminuta (♭5)',-1],'♯5':['Quinta aumentada (♯5)',1],'11':['Décima primeira (11)',-2],'♯11':['Décima primeira aumentada (♯11)',-1],'♭13':['Décima terceira menor (♭13)',1],'6':['Sexta maior (6)',2],'13':['Décima terceira (13)',2],'7':['Sétima maior (7)',4],'♭7':['Sétima menor (♭7)',3]}};
 function degreeHint(from,to){let h=HINTS[from]?.[to];return h?h[0]+' — '+Math.abs(h[1])+' st '+(h[1]<0?'abaixo':'acima')+' do '+from:from+' → '+to}
-function canReplace(from,g){if(from==='1')return ['7','♭7','♭9','9','♯9'].includes(g)||(g==='6'&&state.sixthSource!=='5');if(from==='5')return ['11','♯11','♭13','13','♭5','♯5'].includes(g)||(g==='6'&&state.sixthSource!=='1');return false}
+function canReplace(from,g){if(['7','♭7'].includes(g))return (from==='1'&&state.seventhSource!=='5')||(from==='5'&&state.seventhSource!=='1');if(from==='1')return ['♭9','9','♯9'].includes(g)||(g==='6'&&state.sixthSource!=='5');if(from==='5')return ['11','♯11','♭13','13','♭5','♯5'].includes(g)||(g==='6'&&state.sixthSource!=='1');return false}
 function namesOfGenerated(grades){
  let minor=grades.includes('♭3'),susp=grades.includes('2')?'sus2':grades.includes('4')?'sus4':'',seventh=grades.includes('7')?'7M':grades.includes('♭7')?'7':'',sixth=grades.includes('6'),r=root();
  let symbol=r.symbol+(minor?'m':''),name=r.name+(minor?' Menor':' Maior'),reading=r.name+(minor?' menor':'');
@@ -98,8 +99,8 @@ function tryGenerate(){
  }
  walk(0,[],new Set());
  if(!options.length){
-  let ones=asked.filter(g=>['7','♭7','♭9','9','♯9'].includes(g)).length,fives=asked.filter(g=>['11','♯11','♭13','13','♭5','♯5'].includes(g)).length;
-  return {error:ones>1?'A sétima e a nona disputam o mesmo 1 nesta tríade.':fives>1?'Essas tensões disputam o mesmo 5 nesta tríade.':'A combinação não cabe nas três vozes dessa forma. Tente outra seleção.'};
+  let ones=asked.filter(g=>['♭9','9','♯9'].includes(g)).length,fives=asked.filter(g=>['11','♯11','♭13','13','♭5','♯5'].includes(g)).length;
+  return {error:ones>1?'As nonas disputam o mesmo 1 nesta tríade.':fives>1?'As alterações da quinta disputam o mesmo 5 nesta tríade.':'A combinação não cabe nas três vozes dessa forma. Experimente outra origem para a sétima ou outra seleção.'};
  }
  options.sort((a,b)=>a.score-b.score);
  const winner=options[0],info=namesOfGenerated(winner.grades);
@@ -166,7 +167,7 @@ function updateGeneratorControls(){
  let box=$('tensionButtons');box.replaceChildren();
  for(let t of TENSIONS){let b=document.createElement('button');b.type='button';b.className=state.selected.has(t)?'selected':'';b.textContent=t;b.setAttribute('aria-pressed',String(state.selected.has(t)));
  b.onclick=()=>{stop();if(state.selected.has(t)){state.selected.delete(t)}else{for(let [a,z] of [['7','♭7'],['6','13'],['sus2','sus4']]){if(t===a)state.selected.delete(z);if(t===z)state.selected.delete(a)}state.selected.add(t)}state.generated=null;state.stage=0;state.genError='';render()};box.appendChild(b)}
- $('sixthBox').hidden=!state.selected.has('6');$('sixthSource').value=state.sixthSource;
+ $('sixthBox').hidden=!state.selected.has('6');$('sixthSource').value=state.sixthSource;$('seventhBox').hidden=!(state.selected.has('7')||state.selected.has('♭7'));$('seventhSource').value=state.seventhSource;
  let m=$('genMessage');m.textContent=state.genError|| (state.generated?'Voicing: '+state.generated.grades.join(' · '):'Selecione os graus e toque em Gerar.');m.classList.toggle('error',!!state.genError);
 }
 function renderSteps(){let container=$('stages'),steps=route();container.replaceChildren();steps.forEach((s,i)=>{let b=document.createElement('button');b.className='step'+(i===state.stage?' active':'');b.textContent=s.symbol;b.setAttribute('aria-pressed',i===state.stage);b.onclick=()=>{stop();state.stage=i;render()};container.append(b)})}
@@ -189,18 +190,18 @@ function changeKeepingChord(update){stop();const before={root:state.root,strings
  if(state.mode==='gen'&&state.generated){let attempt=tryGenerate();if(attempt.error){Object.assign(state,before);state.genError='A combinação não pôde ser mantida. '+attempt.error}else{state.generated=attempt;state.genError='';}}
  render()}
  $('root').onchange=e=>changeKeepingChord(()=>{state.root=e.target.value});$('path').onchange=e=>{stop();state.path=e.target.value;state.stage=Math.min(state.stage,route().length-1);render()};
-document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>changeKeepingChord(()=>{state.strings=b.dataset.set}));
+document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>changeKeepingChord(()=>{if(b.dataset.set===state.strings)return;const source=state.strings;state.strings=b.dataset.set;state.form=CORRELATED_FORM[source][state.form]}));
  document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>changeKeepingChord(()=>{state.form=b.dataset.form}));
  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{stop();state.mode=b.dataset.mode;state.stage=0;state.genError='';render()});
  document.querySelectorAll('[data-quality]').forEach(b=>b.onclick=()=>{stop();state.quality=b.dataset.quality;state.generated=null;state.stage=0;state.genError='';render()});
  document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{state.selected=new Set(b.dataset.preset?b.dataset.preset.split(','):[]);state.quality='major';state.genError='';state.mode='gen';generateVoicing()});
  function generateVoicing(){stop();let attempt=tryGenerate();if(attempt.error){state.genError=attempt.error;state.generated=null;state.stage=0}else{state.genError='';state.generated=attempt;state.stage=1}render()}
- $('sixthSource').onchange=e=>{state.sixthSource=e.target.value;if(state.generated&&state.selected.has('6'))generateVoicing();else render()};
+ $('sixthSource').onchange=e=>{state.sixthSource=e.target.value;if(state.generated&&state.selected.has('6'))generateVoicing();else render()};$('seventhSource').onchange=e=>{state.seventhSource=e.target.value;if(state.generated&&(state.selected.has('7')||state.selected.has('♭7')))generateVoicing();else render()};
  $('generateChord').onclick=generateVoicing;
 $('bassString').onchange=e=>{stop();state.bassString=e.target.value;render()};$('bassDegree').onchange=e=>{stop();state.bassDegree=e.target.value;render()};
 $('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmValue').textContent=state.bpm};$('playOne').onclick=()=>play(false);$('playAll').onclick=()=>play(true);$('stop').onclick=stop;
 render();document.documentElement.classList.add('js-ready');
-window.CifraPraMimGuitarDebug={generate:(degrees,quality='major',sixth='auto')=>{state.mode='gen';state.quality=quality;state.selected=new Set(degrees);state.sixthSource=sixth;let a=tryGenerate();state.generated=a.error?null:a;state.genError=a.error||'';state.stage=a.error?0:1;render();return window.CifraPraMimGuitarDebug.get()},get:()=>{let c=computed();return{root:state.root,form:state.form,strings:state.strings,stage:state.stage,chord:c.chord.symbol,grades:c.chord.grades,notes:c.notes,frets:c.frets,bass:c.bass,rootPc:root().pc,group:GROUPS[state.strings]};},show:(r,g,f,j=0)=>{state.root=r;state.strings=g;state.form=f;state.stage=j;$('root').value=r;render();return window.CifraPraMimGuitarDebug.get();},chooseBass:(string,degree)=>{state.bassString=String(string);state.bassDegree=String(degree);$('bassString').value=state.bassString;$('bassDegree').value=state.bassDegree;render();return window.CifraPraMimGuitarDebug.get();}};
+window.CifraPraMimGuitarDebug={generate:(degrees,quality='major',sixth='auto',seventh='auto')=>{state.mode='gen';state.quality=quality;state.selected=new Set(degrees);state.sixthSource=sixth;state.seventhSource=seventh;let a=tryGenerate();state.generated=a.error?null:a;state.genError=a.error||'';state.stage=a.error?0:1;render();return window.CifraPraMimGuitarDebug.get()},get:()=>{let c=computed();return{root:state.root,form:state.form,strings:state.strings,stage:state.stage,chord:c.chord.symbol,grades:c.chord.grades,notes:c.notes,frets:c.frets,bass:c.bass,rootPc:root().pc,group:GROUPS[state.strings]};},show:(r,g,f,j=0)=>{state.root=r;state.strings=g;state.form=f;state.stage=j;$('root').value=r;render();return window.CifraPraMimGuitarDebug.get();},chooseBass:(string,degree)=>{state.bassString=String(string);state.bassDegree=String(degree);$('bassString').value=state.bassString;$('bassDegree').value=state.bassDegree;render();return window.CifraPraMimGuitarDebug.get();}};
 })();
 </script>
 </body></html>
