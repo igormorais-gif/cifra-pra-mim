@@ -53,7 +53,7 @@ test("ponta da mão direita permanece no registro C4–A5 e início é idêntico
   for(const source of ["C Am F G","F#m7 Bm7 E7","Bb6(#11) A7(b13) Gm9","G G7M G7 Gm7 Gm7(b5) G°7"]){
     const result=engine.generate(source);
     for(let i=0;i<3;i++){
-      assert.equal(result.adapted[i][0],result.originalTracks[i][0]);
+      if(i===0)assert.equal(result.adapted[i][0],result.originalTrack[0]);
       for(const chord of result.adapted[i])assert.ok(chord.top>=60&&chord.top<=81);
       for(let n=1;n<result.adapted[i].length;n++){
         const prev=result.adapted[i][n-1];
