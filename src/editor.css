@@ -1,0 +1,94 @@
+/* Cifra pra Mim — Edição de Autor. Sem gradientes, caixas decorativas ou sombras. */
+:root{color-scheme:light;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.45;color:#121212;background:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0}
+button,input,textarea{font:inherit}
+a{color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid #111;outline-offset:3px}
+.site-head{border-bottom:1px solid #202020}
+.head-inner{max-width:1020px;margin:auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-weight:750;letter-spacing:.05em;text-decoration:none;font-size:16px}
+.logo span{font-weight:400;font-size:11px;letter-spacing:.02em;color:#666}
+nav{display:flex;gap:19px;align-items:center}
+nav a{font-size:13px;text-underline-offset:4px}
+main{max-width:1020px;margin:auto;padding:0 24px}
+.intro{padding:61px 0 32px;max-width:780px}
+.kicker,.section-meta{font-size:11px;letter-spacing:.13em;font-weight:700}
+.intro h1{font-family:Georgia,serif;font-size:clamp(38px,5vw,64px);font-weight:500;line-height:1.1;letter-spacing:-.035em;margin:14px 0 18px}
+.intro p{font-size:16px;line-height:1.7;max-width:650px}
+.workspace{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(230px,1fr);gap:50px;padding:18px 0 60px}
+label{display:block;font-weight:700;font-size:13px;margin-bottom:18px}
+label input,textarea{display:block;width:100%;border:1px solid #555;border-radius:0;padding:12px 13px;margin-top:7px;background:#fff;color:#121212;font-weight:400}
+textarea{min-height:108px;resize:vertical;line-height:1.8;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:15px}
+.two-fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.hint,.small{font-size:12px;color:#444;line-height:1.65}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}
+.btn-primary,.btn-outline,.btn-quiet{border-radius:0;font-size:13px;font-weight:700;padding:13px 16px;transition:background-color .15s}
+.btn-primary{background:#111;color:#fff;border:1px solid #111}
+.btn-primary:hover{background:#333}
+.btn-outline{background:#fff;color:#111;border:1px solid #111}
+.btn-outline:hover{background:#eee}
+.btn-outline:disabled{color:#aaa;border-color:#ccc;cursor:not-allowed}
+.btn-quiet{padding:13px 3px;background:none;border:0;text-decoration:underline;text-underline-offset:4px}
+.error{padding:11px 0;color:#9e2626;font-size:13px}
+.info{border-left:1px solid #333;padding-left:21px;margin-top:0;align-self:start}
+.info h2{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 13px}
+.info p{font-size:13px;line-height:1.7}
+.results{border-top:2px solid #111;padding-top:40px;padding-bottom:70px;scroll-margin-top:25px}
+.results-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.results-toolbar h2{font-family:Georgia,serif;font-weight:400;font-size:34px;margin:5px 0}
+.results-toolbar p{font-size:13px;color:#555;margin:4px 0 0}
+.print-head{text-align:center;padding:42px 0 34px}
+.print-head h1{font-family:Georgia,serif;font-size:33px;letter-spacing:.01em;margin:0;text-decoration:underline;text-underline-offset:6px;font-weight:500}
+.print-head p{font-size:12px;margin:7px 0}
+.print-head p:last-child{font-size:10px;letter-spacing:.12em;margin-top:18px}
+.arrangement-page{margin-top:12px;padding:26px 0 43px;border-top:1px solid #222}
+.page-title{font-family:Georgia,serif;font-size:28px;font-weight:500;margin:8px 0}
+.page-subtitle{font-size:12px;color:#444;margin:0 0 25px;max-width:730px}
+.shape-set{margin-top:25px}
+.shape-set h4{font-family:Georgia,serif;font-size:18px;font-weight:500;margin:0 0 12px}
+.diagrams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:25px;row-gap:14px}
+.shape{padding:13px 3px 15px;border-bottom:1px solid #ccc;min-width:0;break-inside:avoid}
+.shape-heading{display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 5px}
+.chord-symbol{font-size:19px;font-weight:700}
+.position-index{font-size:10px;color:#777}
+.piano{width:100%;height:87px;display:block;margin:4px auto 8px}
+.hand,.degrees,.movement,.omission{margin:4px 0;font-size:12px;letter-spacing:0;overflow-wrap:anywhere}
+.hand b,.degrees b{display:inline-block;min-width:48px}
+.degrees{color:#444}
+.movement{font-size:11px;color:#555}
+.movement.outside,.omission{font-weight:700;color:#8b1c1c}
+.print-foot{font-size:10px;text-align:center;color:#666;margin:35px 0 0}
+.site-footer{max-width:1020px;margin:0 auto;border-top:1px solid #222;padding:20px 24px 40px;display:flex;justify-content:space-between;gap:16px;font-size:12px}
+@media(max-width:750px){.workspace{grid-template-columns:1fr;gap:16px}.info{margin:0 0 25px}.two-fields{grid-template-columns:1fr;gap:0}.site-head .head-inner{align-items:flex-start;flex-direction:column;gap:10px}.intro{padding:38px 0 20px}.results-toolbar{align-items:flex-start}.diagrams{column-gap:14px}.shape{padding:8px 0}.piano{height:73px}.hand,.degrees{font-size:11px}}
+@media(max-width:470px){.diagrams{grid-template-columns:1fr}.piano{max-width:370px;height:88px}.results-toolbar{flex-direction:column}.intro h1{font-size:38px}.page-title{font-size:25px}.print-head h1{font-size:27px}nav{gap:13px}}
+@media print{
+  @page{size:A4;margin:15mm 13mm}
+  html,body{color:#000;background:#fff;font-size:11pt}
+  html{scroll-behavior:auto}
+  .site-head,.intro,.workspace,.results-toolbar,.site-footer{display:none!important}
+  main{padding:0;max-width:none;margin:0}
+  .results{border:0;margin:0;padding:0;display:block!important}
+  .print-head{text-align:center;padding:0 0 5mm}
+  .print-head h1{font-size:19pt}
+  .print-head p{margin:2mm 0;font-size:9pt}
+  .print-head p:last-child{font-size:8pt;margin-top:4mm}
+  .arrangement-page{break-before:page;page-break-before:always;border:0;margin:0;padding:0}
+  .arrangement-page:first-child{break-before:auto;page-break-before:auto}
+  .section-meta{font-size:8pt}
+  .page-title{font-size:17pt;margin:1mm 0 2mm}
+  .page-subtitle{font-size:9pt;margin:0 0 4mm}
+  .shape-set{margin-top:4mm}
+  .shape-set h4{font-size:12pt;margin:0 0 2mm}
+  .diagrams{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:9mm;row-gap:1mm}
+  .shape{padding:2mm 0 3mm;border-color:#999;break-inside:avoid;page-break-inside:avoid}
+  .chord-symbol{font-size:12pt}
+  .position-index{font-size:7pt}
+  .piano{height:28mm;max-height:28mm;margin:1mm auto 2mm}
+  .hand,.degrees{font-size:8.5pt;line-height:1.3;margin:1mm 0}
+  .movement,.omission{font-size:7.5pt;margin:1mm 0}
+  .print-foot{font-size:7pt;margin:6mm 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
