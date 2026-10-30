@@ -103,8 +103,10 @@ function chordCard(ctx,chord,voice,prev,index,x,y,w){
  const r="M.D.: "+hand.right;
  ctx.font="15px Arial";
  const combined=l+"    |    "+r;
- // Mantém a separação das mãos como na folha antiga.
- fitted(ctx,combined,x+8,y+64,w-16,15,10);
+ // M.E. / M.D. centralizadas acima da régua horizontal.
+ ctx.textAlign="center";
+ fitted(ctx,combined,center,y+64,w-16,15,10);
+ ctx.textAlign="left";
  rule(ctx,x+24,y+94,w-48,"#222",1);
  keyboard(ctx,voice.notes,x+19,y+128,w-38);
  // Evitar textos grandes abaixo das figuras: os graus estão dentro das teclas.
