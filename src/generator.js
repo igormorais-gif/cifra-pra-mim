@@ -18,11 +18,11 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
     return node;
   }
   function keyboard(notes){
-    const pitches=notes.map(n=>n.midi),lowest=Math.min(...pitches),highest=Math.max(...pitches);
-    const start=Math.floor(lowest/12)*12;
-    const octaves=Math.max(2,Math.ceil((highest-start+1)/12));
+    // Escala fixa C3–B5 em TODOS os diagramas. Antes cada acorde começava numa oitava diferente.
+    const start=48;
+    const octaves=3;
     const width=octaves*7*20;
-    const svg=svgnode("svg",{viewBox:"0 0 "+width+" 90",role:"img","aria-label":"Teclado com "+notes.map(n=>n.name).join(", "),"class":"piano"});
+    const svg=svgnode("svg",{viewBox:"0 0 "+width+" 106",role:"img","aria-label":"Teclado fixo de Dó3 a Si5, notas "+notes.map(n=>n.name+(Math.floor(n.midi/12)-1)).join(", "),"class":"piano"});
     for(let i=0;i<octaves*7;i++)svg.appendChild(svgnode("rect",{x:i*20+0.5,y:1,width:19,height:79,rx:1,fill:"#fff",stroke:"#222","stroke-width":.8}));
     for(let octave=0;octave<octaves;octave++)for(const [pc,white] of Object.entries(black)){
       svg.appendChild(svgnode("rect",{x:octave*140+(white+1)*20-7,y:0,width:14,height:49,rx:1.5,fill:"#1b1b1b"}));
@@ -34,6 +34,11 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
       const y=isBlack?36:64;
       svg.appendChild(svgnode("circle",{cx:x,cy:y,r:isBlack?6.2:8.5,fill:isBlack?"#fff":"#111",stroke:isBlack?"#111":"none","stroke-width":1}));
       svg.appendChild(svgnode("circle",{cx:x,cy:y,r:isBlack?2:3,fill:isBlack?"#111":"#fff"}));
+    }
+    for(let oct=0;oct<octaves;oct++){
+      const label=svgnode("text",{x:oct*140+10,y:99,"text-anchor":"middle","font-size":"10",fill:"#444"});
+      label.textContent="C"+(3+oct);
+      svg.appendChild(label);
     }
     return svg;
   }
@@ -51,12 +56,12 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
     const degrees=make("p","degrees");
     degrees.append(make("b",null,"Graus "),document.createTextNode(voicing.notes.map(n=>n.label).join(" – ")));
     card.append(degrees);
-    if(previous){
-      const diff=voicing.top-previous.top;
-      const mark=make("p","movement"+(Math.abs(diff)>2?" outside":""),
-        "Ponta "+(diff>0?"+":"")+diff+" semitom"+(Math.abs(diff)===1?"":"s")+(Math.abs(diff)>2?" · exceção à regra inicial":""));
-      card.append(mark);
-    }
+    const ponta=voicing.notes[voicing.notes.length-1];
+    const pontaName=ponta.name+(Math.floor(ponta.midi/12)-1);
+    const delta=previous?voicing.top-previous.top:null;
+    const text=delta===null?"Ponta: "+pontaName+" · referência absoluta":
+      "Ponta: "+pontaName+" · movimento "+(delta>0?"+":"")+delta+" ST"+(Math.abs(delta)>2?" · exceção: acima de 2 ST":"");
+    card.append(make("p","movement"+(delta!==null&&Math.abs(delta)>2?" outside":""),text));
     if(voicing.omitted.length)card.append(make("p","omission","Nota omitida: "+voicing.omitted.map(n=>n.name+" ("+n.label+")").join(", ")));
     return card;
   }
@@ -78,6 +83,9 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
       const output=window.CifraEngine.generate(q("chords").value);
       const title=q("song-title").value.trim()||"Progressão sem título";
       const composer=q("song-author").value.trim();
+      const raw=q("source-text").value.trim();
+      q("source-output").textContent=raw;
+      q("print-source").hidden=!(raw&&q("include-source").checked);
       q("print-song-title").textContent=title;
       q("print-song-author").textContent=composer;
       const sheets=q("sheets");
@@ -102,8 +110,53 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
       q("print-btn").disabled=true;
     }
   }
-  form.addEventListener("submit",event=>{event.preventDefault();draw();});
-  q("sample-btn").addEventListener("click",()=>{q("chords").value="C Am F G";q("song-title").value="Exercício de tríades";draw();});
+  let sourceDirty=false;
+  const setStatus=(text,isError=false)=>{
+    q("import-status").textContent=text;
+    q("import-status").classList.toggle("status-error",isError);
+  };
+  function extract(){
+    const result=window.CifraImport.chordsFromText(q("source-text").value);
+    q("chords").value=result.progression;
+    sourceDirty=false;
+    setStatus(result.total+" acorde(s) encontrado(s). "+
+      (result.truncated?"Apenas os primeiros 48 foram enviados ao gerador. ":"")+
+      "Revise a sequência em 'Acordes reconhecidos' antes de imprimir.");
+    return result;
+  }
+  q("source-text").addEventListener("input",()=>{sourceDirty=true;setStatus("");});
+  q("include-source").addEventListener("change",()=>{q("print-source").hidden=!(q("source-text").value.trim()&&q("include-source").checked);});
+  q("extract-btn").addEventListener("click",()=>{
+    try{extract();draw();}catch(error){setStatus(error.message||"Não foi possível ler a cifra.",true);}
+  });
+  q("import-file").addEventListener("change",async event=>{
+    const file=event.target.files?.[0];if(!file)return;
+    q("extract-btn").disabled=true;
+    setStatus("Lendo arquivo "+file.name+"…");
+    try{
+      const raw=await window.CifraImport.readFile(file);
+      q("source-text").value=raw;
+      sourceDirty=true;
+      extract();
+      draw();
+    }catch(error){setStatus("Falha na importação: "+(error?.message||"arquivo inválido"),true);}
+    finally{q("extract-btn").disabled=false;event.target.value="";}
+  });
+  form.addEventListener("submit",event=>{
+    event.preventDefault();
+    if(sourceDirty&&q("source-text").value.trim()){
+      try{extract();}catch(error){setStatus(error.message||"Erro ao extrair acordes",true);return;}
+    }
+    draw();
+  });
+  q("sample-btn").addEventListener("click",()=>{
+    q("chords").value="C Am F G";
+    q("song-title").value="Exercício de tríades";
+    q("source-text").value="";
+    sourceDirty=false;
+    setStatus("");
+    draw();
+  });
   q("print-btn").addEventListener("click",()=>window.print());
   q("print-btn-bottom").addEventListener("click",()=>window.print());
   // Pré-carrega uma progressão real de teste para que o gerador apareça pronto ao abrir.
