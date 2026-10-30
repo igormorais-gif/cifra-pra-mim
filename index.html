@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Arranja pra mim: gere formas originais, três adaptações de pontas e diagramas de teclado a partir dos acordes.">
   <title>Arranja pra mim — Cifra pra Mim</title>
-  <link rel="stylesheet" href="src/editor.css">
-  <script src="src/engine.js" defer></script>
-  <script src="src/generator.js" defer></script>
+  <link rel="stylesheet" href="src/editor.css?v=2">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="src/engine.js?v=2" defer></script>
+  <script src="src/import.js?v=2" defer></script>
+  <script src="src/generator.js?v=2" defer></script>
 </head>
 <body>
 <header class="site-head">
@@ -28,12 +30,26 @@
         <label>Nome da música<input id="song-title" type="text" placeholder="Ex.: Minha progressão" maxlength="90" autocomplete="off"></label>
         <label>Compositor(a) / referência<input id="song-author" type="text" placeholder="Opcional" maxlength="90" autocomplete="off"></label>
       </div>
-      <label for="chords">Acordes, na ordem da música</label>
+      <section class="import-area" aria-labelledby="import-title">
+        <h2 id="import-title">Colar cifra completa ou importar arquivo</h2>
+        <label for="source-text">Letra e cifra (texto completo)</label>
+        <textarea id="source-text" rows="8" spellcheck="false" placeholder="Cole aqui a música com acordes sobre a letra, por exemplo:&#10;&#10;     Am7          D7&#10;Quando a música chegar&#10;     G7M          C7M&#10;Vamos juntos cantar"></textarea>
+        <div class="import-controls">
+          <label class="file-label" for="import-file">Importar PDF ou TXT
+            <input id="import-file" type="file" accept=".pdf,.txt,application/pdf,text/plain">
+          </label>
+          <button id="extract-btn" class="btn-outline" type="button">Extrair acordes e gerar</button>
+        </div>
+        <p class="hint">PDF com texto selecionável, até 12 MB e 40 páginas. Arquivos digitalizados como imagem ainda não são reconhecidos. Revise os acordes extraídos antes de imprimir.</p>
+        <p id="import-status" class="import-status" role="status" aria-live="polite"></p>
+        <label class="checkbox-label"><input id="include-source" type="checkbox" checked> Incluir letra e cifra originais no PDF impresso</label>
+      </section>
+      <label for="chords">Acordes reconhecidos / progressão para editar</label>
       <textarea id="chords" rows="3" spellcheck="false" placeholder="Ex.: F#m7 Bm7 E7" required>F#m7 Bm7 E7</textarea>
       <div class="hint">Separe os acordes por espaço, barra de compasso (|) ou quebra de linha. Exemplos: C · Am7 · F7M · G7 · C7M/B · Gm7(b5).</div>
       <div class="actions">
         <button class="btn-primary" type="submit">Gerar arranjo</button>
-        <button class="btn-outline" type="button" id="print-btn" disabled>Imprimir / Salvar PDF</button>
+        <button class="btn-outline" type="button" id="print-btn">Imprimir / Salvar PDF</button>
         <button class="btn-quiet" type="button" id="sample-btn">Experimentar C – Am – F – G</button>
       </div>
       <p id="error" role="alert" class="error" hidden></p>
@@ -42,7 +58,8 @@
       <h2>Como ler o resultado</h2>
       <p><b>M.E.</b> mostra o baixo; <b>M.D.</b> mostra as notas da mão direita. Os números representam o grau de cada nota em relação à fundamental do acorde.</p>
       <p>O algoritmo testa inversões e prioriza a proximidade entre as pontas. Quando não houver opção de até dois semitons, escolhe a alternativa mais próxima e a identifica. A primeira forma de cada adaptação repete sua forma de origem.</p>
-      <p class="small">Esta versão trabalha com uma progressão digitada. A importação automática de URLs do Cifra Club ainda depende de uma integração de servidor.</p>
+      <p class="small">Você pode colar letra e cifra ou importar um PDF/TXT com texto. O aplicativo extrai os acordes, permite revisar a sequência e a inclui no material impresso. URLs do Cifra Club ainda não são importadas automaticamente.</p>
+      <p class="small">Todos os teclados usam a <b>mesma referência C3–B5</b>. A ponta é identificada com nota e oitava real; alterações maiores que dois semitons são avisadas.</p>
     </div>
   </section>
   <section class="results" id="results" aria-live="polite" hidden>
@@ -51,6 +68,7 @@
       <button class="btn-outline" type="button" id="print-btn-bottom">Imprimir / Salvar PDF</button>
     </div>
     <div class="print-head"><h1 id="print-song-title">Arranja pra mim</h1><p id="print-song-author"></p><p>TECLADO — FORMAS ORIGINAIS E ADAPTANDO PONTAS</p></div>
+    <section id="print-source" class="print-source" hidden><h3>Letra e cifra originais</h3><pre id="source-output"></pre></section>
     <div id="sheets"></div>
     <p class="print-foot">Cifra pra Mim · Método Adaptando Pontas · Material de estudo gerado automaticamente. Confira as escolhas de condução conforme o contexto musical.</p>
   </section>
