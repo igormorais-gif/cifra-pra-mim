@@ -72,7 +72,7 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
     page.append(make("div","section-meta","ARRANJA PRA MIM / "+String(n).padStart(2,"0")),make("h3","page-title",title),make("p","page-subtitle",subtitle));
     return page;
   }
-  function draw(){
+  function draw(skipScroll=false){
     q("error").hidden=true;
     try{
       const output=window.CifraEngine.generate(q("chords").value);
@@ -94,7 +94,7 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
       q("result-stats").textContent=output.chords.length+" acordes · 3 formas de origem · 3 adaptações"+(jumps?" · "+jumps+" salto(s) acima de 2 semitons, assinalados":" · todas as pontas dentro de 2 semitons");
       q("results").hidden=false;
       q("print-btn").disabled=false;
-      q("results").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+      if(!skipScroll)q("results").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
     }catch(error){
       q("error").textContent=(error&&error.message)||"Não foi possível gerar este arranjo.";
       q("error").hidden=false;
@@ -107,5 +107,5 @@ window.addEventListener("DOMContentLoaded", (function buildUI(){
   q("print-btn").addEventListener("click",()=>window.print());
   q("print-btn-bottom").addEventListener("click",()=>window.print());
   // Pré-carrega uma progressão real de teste para que o gerador apareça pronto ao abrir.
-  draw();
+  draw(true);
 }));
