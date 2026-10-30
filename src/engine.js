@@ -94,9 +94,31 @@ window.CifraEngine = (function createEngine(){
     return omissions.length?omissions:out;
   }
   function original(chord,origin){
-    const options=candidates(chord);
-    const chosen=options.filter(c=>c.rotation===mod(origin,Math.max(1,chord.tones.length)));
-    const pool=chosen.length?chosen:options;
+    let pool=[];
+    if(chord.tones.length===3){
+      // "1–3–5" é a estrutura de três posições da M.D.
+      // Se a cifra tem 7 ou 7M, o grau 7 SUBSTITUI o 1 e deve ficar
+      // um/dois semitons ABAIXO da fundamental original, nunca uma oitava acima.
+      const root=60+chord.rootPc;
+      const base=chord.tones.map((tone,index)=>({
+        ...tone,index,midi:root+tone.semitones-(tone.number===7?12:0)
+      })).sort((a,b)=>a.midi-b.midi);
+      const turn=mod(origin,3);
+      const rotated=base.slice(turn).concat(base.slice(0,turn).map(n=>({...n,midi:n.midi+12})));
+      for(const shift of [-24,-12,0,12]){
+        const notes=rotated.map(n=>({...n,midi:n.midi+shift}));
+        const top=notes[notes.length-1].midi;
+        if(notes[0].midi<48||top>81||top<60)continue;
+        pool.push({notes,top,rotation:turn,bass:bassMidi(chord),clash:hasClash(bassMidi(chord),notes),omitted:[]});
+      }
+    }
+    if(!pool.length){
+      const options=candidates(chord);
+      const chosen=options.filter(c=>c.rotation===mod(origin,Math.max(1,chord.tones.length)));
+      pool=chosen.length?chosen:options;
+    }
+    const safe=pool.filter(c=>!c.clash);
+    if(safe.length)pool=safe;
     return pool.slice().sort((a,b)=>Math.abs(a.top-70)-Math.abs(b.top-70)||a.omitted.length-b.omitted.length)[0];
   }
   function chooseNext(chord,prev){
