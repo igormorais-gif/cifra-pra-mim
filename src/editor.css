@@ -118,3 +118,21 @@ textarea{min-height:108px;resize:vertical;line-height:1.8;font-family:ui-monospa
   .piano{height:31mm;max-height:31mm}
   .print-source:not([hidden])~#sheets>.arrangement-page:first-child{break-before:auto;page-break-before:auto}
 }
+
+
+/* PDF independente da impressão, com ações compatíveis com celular. */
+[hidden]{display:none!important}
+.pdf-panel{border:1px solid #303030;padding:20px;margin:24px 0 8px}
+.pdf-panel h2{font-family:Georgia,serif;font-size:23px;font-weight:500;margin:0 0 12px}
+.pdf-panel .pdf-actions{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0}
+.pdf-actions a{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-height:45px}
+#pdf-status{font-size:13px;line-height:1.55;margin:8px 0 12px}
+#pdf-status.status-error{color:#9e2626}
+.pdf-panel .hint{margin:15px 0 4px}
+@media(max-width:520px){
+  .pdf-panel{padding:15px}
+  .pdf-actions{display:flex;flex-direction:column}
+  .pdf-actions a,.pdf-actions button{width:100%;text-align:center}
+  #print-btn{width:100%}
+}
+@media print{.pdf-panel{display:none!important}}
