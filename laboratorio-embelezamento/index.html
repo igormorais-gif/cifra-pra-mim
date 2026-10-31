@@ -190,7 +190,64 @@ function focusAt(degree,when,token){
 
 function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playTour').disabled=false;$('playTriad').disabled=false;highlight([])}
 function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
-function tone(midi,when,duration,volume=.14){const freq=440*Math.pow(2,(midi-69)/12);for(const [harm,lev]of [[1,1],[2,.19],[3,.06]]){const osc=audio.createOscillator(),gain=audio.createGain();osc.type=harm===1?'sine':'triangle';osc.frequency.setValueAtTime(freq*harm,when);gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(volume*lev,when+.01);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);osc.connect(gain);gain.connect(audio.destination);oscillators.push(osc);osc.start(when);osc.stop(when+duration+.025)}}
+// Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
+// Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
+const sweetRooms={};
+function sweetOutput(node,flavor){
+ if(!audio){return}
+ const settings={
+  piano:{decay:1.48,pre:.026,wet:.19,cut:3900,dry:.90},
+  guitar:{decay:1.24,pre:.021,wet:.17,cut:3400,dry:.91},
+  cavaquinho:{decay:1.08,pre:.016,wet:.15,cut:4400,dry:.92}
+ };
+ let room=sweetRooms[flavor];
+ if(!room){
+  try{
+   const c=settings[flavor]||settings.piano;
+   const dry=audio.createGain();dry.gain.value=c.dry;dry.connect(audio.destination);
+   const convolver=audio.createConvolver();
+   const sampleRate=audio.sampleRate||44100;
+   const length=Math.max(1,Math.round(sampleRate*c.decay));
+   const silence=Math.round(sampleRate*c.pre);
+   const buffer=audio.createBuffer(2,length,sampleRate);
+   for(let ch=0;ch<2;ch++){
+    const data=buffer.getChannelData(ch);
+    let seed=(ch+1)*13657;
+    for(let i=silence;i<length;i++){
+     seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+     const position=(i-silence)/(length-silence);
+     const envelope=Math.pow(Math.max(0,1-position),2.6);
+     data[i]=((seed/4294967296)*2-1)*envelope;
+    }
+   }
+   convolver.buffer=buffer;
+   const lowpass=audio.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=c.cut;
+   const wet=audio.createGain();wet.gain.value=c.wet;
+   convolver.connect(lowpass);lowpass.connect(wet);wet.connect(audio.destination);
+   room={dry,send:convolver};
+  }catch(err){room={dry:audio.destination,send:null}}
+  sweetRooms[flavor]=room;
+ }
+ node.connect(room.dry);
+ if(room.send)node.connect(room.send);
+}
+function tone(midi,when,duration,volume=.14){
+ if(!audio)return;
+ const freq=440*Math.pow(2,(midi-69)/12);
+ const flavor=state.instrument==='guitar'?'guitar':'piano';
+ const length=Math.max(.20,duration+.08);
+ for(const [multiple,weight] of [[1,1],[2,flavor==='piano'?.16:.24],[3,.05]]){
+  const osc=audio.createOscillator(),gain=audio.createGain();
+  osc.type=multiple===1?'sine':'triangle';
+  osc.frequency.setValueAtTime(freq*multiple,when);
+  gain.gain.setValueAtTime(.0001,when);
+  gain.gain.exponentialRampToValueAtTime(volume*weight,when+.017);
+  gain.gain.exponentialRampToValueAtTime(.0001,when+length);
+  osc.connect(gain);sweetOutput(gain,flavor);
+  oscillators.push(osc);
+  osc.start(when);osc.stop(when+length+.03);
+ }
+}
 function pattern(c,at,beat,token=state.token){if(!c.selected)return;
  if(state.instrument==='piano'&&c.bass)tone(c.bass.midi,at,beat*1.9,.095);
  for(const n of c.notes)tone(n.midi,at,beat*.62,.065);
