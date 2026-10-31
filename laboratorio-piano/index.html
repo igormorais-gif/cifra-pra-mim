@@ -82,7 +82,8 @@ function qualityName(degrees){const r=root(),minor=degrees.includes('♭3'),sus=
  if(sus){symbol=r.symbol+sus;name=r.name+' Suspenso '+sus}
  if(minor&&b5&&b7){symbol=r.symbol+'m7(♭5)';name=r.name+' Meio-diminuto'}else if(minor&&b5&&dim){symbol=r.symbol+'º';name=r.name+' Diminuto'}else if(a7){symbol+='7M';name+=' com Sétima Maior'}else if(b7){symbol+='7';name+=' com Sétima Menor'}
  if(six){symbol+='6';name+=' com Sexta Maior'}
- const extras=['♭9','9','♯9','11','♯11','♭13','13','♭5','♯5'].filter(x=>degrees.includes(x)&&!(x==='♭5'&&(symbol.includes('(♭5)')||symbol.includes('º'))));
+ const inherent=symbol.endsWith('º')?new Set(['1','♭3','♭5','♭♭7']):symbol.includes('m7(♭5)')?new Set(['1','♭3','♭5','♭7']):new Set();
+ const extras=['♭9','9','♯9','11','♯11','♭13','13','♭5','♯5'].filter(x=>degrees.includes(x)&&!inherent.has(x));
  if(extras.length){symbol+=(a7||b7?'(':'(add')+extras.join(',')+')';name+=' · '+extras.join(' / ')}
  return {symbol,name};
 }
