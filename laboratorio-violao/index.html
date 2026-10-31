@@ -95,7 +95,7 @@ const state={root:'G',strings:'432',form:'135',path:'sevenths',stage:0,mode:'tra
 let audio=null,visNodes=[],playButtons=[],view={start:1,end:12},currentComputed=null;
 function pc(n){return (n%12+12)%12}
 function root(){return ROOTS.find(r=>r.symbol===state.root)}
-function chordNames(suffix='',minor=false){const r=root(),sym=r.symbol+(minor?'m':'')+suffix;let name=r.name+(minor?' Menor':' Maior'),reading=r.name+(minor?' menor':'');if(suffix==='7M'){name+=' com Sétima Maior';reading+=' com Sétima Maior'}else if(suffix==='7'){name+=' com Sétima Menor';reading+=' com Sétima'}else if(suffix==='7(♭5)'){name+=' com Sétima Menor e Quinta Diminuta';reading+=' meio-diminuto'}else if(suffix==='º'){name=r.name+' Diminuto com Sétima Diminuta';reading=r.name+' diminuto'}return{symbol:sym,name,reading}}
+function chordNames(suffix='',minor=false){const r=root(),sym=suffix==='º'?r.symbol+'º':r.symbol+(minor?'m':'')+suffix;let name=r.name+(minor?' Menor':' Maior'),reading=r.name+(minor?' menor':'');if(suffix==='7M'){name+=' com Sétima Maior';reading+=' com Sétima Maior'}else if(suffix==='7'){name+=' com Sétima Menor';reading+=' com Sétima'}else if(suffix==='7(♭5)'){name+=' com Sétima Menor e Quinta Diminuta';reading+=' meio-diminuto'}else if(suffix==='º'){name=r.name+' Diminuto com Sétima Diminuta';reading=r.name+' diminuto'}return{symbol:sym,name,reading}}
 function nameFor(d){const r=root(),[idx,semi]=DEG[d],letter=LETTERS[(LETTERS.indexOf(r.letter)+idx)%7],target=pc(r.pc+semi);let sharp=pc(target-SEMI[letter]+6)-6;return PT[letter]+(sharp<0?'♭'.repeat(-sharp):'♯'.repeat(sharp))}
 function semis(d){return DEG[d][1]}
 function route(){
@@ -128,11 +128,14 @@ function namesOfGenerated(grades){
  let minor=grades.includes('♭3'),susp=grades.includes('2')?'sus2':grades.includes('4')?'sus4':'',seventh=grades.includes('7')?'7M':grades.includes('♭7')?'7':'',sixth=grades.includes('6'),r=root();
  let symbol=r.symbol+(minor?'m':''),name=r.name+(minor?' Menor':' Maior'),reading=r.name+(minor?' menor':'');
  if(susp){symbol=r.symbol+susp;name=r.name+' com '+(susp==='sus2'?'Segunda':'Quarta')+' Suspensa';reading=r.name+' '+susp}
+ const fullyDim=minor&&grades.includes('♭5')&&grades.includes('♭♭7');
  const halfdim=minor&&seventh==='7'&&grades.includes('♭5');
- if(halfdim){symbol=r.symbol+'m7(♭5)';name=r.name+' Meio-Diminuto';reading=r.name+' meio-diminuto'}
+ if(fullyDim){symbol=r.symbol+'º';name=r.name+' Diminuto com Sétima Diminuta';reading=r.name+' diminuto'}
+ else if(halfdim){symbol=r.symbol+'m7(♭5)';name=r.name+' Meio-Diminuto';reading=r.name+' meio-diminuto'}
  else if(seventh){symbol+=seventh;name+=' com Sétima '+(seventh==='7M'?'Maior':'Menor');reading+=' com Sétima'+(seventh==='7M'?' Maior':'')}
  if(sixth){symbol+='6';name+=' com Sexta Maior';reading+=' com Sexta'}
- let extra=['♭9','9','♯9','11','♯11','♭13','13','♭5','♯5'].filter(g=>grades.includes(g)&&!(halfdim&&g==='♭5'));
+ const inherent=fullyDim?new Set(['1','♭3','♭5','♭♭7']):halfdim?new Set(['1','♭3','♭5','♭7']):new Set();
+ let extra=['♭9','9','♯9','11','♯11','♭13','13','♭5','♯5'].filter(g=>grades.includes(g)&&!inherent.has(g));
  if(extra.length){symbol+=(seventh?'(':'(add')+extra.join(',')+')';name+=' · '+extra.join(' / ')}
  return {symbol,name,reading};
 }
