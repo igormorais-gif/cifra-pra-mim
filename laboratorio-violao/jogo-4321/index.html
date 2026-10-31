@@ -145,7 +145,62 @@ function playing(i){state.playing=i;nodes.forEach((e,j)=>e.classList.toggle('pla
 function stop(){state.token++;playing(-1);$('playOne').disabled=false;$('playAll').disabled=false}
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='Áudio bloqueado pelo navegador. Toque novamente para ativar.';return false}}
-function pluck(midi,sec){if(!audio)return;let t=audio.currentTime,hz=440*Math.pow(2,(midi-69)/12);for(let [mul,vol] of [[1,.17],[2,.06],[3,.02]]){let osc=audio.createOscillator(),gain=audio.createGain();osc.type='triangle';osc.frequency.value=hz*mul;gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(vol,t+.012);gain.gain.exponentialRampToValueAtTime(.0001,t+Math.max(.28,sec+.2));osc.connect(gain).connect(audio.destination);osc.start(t);osc.stop(t+Math.max(.4,sec+.29));}}
+// Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
+// Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
+const sweetRooms={};
+function sweetOutput(node,flavor){
+ if(!audio){return}
+ const settings={
+  piano:{decay:1.48,pre:.026,wet:.19,cut:3900,dry:.90},
+  guitar:{decay:1.24,pre:.021,wet:.17,cut:3400,dry:.91},
+  cavaquinho:{decay:1.08,pre:.016,wet:.15,cut:4400,dry:.92}
+ };
+ let room=sweetRooms[flavor];
+ if(!room){
+  try{
+   const c=settings[flavor]||settings.piano;
+   const dry=audio.createGain();dry.gain.value=c.dry;dry.connect(audio.destination);
+   const convolver=audio.createConvolver();
+   const sampleRate=audio.sampleRate||44100;
+   const length=Math.max(1,Math.round(sampleRate*c.decay));
+   const silence=Math.round(sampleRate*c.pre);
+   const buffer=audio.createBuffer(2,length,sampleRate);
+   for(let ch=0;ch<2;ch++){
+    const data=buffer.getChannelData(ch);
+    let seed=(ch+1)*13657;
+    for(let i=silence;i<length;i++){
+     seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+     const position=(i-silence)/(length-silence);
+     const envelope=Math.pow(Math.max(0,1-position),2.6);
+     data[i]=((seed/4294967296)*2-1)*envelope;
+    }
+   }
+   convolver.buffer=buffer;
+   const lowpass=audio.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=c.cut;
+   const wet=audio.createGain();wet.gain.value=c.wet;
+   convolver.connect(lowpass);lowpass.connect(wet);wet.connect(audio.destination);
+   room={dry,send:convolver};
+  }catch(err){room={dry:audio.destination,send:null}}
+  sweetRooms[flavor]=room;
+ }
+ node.connect(room.dry);
+ if(room.send)node.connect(room.send);
+}
+function pluck(midi,sec){
+ if(!audio)return;
+ const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
+ const duration=Math.max(.38,sec+.32);
+ for(const [multiple,volume] of [[1,.18],[2,.043],[3,.013]]){
+  const osc=audio.createOscillator(),gain=audio.createGain(),filter=audio.createBiquadFilter();
+  osc.type=multiple===1?'sine':'triangle';osc.frequency.value=freq*multiple;
+  filter.type='lowpass';filter.frequency.value=3000;
+  gain.gain.setValueAtTime(.0001,start);
+  gain.gain.exponentialRampToValueAtTime(volume,start+.016);
+  gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
+  osc.connect(filter);filter.connect(gain);sweetOutput(gain,'guitar');
+  osc.start(start);osc.stop(start+duration+.055);
+ }
+}
 async function arpeggio(token){let c=computed(),beat=60/state.bpm;for(let i=0;i<4;i++){if(token!==state.token)return;playing(i);pluck(c.midis[i],beat*.5);await delay(beat*500)}if(token===state.token)playing(-1)}
 async function play(all){stop();const token=state.token;if(!await unlock())return;$('playOne').disabled=true;$('playAll').disabled=true;let n=all?stages().length:1;for(let i=0;i<n;i++){if(state.token!==token)return;if(all){state.stage=i;render()}await arpeggio(token);if(i<n-1)await delay(170)}if(state.token===token)stop()}
 function generateNow(){stop();let a=generate();if(a.error){state.error=a.error;state.generated=null;state.stage=0}else{state.error='';state.generated=a;state.stage=1}render()}
