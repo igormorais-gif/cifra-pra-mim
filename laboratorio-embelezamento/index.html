@@ -100,7 +100,11 @@ function guitar(){
  if(span>5||midis[0]>=midis[1]||midis[1]>=midis[2])continue;
  found.push({fs,midis,score:fs.reduce((sum,n)=>sum+n,0)/3+span*.8+Math.max(0,Math.max(...fs)-12)*1.2})}
  found.sort((a,b)=>a.score-b.score);if(!found.length)return[];
- return degrees.map((degree,i)=>({degree,midi:found[0].midis[i],fret:found[0].fs[i],string:strings[i],name:spelling(degree),idx:i}))}
+ // Preserve o 1B fixo da forma: prefira um registro onde a tônica visual caiba ABAIXO das três vozes.
+ const fixedString=LOCATOR[state.group][state.form];
+ const canAnchor=entry=>{for(let fret=0;fret<=19;fret++)if(P(OPEN[fixedString]+fret)===root().pc&&OPEN[fixedString]+fret<entry.midis[0])return true;return false};
+ const best=found.find(canAnchor)||found[0];
+ return degrees.map((degree,i)=>({degree,midi:best.midis[i],fret:best.fs[i],string:strings[i],name:spelling(degree),idx:i}))}
 function locator(notes){if(!notes.length)return null;const string=LOCATOR[state.group][state.form],lowest=notes[0].midi,avg=notes.reduce((s,n)=>s+n.fret,0)/3;
  const options=[];for(let f=0;f<=19;f++)if(P(OPEN[string]+f)===root().pc&&OPEN[string]+f<lowest)options.push({string,fret:f,midi:OPEN[string]+f,score:Math.abs(f-avg)+(f>avg?7:0)});
  return options.sort((a,b)=>a.score-b.score)[0]||null}
