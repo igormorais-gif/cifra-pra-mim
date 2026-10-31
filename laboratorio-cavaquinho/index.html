@@ -199,7 +199,61 @@ function render(){let s=current();$('chordSymbol').textContent=s.meta.symbol;$('
 function stop(){state.token++;state.playing=-1;updateActive();$('playOne').disabled=false;$('playSequence').disabled=false;$('playOne').textContent='▶';$('nowPlaying').textContent='Arpejo'}
 function updateActive(){nodes.forEach((n,i)=>n.classList.toggle('playing',i===state.playing));document.querySelectorAll('.voicepill').forEach((b,i)=>b.classList.toggle('playing',i===state.playing));}
 async function unlockAudio(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(err){$('tipDetails').textContent='Ative o áudio do navegador e toque novamente.';return false}}
-function pluck(midi,duration){if(!audio)return;let t=audio.currentTime,f=440*Math.pow(2,(midi-69)/12);const partials=[[1,.17],[2,.072],[3,.029],[4,.015]];partials.forEach(([n,am])=>{let o=audio.createOscillator(),gain=audio.createGain();o.type='sine';o.frequency.setValueAtTime(f*n,t);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(am,t+.012);gain.gain.exponentialRampToValueAtTime(.0001,t+Math.max(.23,Math.min(2.2,duration+.2))*(n===1?1:.7));o.connect(gain).connect(audio.destination);o.start(t);o.stop(t+Math.max(.4,duration+1.2))})}
+// Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
+// Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
+const sweetRooms={};
+function sweetOutput(node,flavor){
+ if(!audio){return}
+ const settings={
+  piano:{decay:1.48,pre:.026,wet:.19,cut:3900,dry:.90},
+  guitar:{decay:1.24,pre:.021,wet:.17,cut:3400,dry:.91},
+  cavaquinho:{decay:1.08,pre:.016,wet:.15,cut:4400,dry:.92}
+ };
+ let room=sweetRooms[flavor];
+ if(!room){
+  try{
+   const c=settings[flavor]||settings.piano;
+   const dry=audio.createGain();dry.gain.value=c.dry;dry.connect(audio.destination);
+   const convolver=audio.createConvolver();
+   const sampleRate=audio.sampleRate||44100;
+   const length=Math.max(1,Math.round(sampleRate*c.decay));
+   const silence=Math.round(sampleRate*c.pre);
+   const buffer=audio.createBuffer(2,length,sampleRate);
+   for(let ch=0;ch<2;ch++){
+    const data=buffer.getChannelData(ch);
+    let seed=(ch+1)*13657;
+    for(let i=silence;i<length;i++){
+     seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+     const position=(i-silence)/(length-silence);
+     const envelope=Math.pow(Math.max(0,1-position),2.6);
+     data[i]=((seed/4294967296)*2-1)*envelope;
+    }
+   }
+   convolver.buffer=buffer;
+   const lowpass=audio.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=c.cut;
+   const wet=audio.createGain();wet.gain.value=c.wet;
+   convolver.connect(lowpass);lowpass.connect(wet);wet.connect(audio.destination);
+   room={dry,send:convolver};
+  }catch(err){room={dry:audio.destination,send:null}}
+  sweetRooms[flavor]=room;
+ }
+ node.connect(room.dry);
+ if(room.send)node.connect(room.send);
+}
+function pluck(midi,duration){
+ if(!audio)return;
+ const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
+ const length=Math.max(.31,Math.min(2.4,duration+.34));
+ for(const [multiple,volume] of [[1,.185],[2,.050],[3,.016],[4,.006]]){
+  const osc=audio.createOscillator(),gain=audio.createGain();
+  osc.type=multiple===1?'sine':'triangle';osc.frequency.setValueAtTime(freq*multiple,start);
+  gain.gain.setValueAtTime(.0001,start);
+  gain.gain.exponentialRampToValueAtTime(volume,start+.014);
+  gain.gain.exponentialRampToValueAtTime(.0001,start+length*(multiple===1?1:.82));
+  osc.connect(gain);sweetOutput(gain,'cavaquinho');
+  osc.start(start);osc.stop(start+length+.08);
+ }
+}
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function singleArpeggio(token){let s=current(),f=positions(s),beats=[.5,.5,1,2],time=60/state.bpm;for(let i=0;i<4;i++){if(state.token!==token)return;state.playing=i;updateActive();pluck(TUNING[i]+f[i],time*beats[i]);await pause(time*beats[i]*1000)}if(token===state.token){state.playing=-1;updateActive()}}
 async function playSequence(all){stop();const token=state.token;if(!await unlockAudio())return;$('playOne').disabled=true;$('playSequence').disabled=true;$('playOne').textContent='· · ·';$('nowPlaying').textContent=all?'Reproduzindo sequência':'Reproduzindo';let total=all?steps().length:1;for(let j=0;j<total;j++){if(token!==state.token)return;if(all){state.stage=j;render();if(j>0)await pause(390)}if(token!==state.token)return;await singleArpeggio(token);if(token!==state.token)return;if(j<total-1)await pause(190)}if(token===state.token)stop()}
