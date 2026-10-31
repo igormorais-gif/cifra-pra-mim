@@ -202,15 +202,24 @@ function pattern(c,at,beat,token=state.token){if(!c.selected)return;
  scheduleHighlight(at+beat*1.9,[],token);
 }
 function playPair(){stop();if(!unlock())return;const c=chord();if(!c.selected)return;pattern(c,audio.currentTime+.025,60/state.bpm)}
+// Percorrer C.I.: só a aproximação e a nota-alvo de cada grau.
+// O acorde inteiro NÃO é repetido a cada cromático.
 function playTour(){stop();if(!unlock())return;
  const token=state.token,beat=60/state.bpm,at=audio.currentTime+.025;
  for(let i=0;i<3;i++){
   const degree=['1','3','5'][i],saved=state.target;state.target=degree;const c=chord();state.target=saved;
-  const when=at+i*2.2*beat;
-  focusAt(degree,when,token);pattern(c,when,beat,token);
+  const when=at+i*1.45*beat;
+  if(!c.selected)continue;
+  const ciTime=when+beat*.75,arrival=when+beat;
+  tone(c.from,ciTime,beat*.25,.18);
+  tone(c.selected.midi,arrival,beat*.80,.22);
+  focusAt(degree,ciTime,token);
+  scheduleHighlight(ciTime,[c.from],token);
+  scheduleHighlight(arrival,[c.selected.midi],token);
+  scheduleHighlight(when+beat*1.38,[],token);
  }
  $('playTour').disabled=true;
- timers.push(setTimeout(()=>{if(state.token===token)$('playTour').disabled=false},(2*2.2+1.95)*beat*1000));
+ timers.push(setTimeout(()=>{if(state.token===token)$('playTour').disabled=false},(2*1.45+1.55)*beat*1000));
 }
 // Uma única execução percorre as três VOZES NA ORDEM DA FORMA,
 // cada C.I. em semicolcheia antes de sua resolução; fecha com o acorde.
