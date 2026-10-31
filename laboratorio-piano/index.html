@@ -84,7 +84,7 @@ function reduceToTwo(degrees,midis){const selected=new Set([...state.selected].m
  const omit=removable.find(x=>x.rank<999);if(!omit)return {error:'O acorde exige três notas na M.D. para preservar as tensões selecionadas. Escolha 4 notas no total.'};
  return{degrees:degrees.filter((g,i)=>i!==omit.i),midis:midis.filter((g,i)=>i!==omit.i),omitted:omit.g};
 }
-function compute(){const c=current(),b=base(),full=c.degrees.slice(),original=baseMidi(),rightMidi=full.map((g,i)=>original[i]+offset(b[i],g)),bass=bassMidi();
+function compute(){const c=current(),b=base();let full=c.degrees.slice(),original=baseMidi(),rightMidi=full.map((g,i)=>original[i]+offset(b[i],g));const bass=bassMidi();
  const rootpc=root().pc;let names=full.map(degreeNote),reduced=null;
  if(state.voices===3){reduced=reduceToTwo(full,rightMidi);if(!reduced.error){full=reduced.degrees;names=full.map(degreeNote);rightMidi=reduced.midis}}
  const count=rightMidi.length+1;
