@@ -82,7 +82,7 @@ button:disabled{opacity:.42;cursor:default}
 </div></div>
 <div id="guitarPanel" hidden><div class="boardheading"><span>Violão · jogo de três cordas</span><span>C.I. = uma casa atrás da nota-alvo</span></div><div class="boardscroll"><svg id="guitar" class="board" viewBox="0 0 1110 356" role="img" aria-label="Tríade 135 351 ou 513 no braço do violão"></svg></div><div class="ci-guitar-summary"><span id="fretSummary"></span><strong id="bassSummary"></strong></div></div>
 <div class="ci-legend"><span><i style="background:#f8b980"></i>Nota-alvo</span><span><i style="background:#65c6d8"></i>C.I. (−1 st)</span><span><i style="background:#728eaa"></i>Outros graus</span><span><i style="background:#b698e1"></i>1B visual (violão)</span></div></div>
-<div class="tip"><b>✧ DICA RÁPIDA</b><p id="tip">O cromático inferior não altera os graus estruturais da forma: ele se aproxima de uma nota-alvo e resolve nela.</p></div>
+<div class="tip"><b>✧ DICA RÁPIDA</b><p id="tip">Cromático Inferior (C.I.) é a nota situada exatamente 1 semitom (1 st) abaixo da nota-alvo. Ela se aproxima por baixo e resolve diretamente nessa nota, sem alterar o acorde.</p></div>
 </section>
 <footer class="foot"><span>Cifra pra Mim · Notas de Embelezamento · Módulo 01: C.I.</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer>
 </div><script>
@@ -122,9 +122,10 @@ let visualNodes=[];
 function recordNote(el,midi,fill,stroke){visualNodes.push({el,midi,fill,stroke});return el}
 function keyboard(id,notes,focus){
  const el=$(id);el.replaceChildren();
- let lo=Math.min(...notes.map(n=>n.midi));
- if(focus){const chosen=notes.find(n=>n.degree===focus);if(chosen)lo=Math.min(lo,chosen.midi-1)}
- // A região precisa incluir a tecla anterior ao 1. Em C4, isso inclui Si3 (MIDI 59).
+ // Região VISUAL estável: a janela inclui os C.I. de todas as vozes,
+ // independentemente do alvo atualmente selecionado ou tocado.
+ // Preserva a oitava real de 135, 351 e 513, sem deslizar o teclado na reprodução.
+ const lo=Math.min(...notes.map(n=>n.midi-(focus?1:0)));
  const start=12*Math.floor(lo/12);
  let whites=[];for(let m=start;whites.length<21;m++)if([0,2,4,5,7,9,11].includes(P(m)))whites.push(m);
  const w=1000/21;svg('rect',{x:0,y:0,width:1000,height:235,rx:8,fill:'#0b1420'},el);
@@ -163,7 +164,7 @@ function render(){visualNodes=[];const c=chord(),d=target();$('root').value=stat
  for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>{const active=b.dataset[k]===state[k];b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
  document.querySelector('[data-target="3"] small').textContent=state.quality==='minor'?'Terça menor':'Terça';
  $('motion').textContent=before(d)+' → '+spelling(d);$('moveDetail').textContent='C.I.'+state.target+' · 1 semitom abaixo do grau '+d;$('rhythmDetail').textContent='“a” = '+before(d)+' · tempo 2 = '+spelling(d);
- $('tip').textContent='Forma '+state.form+': as três notas são estruturais. O C.I.'+state.target+' ('+before(d)+') soa na última semicolcheia e resolve em '+spelling(d)+'; as outras duas vozes permanecem no acorde.'+(state.instrument==='guitar'?' No violão, a aproximação ocorre uma casa atrás, na mesma corda.':' No piano, a M.E. mantém a fundamental.');
+ $('tip').textContent='Cromático Inferior (C.I.) é uma nota de aproximação que fica sempre 1 semitom (1 st) abaixo da nota-alvo e resolve diretamente nela. Aqui, '+before(d)+' → '+spelling(d)+' (C.I.'+state.target+') acontece na última semicolcheia antes da resolução. O C.I. ornamenta a forma '+state.form+', sem mudar os graus da tríade.'+(state.instrument==='guitar'?' No violão, fica uma casa atrás, na mesma corda.':' No piano, as teclas permanecem na mesma região visual durante o exercício.');
  if(state.instrument==='piano')pianoUI();else guitarUI();$('playPair').disabled=!c.selected}
 let audio=null,oscillators=[],timers=[];
 function highlight(midis){
