@@ -242,7 +242,62 @@ function render(){let c=computed();currentComputed=c;const r=root();$('root').va
 function updatePlaying(){visNodes.forEach((el,i)=>el?.classList.toggle('playing',i===state.playing));document.querySelectorAll('.note-card').forEach((el,i)=>el.classList.toggle('playing',i===state.playing))}
 function stop(){state.token++;state.playing=-1;updatePlaying();['playOne','playAll'].forEach(id=>$(id).disabled=false)}
 function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
-function pluck(midi,sec,bass=false){if(!audio)return;const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);for(let [multiple,gain] of [[1,bass?.25:.14],[2,.065],[3,.027],[4,.012]]){let osc=audio.createOscillator(),g=audio.createGain(),filter=audio.createBiquadFilter();osc.type='triangle';osc.frequency.value=freq*multiple;filter.type='lowpass';filter.frequency.value=bass?1200:2100;g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(gain,start+.012);g.gain.exponentialRampToValueAtTime(.0001,start+Math.max(.23,sec+.21));osc.connect(filter).connect(g).connect(audio.destination);osc.start(start);osc.stop(start+Math.max(.44,sec+.4));}}
+// Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
+// Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
+const sweetRooms={};
+function sweetOutput(node,flavor){
+ if(!audio){return}
+ const settings={
+  piano:{decay:1.48,pre:.026,wet:.19,cut:3900,dry:.90},
+  guitar:{decay:1.24,pre:.021,wet:.17,cut:3400,dry:.91},
+  cavaquinho:{decay:1.08,pre:.016,wet:.15,cut:4400,dry:.92}
+ };
+ let room=sweetRooms[flavor];
+ if(!room){
+  try{
+   const c=settings[flavor]||settings.piano;
+   const dry=audio.createGain();dry.gain.value=c.dry;dry.connect(audio.destination);
+   const convolver=audio.createConvolver();
+   const sampleRate=audio.sampleRate||44100;
+   const length=Math.max(1,Math.round(sampleRate*c.decay));
+   const silence=Math.round(sampleRate*c.pre);
+   const buffer=audio.createBuffer(2,length,sampleRate);
+   for(let ch=0;ch<2;ch++){
+    const data=buffer.getChannelData(ch);
+    let seed=(ch+1)*13657;
+    for(let i=silence;i<length;i++){
+     seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+     const position=(i-silence)/(length-silence);
+     const envelope=Math.pow(Math.max(0,1-position),2.6);
+     data[i]=((seed/4294967296)*2-1)*envelope;
+    }
+   }
+   convolver.buffer=buffer;
+   const lowpass=audio.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=c.cut;
+   const wet=audio.createGain();wet.gain.value=c.wet;
+   convolver.connect(lowpass);lowpass.connect(wet);wet.connect(audio.destination);
+   room={dry,send:convolver};
+  }catch(err){room={dry:audio.destination,send:null}}
+  sweetRooms[flavor]=room;
+ }
+ node.connect(room.dry);
+ if(room.send)node.connect(room.send);
+}
+function pluck(midi,sec,bass=false){
+ if(!audio)return;
+ const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
+ const duration=Math.max(.38,sec+.32);
+ for(const [multiple,volume] of [[1,bass?.23:.17],[2,.039],[3,.014],[4,.005]]){
+  const osc=audio.createOscillator(),gain=audio.createGain(),filter=audio.createBiquadFilter();
+  osc.type=multiple===1?'sine':'triangle';osc.frequency.value=freq*multiple;
+  filter.type='lowpass';filter.frequency.value=bass?1650:2900;
+  gain.gain.setValueAtTime(.0001,start);
+  gain.gain.exponentialRampToValueAtTime(volume,start+.017);
+  gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
+  osc.connect(filter);filter.connect(gain);sweetOutput(gain,'guitar');
+  osc.start(start);osc.stop(start+duration+.06);
+ }
+}
 async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='O navegador bloqueou o áudio. Toque novamente para ativá-lo.';return false}}
 async function arpeggio(token){let c=currentComputed;const notes=[...c.noteMidi,c.bass.midi],beats=[.5,.5,1,1],duration=60/state.bpm;for(let i=0;i<4;i++){if(token!==state.token)return;state.playing=i;updatePlaying();pluck(notes[i],beats[i]*duration,i===3);await wait(beats[i]*duration*1000)}if(token===state.token){state.playing=-1;updatePlaying()}}
 async function play(sequence){stop();let token=state.token;if(!await unlock())return;$('playOne').disabled=true;$('playAll').disabled=true;let total=sequence?route().length:1;for(let i=0;i<total;i++){if(token!==state.token)return;if(sequence){state.stage=i;render();if(i)await wait(210);}await arpeggio(token);if(i<total-1)await wait(160)}if(token===state.token)stop()}
