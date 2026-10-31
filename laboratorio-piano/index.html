@@ -80,8 +80,8 @@ function tryGenerate(){
  const best=choices[0],info=qualityName(best.degrees);
  return{...info,degrees:best.degrees,description:changeDescription(best.degrees),assign:best.assign};
 }
-function reduceToTwo(degrees,midis){const selected=new Set([...state.selected].map(x=>x==='sus2'?'2':x==='sus4'?'4':x));const removable=degrees.map((g,i)=>({g,i,rank:g==='1'?0:g==='5'?1: selected.has(g)?999:g==='3'||g==='♭3'?80:25})).sort((a,b)=>a.rank-b.rank);
- const omit=removable.find(x=>x.rank<999);if(!omit)return {error:'O acorde exige três notas na M.D. para preservar as tensões selecionadas. Escolha 4 notas no total.'};
+function reduceToTwo(degrees,midis){const selected=new Set([...state.selected].map(x=>x==='sus2'?'2':x==='sus4'?'4':x));const removable=degrees.map((g,i)=>({g,i,rank:g==='1'?0:g==='5'?1: selected.has(g)?999:['3','♭3','2','4'].includes(g)?999:25})).sort((a,b)=>a.rank-b.rank);
+ const omit=removable.find(x=>x.rank<999);if(!omit)return {error:'este acorde precisa de 3 notas na M.D. para preservar a terça e as tensões escolhidas.'};
  return{degrees:degrees.filter((g,i)=>i!==omit.i),midis:midis.filter((g,i)=>i!==omit.i),omitted:omit.g};
 }
 function compute(){const c=current(),b=base();let full=c.degrees.slice(),original=baseMidi(),rightMidi=full.map((g,i)=>original[i]+offset(b[i],g));const bass=bassMidi();
@@ -120,7 +120,7 @@ function renderTensions(){const box=$('tensions');box.replaceChildren();for(let 
  $('seventhSource').value=state.seventhSource;$('sixthSource').value=state.sixthSource;
  $('genMsg').textContent=state.error||(state.generated?'M.D. '+state.generated.degrees.join(' · ')+' + M.E. 1':'Escolha os graus e toque em Gerar.');$('genMsg').classList.toggle('error',!!state.error);
 }
-function render(){const c=compute();$('generator').hidden=state.mode!=='gen';$('transSource').hidden=state.mode!=='trans'||state.path==='minor';
+function render(){let c=compute();if(c.error&&state.voices===3){const warning=c.error;state.voices=4;c=compute();c.warnings.unshift('Mantive 4 notas no total: '+warning);} $('generator').hidden=state.mode!=='gen';$('transSource').hidden=state.mode!=='trans'||state.path==='minor';
  $('root').value=state.root;$('path').value=state.path;$('octave').value=String(state.register);$('voices').value=String(state.voices);
  document.querySelectorAll('[data-form]').forEach(x=>x.classList.toggle('active',x.dataset.form===state.form));
  document.querySelectorAll('[data-mode]').forEach(x=>{let yes=x.dataset.mode===state.mode;x.classList.toggle('active',yes);x.setAttribute('aria-pressed',String(yes))});
