@@ -28,6 +28,21 @@
 @media(max-width:800px){.top{flex-wrap:wrap}.header-side{width:100%;align-items:stretch}.header-side .modebar{width:100%}.header-side .modebtn{flex:1}.header-side .toplinks{justify-content:flex-end}}
 @media(max-width:660px){.header-side .modebtn{padding:10px 8px;font-size:12px}.seventh-trans-row{padding:0 3px 10px}.seventh-trans-row .mini{width:100%}.seventh-route{flex:1;min-width:0;padding:8px 9px;font-size:11px}.seventh-route small{font-size:9px}.quick-tip-near{margin:4px 11px 12px;display:block;padding:11px 12px}.quick-label{margin-bottom:5px}.quick-content strong{font-size:12px}.quick-content span{font-size:10px}}
 .segmented .group-four{display:flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap;font-size:12px;padding:0 5px}.segmented .group-four:hover{color:#ffcb9b;background:#2b3544}.segmented .group-four:focus-visible{outline:2px solid #ffb47e;outline-offset:3px}
+
+/* Player junto ao braço; no celular permanece sempre ao alcance. */
+.play-near-board{margin:9px 20px 11px;border:1px solid #435669;border-radius:12px;background:#101a27;padding:7px 9px}
+.play-near-board .transport{border:0;padding:5px 6px;gap:9px}
+.play-near-board .play{padding:9px 13px;min-height:40px;border-radius:9px}
+@media(max-width:660px){
+ .play-near-board{position:fixed;bottom:calc(7px + env(safe-area-inset-bottom,0px));left:8px;right:8px;margin:0;padding:8px 9px 6px;z-index:80;background:#142332f5;border-color:#66788a;box-shadow:0 8px 26px #040913de;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+ .play-near-board .transport{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0}
+ .play-near-board .play{min-width:0;min-height:40px;padding:7px 4px;font-size:11px;line-height:1.15;white-space:normal;text-align:center}
+ .play-near-board .tempo{grid-column:1/-1;margin:1px 0 0;display:flex;justify-content:center;gap:8px}
+ .play-near-board .tempo input{flex:1;min-width:70px;max-width:185px;width:auto}
+ .play-near-board .tempo label,.play-near-board .tempo span{font-size:10px}
+ .play-near-board .tempo output{font-size:12px}
+ .shell{padding-bottom:calc(119px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -53,9 +68,10 @@
   <section class="panel board-panel">
     <div class="stage-label"><div><div class="chord-title" id="chord">G</div><div class="chord-sub" id="name">Sol Maior</div><div class="tiny-reading" id="read">Lê-se: Sol</div></div><div class="pill-badges" id="badges"></div></div>
     <div class="wood-caption"><span> <span class="hint-dot"></span>Braço do violão · 6 cordas reais</span><span class="tiny">As bolinhas são graus intervalares</span></div>
-    <div class="board-scroller" id="boardScroll"><svg xmlns="http://www.w3.org/2000/svg" id="fretboard" class="board" viewBox="0 0 1080 387" role="img" aria-label="Braço do violão com seis cordas e quatro notas tocadas"><rect x="180" y="45" width="870" height="288" rx="12" fill="#352721"/><text x="500" y="193" fill="#e4b17b" text-anchor="middle">Carregando braço...</text></svg></div>
+    <div class="play-near-board" aria-label="Reprodução do violão"><div class="transport"><button class="play" id="playOne">▶ Ouvir arpejo</button><button class="play secondary" id="playAll">▶ Sequência</button><button class="play red" id="stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="55" max="160" step="5" value="100"><output id="bpmValue">100</output><span>BPM</span></div></div></div>
+<div class="board-scroller" id="boardScroll"><svg xmlns="http://www.w3.org/2000/svg" id="fretboard" class="board" viewBox="0 0 1080 387" role="img" aria-label="Braço do violão com seis cordas e quatro notas tocadas"><rect x="180" y="45" width="870" height="288" rx="12" fill="#352721"/><text x="500" y="193" fill="#e4b17b" text-anchor="middle">Carregando braço...</text></svg></div>
     <div class="quick-tip-near" role="status" aria-live="polite"><div class="quick-label">✧ DICA RÁPIDA</div><div class="quick-content"><strong id="hint">Tríade maior: graus 1, 3 e 5.</strong><span id="hintDetail">1B: fundamental que localiza a forma no braço.</span></div></div><div class="surface-bottom"><div><div class="notes" id="cards" aria-label="Graus e nomes das notas"></div><div class="degree-legend"><span><i style="background:#e58c42"></i>1</span><span><i style="background:#5c95cd"></i>3</span><span><i style="background:#6c78db"></i>5</span><span><i style="background:#ad66d0"></i>7</span><span><i style="background:#64ac99"></i>Tensões</span><span><i style="background:#aa8bdf"></i>1B</span></div></div><div class="rhythm"><strong>♪ ♪ ♩ ♩</strong> · colcheia, colcheia, semínima, semínima<br><span>1º, 2º e 3º graus da forma → baixo por último</span></div></div>
-    <div class="transport"><button class="play" id="playOne">▶ Ouvir arpejo</button><button class="play secondary" id="playAll">▶ Sequência</button><button class="play red" id="stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="55" max="160" step="5" value="100"><output id="bpmValue">100</output><span>BPM</span></div></div>
+    
   </section>
   <div class="extras"><section class="panel extra"><h3>↝ LOCALIZADOR VISUAL</h3><p><strong>1B é o padrão:</strong> fundamental na 5ª ou 6ª corda, conforme a forma escolhida. O desenho acompanha esse baixo. Outros baixos são opções de exploração.</p><div class="bass-select"><div><label for="bassString">Corda do baixo</label><select id="bassString" class="select"><option value="auto">Padrão · conforme a forma</option><option value="5">5ª corda</option><option value="6">6ª corda</option></select></div><div><label for="bassDegree">Grau do baixo</label><select id="bassDegree" class="select"><option value="auto">Padrão · fundamental (1B)</option><option value="1">Fundamental · 1B</option><option value="3">Terça · 3B</option><option value="5">Quinta · 5B</option></select></div></div></section></div>
   <p class="disclaimer">A representação usa a afinação padrão Mi–Lá–Ré–Sol–Si–Mi. As formas são tríades de três vozes; o baixo localizador aparece separadamente e pode exigir deslocamento de posição.</p>
