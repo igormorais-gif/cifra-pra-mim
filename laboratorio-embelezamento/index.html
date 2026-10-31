@@ -17,102 +17,150 @@ button:disabled{opacity:.42;cursor:default}
 .below{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:13px}.sub{padding:17px 20px}.sub h3{font-size:13px;color:#ffd0a7;margin:0 0 8px}.sub p{font-size:12px;color:#b3c4d2;margin:0;line-height:1.55}.foot{margin-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:11px;color:#8399aa}
 @media(max-width:800px){.controls{grid-template-columns:1fr}.below{grid-template-columns:1fr}.info{grid-template-columns:1fr}.step{min-width:88px}}
 @media(max-width:620px){.shell{padding:10px 9px calc(115px + env(safe-area-inset-bottom,0px))}.head{padding:5px 1px 14px}.links{width:100%;gap:5px}.links a{flex:1;text-align:center;padding:8px 5px;font-size:10px}.topintro{padding:15px;gap:10px}.controls{padding:13px;gap:8px}.subline{padding:0 14px 12px}.chordhead{padding:15px 14px 9px}.chordtitle{font-size:56px}.targetzone{padding:0 11px 11px}.target{min-width:64px;padding:7px 9px}.info{margin:0 10px 10px;gap:6px}.infoitem{padding:9px 11px}.infoitem strong{font-size:14px}.boardscroll{padding:0 3px 3px}.board{width:940px;min-width:940px}.boardheading{padding:7px 12px}.under{margin:7px 11px 14px}.tip{margin:10px 11px 13px;padding:11px}.play-dock{position:fixed;z-index:90;left:7px;right:7px;bottom:calc(7px + env(safe-area-inset-bottom,0px));margin:0;background:#142536f7;border-color:#677d90;box-shadow:0 8px 28px #000b;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:8px}.play-dock .transport{display:grid;grid-template-columns:1.35fr 1.2fr .75fr;gap:5px}.play{font-size:10px;padding:8px 5px;min-height:41px;text-align:center}.tempo{margin:0;grid-column:1/-1;justify-content:center;padding:1px 4px 0;font-size:10px}.tempo input{width:auto;max-width:170px;flex:1}.tempo output{font-size:11px}}
+
+/* Tríades de embelezamento: desenho comum para piano e violão. */
+.controls{grid-template-columns:minmax(125px,.8fr) minmax(120px,.8fr) minmax(180px,1fr) minmax(175px,1fr)}
+.seg-choice{min-height:43px;border:1px solid #3b5063;background:#0c1724;border-radius:11px;display:flex;gap:3px;padding:4px}
+.seg-choice button{flex:1;border:0;border-radius:8px;background:transparent;color:#bdd0dc;font-size:12px;font-weight:800;padding:7px 5px;min-width:0}
+.seg-choice button.active{color:#2b1a10;background:linear-gradient(135deg,#ffd2a1,#f5a56d)}
+.compact-practice{margin:0 20px 10px;border:1px solid #38536a;border-radius:12px;padding:10px 12px;background:#101d2b}
+.practice-line{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.practice-line .label{margin:0}.string-pick{display:flex;gap:5px}.string-pick button{background:#172b3d;color:#bfd0df;border:1px solid #41586f;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:800}.string-pick button.active{background:#355f76;color:#e4f7fd;border-color:#86cadd}
+.triad-targets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:9px}
+.triad-targets button{border-radius:9px;border:1px solid #42566a;background:#203246;color:#c3d3e0;padding:9px 6px;font-weight:850}
+.triad-targets button b{font-size:15px}.triad-targets button small{font-size:10px;font-weight:600;display:block}
+.triad-targets button.active{background:linear-gradient(135deg,#ffd3a1,#f1a168);color:#2e1b0e;border-color:#edbc85}
+.ci-info{margin:0 20px 10px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ci-info>div{background:#101a27;border:1px solid #354e60;border-radius:11px;padding:10px 12px}
+.ci-info .label{margin:0 0 3px}.ci-info strong{color:#ffe0bf;font-size:18px}.ci-info strong em{color:#8bdbeb}.ci-info p{font-size:10px;color:#adc1ce;margin:3px 0 0}
+.ci-player{margin:0 20px 12px;border:1px solid #4b6b7c;border-radius:11px;background:#132334;padding:9px 10px}
+.ci-transport{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.ci-transport .play{font-weight:800;padding:9px 12px;font-size:12px}
+.ci-transport .tempo{margin-left:auto}
+.ci-instruments{padding:0 20px 9px}.piano-hands{display:grid;grid-template-columns:1fr 1.27fr;gap:12px}
+.ci-hand{min-width:0;padding:12px;background:#101b2a;border:1px solid #385266;border-radius:11px}
+.ci-hand-title{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px;color:#a9c1d1;margin-bottom:8px}
+.ci-hand-title strong{font-size:13px;border-radius:6px;border:1px solid #647388;padding:5px 8px;color:#ffd9b7;background:#4a352c}
+.ci-hand:nth-child(2) .ci-hand-title strong{background:#2c465c;color:#cbe5f8}
+.keyboard-scroll{overflow-x:auto;scrollbar-width:thin}
+.ci-keyboard{display:block;width:100%;min-width:500px;height:auto;aspect-ratio:1000/240}
+.ci-cards{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ci-card{padding:7px 9px;min-width:62px;border:1px solid #445d72;border-radius:9px;background:#1c3043;text-align:center}
+.ci-card b{font-size:18px;display:block;color:#ffceac}.ci-card small{color:#b6c8d6;font-size:10px;display:block}
+.ci-card.active{border-color:#ffcf9a;background:#524131}
+.ci-card.ci{border-color:#8bdbe9;background:#1d4857}.ci-card.ci b{color:#99e6f4}
+.ci-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:10px;color:#abc0d0;margin-top:10px}
+.ci-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:3px}
+.ci-guitar-summary{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:10px;color:#a9bece;margin:6px 4px 8px}.ci-guitar-summary strong{color:#ead0fe}
+@media(max-width:900px){.piano-hands{grid-template-columns:1fr}}
+@media(max-width:700px){.controls{grid-template-columns:1fr 1fr}.compact-practice{margin:0 10px 9px;padding:9px}.ci-info{margin:0 10px 9px;gap:6px}.ci-info>div{padding:8px}.ci-info strong{font-size:15px}.ci-transport{display:grid;grid-template-columns:1.1fr 1.1fr .65fr;gap:5px}.ci-transport .tempo{grid-column:1/-1;margin:0;justify-content:center;font-size:10px}.ci-transport .tempo input{width:80px;max-width:170px;flex:1}.ci-player{position:fixed;bottom:calc(7px + env(safe-area-inset-bottom,0px));left:8px;right:8px;margin:0;z-index:80;background:#172a3cf8;border-color:#7190a5;box-shadow:0 10px 30px #000b;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:8px}.ci-transport .play{padding:8px 3px;min-height:40px;font-size:10px}.ci-instruments{padding:0 10px 5px}.ci-keyboard{min-width:690px;width:690px}.shell{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))}}
+@media(max-width:390px){.seg-choice button{font-size:10px}.triad-targets button b{font-size:13px}}
 </style></head><body><div class="shell">
 <header class="head"><div class="brand"><span class="brandmark" aria-hidden="true"></span><div><h1>Cifra <em>pra Mim</em></h1><div class="eyebrow">Laboratório de Notas de Embelezamento</div><div class="inst">C.I. · BRAÇO DE 4 CORDAS</div><div class="byline">Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer">@igmoraisb</a></div></div></div><nav class="links" aria-label="Navegação"><a href="../">Início</a><a href="../laboratorio-violao/">Violão</a><a href="../laboratorio-cavaquinho/">Cavaquinho</a><a href="../laboratorio-piano/">Piano</a></nav></header>
-<section class="panel topintro"><div><h2>Da aproximação à nota-alvo</h2><p>O <strong>Cromático Inferior (C.I.)</strong> é um semitom abaixo de uma nota do acorde e resolve diretamente nela. A nota de aproximação colore o caminho; a nota-alvo mantém a função harmônica.</p></div><span class="module-tag">MÓDULO 01 · CROMÁTICO INFERIOR</span></section>
-<section class="panel controls"><div><label class="label" for="root">Fundamental</label><select class="select" id="root"><option value="C">C · Dó</option></select></div><div><span class="label">Transformação harmônica</span><div class="steps" id="stages"><button class="step active">C7M</button><button class="step">C7</button><button class="step">Cm7</button><button class="step">Cm7(♭5)</button><button class="step">Cº</button></div></div></section>
-<div class="subline">A mesma tônica percorre <strong>7M → 7 → m7 → m7(♭5) → º</strong>. O estudo mostra graus estruturais e pontos de aproximação, não uma nova cifra.</div>
-<section class="panel exercise"><div class="chordhead"><div><div class="chordtitle" id="chord">C7M</div><div class="chorddesc" id="chordName">Dó com sétima maior</div></div><div class="chordbadges"><span class="chordbadge" id="count">3 pontos de C.I.</span><span class="chordbadge">4 cordas · 12 casas</span></div></div>
-<div class="targetzone"><div class="targetheader"><span class="label">Nota-alvo · grau do acorde</span><span class="help">Toque em um grau para estudar sua aproximação</span></div><div class="targets" id="targets"><button class="target active"><b>3</b><small>Mi</small></button></div></div>
-<div class="info"><div class="infoitem"><span>Movimento</span><strong id="motion">Ré♯ → Mi</strong><p id="motionInfo">C.I. · 1 semitom abaixo da terça</p></div><div class="infoitem"><span>Localização selecionada</span><strong id="where">Corda Ré · casa 1 → casa 2</strong><p id="whereInfo">C.I. é passageiro; a resolução acontece na nota-alvo.</p></div></div>
-<div class="play-dock" aria-label="Player do Cromático Inferior"><div class="transport"><button id="playPair" type="button" class="play primary">▶ C.I. → alvo</button><button id="playTour" type="button" class="play">▶ Percorrer graus</button><button id="stop" type="button" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="150" step="5" value="75"><output id="bpmLabel">75</output><span>BPM</span></div></div></div>
-<div class="boardheading"><span>Braço de quatro cordas · Mi–Lá–Ré–Sol (grave → agudo)</span><span>Bolinhas = graus · C.I. = nota anterior à resolução</span></div>
-<div class="boardscroll" id="boardscroll"><svg id="board" class="board" viewBox="0 0 1150 352" role="img" aria-label="Braço de quatro cordas e doze casas, com notas do acorde e cromáticos inferiores"></svg></div>
-<div class="under"><div class="legend"><span><i style="background:#f8b37e"></i>Nota-alvo</span><span><i style="background:#67c6d6"></i>C.I.</span><span><i style="background:#829db3"></i>Demais graus estruturais</span></div><div id="locations" class="position-select"></div></div>
-<div class="tip" aria-live="polite" role="status"><b>✧ DICA RÁPIDA</b><p id="tip">Em C7M, Si é a sétima maior do acorde — não é C.I. do Dó. Já Lá♯ pode aproximar o Si.</p></div>
+
+<section class="panel intro"><div><h2>Aproximando as notas da tríade</h2><p>Três notas na forma <b>135, 351 ou 513</b>. Uma <b>semicolcheia cromática inferior</b> conduz diretamente ao grau da tríade. O acorde não ganha uma quarta nota fixa: uma das três vozes recebe o embelezamento.</p></div><span class="module-tag">MÓDULO 01 · C.I.</span></section>
+<section class="panel controls" aria-label="Controles das tríades">
+<div><label class="label" for="root">Fundamental</label><select id="root" class="select"></select></div>
+<div><span class="label">Tríade</span><div class="seg-choice"><button data-quality="major" class="active">Maior</button><button data-quality="minor">Menor</button></div></div>
+<div><span class="label">Forma original</span><div class="seg-choice"><button data-form="135" class="active">135</button><button data-form="351">351</button><button data-form="513">513</button></div></div>
+<div><span class="label">Visualização</span><div class="seg-choice"><button data-instrument="piano" class="active">🎹 Piano</button><button data-instrument="guitar">🎸 Violão</button></div></div></section>
+<section class="panel exercise">
+<div class="chordhead"><div><div class="chordtitle" id="chord">C</div><div class="chorddesc" id="chordName">Tríade maior · 135</div></div><div class="chordbadges"><span class="chordbadge" id="triadFormula">4st/3st</span><span class="chordbadge" id="formBadge">M.D. · 135</span></div></div>
+<div class="compact-practice"><div class="practice-line"><span class="label">Nota-alvo e embelezamento</span><div class="string-pick" id="stringPicker" hidden><button class="active" data-group="432">4–3–2</button><button data-group="321">3–2–1</button></div></div><div class="triad-targets"><button data-target="1" class="active"><b>C.I.1</b><small>Fundamental</small></button><button data-target="3"><b>C.I.3</b><small>Terça</small></button><button data-target="5"><b>C.I.5</b><small>Quinta</small></button></div></div>
+<div class="ci-info"><div><span class="label">Aproximação → resolução</span><strong id="motion">Si → Dó</strong><p id="moveDetail">C.I.1 · semitom inferior → nota-alvo</p></div><div><span class="label">Pulso: semicolcheia de aproximação</span><strong>1 e &amp; <em>a</em> | 2</strong><p id="rhythmDetail">O C.I. entra no último “a” e resolve no tempo 2.</p></div></div>
+<div class="ci-player"><div class="ci-transport"><button id="playPair" class="play primary">▶ Aproximação</button><button id="playTour" class="play">▶ C.I.1 · 3 · 5</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div></div>
+<div class="ci-instruments">
+<div id="pianoPanel"><div class="piano-hands">
+<div class="ci-hand"><div class="ci-hand-title"><strong>M.E.</strong><span>Fundamental no baixo</span></div><div class="keyboard-scroll"><svg id="leftKeys" class="ci-keyboard" viewBox="0 0 1000 240" role="img" aria-label="Mão esquerda no piano"></svg></div><div id="leftCards" class="ci-cards"></div></div>
+<div class="ci-hand"><div class="ci-hand-title"><strong>M.D.</strong><span>Forma <b id="rightForm">135</b> · três notas</span></div><div class="keyboard-scroll"><svg id="rightKeys" class="ci-keyboard" viewBox="0 0 1000 240" role="img" aria-label="Mão direita no piano"></svg></div><div id="rightCards" class="ci-cards"></div></div>
+</div></div>
+<div id="guitarPanel" hidden><div class="boardheading"><span>Violão · jogo de três cordas</span><span>C.I. = uma casa atrás da nota-alvo</span></div><div class="boardscroll"><svg id="guitar" class="board" viewBox="0 0 1110 356" role="img" aria-label="Tríade 135 351 ou 513 no braço do violão"></svg></div><div class="ci-guitar-summary"><span id="fretSummary"></span><strong id="bassSummary"></strong></div></div>
+<div class="ci-legend"><span><i style="background:#f8b980"></i>Nota-alvo</span><span><i style="background:#65c6d8"></i>C.I. (−1 st)</span><span><i style="background:#728eaa"></i>Outros graus</span><span><i style="background:#b698e1"></i>1B visual (violão)</span></div></div>
+<div class="tip"><b>✧ DICA RÁPIDA</b><p id="tip">O cromático inferior não altera os graus estruturais da forma: ele se aproxima de uma nota-alvo e resolve nela.</p></div>
 </section>
-<div class="below"><section class="panel sub"><h3>Notas de Embelezamento × Notas do Acorde</h3><p>O C.I. ocupa o semitom anterior ao alvo e resolve imediatamente. Quando esse semitom já é uma nota estrutural do acorde, ele continua sendo identificado pelo seu grau — não é rebatizado como C.I.</p></section><section class="panel sub"><h3>Do nosso material ao laboratório</h3><p>Primeiro módulo organizado a partir do estudo anterior de Cromático Inferior: quatro cordas, 12 casas e a sequência 7M → 7 → m7 → m7(♭5) → º. Os demais recursos de embelezamento permanecem para uma etapa posterior.</p></section></div>
 <footer class="foot"><span>Cifra pra Mim · Notas de Embelezamento · Módulo 01: C.I.</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer>
 </div><script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const ROOTS=[['C','Dó',0,'C'],['C#','Dó sustenido',1,'C'],['Db','Ré bemol',1,'D'],['D','Ré',2,'D'],['D#','Ré sustenido',3,'D'],['Eb','Mi bemol',3,'E'],['E','Mi',4,'E'],['F','Fá',5,'F'],['F#','Fá sustenido',6,'F'],['Gb','Sol bemol',6,'G'],['G','Sol',7,'G'],['G#','Sol sustenido',8,'G'],['Ab','Lá bemol',8,'A'],['A','Lá',9,'A'],['A#','Lá sustenido',10,'A'],['Bb','Si bemol',10,'B'],['B','Si',11,'B']].map(([symbol,name,pc,letter])=>({symbol,name,pc,letter}));
-const STEPS=[{suffix:'7M',degrees:['1','3','5','7'],description:'com sétima maior'},{suffix:'7',degrees:['1','3','5','♭7'],description:'com sétima menor'},{suffix:'m7',degrees:['1','♭3','5','♭7'],description:'menor com sétima'},{suffix:'m7(♭5)',degrees:['1','♭3','♭5','♭7'],description:'meio-diminuto'},{suffix:'º',degrees:['1','♭3','♭5','♭♭7'],description:'diminuto'}];
-const DEGREES={'1':[0,0],'3':[2,4],'♭3':[2,3],'5':[4,7],'♭5':[4,6],'7':[6,11],'♭7':[6,10],'♭♭7':[6,9]};
+const P=x=>(x%12+12)%12,FORMS={'135':['1','3','5'],'351':['3','5','1'],'513':['5','1','3']},GROUPS={'432':[4,3,2],'321':[3,2,1]},OPEN={6:40,5:45,4:50,3:55,2:59,1:64},LOCATOR={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':5}};
 const LETTERS=['C','D','E','F','G','A','B'],SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11},PT={C:'Dó',D:'Ré',E:'Mi',F:'Fá',G:'Sol',A:'Lá',B:'Si'};
-const STRING=[{name:'Sol',letter:'G',midi:55},{name:'Ré',letter:'D',midi:50},{name:'Lá',letter:'A',midi:45},{name:'Mi',letter:'E',midi:40}];
-const state={root:'C',step:0,degree:'3',location:0,bpm:75,token:0},pc=v=>(v%12+12)%12,root=()=>ROOTS.find(x=>x.symbol===state.root),step=()=>STEPS[state.step];
-const pitch=g=>pc(root().pc+DEGREES[g][1]);
-function note(g){let d=DEGREES[g],r=root(),letter=LETTERS[(LETTERS.indexOf(r.letter)+d[0])%7],desired=pitch(g),delta=((desired-SEMI[letter]+18)%12)-6;return PT[letter]+(delta>0?'♯'.repeat(delta):'♭'.repeat(-delta))}
-function approachName(g){let p=pc(pitch(g)-1),target=note(g),letter=target.replace(/♯|♭/g,'');const flat=root().symbol.includes('b');const sharps=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];const flats=['Dó','Ré♭','Ré','Mi♭','Mi','Fá','Sol♭','Sol','Lá♭','Lá','Si♭','Si'];return (flat?flats:sharps)[p]}
-function chordToneAt(pcValue){return step().degrees.find(d=>pitch(d)===pcValue)||null}
-function ciAllowed(degree){return !chordToneAt(pc(pitch(degree)-1))}
-function eligible(){return step().degrees.filter(ciAllowed)}
-function positions(degree){if(!ciAllowed(degree))return[];const out=[];for(let str=0;str<STRING.length;str++)for(let fret=1;fret<=12;fret++){let midi=STRING[str].midi+fret;if(pc(midi)===pitch(degree))out.push({str,fret,from:fret-1,toMidi:midi,fromMidi:midi-1});}
-return out.sort((a,b)=>{let av=a.fret+(a.fret===1?.3:0),bv=b.fret+(b.fret===1?.3:0);return av-bv||a.str-b.str})}
-function allPoints(){const out=[];for(let str=0;str<STRING.length;str++)for(let fret=0;fret<=12;fret++){let midi=STRING[str].midi+fret,p=pc(midi),degree=chordToneAt(p),arrival=step().degrees.find(d=>ciAllowed(d)&&pc(pitch(d)-1)===p)||null;
-out.push({str,fret,midi,degree,arrival});}return out}
-function svg(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(let [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));parent.append(e);return e}
-function board(){
- const el=$('board');el.replaceChildren();const start=144,unit=76,top=62,dy=64;
- svg('rect',{x:130,y:33,width:990,height:251,rx:10,fill:'#322722',stroke:'#705645','stroke-width':2},el);
- for(let fret=0;fret<=12;fret++){const x=start+fret*unit;if(fret>0)svg('line',{x1:x,y1:41,x2:x,y2:282,stroke:fret===1?'#dfb78f':'#9c876f','stroke-width':fret===1?8:2},el);
-  if(fret<12)svg('text',{x:x+unit*.5-3,y:314,fill:'#a8b8c6','font-size':14,'font-weight':650,'text-anchor':'middle'},el).textContent=String(fret+1)}
- for(let i=0;i<4;i++){const y=top+i*dy;svg('line',{x1:start,y1:y,x2:start+12*unit,y2:y,stroke:'#c8cbd1','stroke-width':2.3+i*.7},el);svg('text',{x:107,y:y+4,'font-size':14,'font-weight':800,fill:'#dfc3a8','text-anchor':'end'},el).textContent=STRING[i].name}
- for(let x of [3,5,7,9,12]){let center=start+(x-.5)*unit;svg('circle',{cx:center,cy:top+1.5*dy,r:x===12?0:5,fill:'#d3a578',opacity:.43},el);}
- const selection=positions(state.degree)[state.location]||null;
- for(let point of allPoints()){
-  if(!point.degree&&!point.arrival)continue;
-  const selectedTarget=point.degree===state.degree,selectedCI=point.arrival===state.degree;
-  const matched=selection&&point.str===selection.str&&(point.fret===selection.fret||point.fret===selection.from);
-  const x=point.fret===0?119:start+(point.fret-.5)*unit,y=top+point.str*dy;
-  const structural=!!point.degree,isPrimary=matched&&(selectedTarget||selectedCI),r=isPrimary?22:structural?18:15;
-  const mark=svg('g',{role:'img','aria-label':(point.degree?'grau '+point.degree:'C.I. para '+point.arrival)+' na corda '+STRING[point.str].name+', casa '+point.fret},el);
-  if(isPrimary)svg('circle',{cx:x,cy:y,r:r+5,fill:'none',stroke:'#ffdfa7','stroke-width':2,'stroke-dasharray':"3 3"},mark);
-  svg('circle',{cx:x,cy:y,r,fill:point.degree?(isPrimary?'#f7b37e':selectedTarget?'#da916a':'#32495c'):(isPrimary?'#65c9da':selectedCI?'#4da4ba':'#214755'),stroke:point.degree?'#f5dac0':'#84dce6','stroke-width':isPrimary?2:1.5,opacity:(!isPrimary&&!selectedTarget&&!selectedCI)?.84:1},mark);
-  svg('text',{x,y:y+1,'font-size':point.degree?15:11,'font-weight':850,fill:isPrimary?'#15222a':'#f5eff1','text-anchor':'middle','dominant-baseline':'middle'},mark).textContent=point.degree||'C.I.';
-  if(point.arrival){mark.style.cursor='pointer';mark.addEventListener('click',()=>{state.degree=point.arrival;state.location=Math.max(0,positions(point.arrival).findIndex(p=>p.str===point.str&&p.from===point.fret));stop();render()})}
-  if(point.degree){mark.style.cursor='pointer';mark.addEventListener('click',()=>{state.degree=point.degree;state.location=Math.max(0,positions(point.degree).findIndex(p=>p.str===point.str&&p.fret===point.fret));stop();render()})}
- }
- if(selection){let x1=selection.from===0?119:start+(selection.from-.5)*unit,x2=start+(selection.fret-.5)*unit,y=top+selection.str*dy;
-  const arr=svg('g',{'aria-hidden':'true'},el);svg('line',{x1:x1+17,y1:y-29,x2:x2-17,y2:y-29,stroke:'#9bdfea','stroke-width':3,'stroke-linecap':'round'},arr);svg('polygon',{points:(x2-19)+','+(y-35)+' '+(x2-7)+','+(y-29)+' '+(x2-19)+','+(y-23),fill:'#9bdfea'},arr)}
+const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',bpm:80,token:0};
+const root=()=>ROOTS.find(r=>r.symbol===state.root),ds=()=>FORMS[state.form].map(d=>state.quality==='minor'&&d==='3'?'♭3':d),off=d=>d==='1'?0:d==='5'?7:d==='♭3'?3:4,target=()=>state.target==='3'&&state.quality==='minor'?'♭3':state.target,pcDegree=d=>P(root().pc+off(d));
+function spelling(d){const r=root(),i=d==='1'?0:d==='5'?4:2,letter=LETTERS[(LETTERS.indexOf(r.letter)+i)%7],diff=((pcDegree(d)-SEMI[letter]+18)%12)-6;return PT[letter]+(diff>0?'♯'.repeat(diff):'♭'.repeat(-diff))}
+const SH=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'],FL=['Dó','Ré♭','Ré','Mi♭','Mi','Fá','Sol♭','Sol','Lá♭','Lá','Si♭','Si'];
+function before(d){const t=spelling(d),p=P(pcDegree(d)-1),naturals={Dó:'Si',Ré:'Dó♯',Mi:'Ré♯',Fá:'Mi',Sol:'Fá♯',Lá:'Sol♯',Si:'Lá♯'};if(t.includes('♯'))return t.replace('♯','');if(t.includes('♭'))return (state.root.includes('b')?FL:SH)[p];return naturals[t]||(state.root.includes('b')?FL:SH)[p]}
+function piano(){const rootMidi=60+root().pc-(root().pc>7?12:0),third=state.quality==='major'?4:3;
+ const notes=state.form==='135'?[rootMidi,rootMidi+third,rootMidi+7]:state.form==='351'?[rootMidi+third,rootMidi+7,rootMidi+12]:[rootMidi-5,rootMidi,rootMidi+third];
+ return ds().map((d,i)=>({degree:d,midi:notes[i],name:spelling(d),idx:i}))}
+function bass(){let n=60+root().pc-(root().pc>7?12:0)-12;const lowest=Math.min(...piano().map(x=>x.midi));while(lowest-n<9)n-=12;return{degree:'1',midi:n,name:spelling('1')}}
+function guitar(){
+ const strings=GROUPS[state.group],degrees=ds(),opts=strings.map((n,i)=>Array.from({length:19},(_,f)=>f+1).filter(f=>P(OPEN[n]+f)===pcDegree(degrees[i])));
+ const found=[];for(const a of opts[0])for(const b of opts[1])for(const c of opts[2]){const fs=[a,b,c],span=Math.max(...fs)-Math.min(...fs),midis=fs.map((f,i)=>OPEN[strings[i]]+f);
+ if(span>5||midis[0]>=midis[1]||midis[1]>=midis[2])continue;
+ found.push({fs,midis,score:fs.reduce((sum,n)=>sum+n,0)/3+span*.8+Math.max(0,Math.max(...fs)-12)*1.2})}
+ found.sort((a,b)=>a.score-b.score);if(!found.length)return[];
+ return degrees.map((degree,i)=>({degree,midi:found[0].midis[i],fret:found[0].fs[i],string:strings[i],name:spelling(degree),idx:i}))}
+function locator(notes){if(!notes.length)return null;const string=LOCATOR[state.group][state.form],lowest=notes[0].midi,avg=notes.reduce((s,n)=>s+n.fret,0)/3;
+ const options=[];for(let f=0;f<=19;f++)if(P(OPEN[string]+f)===root().pc&&OPEN[string]+f<lowest)options.push({string,fret:f,midi:OPEN[string]+f,score:Math.abs(f-avg)+(f>avg?7:0)});
+ return options.sort((a,b)=>a.score-b.score)[0]||null}
+function chord(){const notes=state.instrument==='piano'?piano():guitar(),selected=notes.find(n=>n.degree===target());
+ return{notes,selected,bass:state.instrument==='piano'?bass():locator(notes),from:selected?selected.midi-1:null,symbol:root().symbol+(state.quality==='minor'?'m':'')}}
+function svg(tag,attrs,p){const e=document.createElementNS(NS,tag);for(let [a,b]of Object.entries(attrs))e.setAttribute(a,String(b));p.append(e);return e}
+const COLORS={'1':'#e58c42','3':'#5c95cd','♭3':'#5c95cd','5':'#6c78db'};
+function keyboard(id,notes,focus){const el=$(id);el.replaceChildren();let lo=Math.min(...notes.map(n=>n.midi)),start=48+12*Math.floor((lo-47)/12);
+ let whites=[];for(let m=start;whites.length<21;m++)if([0,2,4,5,7,9,11].includes(P(m)))whites.push(m);
+ const w=1000/21;svg('rect',{x:0,y:0,width:1000,height:235,rx:8,fill:'#0b1420'},el);
+ for(let i=0;i<whites.length;i++){svg('rect',{x:i*w+1,y:5,width:w-2,height:219,rx:3,fill:'#f9f3eb',stroke:'#a4a8aa','stroke-width':1.3},el);if(P(whites[i])===0)svg('text',{x:(i+.5)*w,y:209,'text-anchor':'middle','font-size':13,fill:'#81929e'},el).textContent='C'+(Math.floor(whites[i]/12)-1)}
+ for(let i=0;i<whites.length;i++)if([0,2,5,7,9].includes(P(whites[i])))svg('rect',{x:(i+1)*w-w*.31,y:5,width:w*.62,height:136,rx:3,fill:'#222b34',stroke:'#657482'},el);
+ function mark(m,d,color){const black=[1,3,6,8,10].includes(P(m)),i=whites.indexOf(black?m-1:m);if(i<0)return;const x=(i+(black?1:.5))*w,y=black?99:174,r=d==='C.I.'?18:19;
+ svg('circle',{cx:x,cy:y,r,fill:color,stroke:d===focus?'#ffe8c8':'#34445a','stroke-width':2.7},el);
+ svg('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'middle',fill:'#151e28','font-size':d.length>2?10:17,'font-weight':850},el).textContent=d}
+ for(const n of notes)mark(n.midi,n.degree,n.degree===focus?'#f8b780':COLORS[n.degree]);
+ if(focus){const t=notes.find(n=>n.degree===focus);if(t)mark(t.midi-1,'C.I.','#70cadb')}
 }
-function render(){
- $('root').value=state.root;const s=step(),e=eligible(),d=state.degree;
- if(!s.degrees.includes(d))state.degree=e[0];state.location=Math.max(0,state.location);
- $('chord').textContent=root().symbol+s.suffix;$('chordName').textContent=root().name+' '+s.description;
- $('count').textContent=e.length+' graus com C.I.';
- const stages=$('stages');stages.replaceChildren();STEPS.forEach((stage,i)=>{let b=document.createElement('button');b.className='step'+(i===state.step?' active':'');b.textContent=root().symbol+stage.suffix;b.setAttribute('aria-pressed',String(i===state.step));b.onclick=()=>{stop();state.step=i;state.degree=eligible()[0];state.location=0;render()};stages.append(b)});
- const targets=$('targets');targets.replaceChildren();for(let degree of s.degrees){let b=document.createElement('button'),ok=ciAllowed(degree);b.className='target'+(degree===state.degree?' active':'')+(ok?'':' unavailable');b.innerHTML='<b>'+degree+'</b><small>'+note(degree)+'</small>';b.title=ok?'Estudar C.I. para '+note(degree):'Nota abaixo já pertence ao acorde';b.setAttribute('aria-pressed',String(degree===state.degree));b.onclick=()=>{stop();state.degree=degree;state.location=0;render()};targets.append(b)}
- const ok=ciAllowed(state.degree),locs=positions(state.degree),p=locs[state.location]||locs[0]||null;if(p){state.location=locs.indexOf(p)}
- $('playPair').disabled=!p;$('motion').textContent=ok?approachName(state.degree)+' → '+note(state.degree):'Sem C.I. para '+note(state.degree);
- $('motionInfo').textContent=ok?'C.I.: 1 semitom abaixo do grau '+state.degree:'A nota anterior é '+(chordToneAt(pc(pitch(state.degree)-1))||'estrutural')+' do próprio acorde.';
- $('where').textContent=p?'Corda '+STRING[p.str].name+' · casa '+p.from+' → casa '+p.fret:'Nota já pertencente ao acorde';
- $('whereInfo').textContent=p?'Selecione outra corda abaixo ou toque no diagrama.':'O grau '+state.degree+' não recebe a marcação C.I. neste acorde.';
- const list=$('locations');list.replaceChildren();locs.forEach((x,i)=>{let b=document.createElement('button');b.className=i===state.location?'active':'';b.textContent=STRING[x.str].name+' · '+x.from+'→'+x.fret;b.onclick=()=>{stop();state.location=i;render()};list.append(b)});
- $('tip').textContent=!ok?'A nota imediatamente abaixo de '+note(state.degree)+' já é '+(chordToneAt(pc(pitch(state.degree)-1))||'um grau')+' do acorde. Ela mantém sua função estrutural e não recebe o rótulo C.I.':approachName(state.degree)+' aproxima '+note(state.degree)+' por baixo e resolve imediatamente no grau '+state.degree+'. C.I. não é um novo acorde nem muda o baixo.';
- board();
-}
-let audio=null,timers=[],activeOscillators=[];
-function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const osc of activeOscillators){try{osc.stop((audio?.currentTime||0)+.008)}catch(e){}}activeOscillators=[];$('playPair').disabled=false;$('playTour').disabled=false;const notes=$('board').querySelectorAll?$('board').querySelectorAll('.playing'):[];for(let el of notes)el.classList.remove('playing')}
-function unlock(){try{let Ctor=window.AudioContext||window.webkitAudioContext;if(!Ctor)throw Error('Sem Web Audio');audio=audio||new Ctor();if(audio.state==='suspended'&&audio.resume){let promise=audio.resume();if(promise?.catch)promise.catch(()=>{})}return true}catch(e){$('tip').textContent='Não foi possível iniciar o áudio. Confira o volume do aparelho e toque novamente.';return false}}
-function synth(midi,when,duration,level=.18){if(!audio)return;const hz=440*Math.pow(2,(midi-69)/12);for(let [partial,vol] of [[1,1],[2,.2],[3,.07]]){let osc=audio.createOscillator(),gain=audio.createGain();osc.type=partial===1?'sine':'triangle';osc.frequency.setValueAtTime(hz*partial,when);gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(level*vol,when+.02);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);osc.connect(gain);gain.connect(audio.destination);activeOscillators.push(osc);osc.start(when);osc.stop(when+duration+.03)}}
-function pairSound(p,when,beat){synth(p.fromMidi,when,beat*.46,.18);synth(p.toMidi,when+beat*.5,beat*.85,.23)}
-function playPair(){stop();if(!unlock())return;const p=positions(state.degree)[state.location];if(!p)return;const beat=60/state.bpm;pairSound(p,audio.currentTime+.025,beat)}
-function playTour(){stop();if(!unlock())return;const t=state.token,all=eligible(),beat=60/state.bpm;if(!all.length)return;
- const schedule=all.map((degree,i)=>({degree,p:positions(degree)[0],offset:i*beat*1.8}));
- const start=audio.currentTime+.03;
- // A primeira dupla é agendada ainda no clique — importante no Safari/iPhone.
- for(let item of schedule)pairSound(item.p,start+item.offset,beat);
- for(let item of schedule){const timer=setTimeout(()=>{if(state.token!==t)return;state.degree=item.degree;state.location=0;render()},item.offset*1000);timers.push(timer)}
- const done=setTimeout(()=>{if(state.token===t){$('playTour').disabled=false}},(schedule.at(-1).offset+beat*1.5)*1000);timers.push(done);
- $('playTour').disabled=true;
-}
-ROOTS.forEach(x=>{let o=document.createElement('option');o.value=x.symbol;o.textContent=x.symbol+' · '+x.name;$('root').append(o)});
-$('root').onchange=e=>{stop();state.root=e.target.value;state.step=0;state.degree='3';state.location=0;render()};
-$('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm};
-$('playPair').onclick=playPair;$('playTour').onclick=playTour;$('stop').onclick=stop;
-window.CifraPraMimEmbelezamento={get:()=>({root:state.root,chord:root().symbol+step().suffix,degree:state.degree,eligible:eligible(),pairs:positions(state.degree),selected:positions(state.degree)[state.location]||null}),show:(r,stage=0,degree='3')=>{stop();state.root=r;state.step=stage;state.degree=degree;state.location=0;render();return window.CifraPraMimEmbelezamento.get()},data:()=>({roots:ROOTS.map(r=>r.symbol),chords:STEPS.map(s=>s.suffix),strings:STRING.map(x=>x.name)})};
+function pianoUI(){const left=[bass()],right=piano();keyboard('leftKeys',left,null);keyboard('rightKeys',right,target());
+ const cards=(id,notes,append)=>{const p=$(id);p.replaceChildren();for(const n of notes){const d=document.createElement('div');d.className='ci-card'+(n.degree===target()?' active':'');d.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';p.append(d)}
+ if(append){const d=document.createElement('div');d.className='ci-card ci';d.innerHTML='<b>C.I.</b><small>'+before(target())+'</small>';p.append(d)}};
+ cards('leftCards',left,false);cards('rightCards',right,true);$('rightForm').textContent=state.form}
+function guitarUI(){const el=$('guitar');el.replaceChildren();const notes=guitar(),bass=locator(notes),t=notes.find(n=>n.degree===target());if(!notes.length)return;
+ const fs=notes.map(n=>n.fret).concat(bass?[bass.fret]:[]).concat([t.fret-1]);let low=Math.max(1,Math.min(...fs)-2),high=low+10;if(high<Math.max(...fs)+1){low=Math.max(1,Math.max(...fs)-10);high=low+10}if(high>19){high=19;low=9}
+ const L=195,R=1082,X=f=>f===0?L-31:L+(f-low+.5)*(R-L)/(high-low+1),Y=n=>65+n*41;
+ svg('rect',{x:104,y:62,width:985,height:282,rx:11,fill:'#37261e',stroke:'#8a674e','stroke-width':2},el);
+ for(let f=low;f<=high;f++){const x=L+(f-low)*(R-L)/(high-low+1);svg('line',{x1:x,y1:65,x2:x,y2:343,stroke:'#c0a38a','stroke-width':2},el);svg('text',{x:X(f),y:355,'font-size':12,fill:'#d5c1ae','text-anchor':'middle'},el).textContent=String(f)}
+ for(let string=1;string<=6;string++){svg('line',{x1:L,y1:Y(string),x2:R,y2:Y(string),stroke:'#d7d2d2','stroke-width':1.1+string*.23},el);svg('text',{x:86,y:Y(string)+5,'font-size':13,fill:'#c6d2dd','text-anchor':'end'},el).textContent=string+'ª'}
+ for(const n of notes){const on=n.degree===target(),x=X(n.fret),y=Y(n.string);
+ svg('circle',{cx:x,cy:y,r:on?26:21,fill:on?'#f5ae77':COLORS[n.degree],stroke:on?'#ffdeaf':'#d6d5d2','stroke-width':2},el);
+ svg('text',{x,y:y+1,'font-size':19,'font-weight':900,fill:'#1a2530','text-anchor':'middle','dominant-baseline':'middle'},el).textContent=n.degree;
+ if(on){svg('circle',{cx:X(n.fret-1),cy:y,r:19,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el);svg('text',{x:X(n.fret-1),y:y+1,fill:'#112733','font-size':11,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='C.I.';svg('line',{x1:X(n.fret-1)+17,y1:y-29,x2:x-18,y2:y-29,stroke:'#a1e6f0','stroke-width':3},el)}}
+ if(bass){svg('circle',{cx:X(bass.fret),cy:Y(bass.string),r:20,fill:'#241c34',stroke:'#d7b8fc','stroke-width':2,'stroke-dasharray':'4 3'},el);svg('text',{x:X(bass.fret),y:Y(bass.string)+1,fill:'#d7b8fc','font-size':12,'font-weight':900,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='1B'}
+ $('fretSummary').textContent=notes.map(n=>n.degree+' · '+n.string+'ª casa '+n.fret).join(' | ');$('bassSummary').textContent=bass?'1B · '+bass.string+'ª corda · casa '+bass.fret:'1B: fora do alcance do diagrama'}
+function render(){const c=chord(),d=target();$('root').value=state.root;
+ $('chord').textContent=c.symbol;$('chordName').textContent=root().name+' · tríade '+(state.quality==='minor'?'menor':'maior')+' · '+state.form;$('formBadge').textContent=(state.instrument==='piano'?'M.D. · ':state.group.split('').join('–')+' · ')+state.form;$('triadFormula').textContent=state.quality==='minor'?'3st/4st':'4st/3st';
+ $('pianoPanel').hidden=state.instrument!=='piano';$('guitarPanel').hidden=state.instrument!=='guitar';$('stringPicker').hidden=state.instrument!=='guitar';
+ for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>{const active=b.dataset[k]===state[k];b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+ document.querySelector('[data-target="3"] small').textContent=state.quality==='minor'?'Terça menor':'Terça';
+ $('motion').textContent=before(d)+' → '+spelling(d);$('moveDetail').textContent='C.I.'+state.target+' · 1 semitom abaixo do grau '+d;$('rhythmDetail').textContent='“a” = '+before(d)+' · tempo 2 = '+spelling(d);
+ $('tip').textContent='Forma '+state.form+': as três notas são estruturais. O C.I.'+state.target+' ('+before(d)+') soa na última semicolcheia e resolve em '+spelling(d)+'; as outras duas vozes permanecem no acorde.'+(state.instrument==='guitar'?' No violão, a aproximação ocorre uma casa atrás, na mesma corda.':' No piano, a M.E. mantém a fundamental.');
+ if(state.instrument==='piano')pianoUI();else guitarUI();$('playPair').disabled=!c.selected}
+let audio=null,oscillators=[],timers=[];
+function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playTour').disabled=false}
+function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
+function tone(midi,when,duration,volume=.14){const freq=440*Math.pow(2,(midi-69)/12);for(const [harm,lev]of [[1,1],[2,.19],[3,.06]]){const osc=audio.createOscillator(),gain=audio.createGain();osc.type=harm===1?'sine':'triangle';osc.frequency.setValueAtTime(freq*harm,when);gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(volume*lev,when+.01);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);osc.connect(gain);gain.connect(audio.destination);oscillators.push(osc);osc.start(when);osc.stop(when+duration+.025)}}
+function pattern(c,at,beat){if(!c.selected)return;if(state.instrument==='piano')tone(c.bass.midi,at,beat*1.9,.095);
+ for(const n of c.notes)tone(n.midi,at,beat*.62,.065);
+ // A aproximação entra na última semicolcheia (3/4 do tempo) e resolve no tempo 2.
+ tone(c.from,at+beat*.75,beat*.25,.16);tone(c.selected.midi,at+beat,beat*.87,.21)}
+function playPair(){stop();if(!unlock())return;const c=chord();if(!c.selected)return;pattern(c,audio.currentTime+.025,60/state.bpm)}
+function playTour(){stop();if(!unlock())return;const token=state.token,beat=60/state.bpm,at=audio.currentTime+.025;
+ for(let i=0;i<3;i++){const degree=['1','3','5'][i],save=state.target;state.target=degree;pattern(chord(),at+i*2.2*beat,beat);state.target=save;
+ timers.push(setTimeout(()=>{if(token!==state.token)return;state.target=degree;render()},i*2.2*beat*1000))}
+ $('playTour').disabled=true;timers.push(setTimeout(()=>{if(state.token===token)$('playTour').disabled=false},(2*2.2+1.9)*beat*1000))}
+ROOTS.forEach(r=>{const o=document.createElement('option');o.value=r.symbol;o.textContent=r.symbol+' · '+r.name;$('root').append(o)});
+$('root').onchange=e=>{stop();state.root=e.target.value;render()};
+for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>b.onclick=()=>{stop();state[k]=b.dataset[k];render()});
+$('playPair').onclick=playPair;$('playTour').onclick=playTour;$('stop').onclick=stop;$('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm};
+window.CifraPraMimEmbelezamento={get:()=>{const c=chord();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});render();return window.CifraPraMimEmbelezamento.get()}};
 render();
 })();
 </script></body></html>
