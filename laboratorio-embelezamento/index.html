@@ -19,6 +19,10 @@ button:disabled{opacity:.42;cursor:default}
 @media(max-width:620px){.shell{padding:10px 9px calc(115px + env(safe-area-inset-bottom,0px))}.head{padding:5px 1px 14px}.links{width:100%;gap:5px}.links a{flex:1;text-align:center;padding:8px 5px;font-size:10px}.topintro{padding:15px;gap:10px}.controls{padding:13px;gap:8px}.subline{padding:0 14px 12px}.chordhead{padding:15px 14px 9px}.chordtitle{font-size:56px}.targetzone{padding:0 11px 11px}.target{min-width:64px;padding:7px 9px}.info{margin:0 10px 10px;gap:6px}.infoitem{padding:9px 11px}.infoitem strong{font-size:14px}.boardscroll{padding:0 3px 3px}.board{width:940px;min-width:940px}.boardheading{padding:7px 12px}.under{margin:7px 11px 14px}.tip{margin:10px 11px 13px;padding:11px}.play-dock{position:fixed;z-index:90;left:7px;right:7px;bottom:calc(7px + env(safe-area-inset-bottom,0px));margin:0;background:#142536f7;border-color:#677d90;box-shadow:0 8px 28px #000b;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:8px}.play-dock .transport{display:grid;grid-template-columns:1.35fr 1.2fr .75fr;gap:5px}.play{font-size:10px;padding:8px 5px;min-height:41px;text-align:center}.tempo{margin:0;grid-column:1/-1;justify-content:center;padding:1px 4px 0;font-size:10px}.tempo input{width:auto;max-width:170px;flex:1}.tempo output{font-size:11px}}
 
 /* Tríades de embelezamento: desenho comum para piano e violão. */
+#stringPicker[hidden],#pianoPanel[hidden],#guitarPanel[hidden]{display:none!important}
+.ci-card.sounding{border-color:#ff888e!important;background:#642e39!important}
+.ci-card.sounding b{color:#ff9ea3!important}
+
 .intro{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;padding:17px 20px;margin-bottom:12px}.intro h2{font:750 clamp(25px,3.2vw,37px)/1.15 Georgia,serif;letter-spacing:-.03em;margin:0 0 7px}.intro p{color:#b8c8d5;font-size:12px;max-width:770px;margin:0}.intro .module-tag{border:1px solid #875c40;border-radius:9px;background:#483024;color:#ffdbb8;padding:7px 10px;font-size:10px;font-weight:850;white-space:nowrap}
 
 .controls{grid-template-columns:minmax(125px,.8fr) minmax(120px,.8fr) minmax(180px,1fr) minmax(175px,1fr)}
@@ -55,7 +59,7 @@ button:disabled{opacity:.42;cursor:default}
 .ci-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:3px}
 .ci-guitar-summary{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:10px;color:#a9bece;margin:6px 4px 8px}.ci-guitar-summary strong{color:#ead0fe}
 @media(max-width:900px){.piano-hands{grid-template-columns:1fr}}
-@media(max-width:700px){.controls{grid-template-columns:1fr 1fr}.compact-practice{margin:0 10px 9px;padding:9px}.ci-info{margin:0 10px 9px;gap:6px}.ci-info>div{padding:8px}.ci-info strong{font-size:15px}.ci-transport{display:grid;grid-template-columns:1.1fr 1.1fr .65fr;gap:5px}.ci-transport .tempo{grid-column:1/-1;margin:0;justify-content:center;font-size:10px}.ci-transport .tempo input{width:80px;max-width:170px;flex:1}.ci-player{position:fixed;bottom:calc(7px + env(safe-area-inset-bottom,0px));left:8px;right:8px;margin:0;z-index:80;background:#172a3cf8;border-color:#7190a5;box-shadow:0 10px 30px #000b;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:8px}.ci-transport .play{padding:8px 3px;min-height:40px;font-size:10px}.ci-instruments{padding:0 10px 5px}.ci-keyboard{min-width:690px;width:690px}.shell{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))}}
+@media(max-width:700px){.controls{grid-template-columns:1fr 1fr}.compact-practice{margin:0 10px 9px;padding:9px}.ci-info{margin:0 10px 9px;gap:6px}.ci-info>div{padding:8px}.ci-info strong{font-size:15px}.ci-transport{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.ci-transport .tempo{grid-column:1/-1;margin:0;justify-content:center;font-size:10px}.ci-transport .tempo input{width:80px;max-width:170px;flex:1}.ci-player{position:fixed;bottom:calc(7px + env(safe-area-inset-bottom,0px));left:8px;right:8px;margin:0;z-index:80;background:#172a3cf8;border-color:#7190a5;box-shadow:0 10px 30px #000b;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:8px}.ci-transport .play{padding:8px 3px;min-height:40px;font-size:10px}.ci-instruments{padding:0 10px 5px}.ci-keyboard{min-width:690px;width:690px}.shell{padding-bottom:calc(171px + env(safe-area-inset-bottom,0px))}}
 @media(max-width:390px){.seg-choice button{font-size:10px}.triad-targets button b{font-size:13px}}
 </style></head><body><div class="shell">
 <header class="head"><div class="brand"><span class="brandmark" aria-hidden="true"></span><div><h1>Cifra <em>pra Mim</em></h1><div class="eyebrow">Laboratório de Notas de Embelezamento</div><div class="inst">C.I. · BRAÇO DE 4 CORDAS</div><div class="byline">Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer">@igmoraisb</a></div></div></div><nav class="links" aria-label="Navegação"><a href="../">Início</a><a href="../laboratorio-violao/">Violão</a><a href="../laboratorio-cavaquinho/">Cavaquinho</a><a href="../laboratorio-piano/">Piano</a></nav></header>
@@ -70,7 +74,7 @@ button:disabled{opacity:.42;cursor:default}
 <div class="chordhead"><div><div class="chordtitle" id="chord">C</div><div class="chorddesc" id="chordName">Tríade maior · 135</div></div><div class="chordbadges"><span class="chordbadge" id="triadFormula">4st/3st</span><span class="chordbadge" id="formBadge">M.D. · 135</span></div></div>
 <div class="compact-practice"><div class="practice-line"><span class="label">Nota-alvo e embelezamento</span><div class="string-pick" id="stringPicker" hidden><button class="active" data-group="432">4–3–2</button><button data-group="321">3–2–1</button></div></div><div class="triad-targets"><button data-target="1" class="active"><b>C.I.1</b><small>Fundamental</small></button><button data-target="3"><b>C.I.3</b><small>Terça</small></button><button data-target="5"><b>C.I.5</b><small>Quinta</small></button></div></div>
 <div class="ci-info"><div><span class="label">Aproximação → resolução</span><strong id="motion">Si → Dó</strong><p id="moveDetail">C.I.1 · semitom inferior → nota-alvo</p></div><div><span class="label">Pulso: semicolcheia de aproximação</span><strong>1 e &amp; <em>a</em> | 2</strong><p id="rhythmDetail">O C.I. entra no último “a” e resolve no tempo 2.</p></div></div>
-<div class="ci-player"><div class="ci-transport"><button id="playPair" class="play primary">▶ Aproximação</button><button id="playTour" class="play">▶ C.I.1 · 3 · 5</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div></div>
+<div class="ci-player"><div class="ci-transport"><button id="playPair" class="play primary">▶ Aproximação</button><button id="playTour" class="play">▶ Percorrer C.I.</button><button id="playTriad" class="play">▶ C.I. aplicado à tríade</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div></div>
 <div class="ci-instruments">
 <div id="pianoPanel"><div class="piano-hands">
 <div class="ci-hand"><div class="ci-hand-title"><strong>M.E.</strong><span>Fundamental no baixo</span></div><div class="keyboard-scroll"><svg id="leftKeys" class="ci-keyboard" viewBox="0 0 1000 240" role="img" aria-label="Mão esquerda no piano"></svg></div><div id="leftCards" class="ci-cards"></div></div>
@@ -114,20 +118,29 @@ function chord(){const notes=state.instrument==='piano'?piano():guitar(),selecte
  return{notes,selected,bass:state.instrument==='piano'?bass():locator(notes),from:selected?selected.midi-1:null,symbol:root().symbol+(state.quality==='minor'?'m':'')}}
 function svg(tag,attrs,p){const e=document.createElementNS(NS,tag);for(let [a,b]of Object.entries(attrs))e.setAttribute(a,String(b));p.append(e);return e}
 const COLORS={'1':'#e58c42','3':'#5c95cd','♭3':'#5c95cd','5':'#6c78db'};
-function keyboard(id,notes,focus){const el=$(id);el.replaceChildren();let lo=Math.min(...notes.map(n=>n.midi)),start=48+12*Math.floor((lo-47)/12);
+let visualNodes=[];
+function recordNote(el,midi,fill,stroke){visualNodes.push({el,midi,fill,stroke});return el}
+function keyboard(id,notes,focus){
+ const el=$(id);el.replaceChildren();
+ let lo=Math.min(...notes.map(n=>n.midi));
+ if(focus){const chosen=notes.find(n=>n.degree===focus);if(chosen)lo=Math.min(lo,chosen.midi-1)}
+ // A região precisa incluir a tecla anterior ao 1. Em C4, isso inclui Si3 (MIDI 59).
+ const start=12*Math.floor(lo/12);
  let whites=[];for(let m=start;whites.length<21;m++)if([0,2,4,5,7,9,11].includes(P(m)))whites.push(m);
  const w=1000/21;svg('rect',{x:0,y:0,width:1000,height:235,rx:8,fill:'#0b1420'},el);
  for(let i=0;i<whites.length;i++){svg('rect',{x:i*w+1,y:5,width:w-2,height:219,rx:3,fill:'#f9f3eb',stroke:'#a4a8aa','stroke-width':1.3},el);if(P(whites[i])===0)svg('text',{x:(i+.5)*w,y:209,'text-anchor':'middle','font-size':13,fill:'#81929e'},el).textContent='C'+(Math.floor(whites[i]/12)-1)}
  for(let i=0;i<whites.length;i++)if([0,2,5,7,9].includes(P(whites[i])))svg('rect',{x:(i+1)*w-w*.31,y:5,width:w*.62,height:136,rx:3,fill:'#222b34',stroke:'#657482'},el);
  function mark(m,d,color){const black=[1,3,6,8,10].includes(P(m)),i=whites.indexOf(black?m-1:m);if(i<0)return;const x=(i+(black?1:.5))*w,y=black?99:174,r=d==='C.I.'?18:19;
- svg('circle',{cx:x,cy:y,r,fill:color,stroke:d===focus?'#ffe8c8':'#34445a','stroke-width':2.7},el);
+ const stroke=d===focus?'#ffe8c8':'#34445a';
+ recordNote(svg('circle',{cx:x,cy:y,r,fill:color,stroke,'stroke-width':2.7},el),m,color,stroke);
  svg('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'middle',fill:'#151e28','font-size':d.length>2?10:17,'font-weight':850},el).textContent=d}
  for(const n of notes)mark(n.midi,n.degree,n.degree===focus?'#f8b780':COLORS[n.degree]);
  if(focus){const t=notes.find(n=>n.degree===focus);if(t)mark(t.midi-1,'C.I.','#70cadb')}
 }
+function rightTarget(){return piano().find(n=>n.degree===target())}
 function pianoUI(){const left=[bass()],right=piano();keyboard('leftKeys',left,null);keyboard('rightKeys',right,target());
- const cards=(id,notes,append)=>{const p=$(id);p.replaceChildren();for(const n of notes){const d=document.createElement('div');d.className='ci-card'+(n.degree===target()?' active':'');d.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';p.append(d)}
- if(append){const d=document.createElement('div');d.className='ci-card ci';d.innerHTML='<b>C.I.</b><small>'+before(target())+'</small>';p.append(d)}};
+ const cards=(id,notes,append)=>{const p=$(id);p.replaceChildren();for(const n of notes){const d=document.createElement('div');d.className='ci-card'+(n.degree===target()?' active':'');d.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';d.dataset.midi=String(n.midi);p.append(d)}
+ if(append){const d=document.createElement('div');d.className='ci-card ci';d.innerHTML='<b>C.I.</b><small>'+before(target())+'</small>';d.dataset.midi=String(rightTarget().midi-1);p.append(d)}};
  cards('leftCards',left,false);cards('rightCards',right,true);$('rightForm').textContent=state.form}
 function guitarUI(){const el=$('guitar');el.replaceChildren();const notes=guitar(),bass=locator(notes),t=notes.find(n=>n.degree===target());if(!notes.length)return;
  const fs=notes.map(n=>n.fret).concat(bass?[bass.fret]:[]).concat([t.fret-1]);let low=Math.max(1,Math.min(...fs)-2),high=low+10;if(high<Math.max(...fs)+1){low=Math.max(1,Math.max(...fs)-10);high=low+10}if(high>19){high=19;low=9}
@@ -136,12 +149,13 @@ function guitarUI(){const el=$('guitar');el.replaceChildren();const notes=guitar
  for(let f=low;f<=high;f++){const x=L+(f-low)*(R-L)/(high-low+1);svg('line',{x1:x,y1:65,x2:x,y2:343,stroke:'#c0a38a','stroke-width':2},el);svg('text',{x:X(f),y:355,'font-size':12,fill:'#d5c1ae','text-anchor':'middle'},el).textContent=String(f)}
  for(let string=1;string<=6;string++){svg('line',{x1:L,y1:Y(string),x2:R,y2:Y(string),stroke:'#d7d2d2','stroke-width':1.1+string*.23},el);svg('text',{x:86,y:Y(string)+5,'font-size':13,fill:'#c6d2dd','text-anchor':'end'},el).textContent=string+'ª'}
  for(const n of notes){const on=n.degree===target(),x=X(n.fret),y=Y(n.string);
- svg('circle',{cx:x,cy:y,r:on?26:21,fill:on?'#f5ae77':COLORS[n.degree],stroke:on?'#ffdeaf':'#d6d5d2','stroke-width':2},el);
+ const fill=on?'#f5ae77':COLORS[n.degree],stroke=on?'#ffdeaf':'#d6d5d2';
+ recordNote(svg('circle',{cx:x,cy:y,r:on?26:21,fill,stroke,'stroke-width':2},el),n.midi,fill,stroke);
  svg('text',{x,y:y+1,'font-size':19,'font-weight':900,fill:'#1a2530','text-anchor':'middle','dominant-baseline':'middle'},el).textContent=n.degree;
- if(on){svg('circle',{cx:X(n.fret-1),cy:y,r:19,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el);svg('text',{x:X(n.fret-1),y:y+1,fill:'#112733','font-size':11,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='C.I.';svg('line',{x1:X(n.fret-1)+17,y1:y-29,x2:x-18,y2:y-29,stroke:'#a1e6f0','stroke-width':3},el)}}
- if(bass){svg('circle',{cx:X(bass.fret),cy:Y(bass.string),r:20,fill:'#241c34',stroke:'#d7b8fc','stroke-width':2,'stroke-dasharray':'4 3'},el);svg('text',{x:X(bass.fret),y:Y(bass.string)+1,fill:'#d7b8fc','font-size':12,'font-weight':900,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='1B'}
+ if(on){recordNote(svg('circle',{cx:X(n.fret-1),cy:y,r:19,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el),n.midi-1,'#6ec5d7','#d6fbff');svg('text',{x:X(n.fret-1),y:y+1,fill:'#112733','font-size':11,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='C.I.';svg('line',{x1:X(n.fret-1)+17,y1:y-29,x2:x-18,y2:y-29,stroke:'#a1e6f0','stroke-width':3},el)}}
+ if(bass){recordNote(svg('circle',{cx:X(bass.fret),cy:Y(bass.string),r:20,fill:'#241c34',stroke:'#d7b8fc','stroke-width':2,'stroke-dasharray':'4 3'},el),bass.midi,'#241c34','#d7b8fc');svg('text',{x:X(bass.fret),y:Y(bass.string)+1,fill:'#d7b8fc','font-size':12,'font-weight':900,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='1B'}
  $('fretSummary').textContent=notes.map(n=>n.degree+' · '+n.string+'ª casa '+n.fret).join(' | ');$('bassSummary').textContent=bass?'1B · '+bass.string+'ª corda · casa '+bass.fret:'1B: fora do alcance do diagrama'}
-function render(){const c=chord(),d=target();$('root').value=state.root;
+function render(){visualNodes=[];const c=chord(),d=target();$('root').value=state.root;
  $('chord').textContent=c.symbol;$('chordName').textContent=root().name+' · tríade '+(state.quality==='minor'?'menor':'maior')+' · '+state.form;$('formBadge').textContent=(state.instrument==='piano'?'M.D. · ':state.group.split('').join('–')+' · ')+state.form;$('triadFormula').textContent=state.quality==='minor'?'3st/4st':'4st/3st';
  $('pianoPanel').hidden=state.instrument!=='piano';$('guitarPanel').hidden=state.instrument!=='guitar';$('stringPicker').hidden=state.instrument!=='guitar';
  for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>{const active=b.dataset[k]===state[k];b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
@@ -150,22 +164,80 @@ function render(){const c=chord(),d=target();$('root').value=state.root;
  $('tip').textContent='Forma '+state.form+': as três notas são estruturais. O C.I.'+state.target+' ('+before(d)+') soa na última semicolcheia e resolve em '+spelling(d)+'; as outras duas vozes permanecem no acorde.'+(state.instrument==='guitar'?' No violão, a aproximação ocorre uma casa atrás, na mesma corda.':' No piano, a M.E. mantém a fundamental.');
  if(state.instrument==='piano')pianoUI();else guitarUI();$('playPair').disabled=!c.selected}
 let audio=null,oscillators=[],timers=[];
-function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playTour').disabled=false}
+function highlight(midis){
+ const active=new Set(midis);
+ for(const v of visualNodes){
+  const playing=active.has(v.midi);
+  v.el.setAttribute('fill',playing?'#ff6471':v.fill);
+  v.el.setAttribute('stroke',playing?'#ffe3e7':v.stroke);
+  v.el.setAttribute('stroke-width',playing?'4':'2.7');
+ }
+ for(const id of ['leftCards','rightCards']){
+  for(const el of $(id).children)el.classList.toggle('sounding',active.has(Number(el.dataset?.midi)));
+ }
+}
+function scheduleHighlight(when,midis,token){
+ const delay=Math.max(0,(when-audio.currentTime)*1000);
+ timers.push(setTimeout(()=>{if(token===state.token)highlight(midis)},delay));
+}
+function focusAt(degree,when,token){
+ const delay=Math.max(0,(when-audio.currentTime)*1000);
+ timers.push(setTimeout(()=>{
+  if(token!==state.token)return;
+  state.target=degree==='♭3'?'3':degree;render();
+ },delay));
+}
+
+function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playTour').disabled=false;$('playTriad').disabled=false;highlight([])}
 function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
 function tone(midi,when,duration,volume=.14){const freq=440*Math.pow(2,(midi-69)/12);for(const [harm,lev]of [[1,1],[2,.19],[3,.06]]){const osc=audio.createOscillator(),gain=audio.createGain();osc.type=harm===1?'sine':'triangle';osc.frequency.setValueAtTime(freq*harm,when);gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(volume*lev,when+.01);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);osc.connect(gain);gain.connect(audio.destination);oscillators.push(osc);osc.start(when);osc.stop(when+duration+.025)}}
-function pattern(c,at,beat){if(!c.selected)return;if(state.instrument==='piano')tone(c.bass.midi,at,beat*1.9,.095);
+function pattern(c,at,beat,token=state.token){if(!c.selected)return;
+ if(state.instrument==='piano'&&c.bass)tone(c.bass.midi,at,beat*1.9,.095);
  for(const n of c.notes)tone(n.midi,at,beat*.62,.065);
- // A aproximação entra na última semicolcheia (3/4 do tempo) e resolve no tempo 2.
- tone(c.from,at+beat*.75,beat*.25,.16);tone(c.selected.midi,at+beat,beat*.87,.21)}
+ // Última semicolcheia do tempo (0,75) e resolução no tempo seguinte.
+ tone(c.from,at+beat*.75,beat*.25,.16);tone(c.selected.midi,at+beat,beat*.87,.21);
+ scheduleHighlight(at,[...c.notes.map(n=>n.midi),...(state.instrument==='piano'&&c.bass?[c.bass.midi]:[])],token);
+ scheduleHighlight(at+beat*.75,[c.from],token);
+ scheduleHighlight(at+beat,[c.selected.midi],token);
+ scheduleHighlight(at+beat*1.9,[],token);
+}
 function playPair(){stop();if(!unlock())return;const c=chord();if(!c.selected)return;pattern(c,audio.currentTime+.025,60/state.bpm)}
-function playTour(){stop();if(!unlock())return;const token=state.token,beat=60/state.bpm,at=audio.currentTime+.025;
- for(let i=0;i<3;i++){const degree=['1','3','5'][i],save=state.target;state.target=degree;pattern(chord(),at+i*2.2*beat,beat);state.target=save;
- timers.push(setTimeout(()=>{if(token!==state.token)return;state.target=degree;render()},i*2.2*beat*1000))}
- $('playTour').disabled=true;timers.push(setTimeout(()=>{if(state.token===token)$('playTour').disabled=false},(2*2.2+1.9)*beat*1000))}
+function playTour(){stop();if(!unlock())return;
+ const token=state.token,beat=60/state.bpm,at=audio.currentTime+.025;
+ for(let i=0;i<3;i++){
+  const degree=['1','3','5'][i],saved=state.target;state.target=degree;const c=chord();state.target=saved;
+  const when=at+i*2.2*beat;
+  focusAt(degree,when,token);pattern(c,when,beat,token);
+ }
+ $('playTour').disabled=true;
+ timers.push(setTimeout(()=>{if(state.token===token)$('playTour').disabled=false},(2*2.2+1.95)*beat*1000));
+}
+// Uma única execução percorre as três VOZES NA ORDEM DA FORMA,
+// cada C.I. em semicolcheia antes de sua resolução; fecha com o acorde.
+function playTriad(){
+ stop();if(!unlock())return;
+ const token=state.token,beat=60/state.bpm,at=audio.currentTime+.025,c=chord();
+ if(c.notes.length!==3)return;
+ $('playTriad').disabled=true;
+ if(c.bass){tone(c.bass.midi,at,beat*3.9,.09);scheduleHighlight(at,[c.bass.midi],token)}
+ for(let i=0;i<3;i++){
+  const n=c.notes[i],ciTime=at+(i+.75)*beat,arrival=at+(i+1)*beat;
+  tone(n.midi-1,ciTime,beat*.25,.18);
+  tone(n.midi,arrival,beat*.80,.22);
+  focusAt(n.degree,ciTime,token);
+  scheduleHighlight(ciTime,[n.midi-1],token);
+  scheduleHighlight(arrival,[n.midi],token);
+ }
+ const chordTime=at+4*beat;
+ for(const n of c.notes)tone(n.midi,chordTime,beat*1.25,.10);
+ scheduleHighlight(chordTime,c.notes.map(n=>n.midi),token);
+ scheduleHighlight(chordTime+beat*1.35,[],token);
+ timers.push(setTimeout(()=>{if(state.token===token)$('playTriad').disabled=false},(5.45*beat)*1000));
+}
 ROOTS.forEach(r=>{const o=document.createElement('option');o.value=r.symbol;o.textContent=r.symbol+' · '+r.name;$('root').append(o)});
 $('root').onchange=e=>{stop();state.root=e.target.value;render()};
 for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>b.onclick=()=>{stop();state[k]=b.dataset[k];render()});
-$('playPair').onclick=playPair;$('playTour').onclick=playTour;$('stop').onclick=stop;$('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm};
+$('playPair').onclick=playPair;$('playTour').onclick=playTour;$('playTriad').onclick=playTriad;$('stop').onclick=stop;$('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm};
 window.CifraPraMimEmbelezamento={get:()=>{const c=chord();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});render();return window.CifraPraMimEmbelezamento.get()}};
 render();
 })();
