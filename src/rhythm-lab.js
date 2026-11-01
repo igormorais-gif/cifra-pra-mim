@@ -16,12 +16,28 @@
     {degree:"7",name:"Si",midi:71}
   ]);
   // tick = 1 semicolcheia (1/4 de tempo). Quatro inícios, quatro notas, um compasso.
+  // Todas as células são originais: quatro ataques, um compasso 4/4.
+  // Agrupadas por ideia rítmica, não pela melodia de nenhum músico.
   const PATTERNS=Object.freeze([
-    {id:"regular",title:"Pulso",subtitle:"Quatro semínimas",description:"Uma nota em cada tempo; referência para comparar todos os deslocamentos.",hits:[{tick:0,length:4},{tick:4,length:4},{tick:8,length:4},{tick:12,length:4}]},
-    {id:"contratempos",title:"Contratempos",subtitle:"Acentos fora do eixo",description:"Mi e Si entram no contratempo; a sequência de alturas continua idêntica.",hits:[{tick:0,length:4},{tick:6,length:2},{tick:8,length:4},{tick:14,length:2}]},
-    {id:"deslocado",title:"Deslocado",subtitle:"Entradas após o pulso",description:"Dó e Sol chegam no meio do tempo; Mi e Si sustentam o eixo seguinte.",hits:[{tick:2,length:2},{tick:4,length:4},{tick:10,length:2},{tick:12,length:4}]},
-    {id:"antecipado",title:"Antecipações",subtitle:"Última semicolcheia do tempo",description:"Cada nota antecipa o próximo pulso; há espaço entre os ataques.",hits:[{tick:3,length:1},{tick:7,length:1},{tick:11,length:1},{tick:15,length:1}]},
-    {id:"respiros",title:"Respiros",subtitle:"Frase com pausas",description:"Ataques curtos com silêncios planejados antes dos próximos graus.",hits:[{tick:0,length:2},{tick:5,length:2},{tick:10,length:2},{tick:14,length:2}]}
+    {id:"regular",family:"base",title:"Pulso",subtitle:"Quatro semínimas",description:"Cada altura entra no início de um tempo: referência estável.",hits:[{tick:0,length:4},{tick:4,length:4},{tick:8,length:4},{tick:12,length:4}]},
+    {id:"pulso-dividido",family:"base",title:"Pulso dividido",subtitle:"Dois ataques no primeiro tempo",description:"Duas colcheias abrem a frase; o tempo 2 fica em silêncio.",hits:[{tick:0,length:2},{tick:2,length:2},{tick:8,length:4},{tick:12,length:4}]},
+    {id:"contratempos",family:"sincopes",title:"Contratempos",subtitle:"Entradas em 2& e 4&",description:"Segunda e quarta notas começam no contratempo.",hits:[{tick:0,length:4},{tick:6,length:2},{tick:8,length:4},{tick:14,length:2}]},
+    {id:"deslocado",family:"sincopes",title:"Deslocado",subtitle:"Entradas em 1& e 3&",description:"Dó e Sol passam para a segunda metade de seus tempos.",hits:[{tick:2,length:2},{tick:4,length:4},{tick:10,length:2},{tick:12,length:4}]},
+    {id:"antecipado",family:"sincopes",title:"Antecipações",subtitle:"Última semicolcheia de cada tempo",description:"Quatro entradas antes dos tempos seguintes, com silêncios entre elas.",hits:[{tick:3,length:1},{tick:7,length:1},{tick:11,length:1},{tick:15,length:1}]},
+    {id:"sincopa-longa",family:"sincopes",title:"Síncope longa",subtitle:"Contratempo sustentado",description:"Mi começa em 1& e se sustenta por três colcheias.",hits:[{tick:0,length:2},{tick:2,length:6},{tick:10,length:2},{tick:12,length:4}]},
+    {id:"respiros",family:"pausas",title:"Respiros",subtitle:"Notas curtas e silêncios",description:"Quatro colcheias separadas por respiros de tamanhos diferentes.",hits:[{tick:0,length:2},{tick:5,length:2},{tick:10,length:2},{tick:14,length:2}]},
+    {id:"entrada-tardia",family:"pausas",title:"Entrada tardia",subtitle:"Silêncio antes da primeira nota",description:"Uma semicolcheia de silêncio abre o compasso; há espaço após o segundo ataque.",hits:[{tick:1,length:1},{tick:2,length:2},{tick:7,length:1},{tick:12,length:4}]},
+    {id:"resposta",family:"pausas",title:"Resposta",subtitle:"Espera e fechamento curto",description:"Duas notas iniciais dão lugar a um silêncio longo antes da resposta final.",hits:[{tick:0,length:4},{tick:4,length:2},{tick:11,length:1},{tick:15,length:1}]},
+    {id:"duas-curtas",family:"densidade",title:"Duas curtas",subtitle:"Densidade logo no início",description:"Duas semicolcheias seguidas de uma semínima pontuada e uma nota conclusiva.",hits:[{tick:0,length:1},{tick:1,length:1},{tick:2,length:6},{tick:12,length:4}]},
+    {id:"pontilhado",family:"densidade",title:"Pontilhado",subtitle:"Durações assimétricas",description:"Colcheias pontuadas e semicolcheias criam um recorte desigual do pulso.",hits:[{tick:0,length:3},{tick:5,length:1},{tick:7,length:3},{tick:12,length:4}]},
+    {id:"final-ativo",family:"densidade",title:"Final ativo",subtitle:"Dois ataques próximos no final",description:"O compasso abre espaçado e concentra movimento no quarto tempo.",hits:[{tick:0,length:4},{tick:8,length:4},{tick:13,length:1},{tick:14,length:2}]}
+  ]);
+  const FAMILIES=Object.freeze([
+    {id:"all",title:"Todas"},
+    {id:"base",title:"Fundamentos"},
+    {id:"sincopes",title:"Síncopes"},
+    {id:"pausas",title:"Pausas"},
+    {id:"densidade",title:"Densidade"}
   ]);
   const beatLabel=tick=>{
     if(!Number.isInteger(tick)||tick<0||tick>15)throw new RangeError("Semicolcheia inválida");
@@ -63,5 +79,5 @@
     return out;
   }
   PATTERNS.forEach(p=>{if(!validate(p))throw new Error("Padrão inválido: "+p.id)});
-  return{NOTES,PATTERNS,pattern,events,beatLabel,validate,beatsToSeconds,comparePlan};
+  return{NOTES,PATTERNS,FAMILIES,pattern,events,beatLabel,validate,beatsToSeconds,comparePlan};
 });
