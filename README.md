@@ -1,3 +1,20 @@
+## Laboratório de Improvisação — eixos melódicos (versão 9)
+
+O Laboratório combina **12 células rítmicas originais** em 4/4 (mesmos 16 ticks em áudio, grade e pauta) com uma coleção modal em Dó, uma disposição fechada de quatro vozes e um percurso ordenado de quatro graus. O material é gerado programaticamente em `src/melodic-axis.js`; nenhum lick de terceiros foi incorporado.
+
+**Eixos ativos:**
+- **Modo:** jônico, dórico, frígio, lídio, mixolídio, eólio ou lócrio, todos com Dó como centro. A coleção completa de sete graus é mostrada para contextualização.
+- **Disposição fechada:** quatro conjuntos de alturas da tétrade (posição fundamental e três inversões), com oitavas reais independentes da ordem tocada.
+- **Percurso:** as 24 permutações únicas dos graus estruturais 1–3–5–7 (seis ordens iniciadas em cada um dos quatro graus). Cada percurso pode ser percorrido por botões, sorteio ou seletor acessível no iPhone. São **24 × 4 = 96 configurações por modo**, ou **672 configurações rotuladas** entre os sete modos antes de combinar ritmos e ornamentos.
+- **Ritmo:** cada uma das 12 células continua independente dos demais parâmetros, sem alterar ticks, pausas ou durações.
+- **Partitura e Loop:** a posição na pauta, acidentes (♭), notas/oitavas e etiquetas acompanham o som; a contagem d’O Passo (`1 i e i`) e o agendamento contínuo via `src/seamless-loop.js` são preservados.
+
+**Rigor modal:** este eixo toca **somente os graus 1, 3, 5 e 7 da coleção**. Logo, jônico e lídio compartilham a mesma tétrade; dórico, frígio e eólio compartilham outra. O modo não fica plenamente caracterizado pelo áudio até incorporarmos também graus 2, 4 e 6, ou os seus equivalentes alterados, em passos didáticos futuros. As quatro inversões alteram registro e saltos, mas não a identidade das notas. Não declarar 672 sonoridades únicas: há configurações diferentes com alturas idênticas entre modos.
+
+**Próximo eixo ainda não implementado:** embelezamentos sobre notas-alvo, com regras específicas de aproximação/bordadura, ataques extras e correspondência explícita na partitura, sem corromper as células rítmicas originais.
+
+Cobertura: `tests/melodic-axis.test.cjs` examina as 672 combinações, a nomenclatura dos modos, os 96 percursos distintos de cada modo, a posição real na partitura e a independência rítmica.
+
 ## Regra geral dos players — Loop contínuo (versão 8)
 
 Todos os laboratórios com reprodução de áudio compartilham o botão **↻ Loop: desligado / ↻ Loop: ligado**. O controle começa desligado e é acessível por toque, teclado e `aria-pressed`. Quando ligado, **a reprodução escolhida** (arpejo, acorde, sequência, conexões ou célula) reinicia automaticamente ao chegar ao fim. Quando desligado durante a reprodução, a passagem atual termina sem recomeçar. **■ Parar** cancela o ciclo e os próximos ataques programados, sem apagar a preferência de Loop. Trocar o exercício, a forma, o instrumento ou a seleção interrompe a reprodução anterior, evitando tocar frases de dois exercícios ao mesmo tempo.
