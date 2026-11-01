@@ -274,3 +274,38 @@ test("mudar de Combinações para Conexão Diatônica e voltar não quebra a ren
  assert.equal(app.get().kind,"ci");
  assert.equal(el("soloApproachPicker").hidden,false);
 });
+
+test("Combinações preserva seletor de grupo do violão e atualiza a posição",()=>{
+ const {app,buttons,el}=setup();
+ app.show("C","513","1","guitar","major","321");
+ buttons["[data-kind]"][3].onclick();
+ assert.equal(el("comboStringPicker").hidden,false);
+ assert.equal(el("soloApproachPicker").hidden,true);
+ buttons["[data-group]"][1].onclick();
+ assert.equal(app.get().group,"432");
+ assert.deepEqual(app.get().notes.map(n=>n.string),[4,3,2]);
+ app.set({instrument:"piano"});
+ assert.equal(el("comboStringPicker").hidden,true);
+});
+test("Combinações mantém as escolhas ao trocar temporariamente de modo",()=>{
+ const {app,buttons}=setup();
+ buttons["[data-kind]"][3].onclick();
+ buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="5"&&b.dataset.comboKind==="none").onclick();
+ buttons["[data-combo-figure]"].find(b=>b.dataset.comboDegree==="1"&&b.dataset.comboFigure==="border").onclick();
+ const before=app.get().comboSettings;
+ buttons["[data-kind]"][1].onclick();
+ buttons["[data-kind]"][4].onclick();
+ buttons["[data-kind]"][3].onclick();
+ assert.deepEqual(app.get().comboSettings,before);
+});
+test("tríade menor admite D.I. e D.S. com resolução na terça menor",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","135","3","piano","minor","321");
+ buttons["[data-kind]"][3].onclick();
+ buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="1"&&b.dataset.comboKind==="none").onclick();
+ buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="3"&&b.dataset.comboKind==="di").onclick();
+ buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="5"&&b.dataset.comboKind==="none").onclick();
+ assert.equal(el("motion").textContent,"Ré → Mi♭");
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[60,62,63,67]);
+});
