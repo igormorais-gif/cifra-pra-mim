@@ -17,23 +17,63 @@ const steps = [
   {name:'G°7', notes:['Sol','Si♭','Ré♭','Mi'], midi:[55,58,61,64], changed:3, move:'♭7 → 𝄫7 · −1 semitom', detail:'A sétima menor Fá desce para Mi, que aqui representa a sétima diminuta (Fá♭ enarmônico).'}
 ];
 let selected = 0;
+let cancelAudio = () => {};
+
 const buttons = document.querySelector('#transition-buttons');
 steps.forEach((step, index) => {const button = document.createElement('button');button.type = 'button';button.textContent = step.name;button.addEventListener('click', () => selectStep(index));buttons.append(button)});
-function selectStep(index){selected = index;const step = steps[index];document.querySelector('#chord-name').textContent=step.name;document.querySelector('#movement').textContent=step.move;document.querySelector('#movement-detail').textContent=step.detail;document.querySelector('#notes').innerHTML=step.notes.map((note,i)=>`<span class="note${i===step.changed?' changed':''}">${note}</span>`).join('');[...buttons.children].forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)))}
+function selectStep(index){cancelAudio();selected = index;const step = steps[index];document.querySelector('#chord-name').textContent=step.name;document.querySelector('#movement').textContent=step.move;document.querySelector('#movement-detail').textContent=step.detail;document.querySelector('#notes').innerHTML=step.notes.map((note,i)=>`<span class="note${i===step.changed?' changed':''}">${note}</span>`).join('');[...buttons.children].forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)))}
 selectStep(0);
 
 let ctx;
-document.querySelector('#play').addEventListener('click', async () => {
-  const Context = window.AudioContext || window.webkitAudioContext;
-  if(!Context){alert('Seu navegador não suporta reprodução de áudio sintetizado.');return}
-  ctx ??= new Context();
-  if(ctx.state==='suspended') await ctx.resume();
-  const notes = steps[selected].midi;
-  const start = ctx.currentTime + 0.02;
-  notes.forEach((midi, i) => {
-    const osc = ctx.createOscillator();const gain = ctx.createGain();const t=start+i*.22;
-    osc.type='sine';osc.frequency.value=440*Math.pow(2,(midi-69)/12);
-    gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.10,t+.018);gain.gain.exponentialRampToValueAtTime(.0001,t+.45);
-    osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.48);
-  });
+let loopEnabled=false;
+let playbackToken=0;
+let loopTimer=null;
+let activeOscillators=[];
+function stopPlayback(){
+ playbackToken++;
+ if(loopTimer!==null)clearTimeout(loopTimer);
+ loopTimer=null;
+ for(const osc of activeOscillators)try{osc.stop()}catch(e){}
+ activeOscillators=[];
+}
+cancelAudio=stopPlayback;
+function playPass(token){
+ if(token!==playbackToken||!ctx)return;
+ const notes=steps[selected].midi;
+ const start=ctx.currentTime+.02;
+ activeOscillators=[];
+ for(const [i,midi] of notes.entries()){
+  const osc=ctx.createOscillator(),gain=ctx.createGain(),t=start+i*.22;
+  osc.type='sine';osc.frequency.value=440*Math.pow(2,(midi-69)/12);
+  gain.gain.setValueAtTime(.0001,t);
+  gain.gain.exponentialRampToValueAtTime(.10,t+.018);
+  gain.gain.exponentialRampToValueAtTime(.0001,t+.45);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start(t);osc.stop(t+.48);activeOscillators.push(osc);
+ }
+ // Deixar o fim de cada arpejo soar antes de decidir se reinicia.
+ loopTimer=setTimeout(()=>{
+  if(token===playbackToken){
+   activeOscillators=[];
+   if(loopEnabled)playPass(token);
+  }
+ },1150);
+}
+document.querySelector('#play').addEventListener('click',async()=>{
+ stopPlayback();
+ const token=playbackToken;
+ const Context=window.AudioContext||window.webkitAudioContext;
+ if(!Context){alert('Seu navegador não suporta áudio sintetizado.');return}
+ ctx??=new Context();
+ try{if(ctx.state==='suspended')await ctx.resume()}catch(e){return}
+ if(token!==playbackToken)return;
+ playPass(token);
 });
+document.querySelector('#stop-audio').addEventListener('click',stopPlayback);
+document.querySelector('#loop').addEventListener('click',()=>{
+ loopEnabled=!loopEnabled;
+ const b=document.querySelector('#loop');
+ b.setAttribute('aria-pressed',String(loopEnabled));
+ b.textContent=loopEnabled?'↻ Loop: ligado':'↻ Loop: desligado';
+});
+window.addEventListener('pagehide',stopPlayback);
