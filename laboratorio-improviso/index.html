@@ -117,6 +117,20 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .score-help{font-size:11px!important;margin:9px 0 0!important;color:#a9bdce!important}
 @media(max-width:950px){.rhythm-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:620px){.rhythm-list{grid-template-columns:repeat(2,minmax(0,1fr))}.score-options{width:100%}.score-options button{flex:1}.score-svg{min-width:800px}.ticks{min-width:640px}.filter{font-size:11px;padding:8px 10px}}
+
+.timing-check{margin-top:14px;padding:14px;border:1px solid #47667a;background:#0f2230;border-radius:13px}
+.timing-check-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.timing-check h3{margin:0 0 5px;font-size:14px;font-weight:800;color:#f5c49b}
+.timing-check p{margin:0;color:#b3c9d9;font-size:12px;max-width:560px}
+.timing-check strong{color:#f5ccad}
+.timing-actions{display:flex;gap:8px;flex-wrap:wrap}
+.diag-columns{display:grid;grid-template-columns:repeat(4,1fr);max-width:390px;border:1px solid #43637b;border-radius:9px;overflow:hidden;margin:13px 0 9px}
+.diag-columns span{display:flex;align-items:center;justify-content:center;padding:9px 7px;color:#b8cedb;border-right:1px solid #43637b;font:800 16px/1 ui-monospace,monospace}
+.diag-columns span:last-child{border-right:none}
+.diag-columns span.active{background:#ad805c;color:#261b13}
+.diag-columns span.playing{background:#ef6674;color:#271015}
+.timing-check .diag-caption{font-size:11px;max-width:none}
+@media(max-width:620px){.timing-actions{width:100%}.timing-actions button{flex:1}.diag-columns{max-width:none}}
 </style>
 </head>
 <body>
@@ -152,6 +166,19 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
       <button class="action stop" id="stop" type="button">■ Parar</button>
       <label class="toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
       <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
+    </div>
+    <div class="timing-check" aria-labelledby="timing-check-title">
+      <div class="timing-check-top">
+        <div><h3 id="timing-check-title">Teste auditivo de subdivisão</h3><p>Quatro cliques marcam os tempos. Uma nota isolada toca no <strong>2e</strong> ou no <strong>2&amp;</strong>, para comparar a diferença.</p></div>
+        <div class="timing-actions">
+          <button class="action" id="diag-e" type="button">▶ Ouvir 2e</button>
+          <button class="action" id="diag-and" type="button">▶ Ouvir 2&amp;</button>
+        </div>
+      </div>
+      <div class="diag-columns" aria-label="Subdivisões do segundo tempo: 2 e &amp; a">
+        <span data-diag-tick="4">2</span><span data-diag-tick="5">e</span><span data-diag-tick="6">&amp;</span><span data-diag-tick="7">a</span>
+      </div>
+      <p class="diag-caption" id="diag-caption" aria-live="polite">A 80 BPM, o 2e ocorre 187,5 ms depois do 2; o 2&amp;, 375 ms depois.</p>
     </div>
     <p class="status" id="status" role="status" aria-live="polite">Selecione uma célula e toque para ouvir.</p>
   </section>
@@ -273,11 +300,13 @@ function renderScore(){
 }
 function stop(){
  state.token++;
+ for(const x of document.querySelectorAll("[data-diag-tick]"))x.classList.remove("active","playing");
  for(const t of state.timers)clearTimeout(t);
  state.timers=[];
  for(const o of state.voices){try{o.stop()}catch(e){}}
  state.voices=[];
  $("play").disabled=false;$("compare").disabled=false;
+ $("diag-e").disabled=false;$("diag-and").disabled=false;
  for(const chip of document.querySelectorAll(".sounding"))chip.classList.remove("sounding");
 }
 function later(seconds,callback,token){
@@ -324,6 +353,35 @@ function schedulePattern(id,begin,token,offsetSeconds=0){
   later(offsetSeconds+dt+dur*.83,()=>sounding(n.index,false),token);
  }
 }
+function formatMs(value){return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(value)+" ms"}
+function updateTimingCaption(){
+ const beat=60/state.bpm;
+ $("diag-caption").textContent="A "+state.bpm+" BPM, o 2e está "+formatMs(beat*250)+" depois do 2; o 2& está "+formatMs(beat*500)+" depois do 2.";
+}
+async function diagnostic(tick){
+ stop();
+ const token=state.token;
+ const ctx=await audioContext();
+ if(!ctx||state.token!==token)return;
+ const start=ctx.currentTime+.12;
+ const beat=60/state.bpm;
+ for(let i=0;i<4;i++)click(start+i*beat,i===0);
+ const dt=E.beatsToSeconds(tick,state.bpm);
+ note(72,start+dt,Math.max(.11,beat*.22),false);
+ $("play").disabled=true;$("compare").disabled=true;
+ $("diag-e").disabled=true;$("diag-and").disabled=true;
+ const cells=[...document.querySelectorAll("[data-diag-tick]")];
+ const marker=cells.find(x=>Number(x.dataset.diagTick)===tick);
+ if(marker)marker.classList.add("active");
+ setStatus("Teste auditivo: nota no "+E.beatLabel(tick)+"; os quatro cliques permanecem nos tempos 1, 2, 3 e 4.");
+ later(.12+dt,()=>{if(marker)marker.classList.add("playing")},token);
+ later(.12+dt+Math.max(.11,beat*.22),()=>{if(marker)marker.classList.remove("playing")},token);
+ later(.12+4*beat+.1,()=>{
+  $("play").disabled=false;$("compare").disabled=false;
+  $("diag-e").disabled=false;$("diag-and").disabled=false;
+  setStatus("Teste finalizado: compare 2e e 2& ouvindo a mesma nota no mesmo tempo.");
+ },token);
+}
 async function playSelected(){
  stop();
  const token=state.token;
@@ -361,12 +419,15 @@ async function compareAll(){
 for(const button of document.querySelectorAll("[data-score-mode]"))button.addEventListener("click",()=>{
  stop();state.scoreMode=button.dataset.scoreMode;renderScore();
 });
+$("diag-e").addEventListener("click",()=>diagnostic(5));
+$("diag-and").addEventListener("click",()=>diagnostic(6));
 $("play").addEventListener("click",playSelected);
 $("compare").addEventListener("click",compareAll);
 $("stop").addEventListener("click",()=>{stop();setStatus("Reprodução interrompida.")});
 $("bpm").addEventListener("input",e=>{
   stop();state.bpm=Number(e.target.value);
   $("bpm-value").textContent=String(state.bpm);
+  updateTimingCaption();
   setStatus("Andamento: "+state.bpm+" BPM.");
 });
 $("click").addEventListener("change",e=>{state.click=e.target.checked});
@@ -377,7 +438,7 @@ window.RhythmLabUI={
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
  score:mode=>{if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");stop();state.scoreMode=mode;renderScore()}
 };
-render();
+render();updateTimingCaption();
 })();
 </script>
 </body>
