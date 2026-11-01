@@ -105,12 +105,20 @@ Assim, em C maior, 135, é possível definir **C.I.1 por aproximação**, **D.S.
 
 No violão, as notas ornamentais permanecem na mesma corda de sua voz estrutural. As formas são escolhidas de modo a comportar as casas superiores/inferiores necessárias, e o localizador 1B acompanha a posição. O seletor 4–3–2 / 3–2–1 permanece disponível. Os modos C.I., D.I., D.S. e as duas conexões continuam independentes e preservam suas próprias seleções.
 
-## Laboratório de Improvisação · Experimento 01: Ritmo e intervalos
+## Laboratório de Improvisação · Ritmo e intervalos (v2)
 
-Página: [laboratorio-improviso/](laboratorio-improviso/). Protótipo isolado e navegável, com acesso na página inicial e no Laboratório de Embelezamentos.
+Página: [laboratorio-improviso/](laboratorio-improviso/). Protótipo separado e navegável, com acesso na página inicial e no Laboratório de Embelezamentos.
 
-**Hipótese pedagógica:** estudar o vocabulário rítmico sem reproduzir a frase melódica de um lick. No primeiro exercício, a tétrade C7M em posição fechada (Dó4–Mi4–Sol4–Si4, graus 1–3–5–7) permanece fixa. Cinco células rítmicas **originais**, sem copiar material musical dos três livros enviados, variam exclusivamente os inícios e durações dos quatro ataques em um compasso 4/4. As figuras são: quatro semínimas (pulso), contratempos no 2& e 4&, deslocamentos para 1& e 3&, antecipações na última semicolcheia de cada tempo e ataques curtos com pausas. Todas usam grade de 16 semicolcheias, sem sobreposição de eventos.
+**Hipótese pedagógica:** aprender o vocabulário rítmico e a distribuição dos ataques sem reproduzir frases melódicas de licks consagrados. Neste experimento, as quatro notas da tétrade C7M em posição fechada (Dó4–Mi4–Sol4–Si4, graus 1–3–5–7) permanecem fixas. As **12 células são exemplos originais**, não transcrições dos três livros fornecidos. Cada célula tem quatro ataques em um compasso 4/4, distribuídos na grade de 16 semicolcheias, podendo incluir pausas, síncopes, semicolcheias e durações pontuadas.
 
-A interface permite selecionar e visualizar uma célula, ouvi-la, ouvir as cinco em sequência com um tempo de espaço entre os compassos, ativar/desativar um metrônomo e controlar o BPM (50–160). O áudio é sintetizado localmente no navegador com Web Audio, sem arquivos de terceiros. O motor independente `src/rhythm-lab.js` gera os eventos e sua métrica, com testes em `tests/rhythm-lab.test.cjs`. O capítulo é **experimental**: ainda não contém os 96 percursos, escolha dos sete modos, combinações de embelezamentos nem importação de ritmos dos livros. Estes são eixos de desenvolvimento futuros.
+**Famílias:** Fundamentos (2), Síncopes (4), Pausas (3) e Densidade (3). O botão **Comparar visíveis** toca somente a família filtrada, ou as 12 células se estiver em **Todas**, com um tempo de separação entre os compassos. Metrônomo opcional e BPM de 50 a 160. O áudio é produzido por Web Audio no navegador.
 
-A publicação no GitHub Pages pode demorar a refletir um commit recente; em iPhone, testar o áudio com um toque nos controles do player após abrir a página.
+**Grade corrigida:** `1 e & a | 2 e & a | 3 e & a | 4 e & a`. Os 16 rótulos e os blocos de notas ocupam as **mesmas colunas de uma única CSS grid**, corrigindo o desalinhamento posicional causado por usar uma régua e uma grade separadas. Cada ataque tem início, duração e índice definidos pelo mesmo evento que programa o áudio.
+
+**Partitura 4/4:** alternar entre **Ritmo puro** (pauta rítmica de uma linha, cabeças em X) e **Com alturas** (pentagrama com clave de sol e as quatro notas). Ambas exibem figuras, pausas, durações pontuadas e ligaduras das notas que atravessam tempos; as pausas ocupam os silêncios sem criar ataques adicionais. A pauta SVG é gerada localmente pelo módulo `src/rhythm-notation.js`, sem biblioteca externa ou fonte musical baixada; depende apenas do navegador. O plano `plan(id)` e o SVG são derivados dos mesmos eventos de `src/rhythm-lab.js`.
+
+**Testes:** `tests/rhythm-lab.test.cjs` e `tests/rhythm-notation.test.cjs` verificam quantidades, famílias, durações, 4/4, soma de 16 ticks por pauta, coincidência entre os eventos escritos e os de áudio, pausas, ligaduras e modos de visualização. A interface também foi verificada em simulação de DOM/Web Audio. Ainda não foi testada diretamente no Safari de um iPhone.
+
+**A desenvolver:** 96 percursos intervalares, escolha dos sete modos, integração com as combinações de embelezamentos, extração/catalogação dos padrões rítmicos presentes nos livros e outras possibilidades de compassos. O site não reproduz nem incorpora exemplos protegidos desses materiais.
+
+A publicação no GitHub Pages pode levar algum tempo a refletir o commit mais recente.
