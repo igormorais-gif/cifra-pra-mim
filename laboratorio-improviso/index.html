@@ -160,6 +160,9 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 /* Contagem O Passo: as posições não mudam, apenas os nomes */
 .passo-note{font-size:11px!important;color:#bdcfda!important;line-height:1.55;margin-top:9px!important}
 .passo-note strong{color:#ffe0bc}
+
+.loop-toggle{border:1px solid #7691a5;background:#25394a;color:#e9eff2}
+.loop-toggle[aria-pressed="true"]{border-color:#f5c89b;background:#f1bc89;color:#2d1f15}
 </style>
 </head>
 <body>
@@ -192,7 +195,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
     <div class="control-row">
       <button class="action primary" id="play" type="button">▶ Ouvir esta célula</button>
       <button class="action" id="compare" type="button">▶ Comparar visíveis</button>
-      <button class="action stop" id="stop" type="button">■ Parar</button>
+      <button class="action stop" id="stop" type="button">■ Parar</button><button class="action loop-toggle" id="loop" type="button" aria-pressed="false" title="Repetir a reprodução selecionada até Parar">↻ Loop: desligado</button>
       <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
     </div>
     <div class="metro-panel" aria-label="Metrônomo e subdivisões">
@@ -266,7 +269,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 "use strict";
 const E=window.RhythmLabEngine,N=window.RhythmLabNotation;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
 function setStatus(message){$("status").textContent=message}
@@ -454,43 +457,52 @@ async function diagnostic(tick){
   setStatus("Teste finalizado: compare o primeiro i e o e do tempo 2.");
  },token);
 }
+function runSelectedCycle(id,token){
+ if(token!==state.token)return;
+ const beat=60/state.bpm,at=state.ctx.currentTime+.08;
+ schedulePattern(id,at,token,.08);
+ setStatus("Tocando "+E.pattern(id).title+(state.loop?" · Loop ligado":"")+" · "+state.bpm+" BPM.");
+ later(.08+beat*4+.12,()=>{
+  if(state.loop)runSelectedCycle(id,token);
+  else{
+   $("play").disabled=false;$("compare").disabled=false;
+   setStatus("Fim do compasso. Escolha outra célula para comparar.");
+  }
+ },token);
+}
 async function playSelected(){
- stop();
- const token=state.token;
+ stop();const token=state.token;
  const ctx=await audioContext();
  if(!ctx||state.token!==token)return;
- const id=state.id,beat=60/state.bpm,at=ctx.currentTime+.08;
  $("play").disabled=true;$("compare").disabled=true;
- schedulePattern(id,at,token,.08);
- setStatus("Tocando "+E.pattern(id).title+" · "+state.bpm+" BPM.");
- later(.08+beat*4+.12,()=>{
-  $("play").disabled=false;$("compare").disabled=false;
-  setStatus("Fim do compasso. Escolha outra célula para comparar.");
+ runSelectedCycle(state.id,token);
+}
+function runCompareCycle(compared,token){
+ if(token!==state.token)return;
+ const beat=60/state.bpm,at=state.ctx.currentTime+.08;
+ compared.forEach((p,i)=>{
+  const delay=i*5*beat;
+  schedulePattern(p.id,at+delay,token,.08+delay);
+  later(.08+delay,()=>{
+   state.id=p.id;render();
+   setStatus("Comparação "+(i+1)+"/"+compared.length+" · "+p.title+(state.loop?" · Loop ligado":"")+".");
+  },token);
+ });
+ later(.08+compared.length*5*beat,()=>{
+  if(state.loop)runCompareCycle(compared,token);
+  else{
+   $("play").disabled=false;$("compare").disabled=false;
+   setStatus("Comparação concluída: "+compared.length+" células.");
+  }
  },token);
 }
 async function compareAll(){
  stop();const token=state.token;
  const ctx=await audioContext();
  if(!ctx||state.token!==token)return;
- const beat=60/state.bpm,at=ctx.currentTime+.08;
  $("play").disabled=true;$("compare").disabled=true;
- const compared=visiblePatterns();
- compared.forEach((p,i)=>{
-  const delay=i*5*beat;
-  schedulePattern(p.id,at+delay,token,.08+delay);
-  later(.08+delay,()=>{
-   state.id=p.id;render();
-   setStatus("Comparação "+(i+1)+"/"+compared.length+" · "+p.title+".");
-  },token);
- });
- later(.08+compared.length*5*beat,()=>{
-   $("play").disabled=false;$("compare").disabled=false;
-   setStatus("Comparação concluída: "+compared.length+" células, com as quatro alturas preservadas.");
- },token);
+ runCompareCycle([...visiblePatterns()],token);
 }
-for(const button of document.querySelectorAll("[data-score-mode]"))button.addEventListener("click",()=>{
- stop();state.scoreMode=button.dataset.scoreMode;renderScore();
-});
 function renderMetronomeMode(){
  $("metro-mode").value=state.metronomeMode;
  const descriptions={
@@ -508,28 +520,36 @@ function setMetronomeMode(mode){
  setStatus("Selecionado: "+$("metro-description").textContent+". Toque a célula ou use 'Ouvir só o metrônomo'.");
 }
 $("metro-mode").addEventListener("change",event=>setMetronomeMode(event.target.value));
+function runMetronomeCycle(token){
+ if(token!==state.token)return;
+ const beat=60/state.bpm,at=state.ctx.currentTime+.12;
+ scheduleMetronome(at,token,.12);
+ setStatus("Metrônomo isolado: "+$("metro-description").textContent+" · "+state.bpm+" BPM"+(state.loop?" · Loop ligado":"")+".");
+ later(.12+4*beat+.12,()=>{
+  if(state.loop)runMetronomeCycle(token);
+  else{
+   $("metro-solo").disabled=false;$("metro-current").textContent="—";
+   setStatus("Metrônomo concluído.");
+  }
+ },token);
+}
 async function playMetronomeOnly(){
  stop();
- if(!state.click){
-  state.click=true;$("click").checked=true;
- }
- const token=state.token;
- const ctx=await audioContext();
+ if(!state.click){state.click=true;$("click").checked=true}
+ const token=state.token,ctx=await audioContext();
  if(!ctx||state.token!==token)return;
- const beat=60/state.bpm;
  $("metro-solo").disabled=true;
- const at=ctx.currentTime+.12;
- scheduleMetronome(at,token,.12);
- setStatus("Metrônomo isolado: "+$("metro-description").textContent+" · "+state.bpm+" BPM.");
- later(.12+4*beat+.12,()=>{
-  $("metro-solo").disabled=false;
-  $("metro-current").textContent="—";
-  setStatus("Metrônomo concluído. Altere a subdivisão e toque novamente.");
- },token);
+ runMetronomeCycle(token);
 }
 $("metro-solo").addEventListener("click",playMetronomeOnly);
 $("diag-first-i").addEventListener("click",()=>diagnostic(5));
 $("diag-e").addEventListener("click",()=>diagnostic(6));
+$("loop").addEventListener("click",()=>{
+ state.loop=!state.loop;
+ $("loop").setAttribute("aria-pressed",String(state.loop));
+ $("loop").textContent=state.loop?"↻ Loop: ligado":"↻ Loop: desligado";
+ setStatus(state.loop?"Loop ligado: a reprodução atual se repetirá até Parar.":"Loop desligado: a reprodução atual terminará normalmente.");
+});
 $("play").addEventListener("click",playSelected);
 $("compare").addEventListener("click",compareAll);
 $("stop").addEventListener("click",()=>{stop();setStatus("Reprodução interrompida.")});
@@ -542,7 +562,7 @@ $("bpm").addEventListener("input",e=>{
 $("click").addEventListener("change",e=>{stop();state.click=e.target.checked;setStatus(state.click?"Metrônomo ativado.":"Metrônomo desativado.");});
 window.addEventListener("pagehide",stop);
 window.RhythmLabUI={
- get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:E.events(state.id),notation:N.plan(state.id)}),
+ get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,loop:state.loop,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:E.events(state.id),notation:N.plan(state.id)}),
  setMetronomeMode,
  select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
