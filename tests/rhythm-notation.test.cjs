@@ -62,7 +62,7 @@ test("silêncios aparecem como pausas, sem virar notas extras",()=>{
 test("semicolcheias, colcheias pontuadas e ligaduras são desenhadas",()=>{
  const early=N.svg("antecipado","rhythm"),dotted=N.svg("pontilhado","melodic"),sync=N.svg("sincopa-longa","melodic");
  assert.equal((early.match(/class="score-hit"/g)||[]).length,4);
- assert.match(dotted,/r="3.2"/);
+ assert.match(dotted,/class="score-dot"/);
  assert.match(sync,/class="score-tie"/);
 });
 test("tempo e duração dos gráficos permanecem dentro do mesmo compasso",()=>{
@@ -75,4 +75,68 @@ test("tempo e duração dos gráficos permanecem dentro do mesmo compasso",()=>{
 test("não aceita tipos de pauta inexistentes",()=>{
  assert.throws(()=>N.svg("regular","violin"),RangeError);
  assert.throws(()=>N.plan("inexistente"),RangeError);
+});
+
+test("Monroe: barras de colcheias/semicolcheias pertencem a um único tempo",()=>{
+ for(const p of E.PATTERNS){
+  const tokens=N.plan(p.id),groups=N.beamGroups(tokens);
+  for(const g of groups){
+   assert.ok(g.tokens.length>=2,p.id);
+   assert.equal(new Set(g.tokens.map(x=>Math.floor(x.tick/4))).size,1,p.id);
+   assert.ok(g.tokens.every(x=>x.kind==="note"&&x.length<=3));
+   for(let i=1;i<g.tokens.length;i++)
+    assert.equal(g.tokens[i-1].tick+g.tokens[i-1].length,g.tokens[i].tick);
+  }
+ }
+ assert.equal(N.beamGroups(N.plan("pulso-dividido")).length,1);
+ assert.equal(N.beamGroups(N.plan("duas-curtas")).length,1);
+ assert.equal(N.beamGroups(N.plan("final-ativo"))[0].beat,4);
+});
+test("Monroe: pausas respeitam os tempos; o tempo 3 fica visível",()=>{
+ for(const p of E.PATTERNS){
+  const tokens=N.plan(p.id);
+  for(const x of tokens.filter(t=>t.kind==="rest")){
+   assert.ok(x.tick+x.length<=4*(Math.floor(x.tick/4)+1),p.id+" pausa atravessa tempo");
+   assert.ok([1,2,3,4].includes(x.length),p.id+" pausa ilegível");
+  }
+  for(const x of tokens){
+   if(x.tick<8&&x.tick+x.length>8)throw Error(p.id+" ocultou limite dos tempos 2 | 3");
+  }
+ }
+});
+test("Monroe: escrita não cria ataques extras quando há ligaduras",()=>{
+ for(const p of E.PATTERNS){
+  const tokens=N.plan(p.id).filter(t=>t.kind==="note");
+  assert.equal(tokens.filter(t=>t.first).length,4,p.id);
+  for(const note of E.events(p.id)){
+   const segments=tokens.filter(t=>t.index===note.index);
+   assert.equal(segments.reduce((sum,t)=>sum+t.length,0),note.length);
+   assert.equal(segments[0].tick,note.tick);
+   for(let j=1;j<segments.length;j++){
+    assert.equal(segments[j-1].tick+segments[j-1].length,segments[j].tick);
+    assert.equal(segments[j].tieIn,true);
+    assert.equal(segments[j-1].tieOut,true);
+   }
+  }
+ }
+});
+test("Monroe: traço secundário só em semicolcheias; colcheias têm barra única",()=>{
+ const sixteenth=N.svg("duas-curtas","melodic");
+ const eighth=N.svg("pulso-dividido","melodic");
+ assert.match(sixteenth,/class="score-beam-group"/);
+ assert.match(eighth,/class="score-beam-group"/);
+ assert.equal((sixteenth.match(/class="score-beam-group"/g)||[]).length,1);
+ assert.match(sixteenth,/stroke-width="5"/);
+ assert.doesNotMatch(eighth,/stroke-width="5"/);
+});
+test("Monroe: ponto, bandeirola, ligadura e acidentes acompanham o áudio",()=>{
+ assert.match(N.svg("pontilhado","melodic"),/class="score-dot"/);
+ assert.match(N.svg("antecipado","rhythm"),/class="score-flag"/);
+ assert.match(N.svg("sincopa-longa","melodic"),/class="score-tie"/);
+ const seq=E.events("regular").map((e,i)=>({
+  ...e,midi:[60,63,66,70][i],
+  letter:["C","E","G","B"][i],
+  octave:4,alteration:i===0?"":"♭"
+ }));
+ assert.match(N.svg("regular","melodic",seq),/class="score-accidental"/);
 });
