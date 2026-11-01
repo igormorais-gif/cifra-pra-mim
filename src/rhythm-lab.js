@@ -21,8 +21,8 @@
   const PATTERNS=Object.freeze([
     {id:"regular",family:"base",title:"Pulso",subtitle:"Quatro semínimas",description:"Cada altura entra no início de um tempo: referência estável.",hits:[{tick:0,length:4},{tick:4,length:4},{tick:8,length:4},{tick:12,length:4}]},
     {id:"pulso-dividido",family:"base",title:"Pulso dividido",subtitle:"Dois ataques no primeiro tempo",description:"Duas colcheias abrem a frase; o tempo 2 fica em silêncio.",hits:[{tick:0,length:2},{tick:2,length:2},{tick:8,length:4},{tick:12,length:4}]},
-    {id:"contratempos",family:"sincopes",title:"Contratempos",subtitle:"Entradas em 2& e 4&",description:"Segunda e quarta notas começam no contratempo.",hits:[{tick:0,length:4},{tick:6,length:2},{tick:8,length:4},{tick:14,length:2}]},
-    {id:"deslocado",family:"sincopes",title:"Deslocado",subtitle:"Entradas em 1& e 3&",description:"Dó e Sol passam para a segunda metade de seus tempos.",hits:[{tick:2,length:2},{tick:4,length:4},{tick:10,length:2},{tick:12,length:4}]},
+    {id:"contratempos",family:"sincopes",title:"Contratempos",subtitle:"Entradas no e dos tempos 2 e 4",description:"Segunda e quarta notas começam no contratempo.",hits:[{tick:0,length:4},{tick:6,length:2},{tick:8,length:4},{tick:14,length:2}]},
+    {id:"deslocado",family:"sincopes",title:"Deslocado",subtitle:"Entradas no e dos tempos 1 e 3",description:"Dó e Sol passam para a segunda metade de seus tempos.",hits:[{tick:2,length:2},{tick:4,length:4},{tick:10,length:2},{tick:12,length:4}]},
     {id:"antecipado",family:"sincopes",title:"Antecipações",subtitle:"Última semicolcheia de cada tempo",description:"Quatro entradas antes dos tempos seguintes, com silêncios entre elas.",hits:[{tick:3,length:1},{tick:7,length:1},{tick:11,length:1},{tick:15,length:1}]},
     {id:"sincopa-longa",family:"sincopes",title:"Síncope longa",subtitle:"Contratempo sustentado",description:"Mi começa em 1& e se sustenta por três colcheias.",hits:[{tick:0,length:2},{tick:2,length:6},{tick:10,length:2},{tick:12,length:4}]},
     {id:"respiros",family:"pausas",title:"Respiros",subtitle:"Notas curtas e silêncios",description:"Quatro colcheias separadas por respiros de tamanhos diferentes.",hits:[{tick:0,length:2},{tick:5,length:2},{tick:10,length:2},{tick:14,length:2}]},
@@ -39,9 +39,11 @@
     {id:"pausas",title:"Pausas"},
     {id:"densidade",title:"Densidade"}
   ]);
+  // No O Passo, os dois "i" têm nomes iguais; índices são só para desambiguar os chips.
+  // A grade e a contagem oral continuam literalmente: 1 i e i.
   const beatLabel=tick=>{
     if(!Number.isInteger(tick)||tick<0||tick>15)throw new RangeError("Semicolcheia inválida");
-    return String(Math.floor(tick/4)+1)+["","e","&","a"][tick%4];
+    return String(Math.floor(tick/4)+1)+["","i₁","e","i₂"][tick%4];
   };
   function pattern(id){
     const item=PATTERNS.find(x=>x.id===id);
@@ -72,8 +74,8 @@
   // Metrônomo e frase usam a mesma grade temporal de 16 semicolcheias.
   const METRONOME_MODES=Object.freeze([
     {id:"beats",label:"1 2 3 4",step:4},
-    {id:"eighths",label:"1 &",step:2},
-    {id:"sixteenths",label:"1 e & a",step:1}
+    {id:"eighths",label:"1 e",step:2},
+    {id:"sixteenths",label:"1 i e i",step:1}
   ]);
   function metronomePlan(mode="beats",bpm=80){
     const selected=METRONOME_MODES.find(x=>x.id===mode);
