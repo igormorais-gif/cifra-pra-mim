@@ -70,6 +70,7 @@
 </section>
 <div class="below"><section class="panel subpanel"><h3>↝ Formas originais → Adaptando Pontas</h3><p>O ponto de partida é a tríade em 135, 351 ou 513 na M.D. As substituições respeitam as notas que essas formas já contêm; a M.E. sustenta a fundamental. Na redução para três notas, a omissão aparece explicitamente.</p></section><section class="panel subpanel"><h3>✧ Cores e economia de vozes</h3><p>O grau na bolinha e nos quadradinhos tem a mesma cor. Prefira quatro ou três notas totais. Não acrescente quinta nota só para comportar tensões: repense a distribuição dos graus.</p><div class="legend"><span><i style="background:#e58c42"></i>1</span><span><i style="background:#5c95cd"></i>3</span><span><i style="background:#6c78db"></i>5</span><span><i style="background:#ad66d0"></i>7</span><span><i style="background:#64ac99"></i>Tensões</span></div></section></div>
 <footer class="foot"><span>Cifra pra Mim · Laboratório de Piano · Afinação temperada · Som sintetizado</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer></div>
+<script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
@@ -189,7 +190,14 @@ function render(){let c=compute();if(c.error&&state.voices===3){const warning=c.
 }
 function markPlaying(hand,index){state.playing={hand,index};nodes.forEach(n=>{n.el.classList.toggle('played',n.hand===hand&&n.index===index)});for(let [id,h] of [['leftCards','lh'],['rightCards','rh']])Array.from($(id).children).forEach((e,i)=>e.classList.toggle('playing',h===hand&&i===index))}
 function markRightHandChord(){state.playing={hand:'rh',index:'all'};nodes.forEach(n=>{n.el.classList.toggle('played',n.hand==='rh')});for(const [id,hand] of [['leftCards','lh'],['rightCards','rh']])Array.from($(id).children).forEach(e=>e.classList.toggle('playing',hand==='rh'))}
-function stop(){state.token++;state.playing=null;nodes.forEach(x=>x.el.classList.remove('played'));['leftCards','rightCards'].forEach(id=>Array.from($(id).children).forEach(e=>e.classList.remove('playing')));['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=false)}
+let loopClock=null,loopVoices=[],loopHighlights=[];
+function stop(){
+ if(loopClock){loopClock.cancel();loopClock=null}
+ for(const id of loopHighlights)clearTimeout(id);
+ loopHighlights=[];
+ for(const osc of loopVoices)try{osc.stop()}catch(e){}
+ loopVoices=[];
+ state.token++;state.playing=null;nodes.forEach(x=>x.el.classList.remove('played'));['leftCards','rightCards'].forEach(id=>Array.from($(id).children).forEach(e=>e.classList.remove('playing')));['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=false)}
 function unlock(){
  // iOS/Safari: criar e iniciar o áudio no próprio clique, sem aguardar resume().
  try{
@@ -244,9 +252,9 @@ function sweetOutput(node,flavor){
  node.connect(room.dry);
  if(room.send)node.connect(room.send);
 }
-function sound(midi,sec,bass=false){
+function sound(midi,sec,bass=false,at=null){
  if(!audio)return;
- const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
+ const start=at??audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
  const duration=Math.max(.43,sec+.35);
  const partials=bass?[[1,.175],[2,.026],[3,.007]]:[[1,.155],[2,.028],[3,.008]];
  for(const [multiple,volume] of partials){
@@ -256,41 +264,50 @@ function sound(midi,sec,bass=false){
   gain.gain.exponentialRampToValueAtTime(volume,start+.026);
   gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
   osc.connect(gain);sweetOutput(gain,'piano');
-  osc.start(start);osc.stop(start+duration+.045);
+  osc.start(start);osc.stop(start+duration+.045);loopVoices.push(osc);
  }
 }
 function playNote(midi,sec,bass){if(unlock())sound(midi,sec,bass)}
-const pause=ms=>new Promise(r=>setTimeout(r,ms));
+function visualAt(at,token,cb){
+ const delay=Math.max(0,(at-audio.currentTime)*1000);
+ const handle=setTimeout(()=>{if(token===state.token)cb()},delay);
+ loopHighlights.push(handle);
+}
 async function perform(mode){
  stop();const token=state.token;
- // É fundamental chamar sound() ANTES do primeiro await para funcionar no iOS.
+ // Web Audio deve ser ativado pela ação do usuário no iPhone.
  if(!unlock())return;
  ['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=true);
- do{
-  const total=mode==='all'?stages().length:1;
-  for(let j=0;j<total;j++){
-   if(state.token!==token)return;
-   if(mode==='all'){state.stage=j;render()}
-   const c=compute(),beat=60/state.bpm;
-   if(mode==='chord'){
-    markRightHandChord();sound(c.bass,beat*1.8,true);
-    for(const midi of c.rightMidi)sound(midi,beat*1.8,false);
-    await pause(beat*1950);
-   }else{
-    // M.E. sozinha primeiro (1), seguida do acorde inteiro na M.D.
-    markPlaying('lh',0);sound(c.bass,beat*.9,true);
-    await pause(beat*950);
-    if(state.token!==token)return;
-    markRightHandChord();
-    for(const midi of c.rightMidi)sound(midi,beat*1.7,false);
-    await pause(beat*1750);
+ const beat=60/state.bpm,stageLength=mode==='chord'?beat*1.95:beat*2.70;
+ const count=mode==='all'?stages().length:1;
+ const startStage=state.stage;
+ loopClock=window.SeamlessLoop.create({
+  audio,cycleSeconds:stageLength*count,shouldRepeat:()=>state.loop,
+  schedule:(startAt)=>{
+   for(let j=0;j<count;j++){
+    if(mode==='all')state.stage=j;
+    else state.stage=startStage;
+    const c=compute(),at=startAt+j*stageLength;
+    if(mode==='chord'){
+     sound(c.bass,beat*1.8,true,at);
+     for(const midi of c.rightMidi)sound(midi,beat*1.8,false,at);
+     visualAt(at,token,()=>markRightHandChord());
+    }else{
+     sound(c.bass,beat*.9,true,at);
+     for(const midi of c.rightMidi)sound(midi,beat*1.7,false,at+beat*.95);
+     visualAt(at,token,()=>markPlaying('lh',0));
+     visualAt(at+beat*.95,token,()=>markRightHandChord());
+    }
+    if(mode==='all')visualAt(at,token,()=>{state.stage=j;render()});
    }
-   if(mode==='all'&&j<total-1)await pause(beat*250);
+  },
+  onFinish:()=>{
+   if(token!==state.token)return;
+   loopClock=null;
+   ['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=false);
+   state.playing=null;
   }
-  if(!state.loop||state.token!==token)break;
-  await pause(130);
- }while(state.loop&&state.token===token);
- if(state.token===token)stop();
+ });
 }
 function generateNow(){stop();const a=tryGenerate();if(a.error){state.generated=null;state.error=a.error;state.stage=0}else{state.generated=a;state.error='';state.stage=1}render()}
 function recompute(){if(state.mode==='gen'&&state.generated){const a=tryGenerate();if(a.error){state.generated=null;state.error=a.error;state.stage=0}else{state.generated=a;state.error='';state.stage=1}}render()}
