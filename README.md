@@ -2,6 +2,8 @@
 
 O Laboratório combina **12 células rítmicas originais** em 4/4 (mesmos 16 ticks em áudio, grade e pauta) com uma coleção modal em Dó, uma disposição fechada de quatro vozes e um percurso ordenado de quatro graus. O material é gerado programaticamente em `src/melodic-axis.js`; nenhum lick de terceiros foi incorporado.
 
+**Visualização didática de registro versus ordem (v9.1):** os seletores passaram a se chamar **Registro das quatro notas** e **Ordem melódica**. O primeiro desenha quatro alturas em sequência grave→agudo (independentemente de qual será o primeiro ataque); o segundo desenha a ordem real de execução, com ordinal e altura/oitava. Exemplo em Dó dórico, percurso 7–3–1–5: registro 1–3–5–7 → Si♭4, Mi♭4, Dó4, Sol4; registro 5–7–1–3 → Si♭4, Mi♭5, Dó5, Sol4. O ritmo permanece intacto. Esta distinção usa visualização para ensinar que a inversão define o conjunto de alturas e o percurso define como a melodia atravessa esse conjunto.
+
 **Eixos ativos:**
 - **Modo:** jônico, dórico, frígio, lídio, mixolídio, eólio ou lócrio, todos com Dó como centro. A coleção completa de sete graus é mostrada para contextualização.
 - **Disposição fechada:** quatro conjuntos de alturas da tétrade (posição fundamental e três inversões), com oitavas reais independentes da ordem tocada.
