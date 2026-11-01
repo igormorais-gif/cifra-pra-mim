@@ -265,12 +265,13 @@ function sound(midi,sec,bass=false,at=null){
   gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
   osc.connect(gain);sweetOutput(gain,'piano');
   osc.start(start);osc.stop(start+duration+.045);loopVoices.push(osc);
+  osc.onended=()=>{const i=loopVoices.indexOf(osc);if(i>=0)loopVoices.splice(i,1)};
  }
 }
 function playNote(midi,sec,bass){if(unlock())sound(midi,sec,bass)}
 function visualAt(at,token,cb){
  const delay=Math.max(0,(at-audio.currentTime)*1000);
- const handle=setTimeout(()=>{if(token===state.token)cb()},delay);
+ const handle=setTimeout(()=>{const i=loopHighlights.indexOf(handle);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)cb()},delay);
  loopHighlights.push(handle);
 }
 async function perform(mode){
