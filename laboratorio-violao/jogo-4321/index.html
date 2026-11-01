@@ -42,6 +42,7 @@
 <div class="settings"><section class="panel extra"><h3>↝ Tônica visual</h3><p>O grau 1 é a tônica visual fixa desta posição: sua corda e sua casa não mudam durante as transições ou tensões. Para Mi nas posições 5P e 7P, fica na 5ª corda, casa 7.</p><label class="toggle"><input id="showVisual" type="checkbox" checked> Mostrar tônica visual (1V)</label></section><section class="panel extra"><h3>✧ Como usar as quatro pontas</h3><p>As matrizes <strong>1513, 3515, 5131 e 1351</strong> indicam os graus na ordem 4–3–2–1. A 7P surge quando o 1 da ponta da matriz 5131 é substituído pela sétima.</p></section></div>
 <footer class="footer"><span>Estudo de voicings inspirado nos conceitos do livro de Sérgio Benevenuto · Diagramas próprios</span><span>Afinação Mi–Lá–Ré–Sol–Si–Mi</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer>
 </div>
+<script src="../../src/seamless-loop.js?v=8"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),SVG='http://www.w3.org/2000/svg';
@@ -149,7 +150,14 @@ function render(){let c=computed();$('generator').hidden=state.mode!=='gen';$('r
  if(window.innerWidth<661){let w=$('board').getBoundingClientRect().width,x=fx(c.frets.reduce((a,b)=>a+b,0)/4)/1100*w,scroller=$('scroll');scroller.scrollLeft=Math.max(0,x-scroller.clientWidth/2)}
 }
 function playing(i){state.playing=i;nodes.forEach((e,j)=>e.classList.toggle('playing',i===j));document.querySelectorAll('.note-card').forEach((e,j)=>e.classList.toggle('playing',i===j))}
-function stop(){state.token++;playing(-1);$('playOne').disabled=false;$('playAll').disabled=false}
+let loopClock=null,loopVoices=[],loopHighlights=[];
+function stop(){
+ if(loopClock){loopClock.cancel();loopClock=null}
+ for(const id of loopHighlights)clearTimeout(id);
+ loopHighlights=[];
+ for(const osc of loopVoices)try{osc.stop()}catch(e){}
+ loopVoices=[];
+ state.token++;playing(-1);$('playOne').disabled=false;$('playAll').disabled=false}
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='Áudio bloqueado pelo navegador. Toque novamente para ativar.';return false}}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
@@ -193,9 +201,9 @@ function sweetOutput(node,flavor){
  node.connect(room.dry);
  if(room.send)node.connect(room.send);
 }
-function pluck(midi,sec){
+function pluck(midi,sec,at=null){
  if(!audio)return;
- const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
+ const start=at??audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
  const duration=Math.max(.38,sec+.32);
  for(const [multiple,volume] of [[1,.18],[2,.043],[3,.013]]){
   const osc=audio.createOscillator(),gain=audio.createGain(),filter=audio.createBiquadFilter();
@@ -205,27 +213,39 @@ function pluck(midi,sec){
   gain.gain.exponentialRampToValueAtTime(volume,start+.016);
   gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
   osc.connect(filter);filter.connect(gain);sweetOutput(gain,'guitar');
-  osc.start(start);osc.stop(start+duration+.055);
+  osc.start(start);osc.stop(start+duration+.055);loopVoices.push(osc);
+  osc.onended=()=>{const i=loopVoices.indexOf(osc);if(i>=0)loopVoices.splice(i,1)};
  }
 }
-async function arpeggio(token){let c=computed(),beat=60/state.bpm;for(let i=0;i<4;i++){if(token!==state.token)return;playing(i);pluck(c.midis[i],beat*.5);await delay(beat*500)}if(token===state.token)playing(-1)}
+function visualAt(at,token,callback){
+ const t=setTimeout(()=>{if(token===state.token)callback()},Math.max(0,(at-audio.currentTime)*1000));
+ loopHighlights.push(t);
+}
 async function play(all){
  stop();const token=state.token;
  if(!await unlock()||token!==state.token)return;
  $('playOne').disabled=true;$('playAll').disabled=true;
- do{
-  const n=all?stages().length:1;
-  for(let i=0;i<n;i++){
-   if(state.token!==token)return;
-   if(all){state.stage=i;render()}
-   await arpeggio(token);
-   if(state.token!==token)return;
-   if(i<n-1)await delay(170);
+ const beat=60/state.bpm,phraseLength=2*beat,count=all?stages().length:1,initialStage=state.stage;
+ loopClock=window.SeamlessLoop.create({
+  audio,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
+  schedule:at=>{
+   for(let j=0;j<count;j++){
+    state.stage=all?j:initialStage;
+    const c=computed(),begin=at+j*phraseLength;
+    for(let i=0;i<4;i++){
+     const t=begin+i*beat*.5;
+     pluck(c.midis[i],beat*.5,t);
+     visualAt(t,token,()=>playing(i));
+    }
+    if(all)visualAt(begin,token,()=>{state.stage=j;render()});
+   }
+  },
+  onFinish:()=>{
+   if(token!==state.token)return;
+   loopClock=null;playing(-1);
+   $('playOne').disabled=false;$('playAll').disabled=false;
   }
-  if(!state.loop||token!==state.token)break;
-  await delay(130);
- }while(state.loop&&state.token===token);
- if(state.token===token)stop();
+ });
 }
 function generateNow(){stop();let a=generate();if(a.error){state.error=a.error;state.generated=null;state.stage=0}else{state.error='';state.generated=a;state.stage=1}render()}
 function change(callback){stop();callback();if(state.mode==='gen'&&state.generated){let a=generate();if(a.error){state.generated=null;state.error=a.error;state.stage=0}else{state.generated=a;state.error=''}}render()}
