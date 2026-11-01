@@ -27,29 +27,37 @@ test("Embelezamentos tem Loop em ambos os players",()=>{
  const html=read("laboratorio-embelezamento/index.html");
  assert.match(html,/id="loopPair"/);
  assert.match(html,/id="loopConn"/);
- assert.match(html,/runConnectionCycle\(token\)/);
- assert.match(html,/runApproachCycle\(mode,token\)/);
+ assert.match(html,/function scheduleConnectionCycle\(/);
+ assert.match(html,/function playApproach\(/);
+ assert.equal((html.match(/window\.SeamlessLoop\.create/g)||[]).length,2);
 });
-test("Todos os módulos modernos preservam o modo ligado e cancelam por token",()=>{
+test("Todos os laboratórios usam o mesmo relógio musical, sem pausas artificiais",()=>{
+ for(const [name,file] of LABS){
+  const html=read(file);
+  assert.match(html,/seamless-loop\.js\?v=8/,name);
+  const code=file==="laboratorio.html"?read("src/app.js"):html;
+  assert.match(code,/SeamlessLoop\.create/,name);
+  assert.doesNotMatch(code,/await (?:wait|pause|delay)\(130\)/,name);
+ }
+});
+test("Módulos modernos cancelam o transport ao apertar Parar",()=>{
  for(const [,file] of LABS.filter(x=>x[0]!=="Transições (legado)")){
   const s=read(file);
-  assert.match(s,/state\.loop/,"Estado de Loop ausente em "+file);
-  assert.match(s,/state\.token/,"Cancelamento por token ausente em "+file);
+  assert.match(s,/state\.token/);
+  assert.match(s,/loopClock\.cancel\(\)|loopTransport\.cancel\(\)/,file);
  }
 });
-test("Improvisação repete célula, comparação e metrônomo isolado",()=>{
+test("Improvisação usa relógio comum para célula, comparação e metrônomo",()=>{
  const html=read("laboratorio-improviso/index.html");
- for(const name of ["runSelectedCycle","runCompareCycle","runMetronomeCycle"]){
-   assert.match(html,new RegExp("function "+name+"\\("));
- }
- assert.match(html,/if\(state\.loop\)runSelectedCycle/);
- assert.match(html,/if\(state\.loop\)runCompareCycle/);
- assert.match(html,/if\(state\.loop\)runMetronomeCycle/);
+ assert.equal((html.match(/window\.SeamlessLoop\.create/g)||[]).length,3);
+ assert.match(html,/cycleSeconds:4\*beat/);
+ assert.match(html,/cycleSeconds:compared\.length\*4\*beat/);
+ assert.match(html,/cycleSeconds:beat\*4/);
 });
-test("Laboratório legado não agenda novas passagens após Parar",()=>{
+test("Laboratório legado cancela as vozes ao mudar de exercício",()=>{
  const js=read("src/app.js");
  assert.match(js,/playbackToken\+\+/);
- assert.match(js,/clearTimeout\(loopTimer\)/);
- assert.match(js,/if\(loopEnabled\)playPass\(token\)/);
+ assert.match(js,/loopClock\.cancel\(\)/);
+ assert.match(js,/schedulePass\(at,token\)/);
  assert.match(js,/cancelAudio\(\);selected = index;/);
 });
