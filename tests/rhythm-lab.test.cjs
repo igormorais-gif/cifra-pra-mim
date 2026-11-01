@@ -102,7 +102,7 @@ test("checagem auditiva: a 80 BPM 2i₁ e 2e estão separados por uma semicolche
 });
 test("Respiros: Mi em 2i₁, Sol em 3e e Si em 4e, mantendo o áudio",()=>{
  const notes=E.events("respiros");
- assert.deepEqual(notes.map(x=>x.at),["1","2e","3&","4&"]);
+ assert.deepEqual(notes.map(x=>x.at),["1","2i₁","3e","4e"]);
  assert.deepEqual(notes.map(x=>x.tick),[0,5,10,14]);
  assert.deepEqual(notes.map(x=>E.beatsToSeconds(x.tick,80)),[0,.9375,1.875,2.625]);
 });
