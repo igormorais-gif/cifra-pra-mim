@@ -1,3 +1,21 @@
+## Partitura do Laboratório de Improvisação — critérios Larry Monroe (v12)
+
+**Fonte primária:** arquivo enviado pelo usuário, Larry Monroe, *Workbook for Ear Training 1* (Berklee College of Music), **páginas 2–7 do PDF** / páginas impressas 1–6, **Lesson One**. O material é digitalização; as regras foram lidas nas páginas escaneadas, não inferidas por OCR.
+
+**Aplicação das regras observadas:**
+- Página 2: valores claros de notas e pausas — semínima, colcheia e semicolcheia com figuras distintas.
+- Página 3: ponto de aumento somando metade do valor e ligadura entre notas da mesma altura, mantendo um único ataque.
+- Página 4: fórmula **4/4** com quatro pulsações de semínima.
+- Página 5 (*Beam* / *Imaginary Bar Line*): barras entre notas curtas consecutivas e respeito à divisão imaginária do 4/4 entre tempos 2 e 3; a divisão é editorial, não se deve colocar falsa barra real na pauta.
+- Página 6: em sequências com semicolcheias, cada tempo permanece legível; barras não cruzam a unidade do tempo; pausas não atravessam os limites imaginários (exceto pausa de compasso inteiro). No gerador, adotamos a convenção conservadora de não atravessar nenhum tempo por barras e de dividir prolongamentos com ligaduras, sem alterar a duração real.
+- Página 7: tempos **1** (apoio principal) e **3** (apoio secundário) são diferenciados discretamente nos números acima da pauta, enquanto 2 e 4 permanecem visualmente neutros. Isto não acrescenta acentos no áudio.
+
+**Implementação:** `src/rhythm-notation.js` monta a pauta SVG a partir dos 16 ticks do áudio; separa silêncios e prolongamentos conforme as fronteiras de pulsação, agrupa colcheias/semicolcheias contíguas com barras primárias e secundárias, desenha bandeirolas apenas em notas isoladas, preserva pontos, acidentes e linhas suplementares, e mostra os tempos 1–4. As hastes em grupos de alturas distintas se ligam à mesma barra. Não há notas novas nem deslocamentos de ataque.
+
+**Apresentação:** a pauta possui dois modos (melódico/rítmico) e duas escalas no celular: **Leitura ampliada** preserva o tamanho da notação com rolagem horizontal; **Ver compasso inteiro** mostra toda a pauta reduzida para orientação geral. Um painel recolhível apresenta os critérios. A grade do O Passo (`1 i e i`) permanece completamente visível e serve como referência posicional complementar. **Não confundir** a grade de semicolcheias com a escrita convencional da pauta.
+
+**Testes:** `tests/rhythm-notation.test.cjs` verifica correspondência com 12 ritmos, agrupamento dentro dos tempos, visibilidade da separação 2|3, pausas, ligaduras, ponto, semicolcheias e acidentes; os demais testes validam 672 configurações modais e os controles móveis. A audição e a legibilidade em Safari/iPhone ainda dependem da revisão visual no dispositivo.
+
 ## Laboratório de Improvisação — interface móvel (v11)
 
 O iPhone agora exibe a **grade rítmica inteira** (16 semicolcheias, `1 i e i | 2 i e i | 3 i e i | 4 i e i`) dentro da largura disponível, sem rolagem lateral na grade. A página preserva os ataques em seus ticks originais e as quatro divisões de tempo. Etiquetas de notas muito curtas permanecem acessíveis nos chips logo abaixo da grade. A partitura tradicional continua com rolagem própria para preservar legibilidade.
