@@ -131,6 +131,23 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .diag-columns span.playing{background:#ef6674;color:#271015}
 .timing-check .diag-caption{font-size:11px;max-width:none}
 @media(max-width:620px){.timing-actions{width:100%}.timing-actions button{flex:1}.diag-columns{max-width:none}}
+
+/* v4: subdivisões auditivas do metrônomo */
+.metro-panel{margin-top:14px;border:1px solid #476478;background:#122536;border-radius:13px;padding:13px 14px}
+.metro-main{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.metro-toggle{color:#f3d3b6;font-weight:800}
+.metro-hint{color:#b1c5d3;font-size:12px}
+.metro-division{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:11px}
+.metro-division button{border:1px solid #4c6678;border-radius:9px;background:#1c3040;color:#d8e2e8;padding:10px 8px;font-size:12px;font-weight:800;min-height:55px}
+.metro-division button small{display:block;font:700 11px/1.3 ui-monospace,monospace;color:#b1c3d0;margin-top:4px;letter-spacing:.06em}
+.metro-division button.active{background:#efb985;color:#281e18;border-color:#f5c79a}
+.metro-division button.active small{color:#5c3d2a}
+.metro-feedback{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:#b9ccd8}
+.metro-current{background:#0a1b28;border:1px solid #44637a;border-radius:7px;padding:6px 10px;white-space:nowrap}
+.metro-current strong{color:#ffd09e;font-size:15px}
+.subdiv.metro-active{background:#f2bb84!important;color:#211a13!important;box-shadow:inset 0 -4px 0 #db8648}
+.tick.metro-active{background:#344b50!important;border-left-color:#f2bb84!important}
+@media(max-width:620px){.metro-division{gap:5px}.metro-division button{font-size:11px;padding:9px 5px}.metro-division button small{font-size:10px}.metro-feedback{font-size:10px}}
 </style>
 </head>
 <body>
@@ -164,8 +181,22 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
       <button class="action primary" id="play" type="button">▶ Ouvir esta célula</button>
       <button class="action" id="compare" type="button">▶ Comparar visíveis</button>
       <button class="action stop" id="stop" type="button">■ Parar</button>
-      <label class="toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
       <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
+    </div>
+    <div class="metro-panel" aria-label="Metrônomo e subdivisões">
+      <div class="metro-main">
+        <label class="toggle metro-toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
+        <span class="metro-hint">Escolha quais subdivisões serão marcadas pelo clique.</span>
+      </div>
+      <div class="metro-division" role="group" aria-label="Divisão do metrônomo">
+        <button type="button" data-metro-mode="beats" class="active" aria-pressed="true">Tempos <small>1 2 3 4</small></button>
+        <button type="button" data-metro-mode="eighths" aria-pressed="false">Colcheias <small>1 &amp;</small></button>
+        <button type="button" data-metro-mode="sixteenths" aria-pressed="false">Semicolcheias <small>1 e &amp; a</small></button>
+      </div>
+      <div class="metro-feedback">
+        <span id="metro-description">4 cliques por compasso · somente os tempos</span>
+        <span class="metro-current" aria-label="Subdivisão atual">Clique: <strong id="metro-current">—</strong></span>
+      </div>
     </div>
     <div class="timing-check" aria-labelledby="timing-check-title">
       <div class="timing-check-top">
@@ -216,7 +247,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 "use strict";
 const E=window.RhythmLabEngine,N=window.RhythmLabNotation;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
 function setStatus(message){$("status").textContent=message}
@@ -300,6 +331,8 @@ function renderScore(){
 }
 function stop(){
  state.token++;
+ for(const x of document.querySelectorAll(".subdiv,.tick"))x.classList.remove("metro-active");
+ $("metro-current").textContent="—";
  for(const x of document.querySelectorAll("[data-diag-tick]"))x.classList.remove("active","playing");
  for(const t of state.timers)clearTimeout(t);
  state.timers=[];
@@ -329,21 +362,40 @@ function note(midi,at,duration,accent){
  osc.connect(gain);gain.connect(ctx.destination);
  osc.start(at);osc.stop(at+duration+.03);state.voices.push(osc);
 }
-function click(at,strong){
+function click(at,accent){
+ const colors={
+  downbeat:{frequency:1240,volume:.084,duration:.065},
+  beat:{frequency:880,volume:.049,duration:.055},
+  offbeat:{frequency:650,volume:.034,duration:.047},
+  subdivision:{frequency:460,volume:.025,duration:.042}
+ };
+ const sound=colors[accent]||colors.beat;
  const ctx=state.ctx,osc=ctx.createOscillator(),gain=ctx.createGain();
- osc.type="sine";osc.frequency.setValueAtTime(strong?1120:780,at);
+ osc.type="sine";osc.frequency.setValueAtTime(sound.frequency,at);
  gain.gain.setValueAtTime(.0001,at);
- gain.gain.exponentialRampToValueAtTime(strong?.082:.043,at+.006);
- gain.gain.exponentialRampToValueAtTime(.0001,at+.060);
+ gain.gain.exponentialRampToValueAtTime(sound.volume,at+.006);
+ gain.gain.exponentialRampToValueAtTime(.0001,at+sound.duration);
  osc.connect(gain);gain.connect(ctx.destination);
- osc.start(at);osc.stop(at+.08);state.voices.push(osc);
+ osc.start(at);osc.stop(at+sound.duration+.02);state.voices.push(osc);
+}
+function scheduleMetronome(begin,token,offsetSeconds=0){
+ if(!state.click)return;
+ for(const pulse of E.metronomePlan(state.metronomeMode,state.bpm)){
+  click(begin+pulse.offsetSeconds,pulse.accent);
+  later(offsetSeconds+pulse.offsetSeconds,()=>{
+   $("metro-current").textContent=pulse.label;
+   for(const el of document.querySelectorAll(".subdiv,.tick")){
+    el.classList.toggle("metro-active",Number(el.dataset.tick)===pulse.tick);
+   }
+  },token);
+ }
 }
 function sounding(index,on){
  for(const item of document.querySelectorAll('[data-index="'+index+'"]'))item.classList.toggle("sounding",on);
 }
 function schedulePattern(id,begin,token,offsetSeconds=0){
- const beat=60/state.bpm,ev=E.events(id);
- if(state.click)for(let i=0;i<4;i++)click(begin+i*beat,i===0);
+ const ev=E.events(id);
+ scheduleMetronome(begin,token,offsetSeconds);
  for(const n of ev){
   const dt=E.beatsToSeconds(n.tick,state.bpm);
   const dur=E.beatsToSeconds(n.length,state.bpm);
@@ -365,7 +417,7 @@ async function diagnostic(tick){
  if(!ctx||state.token!==token)return;
  const start=ctx.currentTime+.12;
  const beat=60/state.bpm;
- for(let i=0;i<4;i++)click(start+i*beat,i===0);
+ scheduleMetronome(start,token,.12);
  const dt=E.beatsToSeconds(tick,state.bpm);
  note(72,start+dt,Math.max(.11,beat*.22),false);
  $("play").disabled=true;$("compare").disabled=true;
@@ -373,7 +425,7 @@ async function diagnostic(tick){
  const cells=[...document.querySelectorAll("[data-diag-tick]")];
  const marker=cells.find(x=>Number(x.dataset.diagTick)===tick);
  if(marker)marker.classList.add("active");
- setStatus("Teste auditivo: nota no "+E.beatLabel(tick)+"; os quatro cliques permanecem nos tempos 1, 2, 3 e 4.");
+ setStatus("Teste auditivo: nota no "+E.beatLabel(tick)+". O metrônomo segue a subdivisão selecionada.");
  later(.12+dt,()=>{if(marker)marker.classList.add("playing")},token);
  later(.12+dt+Math.max(.11,beat*.22),()=>{if(marker)marker.classList.remove("playing")},token);
  later(.12+4*beat+.1,()=>{
@@ -419,6 +471,25 @@ async function compareAll(){
 for(const button of document.querySelectorAll("[data-score-mode]"))button.addEventListener("click",()=>{
  stop();state.scoreMode=button.dataset.scoreMode;renderScore();
 });
+function renderMetronomeMode(){
+ for(const btn of document.querySelectorAll("[data-metro-mode]")){
+  const active=btn.dataset.metroMode===state.metronomeMode;
+  btn.classList.toggle("active",active);
+  btn.setAttribute("aria-pressed",String(active));
+ }
+ const descriptions={
+  beats:"4 cliques por compasso · somente os tempos",
+  eighths:"8 cliques por compasso · tempos e contratempos (&)",
+  sixteenths:"16 cliques por compasso · 1 e & a em cada tempo"
+ };
+ $("metro-description").textContent=descriptions[state.metronomeMode];
+}
+for(const btn of document.querySelectorAll("[data-metro-mode]"))btn.addEventListener("click",()=>{
+ stop();
+ state.metronomeMode=btn.dataset.metroMode;
+ renderMetronomeMode();
+ setStatus("Metrônomo: "+$("metro-description").textContent+". Reproduza a célula para comparar os ataques.");
+});
 $("diag-e").addEventListener("click",()=>diagnostic(5));
 $("diag-and").addEventListener("click",()=>diagnostic(6));
 $("play").addEventListener("click",playSelected);
@@ -430,15 +501,15 @@ $("bpm").addEventListener("input",e=>{
   updateTimingCaption();
   setStatus("Andamento: "+state.bpm+" BPM.");
 });
-$("click").addEventListener("change",e=>{state.click=e.target.checked});
+$("click").addEventListener("change",e=>{stop();state.click=e.target.checked;setStatus(state.click?"Metrônomo ativado.":"Metrônomo desativado.");});
 window.addEventListener("pagehide",stop);
 window.RhythmLabUI={
- get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,events:E.events(state.id),notation:N.plan(state.id)}),
+ get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:E.events(state.id),notation:N.plan(state.id)}),
  select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
  score:mode=>{if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");stop();state.scoreMode=mode;renderScore()}
 };
-render();updateTimingCaption();
+render();renderMetronomeMode();updateTimingCaption();
 })();
 </script>
 </body>
