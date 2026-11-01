@@ -156,6 +156,10 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .metro-select-label select:focus-visible{outline:3px solid #f3c394;outline-offset:3px}
 .metro-solo{flex:0 1 auto;min-height:51px;border-color:#c69777;background:#354451}
 @media(max-width:620px){.metro-select-row{gap:10px}.metro-select-label{flex-basis:100%}.metro-solo{width:100%}}
+
+/* Contagem O Passo: as posições não mudam, apenas os nomes */
+.passo-note{font-size:11px!important;color:#bdcfda!important;line-height:1.55;margin-top:9px!important}
+.passo-note strong{color:#ffe0bc}
 </style>
 </head>
 <body>
@@ -201,8 +205,8 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
           <span>Subdivisão do metrônomo</span>
           <select id="metro-mode" aria-describedby="metro-description">
             <option value="beats">Tempos — 1 2 3 4</option>
-            <option value="eighths">Colcheias — 1 &amp; 2 &amp; 3 &amp; 4 &amp;</option>
-            <option value="sixteenths">Semicolcheias — 1 e &amp; a</option>
+            <option value="eighths">Colcheias — 1 e 2 e 3 e 4 e</option>
+            <option value="sixteenths">Semicolcheias — 1 i e i</option>
           </select>
         </label>
         <button class="action metro-solo" id="metro-solo" type="button">▶ Ouvir só o metrônomo</button>
@@ -214,27 +218,28 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
     </div>
     <div class="timing-check" aria-labelledby="timing-check-title">
       <div class="timing-check-top">
-        <div><h3 id="timing-check-title">Teste auditivo de subdivisão</h3><p>Escolha acima a divisão do metrônomo. Uma nota isolada toca no <strong>2e</strong> ou no <strong>2&amp;</strong>, para conferir se coincide com o clique correspondente.</p></div>
+        <div><h3 id="timing-check-title">Teste auditivo de subdivisão</h3><p>Escolha acima a divisão do metrônomo. Uma nota isolada toca no <strong>primeiro i do tempo 2</strong> ou no <strong>e do tempo 2</strong>, para conferir se coincide com o clique.</p></div>
         <div class="timing-actions">
+          <button class="action" id="diag-first-i" type="button">▶ Ouvir 2i₁</button>
           <button class="action" id="diag-e" type="button">▶ Ouvir 2e</button>
-          <button class="action" id="diag-and" type="button">▶ Ouvir 2&amp;</button>
         </div>
       </div>
-      <div class="diag-columns" aria-label="Subdivisões do segundo tempo: 2 e &amp; a">
-        <span data-diag-tick="4">2</span><span data-diag-tick="5">e</span><span data-diag-tick="6">&amp;</span><span data-diag-tick="7">a</span>
+      <div class="diag-columns" aria-label="Subdivisões do segundo tempo: 2 i e i">
+        <span data-diag-tick="4">2</span><span data-diag-tick="5">i</span><span data-diag-tick="6">e</span><span data-diag-tick="7">i</span>
       </div>
-      <p class="diag-caption" id="diag-caption" aria-live="polite">A 80 BPM, o 2e ocorre 187,5 ms depois do 2; o 2&amp;, 375 ms depois.</p>
+      <p class="diag-caption" id="diag-caption" aria-live="polite">A 80 BPM, o primeiro i ocorre 187,5 ms após o 2; o e ocorre 375 ms após o 2.</p>
     </div>
     <p class="status" id="status" role="status" aria-live="polite">Selecione uma célula e toque para ouvir.</p>
   </section>
   <section class="card selected" aria-labelledby="selected-title">
     <div class="card-heading"><h2 id="selected-title">Pulso</h2><span id="selected-meta">Quatro semínimas</span></div>
     <p id="selected-description">Uma nota em cada tempo.</p>
-    <p class="grid-caption">Cada coluna corresponde exatamente a uma semicolcheia: <strong>1 e &amp; a</strong> em cada tempo.</p>
+    <p class="grid-caption">Cada coluna corresponde exatamente a uma semicolcheia: <strong>1 i e i</strong> em cada tempo, conforme a contagem d’O Passo.</p>
     <div class="chart-scroll">
       <div class="ticks" id="timeline" role="img" aria-label="Grade 4/4 com dezesseis subdivisões alinhadas aos ataques"></div>
     </div>
     <div class="event-list" id="event-list" aria-label="Notas e subdivisões"></div>
+    <p class="passo-note"><strong>Contagem d’O Passo:</strong> o <strong>e</strong> é o contratempo (metade do tempo); o primeiro <strong>i</strong> vem antes dele e o segundo <strong>i</strong> vem depois. Nas etiquetas, i₁ e i₂ apenas distinguem essas duas posições — ao falar, ambos são “i”.</p>
     <div class="notation" aria-labelledby="score-title">
       <div class="score-head">
         <div><h3 id="score-title">Partitura · 4/4</h3><p>O mesmo compasso, com notas e pausas correspondentes ao áudio.</p></div>
@@ -254,8 +259,8 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </main>
 <footer class="bottom"><span>Cifra pra Mim · Pesquisa didática de criação e improvisação</span><span>Próximos eixos: 96 percursos · 7 modos · embelezamentos</span></footer>
 </div>
-<script src="../src/rhythm-lab.js?v=5"></script>
-<script src="../src/rhythm-notation.js?v=5"></script>
+<script src="../src/rhythm-lab.js?v=6"></script>
+<script src="../src/rhythm-notation.js?v=6"></script>
 <script>
 (function(){
 "use strict";
@@ -307,7 +312,7 @@ function render(){
  $("selected-description").textContent=p.description;
  const grid=$("timeline");grid.replaceChildren();
  for(let tick=0;tick<16;tick++){
-  const label=make("span","subdiv"+(tick%4===0?" major":""),tick%4===0?String(tick/4+1):["","e","&","a"][tick%4]);
+  const label=make("span","subdiv"+(tick%4===0?" major":""),tick%4===0?String(tick/4+1):["","i","e","i"][tick%4]);
   label.dataset.tick=String(tick);
   label.style.gridColumn=String(tick+1);label.style.gridRow="1";
   grid.append(label);
@@ -353,7 +358,7 @@ function stop(){
  for(const o of state.voices){try{o.stop()}catch(e){}}
  state.voices=[];
  $("play").disabled=false;$("compare").disabled=false;
- $("diag-e").disabled=false;$("diag-and").disabled=false;
+ $("diag-first-i").disabled=false;$("diag-e").disabled=false;
  $("metro-solo").disabled=false;
  for(const chip of document.querySelectorAll(".sounding"))chip.classList.remove("sounding");
 }
@@ -423,7 +428,7 @@ function schedulePattern(id,begin,token,offsetSeconds=0){
 function formatMs(value){return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(value)+" ms"}
 function updateTimingCaption(){
  const beat=60/state.bpm;
- $("diag-caption").textContent="A "+state.bpm+" BPM, o 2e está "+formatMs(beat*250)+" depois do 2; o 2& está "+formatMs(beat*500)+" depois do 2.";
+ $("diag-caption").textContent="A "+state.bpm+" BPM, o primeiro i do 2 está "+formatMs(beat*250)+" depois do 2; o e do 2 está "+formatMs(beat*500)+" depois do 2.";
 }
 async function diagnostic(tick){
  stop();
@@ -436,7 +441,7 @@ async function diagnostic(tick){
  const dt=E.beatsToSeconds(tick,state.bpm);
  note(72,start+dt,Math.max(.11,beat*.22),false);
  $("play").disabled=true;$("compare").disabled=true;
- $("diag-e").disabled=true;$("diag-and").disabled=true;
+ $("diag-first-i").disabled=true;$("diag-e").disabled=true;
  const cells=[...document.querySelectorAll("[data-diag-tick]")];
  const marker=cells.find(x=>Number(x.dataset.diagTick)===tick);
  if(marker)marker.classList.add("active");
@@ -445,8 +450,8 @@ async function diagnostic(tick){
  later(.12+dt+Math.max(.11,beat*.22),()=>{if(marker)marker.classList.remove("playing")},token);
  later(.12+4*beat+.1,()=>{
   $("play").disabled=false;$("compare").disabled=false;
-  $("diag-e").disabled=false;$("diag-and").disabled=false;
-  setStatus("Teste finalizado: compare 2e e 2& ouvindo a mesma nota no mesmo tempo.");
+  $("diag-first-i").disabled=false;$("diag-e").disabled=false;
+  setStatus("Teste finalizado: compare o primeiro i e o e do tempo 2.");
  },token);
 }
 async function playSelected(){
@@ -490,8 +495,8 @@ function renderMetronomeMode(){
  $("metro-mode").value=state.metronomeMode;
  const descriptions={
   beats:"4 cliques por compasso · somente os tempos",
-  eighths:"8 cliques por compasso · tempos e contratempos (&)",
-  sixteenths:"16 cliques por compasso · 1 e & a em cada tempo"
+  eighths:"8 cliques por compasso · tempos e contratempos (e)",
+  sixteenths:"16 cliques por compasso · 1 i e i em cada tempo"
  };
  $("metro-description").textContent=descriptions[state.metronomeMode];
 }
@@ -523,8 +528,8 @@ async function playMetronomeOnly(){
  },token);
 }
 $("metro-solo").addEventListener("click",playMetronomeOnly);
-$("diag-e").addEventListener("click",()=>diagnostic(5));
-$("diag-and").addEventListener("click",()=>diagnostic(6));
+$("diag-first-i").addEventListener("click",()=>diagnostic(5));
+$("diag-e").addEventListener("click",()=>diagnostic(6));
 $("play").addEventListener("click",playSelected);
 $("compare").addEventListener("click",compareAll);
 $("stop").addEventListener("click",()=>{stop();setStatus("Reprodução interrompida.")});
