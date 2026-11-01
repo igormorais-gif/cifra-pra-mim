@@ -2,8 +2,8 @@ const {test}=require("node:test");
 const assert=require("node:assert/strict");
 const E=require("../src/rhythm-lab.js");
 
-test("há exatamente cinco células originais, todas em 4/4",()=>{
- assert.equal(E.PATTERNS.length,5);
+test("há exatamente doze células originais, todas em 4/4",()=>{
+ assert.equal(E.PATTERNS.length,12);
  assert.equal(new Set(E.PATTERNS.map(p=>p.id)).size,5);
  for(const p of E.PATTERNS)assert.equal(E.validate(p),true,p.id);
 });
@@ -53,10 +53,10 @@ test("conversão de semicolcheia e BPM",()=>{
  assert.throws(()=>E.beatsToSeconds(4,0),RangeError);
  assert.throws(()=>E.beatsToSeconds(4,300),RangeError);
 });
-test("a comparação completa toca 20 notas, com um tempo de pausa entre compassos",()=>{
+test("a comparação completa toca 48 notas e conserva um tempo de pausa entre compassos",()=>{
  const plan=E.comparePlan();
- assert.equal(plan.length,20);
- assert.deepEqual(plan.filter(e=>e.index===0).map(e=>e.globalTick),[0,20,42,63,80]);
+ assert.equal(plan.length,48);
+ assert.deepEqual(plan.filter(e=>e.index===0).map(e=>e.globalTick),E.PATTERNS.map((p,i)=>i*20+p.hits[0].tick));
  assert.deepEqual([...new Set(plan.map(e=>e.patternId))],E.PATTERNS.map(p=>p.id));
 });
 test("em cada compasso, as alturas mantêm a mesma ordem na comparação",()=>{
@@ -70,4 +70,22 @@ test("rótulos das subdivisões seguem a grade 1 e & a, até o quarto tempo",()=
 test("padrões inexistentes e células com sobreposição são rejeitados",()=>{
  assert.throws(()=>E.events("inexistente"),RangeError);
  assert.equal(E.validate({hits:[{tick:0,length:4},{tick:3,length:2},{tick:8,length:4},{tick:12,length:4}]}),false);
+});
+
+test("quatro famílias cobrem todas as doze células originais",()=>{
+ assert.deepEqual(E.FAMILIES.map(x=>x.id),["all","base","sincopes","pausas","densidade"]);
+ for(const p of E.PATTERNS)assert.ok(E.FAMILIES.slice(1).some(x=>x.id===p.family),p.id);
+ assert.deepEqual(E.FAMILIES.slice(1).map(f=>E.PATTERNS.filter(p=>p.family===f.id).length),[2,4,3,3]);
+});
+test("células exibem durações pontuadas e síncopes estruturais",()=>{
+ assert.deepEqual(E.events("sincopa-longa").map(e=>[e.tick,e.length]),[[0,2],[2,6],[10,2],[12,4]]);
+ assert.deepEqual(E.events("pontilhado").map(e=>e.length),[3,1,3,4]);
+ assert.deepEqual(E.events("final-ativo").map(e=>e.tick),[0,8,13,14]);
+});
+test("comparação parcial usa somente a família pedida e pausa entre compassos",()=>{
+ const ids=E.PATTERNS.filter(p=>p.family==="pausas").map(p=>p.id);
+ const plan=E.comparePlan(ids);
+ assert.equal(plan.length,12);
+ assert.deepEqual([...new Set(plan.map(e=>e.patternId))],ids);
+ assert.deepEqual(plan.filter(e=>e.index===0).map(e=>e.globalTick),ids.map((id,i)=>i*20+E.pattern(id).hits[0].tick));
 });
