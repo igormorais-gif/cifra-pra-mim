@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101820">
-<meta name="description" content="Laboratório de Improvisação: quatro notas, cinco células rítmicas e infinitas decisões musicais.">
+<meta name="description" content="Laboratório de Improvisação: quatro notas, doze células rítmicas e partitura 4/4 sincronizada.">
 <title>Cifra pra Mim · Laboratório de Ritmo</title>
 <style>
 :root{color-scheme:dark;--bg:#101820;--panel:#172532;--panel2:#192c3b;--line:#345064;--text:#f2ede4;--muted:#a7b8c5;--accent:#f4bb84;--cyan:#89c9ce}
@@ -87,6 +87,36 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 @media(max-width:950px){.rhythm-list{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr}.hero-side{max-width:660px}}
 @media(max-width:620px){.shell{padding:13px 13px 100px}.hero{padding:25px 0}.rhythm-list{grid-template-columns:repeat(2,minmax(0,1fr))}.rhythm-card{min-height:120px}.details{grid-template-columns:1fr}.tempo{margin:8px 0 0;width:100%;justify-content:space-between}.tempo input{flex:1;max-width:220px}.selected,.choose,.player,.purpose{padding:15px}.ticks{min-width:520px}.fixed{gap:10px}.pitch{padding:8px 10px;min-width:56px}header nav{width:100%}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* v2: uma única matriz controla subdivisão e ataques (sem deslocamento entre linhas) */
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+.filter{background:#122535;color:#c1d1dc;border:1px solid #426076;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:750}
+.filter.active{background:#d7ab80;color:#2b2018;border-color:#eac39d}
+.rhythm-list{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rhythm-card{min-height:128px}
+.grid-caption{color:#c0d2df;font-size:11px;margin:12px 0 9px}
+.grid-caption strong{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+.ticks{width:100%;min-width:640px;height:auto;padding:0;grid-template-rows:37px 82px;align-items:stretch;border:1px solid #39556b;overflow:hidden}
+.subdiv{display:flex;align-items:center;justify-content:center;min-width:0;color:#d1dde4;background:#182e40;font:800 12px/1 ui-monospace,SFMono-Regular,Consolas,monospace;border-right:1px solid #304658}
+.subdiv.major{background:#29415a;color:#ffe3b9;border-left:2px solid #7390a8}
+.subdiv:first-child{border-left:0}
+.tick{border-left:1px solid #263c50;min-width:0}
+.tick.major{border-left:2px solid #7390a8;background:#182a3b}
+.hit{margin:15px 2px 12px;min-height:0;align-self:stretch;grid-row:2}
+.notation{margin-top:23px;border-top:1px solid #345064;padding-top:18px}
+.score-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.score-head h3{font:700 22px Georgia,serif;margin:0}
+.score-head p{color:#b5c6d2;font-size:11px;margin:5px 0 0}
+.score-options{display:flex;gap:5px;padding:3px;border:1px solid #486177;border-radius:9px;background:#0f1c2a}
+.score-options button{background:transparent;color:#c3d3e0;border:0;border-radius:6px;padding:9px 12px;font-size:12px;font-weight:750}
+.score-options button.active{background:#f0b783;color:#261c14}
+.score-scroll{overflow-x:auto;margin-top:15px;border:1px solid #516778;border-radius:12px;background:#fbf7ee}
+.score-svg{display:block;width:100%;min-width:800px;height:auto}
+.score-hit.sounding .score-note{fill:#ef6674;stroke:#ef6674}
+.score-hit.sounding path.score-note{stroke:#ef6674;fill:none}
+.score-help{font-size:11px!important;margin:9px 0 0!important;color:#a9bdce!important}
+@media(max-width:950px){.rhythm-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.rhythm-list{grid-template-columns:repeat(2,minmax(0,1fr))}.score-options{width:100%}.score-options button{flex:1}.score-svg{min-width:800px}.ticks{min-width:640px}.filter{font-size:11px;padding:8px 10px}}
 </style>
 </head>
 <body>
@@ -100,8 +130,8 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </header>
 <main>
   <section class="hero">
-    <div><span class="kicker">Laboratório de improvisação / Eixo rítmico</span><h1>Uma tétrade.<br>Cinco ritmos.</h1><p>Mantenha as mesmas quatro alturas e a mesma ordem intervalar. Mude só a distribuição dos ataques em um compasso 4/4 e escute o que acontece com a frase.</p></div>
-    <div class="hero-side"><strong>Não é um catálogo de licks.</strong>Este experimento isola o ritmo: as cinco células são originais, não foram copiadas dos livros de improvisação. Depois, poderemos cruzá-las com os 96 percursos, os modos e os embelezamentos.</div>
+    <div><span class="kicker">Laboratório de improvisação / Eixo rítmico</span><h1>Uma tétrade.<br>Doze ritmos.</h1><p>Mantenha as mesmas quatro alturas e a mesma ordem intervalar. Mude só a distribuição dos ataques em um compasso 4/4 e escute o que acontece com a frase.</p></div>
+    <div class="hero-side"><strong>Não é um catálogo de licks.</strong>Este experimento isola o ritmo: as doze células são originais, não foram copiadas dos livros de improvisação. Depois, poderemos cruzá-las com os 96 percursos, os modos e os embelezamentos.</div>
   </section>
   <section class="card purpose" aria-label="Material intervalar fixo">
     <h2>Estrutura intervalar fixa · C7M · disposição fechada</h2>
@@ -111,13 +141,14 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
     </div>
   </section>
   <section class="card choose" aria-labelledby="choose-title">
-    <div class="card-heading"><h2 id="choose-title">Escolha uma célula rítmica</h2><span>5 desenhos · 4 ataques por compasso</span></div>
-    <div class="rhythm-list" id="rhythm-list" role="group" aria-label="Cinco células rítmicas"></div>
+    <div class="card-heading"><h2 id="choose-title">Escolha uma célula rítmica</h2><span id="rhythm-count">12 desenhos · 4 ataques por compasso</span></div>
+    <div class="filters" id="rhythm-filters" role="group" aria-label="Famílias de células rítmicas"></div>
+    <div class="rhythm-list" id="rhythm-list" role="group" aria-label="Doze células rítmicas"></div>
   </section>
   <section class="card player" aria-label="Controles de reprodução">
     <div class="control-row">
       <button class="action primary" id="play" type="button">▶ Ouvir esta célula</button>
-      <button class="action" id="compare" type="button">▶ Comparar as cinco</button>
+      <button class="action" id="compare" type="button">▶ Comparar visíveis</button>
       <button class="action stop" id="stop" type="button">■ Parar</button>
       <label class="toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
       <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
@@ -127,11 +158,22 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
   <section class="card selected" aria-labelledby="selected-title">
     <div class="card-heading"><h2 id="selected-title">Pulso</h2><span id="selected-meta">Quatro semínimas</span></div>
     <p id="selected-description">Uma nota em cada tempo.</p>
-    <div class="beats" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+    <p class="grid-caption">Cada coluna corresponde exatamente a uma semicolcheia: <strong>1 e &amp; a</strong> em cada tempo.</p>
     <div class="chart-scroll">
-      <div class="ticks" id="timeline" role="img" aria-label="Posições dos quatro ataques na grade de dezesseis semicolcheias"></div>
+      <div class="ticks" id="timeline" role="img" aria-label="Grade 4/4 com dezesseis subdivisões alinhadas aos ataques"></div>
     </div>
     <div class="event-list" id="event-list" aria-label="Notas e subdivisões"></div>
+    <div class="notation" aria-labelledby="score-title">
+      <div class="score-head">
+        <div><h3 id="score-title">Partitura · 4/4</h3><p>O mesmo compasso, com notas e pausas correspondentes ao áudio.</p></div>
+        <div class="score-options" role="group" aria-label="Visualização da partitura">
+          <button type="button" data-score-mode="rhythm" aria-pressed="false">Ritmo puro</button>
+          <button type="button" data-score-mode="melodic" class="active" aria-pressed="true">Com alturas</button>
+        </div>
+      </div>
+      <div class="score-scroll"><div id="score" aria-live="polite"></div></div>
+      <p class="score-help" id="score-help">Clave de sol · Dó4, Mi4, Sol4 e Si4. A altura e a duração são escritas no mesmo compasso 4/4.</p>
+    </div>
   </section>
   <section class="details" aria-label="Como estudar">
     <div class="card"><h3>O que permanece igual?</h3><p><b>Dó → Mi → Sol → Si</b>, suas oitavas e as relações intervalares. Estamos mudando apenas <b>quando</b> cada altura entra, quanto dura e onde aparece o silêncio.</p></div>
@@ -140,14 +182,16 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </main>
 <footer class="bottom"><span>Cifra pra Mim · Pesquisa didática de criação e improvisação</span><span>Próximos eixos: 96 percursos · 7 modos · embelezamentos</span></footer>
 </div>
-<script src="../src/rhythm-lab.js"></script>
+<script src="../src/rhythm-lab.js?v=2"></script>
+<script src="../src/rhythm-notation.js?v=1"></script>
 <script>
 (function(){
 "use strict";
-const E=window.RhythmLabEngine;
+const E=window.RhythmLabEngine,N=window.RhythmLabNotation;
 const $=id=>document.getElementById(id);
-const state={id:"regular",bpm:80,click:true,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
+const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
 function setStatus(message){$("status").textContent=message}
 function make(tag,cls,txt){const el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el}
 function fillMini(node,p){
@@ -157,9 +201,22 @@ function fillMini(node,p){
     node.append(bar);
   }
 }
+function showFilters(){
+ const wrap=$("rhythm-filters");wrap.replaceChildren();
+ for(const family of E.FAMILIES){
+  const btn=make("button","filter"+(state.family===family.id?" active":""),family.title);
+  btn.type="button";btn.setAttribute("aria-pressed",String(state.family===family.id));
+  btn.addEventListener("click",()=>{
+   stop();state.family=family.id;
+   if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;
+   render();setStatus("Família: "+family.title+".");
+  });
+  wrap.append(btn);
+ }
+}
 function showChoices(){
  const wrap=$("rhythm-list");wrap.replaceChildren();
- for(const p of patterns){
+ for(const p of visiblePatterns()){
   const btn=make("button","rhythm-card"+(p.id===state.id?" active":""),undefined);
   btn.type="button";btn.dataset.rhythm=p.id;
   btn.setAttribute("aria-pressed",String(p.id===state.id));
@@ -171,22 +228,27 @@ function showChoices(){
 }
 function render(){
  const p=E.pattern(state.id),ev=E.events(state.id);
- showChoices();
+ showFilters();showChoices();
+ $("rhythm-count").textContent=visiblePatterns().length+" células · 4 ataques por compasso";
  $("selected-title").textContent=p.title;
  $("selected-meta").textContent=p.subtitle;
  $("selected-description").textContent=p.description;
  const grid=$("timeline");grid.replaceChildren();
  for(let tick=0;tick<16;tick++){
+  const label=make("span","subdiv"+(tick%4===0?" major":""),tick%4===0?String(tick/4+1):["","e","&","a"][tick%4]);
+  label.dataset.tick=String(tick);
+  label.style.gridColumn=String(tick+1);label.style.gridRow="1";
+  grid.append(label);
   const cell=make("span","tick"+(tick%4===0?" major":""));
-  cell.dataset.label=["","e","&","a"][tick%4];
-  cell.style.gridColumn=String(tick+1);cell.style.gridRow="1";
+  cell.dataset.tick=String(tick);
+  cell.style.gridColumn=String(tick+1);cell.style.gridRow="2";
   grid.append(cell);
  }
  for(const n of ev){
   const item=make("span","hit"+(n.accent?"":" offbeat")+(n.length<=1?" tiny":"") ,n.name);
   item.dataset.index=String(n.index);item.title=n.name+" ("+n.degree+") · "+n.at;
   item.style.gridColumn=(n.tick+1)+" / span "+n.length;
-  grid.append(item);
+  item.style.gridRow="2";grid.append(item);
  }
  const chips=$("event-list");chips.replaceChildren();
  for(const n of ev){
@@ -197,6 +259,17 @@ function render(){
   chips.append(chip);
  }
  grid.setAttribute("aria-label",p.title+": "+ev.map(e=>e.name+" no "+e.at).join("; "));
+ renderScore();
+}
+function renderScore(){
+ for(const btn of document.querySelectorAll("[data-score-mode]")){
+  const active=btn.dataset.scoreMode===state.scoreMode;
+  btn.classList.toggle("active",active);btn.setAttribute("aria-pressed",String(active));
+ }
+ $("score").innerHTML=N.svg(state.id,state.scoreMode);
+ $("score-help").textContent=state.scoreMode==="melodic"
+  ?"Clave de sol · Dó4, Mi4, Sol4 e Si4. As ligaduras unem fragmentos da mesma nota; pausas ocupam os silêncios."
+  :"Pauta rítmica de uma linha. Todos os ataques ficam na mesma altura; figuras, pontos, pausas e ligaduras representam só a duração.";
 }
 function stop(){
  state.token++;
@@ -271,19 +344,23 @@ async function compareAll(){
  if(!ctx||state.token!==token)return;
  const beat=60/state.bpm,at=ctx.currentTime+.08;
  $("play").disabled=true;$("compare").disabled=true;
- patterns.forEach((p,i)=>{
+ const compared=visiblePatterns();
+ compared.forEach((p,i)=>{
   const delay=i*5*beat;
   schedulePattern(p.id,at+delay,token,.08+delay);
   later(.08+delay,()=>{
    state.id=p.id;render();
-   setStatus("Comparação "+(i+1)+"/5 · "+p.title+".");
+   setStatus("Comparação "+(i+1)+"/"+compared.length+" · "+p.title+".");
   },token);
  });
- later(.08+patterns.length*5*beat,()=>{
+ later(.08+compared.length*5*beat,()=>{
    $("play").disabled=false;$("compare").disabled=false;
-   setStatus("Comparação concluída. As quatro alturas permaneceram iguais.");
+   setStatus("Comparação concluída: "+compared.length+" células, com as quatro alturas preservadas.");
  },token);
 }
+for(const button of document.querySelectorAll("[data-score-mode]"))button.addEventListener("click",()=>{
+ stop();state.scoreMode=button.dataset.scoreMode;renderScore();
+});
 $("play").addEventListener("click",playSelected);
 $("compare").addEventListener("click",compareAll);
 $("stop").addEventListener("click",()=>{stop();setStatus("Reprodução interrompida.")});
@@ -294,7 +371,12 @@ $("bpm").addEventListener("input",e=>{
 });
 $("click").addEventListener("change",e=>{state.click=e.target.checked});
 window.addEventListener("pagehide",stop);
-window.RhythmLabUI={get:()=>({rhythm:state.id,bpm:state.bpm,click:state.click,events:E.events(state.id)}),select:id=>{E.pattern(id);stop();state.id=id;render()}};
+window.RhythmLabUI={
+ get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,events:E.events(state.id),notation:N.plan(state.id)}),
+ select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
+ filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
+ score:mode=>{if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");stop();state.scoreMode=mode;renderScore()}
+};
 render();
 })();
 </script>
