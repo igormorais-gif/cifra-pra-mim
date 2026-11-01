@@ -264,6 +264,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </div>
 <script src="../src/rhythm-lab.js?v=6"></script>
 <script src="../src/rhythm-notation.js?v=6"></script>
+<script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (function(){
 "use strict";
@@ -271,6 +272,7 @@ const E=window.RhythmLabEngine,N=window.RhythmLabNotation;
 const $=id=>document.getElementById(id);
 const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
+let loopTransport=null;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
 function setStatus(message){$("status").textContent=message}
 function make(tag,cls,txt){const el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el}
@@ -353,6 +355,7 @@ function renderScore(){
 }
 function stop(){
  state.token++;
+ if(loopTransport){loopTransport.cancel();loopTransport=null;}
  for(const x of document.querySelectorAll(".subdiv,.tick"))x.classList.remove("metro-active");
  $("metro-current").textContent="—";
  for(const x of document.querySelectorAll("[data-diag-tick]"))x.classList.remove("active","playing");
@@ -457,51 +460,48 @@ async function diagnostic(tick){
   setStatus("Teste finalizado: compare o primeiro i e o e do tempo 2.");
  },token);
 }
-function runSelectedCycle(id,token){
+function finishTransport(token,message){
  if(token!==state.token)return;
- const beat=60/state.bpm,at=state.ctx.currentTime+.08;
- schedulePattern(id,at,token,.08);
- setStatus("Tocando "+E.pattern(id).title+(state.loop?" · Loop ligado":"")+" · "+state.bpm+" BPM.");
- later(.08+beat*4+.12,()=>{
-  if(state.loop)runSelectedCycle(id,token);
-  else{
-   $("play").disabled=false;$("compare").disabled=false;
-   setStatus("Fim do compasso. Escolha outra célula para comparar.");
-  }
- },token);
+ loopTransport=null;
+ $("play").disabled=false;$("compare").disabled=false;$("metro-solo").disabled=false;
+ $("metro-current").textContent="—";
+ setStatus(message);
 }
 async function playSelected(){
- stop();const token=state.token;
- const ctx=await audioContext();
+ stop();const token=state.token,ctx=await audioContext();
  if(!ctx||state.token!==token)return;
+ const id=state.id,beat=60/state.bpm;
  $("play").disabled=true;$("compare").disabled=true;
- runSelectedCycle(state.id,token);
-}
-function runCompareCycle(compared,token){
- if(token!==state.token)return;
- const beat=60/state.bpm,at=state.ctx.currentTime+.08;
- compared.forEach((p,i)=>{
-  const delay=i*5*beat;
-  schedulePattern(p.id,at+delay,token,.08+delay);
-  later(.08+delay,()=>{
-   state.id=p.id;render();
-   setStatus("Comparação "+(i+1)+"/"+compared.length+" · "+p.title+(state.loop?" · Loop ligado":"")+".");
-  },token);
+ loopTransport=window.SeamlessLoop.create({
+  audio:ctx,cycleSeconds:4*beat,shouldRepeat:()=>state.loop,
+  schedule:(at,index)=>{
+   schedulePattern(id,at,token,Math.max(0,at-ctx.currentTime));
+   setStatus("Tocando "+E.pattern(id).title+(state.loop?" · Loop ligado":"")+" · "+state.bpm+" BPM.");
+  },
+  onFinish:()=>finishTransport(token,"Fim do compasso. Escolha outra célula para comparar.")
  });
- later(.08+compared.length*5*beat,()=>{
-  if(state.loop)runCompareCycle(compared,token);
-  else{
-   $("play").disabled=false;$("compare").disabled=false;
-   setStatus("Comparação concluída: "+compared.length+" células.");
-  }
- },token);
 }
 async function compareAll(){
- stop();const token=state.token;
- const ctx=await audioContext();
+ stop();const token=state.token,ctx=await audioContext();
  if(!ctx||state.token!==token)return;
+ const compared=[...visiblePatterns()],beat=60/state.bpm;
+ if(!compared.length)return;
  $("play").disabled=true;$("compare").disabled=true;
- runCompareCycle([...visiblePatterns()],token);
+ // Sem espera artificial entre padrões, inclusive na volta do Loop.
+ loopTransport=window.SeamlessLoop.create({
+  audio:ctx,cycleSeconds:compared.length*4*beat,shouldRepeat:()=>state.loop,
+  schedule:(at,index)=>{
+   compared.forEach((p,i)=>{
+    const begin=at+i*4*beat;
+    schedulePattern(p.id,begin,token,Math.max(0,begin-ctx.currentTime));
+    later(Math.max(0,begin-ctx.currentTime),()=>{
+     state.id=p.id;render();
+     setStatus("Comparação "+(i+1)+"/"+compared.length+" · "+p.title+(state.loop?" · Loop":"")+".");
+    },token);
+   });
+  },
+  onFinish:()=>finishTransport(token,"Comparação concluída.")
+ });
 }
 function renderMetronomeMode(){
  $("metro-mode").value=state.metronomeMode;
@@ -520,26 +520,20 @@ function setMetronomeMode(mode){
  setStatus("Selecionado: "+$("metro-description").textContent+". Toque a célula ou use 'Ouvir só o metrônomo'.");
 }
 $("metro-mode").addEventListener("change",event=>setMetronomeMode(event.target.value));
-function runMetronomeCycle(token){
- if(token!==state.token)return;
- const beat=60/state.bpm,at=state.ctx.currentTime+.12;
- scheduleMetronome(at,token,.12);
- setStatus("Metrônomo isolado: "+$("metro-description").textContent+" · "+state.bpm+" BPM"+(state.loop?" · Loop ligado":"")+".");
- later(.12+4*beat+.12,()=>{
-  if(state.loop)runMetronomeCycle(token);
-  else{
-   $("metro-solo").disabled=false;$("metro-current").textContent="—";
-   setStatus("Metrônomo concluído.");
-  }
- },token);
-}
 async function playMetronomeOnly(){
- stop();
- if(!state.click){state.click=true;$("click").checked=true}
+ stop();if(!state.click){state.click=true;$("click").checked=true}
  const token=state.token,ctx=await audioContext();
  if(!ctx||state.token!==token)return;
+ const beat=60/state.bpm;
  $("metro-solo").disabled=true;
- runMetronomeCycle(token);
+ loopTransport=window.SeamlessLoop.create({
+  audio:ctx,cycleSeconds:beat*4,shouldRepeat:()=>state.loop,
+  schedule:at=>{
+   scheduleMetronome(at,token,Math.max(0,at-ctx.currentTime));
+   setStatus("Metrônomo contínuo · "+state.bpm+" BPM"+(state.loop?" · Loop":"")+".");
+  },
+  onFinish:()=>finishTransport(token,"Metrônomo concluído.")
+ });
 }
 $("metro-solo").addEventListener("click",playMetronomeOnly);
 $("diag-first-i").addEventListener("click",()=>diagnostic(5));
