@@ -330,7 +330,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
       <button class="action primary" id="play" type="button" aria-label="Ouvir esta célula"><span class="transport-full">▶ Ouvir esta célula</span><span class="transport-compact">▶ Ouvir</span></button>
       <button class="action" id="compare" type="button" aria-label="Comparar células visíveis"><span class="transport-full">▶ Comparar visíveis</span><span class="transport-compact">▶ Comparar</span></button>
       <button class="action stop" id="stop" type="button">■ Parar</button>
-      <button class="action loop-toggle" id="loop" type="button" aria-pressed="false" aria-label="Ativar Loop" title="Repetir continuamente até Parar"><span id="loop-label-full">↻ Loop: desligado</span><span id="loop-label-compact" class="transport-compact">↻ Loop off</span></button>
+      <button class="action loop-toggle" id="loop" type="button" aria-pressed="false" aria-label="Ativar Loop" title="Repetir continuamente até Parar"><span id="loop-label-full">↻ Loop: desligado</span><span id="loop-label-compact" class="transport-compact">↻ Repetir</span></button>
       <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
     </div>
     <div class="metro-panel" aria-label="Metrônomo e subdivisões">
@@ -729,7 +729,7 @@ $("loop").addEventListener("click",()=>{
  state.loop=!state.loop;
  $("loop").setAttribute("aria-pressed",String(state.loop));
  $("loop-label-full").textContent=state.loop?"↻ Loop: ligado":"↻ Loop: desligado";
- $("loop-label-compact").textContent=state.loop?"↻ Loop on":"↻ Loop off";
+ $("loop-label-compact").textContent=state.loop?"↻ Ligado":"↻ Repetir";
  $("loop").setAttribute("aria-label",state.loop?"Desativar Loop":"Ativar Loop");
  setStatus(state.loop?"Loop ligado: a reprodução atual se repetirá até Parar.":"Loop desligado: a reprodução atual terminará normalmente.");
 });
