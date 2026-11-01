@@ -1,6 +1,8 @@
-## Regra geral dos players — Loop (versão 7)
+## Regra geral dos players — Loop contínuo (versão 8)
 
 Todos os laboratórios com reprodução de áudio compartilham o botão **↻ Loop: desligado / ↻ Loop: ligado**. O controle começa desligado e é acessível por toque, teclado e `aria-pressed`. Quando ligado, **a reprodução escolhida** (arpejo, acorde, sequência, conexões ou célula) reinicia automaticamente ao chegar ao fim. Quando desligado durante a reprodução, a passagem atual termina sem recomeçar. **■ Parar** cancela o ciclo e os próximos ataques programados, sem apagar a preferência de Loop. Trocar o exercício, a forma, o instrumento ou a seleção interrompe a reprodução anterior, evitando tocar frases de dois exercícios ao mesmo tempo.
+
+**Correção de fluidez (v8):** na implementação inicial, o reinício das frases dependia de esperas assíncronas de 130–390 ms e/ou de temporizadores com margem extra, causando a sensação de que cada volta parava para começar de novo. Agora os sete players usam o mesmo sequenciador `src/seamless-loop.js` com o relógio `AudioContext.currentTime`: cada ataque e cada primeira nota do próximo ciclo são posicionados antecipadamente numa linha de tempo contínua, sem acrescentar pausa na borda da volta. A interface visual pode usar temporizadores apenas para destacar notas e etapas; eles não determinam o instante de início do áudio. O ciclo preserva o BPM, as figuras e o decaimento natural das notas. Pausas que pertencem à própria célula rítmica continuam existindo, mas não há pausa artificial entre duas voltas. No Laboratório de Improvisação, a comparação de células também deixou de inserir o antigo tempo de espera. O Loop desligado termina a passagem atual; o botão Parar cancela próximas notas agendadas, inclusive em sequências.
 
 Os módulos contemplados são:
 - `laboratorio-cavaquinho/` — arpejo atual ou sequência;
@@ -13,7 +15,7 @@ Os módulos contemplados são:
 
 A repetição respeita o BPM e a ordem de notas existentes e não modifica o material harmônico. Nos laboratórios modernos, os ciclos usam o token de reprodução para evitar reinício após Parar ou troca de contexto. Nos players com Web Audio que programam muitas notas de uma vez, o próximo ciclo só é agendado ao terminar o anterior, evitando programar loops indefinidos antecipadamente. O som em decaimento do último ataque pode terminar naturalmente após Parar, mas novos ataques não são iniciados. O player fixo do celular foi reorganizado para incluir o botão sem esconder o andamento.
 
-Os testes incluem `tests/loop-controls.test.cjs` e os testes específicos de cada laboratório. A implementação foi conferida por sintaxe JavaScript e simulação de áudio no Laboratório de Improvisação; a audição real no Safari/iPhone ainda precisa ser verificada.
+Os testes incluem `tests/loop-controls.test.cjs` e os testes específicos de cada laboratório. A implementação foi conferida por sintaxe JavaScript, testes de períodos exatos no relógio de áudio simulado e teste de reprodução repetida no Laboratório de Improvisação. A audição real em iPhone/Safari ainda precisa ser verificada.
 
 # Cifra pra Mim — Arranja pra mim
 
