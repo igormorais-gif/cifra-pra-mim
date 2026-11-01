@@ -508,14 +508,6 @@ function scheduleHighlight(when,midis,token){
  const delay=Math.max(0,(when-audio.currentTime)*1000);
  timers.push(setTimeout(()=>{if(token===state.token)highlight(midis)},delay));
 }
-function focusAt(degree,when,token){
- const delay=Math.max(0,(when-audio.currentTime)*1000);
- timers.push(setTimeout(()=>{
-  if(token!==state.token)return;
-  state.target=degree==='♭3'?'3':degree;render();
- },delay));
-}
-
 function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playTour').disabled=false;$('playTriad').disabled=false;$('connPlay').disabled=false;$('connTour').disabled=false;for(const b of document.querySelectorAll('[data-conn-index]'))b.classList.remove('playing');highlight([])}
 function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
@@ -576,62 +568,73 @@ function tone(midi,when,duration,volume=.14){
   osc.start(when);osc.stop(when+length+.03);
  }
 }
-function pattern(c,at,beat,token=state.token){if(!c.selected)return;
- if(state.instrument==='piano'&&c.bass)tone(c.bass.midi,at,beat*1.9,.095);
- for(const n of c.notes)tone(n.midi,at,beat*.62,.065);
- // Última semicolcheia do tempo (0,75) e resolução no tempo seguinte.
- tone(c.from,at+beat*.75,beat*.25,.16);tone(c.selected.midi,at+beat,beat*.87,.21);
- scheduleHighlight(at,[...c.notes.map(n=>n.midi),...(state.instrument==='piano'&&c.bass?[c.bass.midi]:[])],token);
- scheduleHighlight(at+beat*.75,[c.from],token);
- scheduleHighlight(at+beat,[c.selected.midi],token);
- scheduleHighlight(at+beat*1.9,[],token);
-}
-function playPair(){stop();if(!unlock())return;const c=chord();if(!c.selected)return;pattern(c,audio.currentTime+.025,60/state.bpm)}
-// Percorrer C.I.: só a aproximação e a nota-alvo de cada grau.
-// O acorde inteiro NÃO é repetido a cada cromático.
-function playTour(){stop();if(!unlock())return;
- const token=state.token,beat=60/state.bpm,at=audio.currentTime+.025;
- for(let i=0;i<3;i++){
-  // A ordem é sempre a da FORMA original, grave → agudo: 135, 351 ou 513.
-  const degree=ds()[i],saved=state.target;state.target=degree==='♭3'?'3':degree;const c=chord();state.target=saved;
-  const when=at+i*1.45*beat;
-  if(!c.selected)continue;
-  const ciTime=when+beat*.75,arrival=when+beat;
-  tone(c.from,ciTime,beat*.25,.18);
-  tone(c.selected.midi,arrival,beat*.80,.22);
-  focusAt(degree,ciTime,token);
-  scheduleHighlight(ciTime,[c.from],token);
-  scheduleHighlight(arrival,[c.selected.midi],token);
-  scheduleHighlight(when+beat*1.38,[],token);
+// Áudio na ordem estrutural da forma: aplica APENAS os C.I. marcados.
+function ciSchedule(notes,at,beat,token,{withChord=false,finalChord=false,bassNote=null}={}){
+ if(!notes.length)return 0;
+ const spacing=1.45;
+ if(withChord){
+  const base=chord();
+  for(const n of base.notes)tone(n.midi,at,beat*.60,.065);
+  scheduleHighlight(at,base.notes.map(n=>n.midi),token);
  }
- $('playTour').disabled=true;
- timers.push(setTimeout(()=>{if(state.token===token)$('playTour').disabled=false},(2*1.45+1.55)*beat*1000));
-}
-// Uma única execução percorre as três VOZES NA ORDEM DA FORMA,
-// cada C.I. em semicolcheia antes de sua resolução; fecha com o acorde.
-function playTriad(){
- stop();if(!unlock())return;
- const token=state.token,beat=60/state.bpm,at=audio.currentTime+.025,c=chord();
- if(c.notes.length!==3)return;
- $('playTriad').disabled=true;
- if(c.bass){tone(c.bass.midi,at,beat*3.9,.09);scheduleHighlight(at,[c.bass.midi],token)}
- for(let i=0;i<3;i++){
-  const n=c.notes[i],ciTime=at+(i+.75)*beat,arrival=at+(i+1)*beat;
-  tone(n.midi-1,ciTime,beat*.25,.18);
-  tone(n.midi,arrival,beat*.80,.22);
-  focusAt(n.degree,ciTime,token);
-  scheduleHighlight(ciTime,[n.midi-1],token);
+ if(bassNote)tone(bassNote.midi,at,beat*(notes.length*spacing+1.6),.085);
+ let endTime=0;
+ for(let i=0;i<notes.length;i++){
+  const n=notes[i],when=at+i*spacing*beat;
+  const approach=when+beat*.75,arrival=when+beat;
+  tone(n.midi-1,approach,beat*.24,.18);
+  tone(n.midi,arrival,beat*.83,.21);
+  scheduleHighlight(approach,[n.midi-1],token);
   scheduleHighlight(arrival,[n.midi],token);
+  scheduleHighlight(when+beat*1.36,[],token);
+  endTime=(i*spacing+1.38)*beat;
  }
- const chordTime=at+4*beat;
- for(const n of c.notes)tone(n.midi,chordTime,beat*1.25,.10);
- scheduleHighlight(chordTime,c.notes.map(n=>n.midi),token);
- scheduleHighlight(chordTime+beat*1.35,[],token);
- timers.push(setTimeout(()=>{if(state.token===token)$('playTriad').disabled=false},(5.45*beat)*1000));
+ if(finalChord){
+  const base=chord(),chordAt=at+endTime+beat*.35;
+  for(const n of base.notes)tone(n.midi,chordAt,beat*1.15,.10);
+  scheduleHighlight(chordAt,base.notes.map(n=>n.midi),token);
+  endTime+=beat*1.75;
+  scheduleHighlight(at+endTime,[],token);
+ }
+ return endTime;
+}
+function playPair(){
+ stop();
+ const c=chord(),chosen=ciNotes(c.notes);
+ if(!chosen.length||!unlock())return;
+ const beat=60/state.bpm,at=audio.currentTime+.025,token=state.token;
+ const duration=ciSchedule(chosen,at,beat,token,{withChord:true,bassNote:state.instrument==='piano'?c.bass:null});
+ $('playPair').disabled=true;
+ timers.push(setTimeout(()=>{if(token===state.token)$('playPair').disabled=false},duration*1000+160));
+}
+function playTour(){
+ stop();
+ const c=chord(),chosen=ciNotes(c.notes);
+ if(!chosen.length||!unlock())return;
+ const beat=60/state.bpm,at=audio.currentTime+.025,token=state.token;
+ const duration=ciSchedule(chosen,at,beat,token);
+ $('playTour').disabled=true;
+ timers.push(setTimeout(()=>{if(token===state.token)$('playTour').disabled=false},duration*1000+160));
+}
+function playTriad(){
+ stop();
+ const c=chord(),chosen=ciNotes(c.notes);
+ if(!chosen.length||!unlock())return;
+ const beat=60/state.bpm,at=audio.currentTime+.025,token=state.token;
+ const duration=ciSchedule(chosen,at,beat,token,{bassNote:c.bass,finalChord:true});
+ $('playTriad').disabled=true;
+ timers.push(setTimeout(()=>{if(token===state.token)$('playTriad').disabled=false},duration*1000+160));
 }
 ROOTS.forEach(r=>{const o=document.createElement('option');o.value=r.symbol;o.textContent=r.symbol+' · '+r.name;$('root').append(o)});
 $('root').onchange=e=>{stop();state.root=e.target.value;render()};
-for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>b.onclick=()=>{stop();state[k]=b.dataset[k];render()});
+for(const k of ['quality','form','instrument','group'])document.querySelectorAll('[data-'+k+']').forEach(b=>b.onclick=()=>{stop();state[k]=b.dataset[k];render()});
+for(const b of document.querySelectorAll('[data-target]'))b.onclick=()=>{
+ stop();
+ const degree=b.dataset.target;
+ if(state.ciSelected.has(degree))state.ciSelected.delete(degree);
+ else state.ciSelected.add(degree);
+ render();
+};
 
 for(const b of document.querySelectorAll('[data-kind]'))b.onclick=()=>{stop();state.kind=b.dataset.kind;render()};
 for(const b of document.querySelectorAll('[data-conn-index]'))b.onclick=()=>{stop();const index=Number(b.dataset.connIndex);if(state.connSelected.has(index))state.connSelected.delete(index);else state.connSelected.add(index);render()};
@@ -641,7 +644,7 @@ $('connTour').onclick=()=>playConnection(true);
 $('connStop').onclick=stop;
 $('playPair').onclick=playPair;$('playTour').onclick=playTour;$('playTriad').onclick=playTriad;$('stop').onclick=stop;$('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm;$('connBpm').value=state.bpm;$('connTempo').textContent=state.bpm};
 $('connBpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpm').value=state.bpm;$('bpmLabel').textContent=state.bpm;$('connTempo').textContent=state.bpm};
-window.CifraPraMimEmbelezamento={get:()=>{const c=chord(),connection=state.kind==='ci'?null:connectionData();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),kind:state.kind,connSelected:[...state.connSelected].sort((a,b)=>a-b),notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol,connection}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});render();return window.CifraPraMimEmbelezamento.get()},set:(updates)=>{stop();if(updates.connSelected)state.connSelected=new Set(updates.connSelected);Object.assign(state,{...updates,connSelected:state.connSelected});render();return window.CifraPraMimEmbelezamento.get()},playConnection};
+window.CifraPraMimEmbelezamento={get:()=>{const c=chord(),connection=state.kind==='ci'?null:connectionData();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),ciSelected:[...state.ciSelected].sort(),kind:state.kind,connSelected:[...state.connSelected].sort((a,b)=>a-b),notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol,connection}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});state.ciSelected=new Set([ci]);render();return window.CifraPraMimEmbelezamento.get()},set:(updates)=>{stop();if(updates.connSelected)state.connSelected=new Set(updates.connSelected);if(updates.ciSelected)state.ciSelected=new Set(updates.ciSelected);else if(updates.target)state.ciSelected=new Set([updates.target]);Object.assign(state,{...updates,ciSelected:state.ciSelected,connSelected:state.connSelected});render();return window.CifraPraMimEmbelezamento.get()},playConnection};
 render();
 })();
 </script></body></html>
