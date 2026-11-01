@@ -93,3 +93,14 @@ Nos módulos C.I., D.I. e D.S. são mantidos somente **Ouvir sequência** (perco
 ### Exemplo da execução completa dos embelezamentos
 
 Na forma original 1–3–5 de **C maior**, marcar apenas **C.I.1** produz **Si → Dó → Mi → Sol** (não omite a terça e a quinta). Marcar apenas **C.I.3** produz **Dó → Ré♯ → Mi → Sol**. Marcar ambos produz **Si → Dó → Ré♯ → Mi → Sol**. No violão, as formas 3–5–1 e 5–1–3 respeitam a ordem própria das cordas/vozes e a oitava real. A audição com tríade difere por adicionar a apresentação do acorde, baixo e acorde final; nunca por suprimir notas não selecionadas.
+
+### Eixo de Combinações
+
+A aba **Combinações** funciona sem eliminar os módulos de estudo isolado. Cada grau estrutural da forma original (1, 3 ou ♭3, 5) recebe duas escolhas independentes:
+
+- **Material ornamental**: nenhum, C.I., D.I. ou D.S.
+- **Figura melódica**: aproximação (nota vizinha → alvo) ou bordadura (alvo → vizinha → alvo).
+
+Assim, em C maior, 135, é possível definir **C.I.1 por aproximação**, **D.S.3 por bordadura** e **D.I.5 por aproximação**. A sequência resultante é **Si → Dó → Mi → Fá → Mi → Fá → Sol**. Os dois players percorrem sempre as três notas da tríade na ordem original; **Ouvir com tríade** também apresenta o acorde e o baixo e encerra com o acorde. É possível deixar qualquer grau sem embelezamento; não existem notas fixas extras no acorde.
+
+No violão, as notas ornamentais permanecem na mesma corda de sua voz estrutural. As formas são escolhidas de modo a comportar as casas superiores/inferiores necessárias, e o localizador 1B acompanha a posição. O seletor 4–3–2 / 3–2–1 permanece disponível. Os modos C.I., D.I., D.S. e as duas conexões continuam independentes e preservam suas próprias seleções.
