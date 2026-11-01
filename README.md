@@ -75,3 +75,13 @@ O arquivo PDF é criado localmente; nenhum trecho da letra ou cifra é enviado a
 As cartelas do teclado voltaram ao molde editorial do material **CIFRA PRA MIM (3 Adaptações)**, utilizado em *Equalize — Pitty*: cifra centralizada acima; nome do acorde por extenso em português imediatamente abaixo; identificação **M.E. | M.D.** antes de uma linha horizontal; teclado logo abaixo, com **bolinhas e graus escritos nas teclas**, também nas teclas pretas. Duas figuras por linha nos documentos A4. Não há mais mensagens longas sobre a ponta ocupando o espaço das figuras; exceções de condução continuam disponíveis na interface, e o motor preserva as oitavas reais.
 
 **Apenas uma coleção de Formas Originais**, seguida de três percursos de Adaptando Pontas. A quantidade de folhas aumenta quando há muitos acordes; o gerador não deve cortar figuras para forçar uma página.
+
+## Laboratório de Embelezamentos — aproximações
+
+Além das conexões diatônicas e cromáticas entre notas da tríade, o laboratório oferece três ornamentos independentes:
+
+- **C.I. (Cromático Inferior):** 1 semitom abaixo do alvo, independentemente da escala. Ex.: em C maior, Ré♯ → Mi.
+- **D.I. (Diatônico Inferior):** nota imediatamente anterior ao alvo na escala maior ou menor natural. Ex.: Ré → Mi em C maior.
+- **D.S. (Diatônico Superior):** nota imediatamente posterior ao alvo na escala maior ou menor natural, resolvendo de cima para baixo. Ex.: Fá → Mi em C maior.
+
+Em cada módulo é possível marcar independentemente as aproximações dos graus **1, 3 (♭3 na tríade menor) e 5**. O desenho mostra todas as marcadas simultaneamente, mas não altera as três vozes estruturais da forma. A reprodução respeita a ordem 135/351/513 e somente os graus selecionados. No violão, a aproximação acontece na mesma corda do grau de chegada; se a posição escolhida não comportar a nota vizinha, busca-se outra posição compacta e tocável. O localizador 1B é calculado separadamente e acompanha a região da forma. O modelo da tríade menor utiliza a escala **menor natural** para D.I./D.S.; alterações da menor harmônica/melódica não estão habilitadas.
