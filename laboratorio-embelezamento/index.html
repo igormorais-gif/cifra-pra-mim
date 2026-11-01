@@ -101,7 +101,7 @@ button:disabled{opacity:.42;cursor:default}
 <div class="chordhead"><div><div class="chordtitle" id="chord">C</div><div class="chorddesc" id="chordName">Tríade maior · 135</div></div><div class="chordbadges"><span class="chordbadge" id="triadFormula">4st/3st</span><span class="chordbadge" id="formBadge">M.D. · 135</span><span class="chordbadge" id="ciOrder">C.I.1 → C.I.3 → C.I.5</span></div></div>
 <div class="compact-practice"><div class="practice-line"><span class="label" id="approachSelectorLabel">Selecione um ou mais C.I. (independentes)</span><div class="string-pick" id="stringPicker" hidden><button class="active" data-group="432">4–3–2</button><button data-group="321">3–2–1</button></div></div><div class="triad-targets" role="group" aria-label="Seleção independente de cromáticos inferiores"><button type="button" data-target="1" class="active" aria-pressed="true"><b>C.I.1</b><small>Fundamental</small></button><button type="button" data-target="3" aria-pressed="false"><b>C.I.3</b><small>Terça</small></button><button type="button" data-target="5" aria-pressed="false"><b>C.I.5</b><small>Quinta</small></button></div></div>
 <div class="ci-info"><div><span class="label">Aproximação → resolução</span><strong id="motion">Si → Dó</strong><p id="moveDetail">C.I.1 · semitom inferior → nota-alvo</p></div></div>
-<div class="ci-player"><div class="ci-transport"><button id="playPair" class="play primary">▶ Ouvir aproximações</button><button id="playTriad" class="play">▶ Ouvir com tríade</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div></div>
+<div class="ci-player"><div class="ci-transport"><button id="playPair" class="play primary">▶ Ouvir sequência</button><button id="playTriad" class="play">▶ Ouvir com tríade</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div></div>
 <div class="ci-instruments">
 <div id="pianoPanel"><div class="piano-hands">
 <div class="ci-hand"><div class="ci-hand-title"><strong>M.E.</strong><span>Fundamental no baixo</span></div><div class="keyboard-scroll"><svg id="leftKeys" class="ci-keyboard" viewBox="0 0 1000 240" role="img" aria-label="Mão esquerda no piano"></svg></div><div id="leftCards" class="ci-cards"></div></div>
@@ -499,7 +499,7 @@ function render(){visualNodes=[];const c=chord(),mode=approachMode(),approach=is
   'Nas formas 135, 351 e 513, conecte duas notas estruturais do mesmo acorde por notas da escala (diatônicas) ou por semitons (cromáticas). No violão, priorizamos a corda de chegada, distribuindo o cromatismo de 5 → 1 entre as duas cordas.';
  for(const b of document.querySelectorAll('[data-kind]')){const active=b.dataset.kind===state.kind;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))}
  const selected=chosenApproaches(c.notes);
- $('ciOrder').textContent=selected.length?selected.map(n=>mode.abbrev+(n.degree==='♭3'?'3':n.degree)).join(' · '):'Nenhum '+mode.abbrev+' selecionado';
+ $('ciOrder').textContent=c.notes.flatMap(n=>state.ciSelected.has(n.degree==='♭3'?'3':n.degree)?[mode.abbrev+(n.degree==='♭3'?'3':n.degree),n.degree]:[n.degree]).join(' → ');
  $('chord').textContent=c.symbol;
  $('chordName').textContent=root().name+' · tríade '+(state.quality==='minor'?'menor':'maior')+' · '+state.form;
  $('formBadge').textContent=(state.instrument==='piano'?'M.D. · ':state.group.split('').join('–')+' · ')+state.form;
@@ -517,18 +517,18 @@ function render(){visualNodes=[];const c=chord(),mode=approachMode(),approach=is
  $('approachSelectorLabel').textContent='Selecione um ou mais '+mode.abbrev+' (independentes)';
  $('approachGuitarHint').textContent=mode.name+' = '+(state.kind==='ci'?'1 casa atrás':state.kind==='di'?'nota da escala abaixo':'nota da escala acima')+' da nota-alvo';
  $('approachLegend').textContent=mode.abbrev+(state.kind==='ci'?' (−1 st)':state.kind==='di'?' (vizinha inferior)':' (vizinha superior)');
- $('playPair').textContent='▶ Ouvir aproximações';
+ $('playPair').textContent='▶ Ouvir sequência';
  $('playTriad').textContent='▶ Ouvir com tríade';
  $('motion').textContent=selected.length?selected.map(n=>n.fromName+' → '+n.name).join('   ·   '):'Nenhuma aproximação selecionada';
  $('moveDetail').textContent=selected.length?selected.map(n=>mode.abbrev+(n.degree==='♭3'?'3':n.degree)+' · '+n.distance+' semitom'+(n.distance===1?'':'s')+(mode.direction>0?' acima':' abaixo')).join('  |  '):'Toque nos graus para ativar uma ou mais aproximações.';
  $('tip').textContent=selected.length?
   mode.name+': '+selected.length+' aproximação(ões) independente(s). '+(state.kind==='ci'?'Cada uma está 1 semitom abaixo da nota-alvo.':'Cada uma usa a nota vizinha da escala '+(state.quality==='minor'?'menor natural':'maior')+', a 1 ou 2 semitons.')+
-  ' A forma '+state.form+' mantém suas três notas originais; os embelezamentos não são notas fixas acrescentadas ao acorde.'+
+  ' A execução percorre sempre as três notas originais, acrescentando a aproximação só antes dos graus marcados. A forma '+state.form+' não ganha vozes fixas adicionais.'+
   (state.instrument==='guitar'?' No violão, a aproximação ocorre na mesma corda do grau selecionado.':' No piano, o desenho mantém as oitavas entre seleções.'):
-  'Marque '+mode.abbrev+'1, '+mode.abbrev+'3 e/ou '+mode.abbrev+'5. É possível marcar vários graus ou desmarcar todos.';
+  'Marque '+mode.abbrev+'1, '+mode.abbrev+'3 e/ou '+mode.abbrev+'5. Os players sempre percorrem as três notas na ordem da forma; sem nenhum embelezamento marcado, tocam a tríade original.';
  if(state.instrument==='piano')pianoUI();else guitarUI();
- $('playPair').disabled=selected.length===0;
- $('playTriad').disabled=selected.length===0;
+ $('playPair').disabled=c.notes.length!==3;
+ $('playTriad').disabled=c.notes.length!==3;
  if(!approach)renderConnection();}
 
 let audio=null,oscillators=[],timers=[];
@@ -548,7 +548,7 @@ function scheduleHighlight(when,midis,token){
  const delay=Math.max(0,(when-audio.currentTime)*1000);
  timers.push(setTimeout(()=>{if(token===state.token)highlight(midis)},delay));
 }
-function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playPair').disabled=state.ciSelected.size===0;$('playTriad').disabled=state.ciSelected.size===0;$('connPlay').disabled=state.connSelected.size===0;for(const b of document.querySelectorAll('[data-conn-index]'))b.classList.remove('playing');highlight([])}
+function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playPair').disabled=false;$('playTriad').disabled=false;$('connPlay').disabled=state.connSelected.size===0;for(const b of document.querySelectorAll('[data-conn-index]'))b.classList.remove('playing');highlight([])}
 function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
 // Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
@@ -609,30 +609,36 @@ function tone(midi,when,duration,volume=.14){
  }
 }
 // Áudio na ordem estrutural da forma: aplica APENAS os C.I. marcados.
+// Percorre SEMPRE as três notas estruturais, no desenho original (135/351/513).
+// Em cada posição selecionada: aproximação + resolução; nas demais: apenas a nota.
+// O segundo player mantém o mesmo percurso e o contextualiza com o acorde.
 function ciSchedule(notes,at,beat,token,{withChord=false,finalChord=false,bassNote=null}={}){
- if(!notes.length)return 0;
+ if(notes.length!==3)return 0;
  const spacing=1.45;
  if(withChord){
-  const base=chord();
-  for(const n of base.notes)tone(n.midi,at,beat*.60,.065);
-  scheduleHighlight(at,base.notes.map(n=>n.midi),token);
+  for(const n of notes)tone(n.midi,at,beat*.60,.065);
+  scheduleHighlight(at,notes.map(n=>n.midi),token);
  }
  if(bassNote)tone(bassNote.midi,at,beat*(notes.length*spacing+1.6),.085);
  let endTime=0;
  for(let i=0;i<notes.length;i++){
   const n=notes[i],when=at+i*spacing*beat;
-  const approach=when+beat*.75,arrival=when+beat;
-  tone(n.fromMidi,approach,beat*.24,.18);
+  const arrival=when+beat;
+  const selected=state.ciSelected.has(n.degree==='♭3'?'3':n.degree);
+  if(selected){
+   const ornament=approachFor(n),approach=when+beat*.75;
+   tone(ornament.fromMidi,approach,beat*.24,.18);
+   scheduleHighlight(approach,[ornament.fromMidi],token);
+  }
   tone(n.midi,arrival,beat*.83,.21);
-  scheduleHighlight(approach,[n.fromMidi],token);
   scheduleHighlight(arrival,[n.midi],token);
   scheduleHighlight(when+beat*1.36,[],token);
   endTime=(i*spacing+1.38)*beat;
  }
  if(finalChord){
-  const base=chord(),chordAt=at+endTime+beat*.35;
-  for(const n of base.notes)tone(n.midi,chordAt,beat*1.15,.10);
-  scheduleHighlight(chordAt,base.notes.map(n=>n.midi),token);
+  const chordAt=at+endTime+beat*.35;
+  for(const n of notes)tone(n.midi,chordAt,beat*1.15,.10);
+  scheduleHighlight(chordAt,notes.map(n=>n.midi),token);
   endTime+=beat*1.75;
   scheduleHighlight(at+endTime,[],token);
  }
@@ -640,10 +646,10 @@ function ciSchedule(notes,at,beat,token,{withChord=false,finalChord=false,bassNo
 }
 function playPair(){
  stop();
- const c=chord(),chosen=chosenApproaches(c.notes);
- if(!chosen.length||!unlock())return;
+ const c=chord();
+ if(c.notes.length!==3||!unlock())return;
  const beat=60/state.bpm,at=audio.currentTime+.025,token=state.token;
- const duration=ciSchedule(chosen,at,beat,token);
+ const duration=ciSchedule(c.notes,at,beat,token);
  $('playPair').disabled=true;
  timers.push(setTimeout(()=>{if(token===state.token)$('playPair').disabled=false},duration*1000+160));
 }
@@ -652,7 +658,7 @@ function playTriad(){
  const c=chord(),chosen=chosenApproaches(c.notes);
  if(!chosen.length||!unlock())return;
  const beat=60/state.bpm,at=audio.currentTime+.025,token=state.token;
- const duration=ciSchedule(chosen,at,beat,token,{withChord:true,bassNote:c.bass,finalChord:true});
+ const duration=ciSchedule(c.notes,at,beat,token,{withChord:true,bassNote:c.bass,finalChord:true});
  $('playTriad').disabled=true;
  timers.push(setTimeout(()=>{if(token===state.token)$('playTriad').disabled=false},duration*1000+160));
 }
