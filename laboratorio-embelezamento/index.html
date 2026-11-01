@@ -155,7 +155,17 @@ function guitar(){
  // Preserve o 1B fixo da forma: prefira um registro onde a tônica visual caiba ABAIXO das três vozes.
  const fixedString=LOCATOR[state.group][state.form];
  const canAnchor=entry=>{for(let fret=0;fret<=19;fret++)if(P(OPEN[fixedString]+fret)===root().pc&&OPEN[fixedString]+fret<entry.midis[0])return true;return false};
- const best=found.find(canAnchor)||found[0];
+ // D.I. e D.S. precisam de espaço na MESMA corda, antes/depois da nota.
+ // Se uma forma na casa 1 exigiria uma casa negativa, escolhe a versão
+ // da mesma forma em outra oitava, preservando o baixo localizador.
+ const canOrnament=entry=>!isApproach()||degrees.every((degree,i)=>{
+  if(!state.ciSelected.has(degree==='♭3'?'3':degree))return true;
+  const n=approachFor({degree,midi:entry.midis[i]});
+  const fret=entry.fs[i]+n.fromMidi-entry.midis[i];
+  return fret>=0&&fret<=19;
+ });
+ const best=found.find(entry=>canAnchor(entry)&&canOrnament(entry))||
+  found.find(canOrnament)||found.find(canAnchor)||found[0];
  return degrees.map((degree,i)=>({degree,midi:best.midis[i],fret:best.fs[i],string:strings[i],name:spelling(degree),idx:i}))}
 function locator(notes){if(!notes.length)return null;const string=LOCATOR[state.group][state.form],lowest=notes[0].midi,avg=notes.reduce((s,n)=>s+n.fret,0)/3;
  // O baixo localizador acompanha a REGIÃO da tríade. Não penalizar os trastes
