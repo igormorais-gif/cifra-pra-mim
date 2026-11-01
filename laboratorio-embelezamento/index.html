@@ -156,7 +156,8 @@ button:disabled{opacity:.42;cursor:default}
 <div class="tip"><b>✧ DICA RÁPIDA</b><p id="connTip">Conecte duas notas do acorde usando notas intermediárias da escala. No violão, toque a conexão na corda da nota-alvo de chegada.</p></div>
 </section>
 <footer class="foot"><span>Cifra pra Mim · Laboratório de Notas de Embelezamento · C.I. e Conexões</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer>
-</div><script>
+</div><script src="../src/seamless-loop.js?v=8"></script>
+<script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const ROOTS=[['C','Dó',0,'C'],['C#','Dó sustenido',1,'C'],['Db','Ré bemol',1,'D'],['D','Ré',2,'D'],['D#','Ré sustenido',3,'D'],['Eb','Mi bemol',3,'E'],['E','Mi',4,'E'],['F','Fá',5,'F'],['F#','Fá sustenido',6,'F'],['Gb','Sol bemol',6,'G'],['G','Sol',7,'G'],['G#','Sol sustenido',8,'G'],['Ab','Lá bemol',8,'A'],['A','Lá',9,'A'],['A#','Lá sustenido',10,'A'],['Bb','Si bemol',10,'B'],['B','Si',11,'B']].map(([symbol,name,pc,letter])=>({symbol,name,pc,letter}));
@@ -504,13 +505,10 @@ function scheduleConnectionStage(when,index,token){
    b.classList.toggle('playing',index!==null&&Number(b.dataset.connIndex)===index);
  },delay))
 }
-function runConnectionCycle(token){
+function scheduleConnectionCycle(at,token,data,indexes,beat){
  if(token!==state.token)return;
- const data=connectionData();
- const indexes=[...state.connSelected].sort((a,b)=>a-b);
- if(!indexes.length||!data.notes.length){if(token===state.token)stop();return}
- const beat=60/state.bpm,at=audio.currentTime+.04;
- if(state.instrument==='piano'&&data.bass)tone(data.bass.midi,at,beat*(indexes.length===2?6:3),.075);
+ const totalBeats=indexes.reduce((sum,i)=>sum+data.pairs[i].sequence.length*.48,0);
+ if(state.instrument==='piano'&&data.bass)tone(data.bass.midi,at,beat*totalBeats,.075);
  let offset=0;
  for(const i of indexes){
   const connection=data.pairs[i];
@@ -520,24 +518,25 @@ function runConnectionCycle(token){
    tone(n.midi,when,beat*.43,.16);
    scheduleHighlight(when,[n.midi],token);
   }
-  offset+=beat*(connection.sequence.length*.48+.55);
+  // A próxima ligação entra exatamente após o período da sequência.
+  offset+=beat*connection.sequence.length*.48;
  }
  scheduleHighlight(at+offset,[],token);
  scheduleConnectionStage(at+offset,null,token);
- timers.push(setTimeout(()=>{
-  if(token!==state.token)return;
-  if(state.loop)runConnectionCycle(token);
-  else $('connPlay').disabled=state.connSelected.size===0;
- },offset*1000+170));
 }
 function playConnection(){
- stop();
- renderConnection();
- const data=connectionData();
- if(!state.connSelected.size||!data.notes.length||!unlock())return;
+ stop();renderConnection();
+ const data=connectionData(),indexes=[...state.connSelected].sort((a,b)=>a-b);
+ if(!indexes.length||!data.notes.length||!unlock())return;
+ const beat=60/state.bpm,cycleBeats=indexes.reduce((n,i)=>n+data.pairs[i].sequence.length*.48,0);
+ if(!(cycleBeats>0))return;
  const token=state.token;
  $('connPlay').disabled=true;
- runConnectionCycle(token);
+ loopClock=window.SeamlessLoop.create({
+  audio,cycleSeconds:beat*cycleBeats,shouldRepeat:()=>state.loop,
+  schedule:at=>scheduleConnectionCycle(at,token,data,indexes,beat),
+  onFinish:()=>{if(token!==state.token)return;loopClock=null;$('connPlay').disabled=false;highlight([])}
+ });
 }
 function render(){visualNodes=[];const c=chord(),mode=approachMode(),approach=isApproach();$('root').value=state.root;
  $('ciSection').hidden=!approach;$('connSection').hidden=approach;
@@ -605,7 +604,7 @@ function render(){visualNodes=[];const c=chord(),mode=approachMode(),approach=is
  $('playTriad').disabled=c.notes.length!==3;
  if(!approach)renderConnection();}
 
-let audio=null,oscillators=[],timers=[];
+let audio=null,oscillators=[],timers=[],loopClock=null;
 function highlight(midis){
  const active=new Set(midis);
  for(const v of visualNodes){
@@ -622,7 +621,7 @@ function scheduleHighlight(when,midis,token){
  const delay=Math.max(0,(when-audio.currentTime)*1000);
  timers.push(setTimeout(()=>{if(token===state.token)highlight(midis)},delay));
 }
-function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playPair').disabled=false;$('playTriad').disabled=false;$('connPlay').disabled=state.connSelected.size===0;for(const b of document.querySelectorAll('[data-conn-index]'))b.classList.remove('playing');highlight([])}
+function stop(){if(loopClock){loopClock.cancel();loopClock=null}state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playPair').disabled=false;$('playTriad').disabled=false;$('connPlay').disabled=state.connSelected.size===0;for(const b of document.querySelectorAll('[data-conn-index]'))b.classList.remove('playing');highlight([])}
 function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
 // Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
@@ -680,6 +679,7 @@ function tone(midi,when,duration,volume=.14){
   osc.connect(gain);sweetOutput(gain,flavor);
   oscillators.push(osc);
   osc.start(when);osc.stop(when+length+.03);
+  osc.onended=()=>{const i=oscillators.indexOf(osc);if(i>=0)oscillators.splice(i,1)};
  }
 }
 // Áudio na ordem estrutural da forma: aplica APENAS os C.I. marcados.
@@ -723,33 +723,29 @@ function ciSchedule(notes,at,beat,token,{withChord=false,finalChord=false,bassNo
  }
  return endTime;
 }
-function runApproachCycle(mode,token){
- if(token!==state.token)return;
- const c=chord();
- if(c.notes.length!==3){stop();return}
- const beat=60/state.bpm,at=audio.currentTime+.025;
- const duration=ciSchedule(c.notes,at,beat,token,mode==='triad'
-  ?{withChord:true,bassNote:c.bass,finalChord:true}:{});
- timers.push(setTimeout(()=>{
-  if(token!==state.token)return;
-  if(state.loop)runApproachCycle(mode,token);
-  else $('playPair').disabled=$('playTriad').disabled=false;
- },duration*1000+Math.max(150,beat*480)));
-}
-function playPair(){
+function playApproach(mode){
  stop();const c=chord();
  if(c.notes.length!==3||!unlock())return;
- const token=state.token;
+ const beat=60/state.bpm,token=state.token;
+ const withChord=mode==='triad';
+ // ciSchedule: três chegadas (espaçamento 1,45 tempo) + fechamento;
+ // a tríade contextual acrescenta o acorde de resolução.
+ const cycleSeconds=(withChord?6.03:4.28)*beat;
  $('playPair').disabled=true;$('playTriad').disabled=true;
- runApproachCycle('pair',token);
+ loopClock=window.SeamlessLoop.create({
+  audio,cycleSeconds,shouldRepeat:()=>state.loop,
+  schedule:at=>ciSchedule(c.notes,at,beat,token,withChord
+   ?{withChord:true,bassNote:c.bass,finalChord:true}:{}),
+  onFinish:()=>{
+   if(token!==state.token)return;
+   loopClock=null;
+   $('playPair').disabled=false;$('playTriad').disabled=false;
+   highlight([]);
+  }
+ });
 }
-function playTriad(){
- stop();const c=chord();
- if(c.notes.length!==3||!unlock())return;
- const token=state.token;
- $('playPair').disabled=true;$('playTriad').disabled=true;
- runApproachCycle('triad',token);
-}
+function playPair(){playApproach('pair')}
+function playTriad(){playApproach('triad')}
 function toggleLoop(){
  state.loop=!state.loop;
  for(const id of ['loopPair','loopConn']){
