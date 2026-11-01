@@ -118,10 +118,11 @@
   out+=line(pos(8)-20,34,pos(8)-20,42,"#bba18c",1.4,'stroke-dasharray="2 4"');
   return out;
  }
- function noteGlyph(t,mode,beamed,direction){
+ function noteGlyph(t,mode,beamInfo){
   const x=pos(t.tick),y=mode==="melodic"?noteY(t):80;
-  const stemDir=direction||(y<78?"down":"up");
-  const up=stemDir==="up",stemX=x+(up?9:-9),stemEnd=y+(up?-39:39);
+  const stemDir=beamInfo?.direction||(y<78?"down":"up");
+  const up=stemDir==="up",stemX=x+(up?9:-9),stemEnd=beamInfo?.beamY??(y+(up?-39:39));
+  const beamed=!!beamInfo;
   const hollow=t.length===8,notWhole=t.length!==16,dotted=t.length===3||t.length===6;
   let out='<g class="score-hit" data-index="'+t.index+'" data-tick="'+t.tick+'" data-length="'+t.length+'" data-kind="note">';
   if(mode==="melodic"){
@@ -147,7 +148,7 @@
     }
    }
   }
-  if(dotted)out+='<circle class="score-dot" cx="'+(x+23)+'" cy="'+(Math.round(y/12)*12===y?y-6:y)+'" r="3.4" fill="'+COLORS.ink+'"/>';
+  if(dotted)out+='<circle class="score-dot" cx="'+(x+23)+'" cy="'+((y-54)%12===0?y-6:y)+'" r="3.4" fill="'+COLORS.ink+'"/>';
   if(mode==="melodic"&&t.alteration&&t.first)
    out+='<text class="score-accidental" x="'+(x-24)+'" y="'+(y+6)+'" text-anchor="middle" font-family="Georgia,serif" font-size="25" fill="'+COLORS.ink+'">'+escape(t.alteration)+'</text>';
   if(t.first)out+='<text class="score-pitch-label" x="'+x+'" y="173" text-anchor="middle" font-size="14" font-weight="700" fill="#405764">'+escape(mode==="melodic"?t.name:t.degree)+'</text>';
@@ -174,10 +175,14 @@
   if(dotted)out+='<circle class="score-dot" cx="'+(x+16)+'" cy="84" r="3.3" fill="'+COLORS.muted+'"/>';
   return out+"</g>";
  }
+ function beamHeight(group,mode){
+  const ys=group.tokens.map(t=>mode==="melodic"?noteY(t):80);
+  return group.direction==="up"?Math.min(...ys)-39:Math.max(...ys)+39;
+ }
  function beamSvg(group,mode){
   const list=group.tokens,up=group.direction==="up";
   const ys=list.map(t=>mode==="melodic"?noteY(t):80);
-  const beamY=up?Math.min(...ys)-39:Math.max(...ys)+39;
+  const beamY=beamHeight(group,mode);
   const xs=list.map(t=>pos(t.tick)+(up?9:-9));
   let out='<g class="score-beam-group" data-beat="'+group.beat+'" data-first-tick="'+group.tick+'">';
   // O traço principal é indivisível DENTRO de um tempo.
@@ -210,12 +215,11 @@
  function svg(id,mode="melodic",seq=E.events(id)){
   if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura inválido");
   const tokens=plan(id,seq),p=E.pattern(id),groups=beamGroups(tokens);
-  const beamed=new Set(groups.flatMap(g=>g.tokens));
   const byToken=new Map();
-  for(const group of groups)for(const token of group.tokens)byToken.set(token,group.direction);
+  for(const group of groups)for(const token of group.tokens)byToken.set(token,{direction:group.direction,beamY:beamHeight(group,mode)});
   let out='<svg class="score-svg" viewBox="0 0 1100 195" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escape(p.title+" — "+(mode==="melodic"?"partitura melódica":"partitura rítmica")+", compasso 4/4, agrupamento por tempos")+'">';
   out+=headerSvg(mode);
-  for(const t of tokens)out+=t.kind==="note"?noteGlyph(t,mode,beamed.has(t),byToken.get(t)):restSvg(t);
+  for(const t of tokens)out+=t.kind==="note"?noteGlyph(t,mode,byToken.get(t)):restSvg(t);
   for(const group of groups)out+=beamSvg(group,mode);
   out+=tiesSvg(tokens,mode);
   out+=line(1043,mode==="melodic"?54:66,1043,mode==="melodic"?102:94,COLORS.ink,3);
