@@ -50,7 +50,7 @@ test("C.I.1, C.I.3 e C.I.5 são botões independentes, inclusive sem seleção",
  b[1].onclick();assert.deepEqual(app.get().ciSelected,["1","3","5"]);
  b[0].onclick();assert.deepEqual(app.get().ciSelected,["3","5"]);
  b[2].onclick();b[1].onclick();assert.deepEqual(app.get().ciSelected,[]);
- assert.equal(el("playPair").disabled,true);
+ assert.equal(el("playPair").disabled,false);
  assert.equal(el("motion").textContent,"Nenhum C.I. selecionado");
  assert.deepEqual(b.map(x=>x.attrs["aria-pressed"]),["false","false","false"]);
 });
@@ -63,13 +63,13 @@ test("violão C/513/321 preserva o localizador e dois C.I. aparecem ao mesmo tem
  assert.equal(el("guitar").children.filter(n=>n.tag==="text"&&n.textContent==="C.I.").length,2);
  assert.deepEqual(app.get().ciSelected,["1","5"]);
 });
-test("áudio toca somente os C.I. escolhidos, sem modificar botões",()=>{
+test("áudio percorre todas as vozes e embeleza somente os graus escolhidos",()=>{
  const {app,buttons,el,sounds}=setup();
  app.show("C","513","1","guitar","major","321");
  buttons["[data-target]"][2].onclick();
  el("playPair").onclick();
  const sung=sounds.filter(n=>n.type==="sine").map(n=>n.midi);
- assert.deepEqual(sung,[66,67,71,72]);
+ assert.deepEqual(sung,[66,67,71,72,76]);
  assert.deepEqual(app.get().ciSelected,["1","5"]);
  sounds.length=0;
  el("playTriad").onclick();
@@ -121,18 +121,18 @@ test("D.I. e D.S. percorrem só os alvos marcados e mantêm as outras conexões"
  buttons["[data-target]"][2].onclick();
  buttons["[data-kind]"][1].onclick();
  el("playPair").onclick();
- assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[65,67,71,72]);
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[65,67,71,72,76]);
  sounds.length=0;
  buttons["[data-kind]"][2].onclick();
  el("playPair").onclick();
- assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[69,67,74,72]);
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[69,67,74,72,76]);
  assert.deepEqual(app.get().ciSelected,["1","5"]);
  buttons["[data-kind]"][3].onclick();
  buttons["[data-conn-index]"][1].onclick();
  assert.deepEqual(app.get().connSelected,[0,1]);
 });
 
-test("players não redundantes: só aproximações ou em contexto de tríade",()=>{
+test("players não redundantes: percurso das três vozes ou em contexto de tríade",()=>{
  const {app,el,sounds}=setup();
  app.show("C","513","1","guitar","major","321");
  assert.equal(typeof el("playPair").onclick,"function");
@@ -140,7 +140,7 @@ test("players não redundantes: só aproximações ou em contexto de tríade",()
  assert.equal(el("playTour").onclick,undefined,"player redundante não deve receber handler");
  el("playPair").onclick();
  const solo=sounds.filter(n=>n.type==="sine").map(n=>n.midi);
- assert.deepEqual(solo,[71,72],"aproximações isoladas: Si→Dó");
+ assert.deepEqual(solo,[67,71,72,76],"tríade 513, com C.I.1 antes da fundamental: Sol, Si→Dó, Mi");
  sounds.length=0;
  el("playTriad").onclick();
  const complete=sounds.filter(n=>n.type==="sine").map(n=>n.midi);
@@ -159,4 +159,46 @@ test("conexões selecionadas dispensam segundo player",()=>{
  el("connPlay").onclick();
  assert.deepEqual(app.get().connSelected,[0,1],"reprodução não deve alterar seleção");
  assert.ok(sounds.filter(n=>n.type==="sine").length>4,"deve percorrer as duas conexões");
+});
+
+test("cada grau não marcado mantém sua nota: C.I.3 sozinho em C 135",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","135","3","piano","major","321");
+ assert.equal(el("ciOrder").textContent,"1 → C.I.3 → 3 → 5");
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[60,63,64,67]);
+ assert.deepEqual(app.get().ciSelected,["3"]);
+});
+test("sem embelezamento, toca tríade original na ordem da forma",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","513","1","guitar","major","321");
+ buttons["[data-target]"][0].onclick();
+ assert.deepEqual(app.get().ciSelected,[]);
+ assert.equal(el("playPair").disabled,false);
+ assert.equal(el("playTriad").disabled,false);
+ assert.equal(el("ciOrder").textContent,"5 → 1 → 3");
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[67,72,76]);
+});
+test("o contexto com tríade também executa graus não ornamentados",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","135","3","piano","major","321");
+ el("playTriad").onclick();
+ const notes=sounds.filter(n=>n.type==="sine").map(n=>n.midi);
+ const sequence=[60,63,64,67];
+ assert.ok(sequence.every(n=>notes.includes(n)));
+ assert.ok(notes.includes(48),"inclui baixo separado");
+ assert.deepEqual(notes.slice(0,3),[60,64,67],"abre com a tríade completa");
+ assert.deepEqual(notes.slice(-3),[60,64,67],"fecha com a tríade completa");
+});
+test("inversões 351 e 513 preservam a ordem ao ornamentar a voz do meio",()=>{
+ for(const form of ["351","513"]){
+  const {app,el,sounds}=setup();
+  app.show("C",form,"1","piano","major","321");
+  app.set({ciSelected:["1"]});
+  el("playPair").onclick();
+  const base=app.get().notes.map(n=>n.midi);
+  const chosen=app.get().notes.map(n=>n.degree==="1"?[n.midi-1,n.midi]:[n.midi]).flat();
+  assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),chosen);
+ }
 });
