@@ -15,11 +15,12 @@ function setup(){
   replaceChildren(...xs){this.children=xs}
   setAttribute(k,v){this.attrs[k]=String(v)}
   getBoundingClientRect(){return{width:1080}}
+  querySelector(tag){return new Node(tag)}
  }
  const groups={};
  for(const [name,key,values] of [
    ["target","target",["1","3","5"]],["conn-index","connIndex",["0","1"]],
-   ["kind","kind",["ci","diatonic","chromatic"]],["form","form",["135","351","513"]],
+   ["kind","kind",["ci","di","ds","diatonic","chromatic"]],["form","form",["135","351","513"]],
    ["group","group",["321","432"]],["quality","quality",["major","minor"]],
    ["instrument","instrument",["piano","guitar"]],["conn-group","connGroup",["321","432"]]
  ])groups["[data-"+name+"]"]=values.map(v=>new Node("button",{[key]:v}));
@@ -80,9 +81,53 @@ test("áudio toca somente os C.I. escolhidos, sem modificar botões",()=>{
 test("a multi-seleção do C.I. não altera os botões de conexão",()=>{
  const {app,buttons}=setup();
  buttons["[data-target]"][1].onclick();
- buttons["[data-kind]"][1].onclick();
+ buttons["[data-kind]"][3].onclick();
  buttons["[data-conn-index]"][1].onclick();
  assert.deepEqual(app.get().connSelected,[0,1]);
  buttons["[data-kind]"][0].onclick();
  assert.deepEqual(app.get().ciSelected,["1","3"]);
+});
+
+test("D.I. e D.S. usam a nota diatônica vizinha, não uma terça cromática fixa",()=>{
+ const {app,buttons,el}=setup();
+ app.show("C","513","3","piano","major","321");
+ buttons["[data-kind]"][1].onclick();
+ assert.equal(app.get().kind,"di");
+ assert.equal(el("motion").textContent,"Ré → Mi");
+ assert.equal(el("moveDetail").textContent,"D.I.3 · 2 semitons abaixo");
+ buttons["[data-kind]"][2].onclick();
+ assert.equal(app.get().kind,"ds");
+ assert.equal(el("motion").textContent,"Fá → Mi");
+ assert.equal(el("moveDetail").textContent,"D.S.3 · 1 semitom acima");
+ buttons["[data-kind]"][0].onclick();
+ assert.equal(el("motion").textContent,"Ré♯ → Mi");
+});
+test("C/513/321 com D.I. e D.S. mantém baixo na casa 15 e várias bolinhas ativas",()=>{
+ const {app,buttons,el}=setup();
+ app.show("C","513","1","guitar","major","321");
+ buttons["[data-target]"][2].onclick();
+ for(const [kindIndex,label] of [[1,"D.I."],[2,"D.S."]]){
+  buttons["[data-kind]"][kindIndex].onclick();
+  const data=app.get();
+  assert.equal(data.bass.string,5);
+  assert.equal(data.bass.fret,15);
+  assert.deepEqual(data.ciSelected,["1","5"]);
+  assert.equal(el("guitar").children.filter(n=>n.tag==="text"&&n.textContent===label).length,2);
+ }
+});
+test("D.I. e D.S. percorrem só os alvos marcados e mantêm as outras conexões",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","513","1","guitar","major","321");
+ buttons["[data-target]"][2].onclick();
+ buttons["[data-kind]"][1].onclick();
+ el("playTour").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[65,67,71,72]);
+ sounds.length=0;
+ buttons["[data-kind]"][2].onclick();
+ el("playTour").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[69,67,74,72]);
+ assert.deepEqual(app.get().ciSelected,["1","5"]);
+ buttons["[data-kind]"][3].onclick();
+ buttons["[data-conn-index]"][1].onclick();
+ assert.deepEqual(app.get().connSelected,[0,1]);
 });
