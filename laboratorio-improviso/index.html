@@ -369,7 +369,10 @@ function stop(){
  for(const chip of document.querySelectorAll(".sounding"))chip.classList.remove("sounding");
 }
 function later(seconds,callback,token){
- const id=setTimeout(()=>{if(state.token===token)callback()},Math.max(0,seconds*1000));
+ const id=setTimeout(()=>{
+  const i=state.timers.indexOf(id);if(i>=0)state.timers.splice(i,1);
+  if(state.token===token)callback()
+ },Math.max(0,seconds*1000));
  state.timers.push(id);
 }
 async function audioContext(){
@@ -387,6 +390,7 @@ function note(midi,at,duration,accent){
  gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
  osc.connect(gain);gain.connect(ctx.destination);
  osc.start(at);osc.stop(at+duration+.03);state.voices.push(osc);
+ osc.onended=()=>{const i=state.voices.indexOf(osc);if(i>=0)state.voices.splice(i,1)};
 }
 function click(at,accent){
  const colors={
@@ -403,6 +407,7 @@ function click(at,accent){
  gain.gain.exponentialRampToValueAtTime(.0001,at+sound.duration);
  osc.connect(gain);gain.connect(ctx.destination);
  osc.start(at);osc.stop(at+sound.duration+.02);state.voices.push(osc);
+ osc.onended=()=>{const i=state.voices.indexOf(osc);if(i>=0)state.voices.splice(i,1)};
 }
 function scheduleMetronome(begin,token,offsetSeconds=0){
  if(!state.click)return;
