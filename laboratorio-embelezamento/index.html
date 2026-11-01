@@ -174,8 +174,9 @@ function guitar(){
  // Se uma forma na casa 1 exigiria uma casa negativa, escolhe a versão
  // da mesma forma em outra oitava, preservando o baixo localizador.
  const canOrnament=entry=>!isApproach()||degrees.every((degree,i)=>{
-  if(!state.ciSelected.has(degree==='♭3'?'3':degree))return true;
-  const n=approachFor({degree,midi:entry.midis[i]});
+  const kind=state.kind==='combo'?comboConfig(degree).kind:(state.ciSelected.has(degreeKey(degree))?state.kind:'none');
+  if(kind==='none')return true;
+  const n=approachFor({degree,midi:entry.midis[i]},kind);
   const fret=entry.fs[i]+n.fromMidi-entry.midis[i];
   return fret>=0&&fret<=19;
  });
@@ -194,27 +195,40 @@ const APPROACH_MODES={
  di:{name:'Diatônico Inferior',abbrev:'D.I.',direction:-1},
  ds:{name:'Diatônico Superior',abbrev:'D.S.',direction:1}
 };
-const approachMode=()=>APPROACH_MODES[state.kind]||APPROACH_MODES.ci;
-const isApproach=()=>Object.prototype.hasOwnProperty.call(APPROACH_MODES,state.kind);
+const approachMode=()=>state.kind==='combo'?{name:'Combinações',abbrev:'Mix',direction:-1}:APPROACH_MODES[state.kind]||APPROACH_MODES.ci;
+const isApproach=()=>state.kind==='combo'||Object.prototype.hasOwnProperty.call(APPROACH_MODES,state.kind);
+const degreeKey=degree=>degree==='♭3'?'3':degree;
+const comboConfig=degree=>state.comboSettings[degreeKey(degree)]||{kind:'none',figure:'approach'};
 function ciNotes(notes){
   // A ordem acompanha as três vozes (135, 351 ou 513), mesmo com múltiplos alvos.
   return notes.filter(n=>state.ciSelected.has(n.degree==='♭3'?'3':n.degree));
 }
-function approachFor(note){
- const mode=approachMode(),dir=mode.direction;
+function approachFor(note,kind=state.kind){
+ const mode=APPROACH_MODES[kind]||APPROACH_MODES.ci,dir=mode.direction;
  let midi=note.midi+dir;
- if(state.kind!=='ci'){
+ if(kind!=='ci'){
   // Na maior e na menor natural, use a nota vizinha da escala.
   // Pode estar a 1 OU 2 semitons da nota-alvo.
   const tones=CONN_SCALES[state.quality];
   while(!tones.includes(P(midi-root().pc)))midi+=dir;
  }
- return {...note,fromMidi:midi,fromName:state.kind==='ci'?before(note.degree):connName(midi),distance:Math.abs(midi-note.midi)};
+ return {...note,kind,abbrev:mode.abbrev,figure:'approach',fromMidi:midi,fromName:kind==='ci'?before(note.degree):connName(midi),distance:Math.abs(midi-note.midi)};
 }
-function chosenApproaches(notes){return ciNotes(notes).map(approachFor)}
+function chosenApproaches(notes){
+ if(state.kind==='combo'){
+  return notes.flatMap(note=>{
+   const conf=comboConfig(note.degree);
+   return conf.kind==='none'?[]:[{...approachFor(note,conf.kind),figure:conf.figure}];
+  });
+ }
+ return ciNotes(notes).map(note=>approachFor(note));
+}
 
-function chord(){const notes=state.instrument==='piano'?piano():guitar(),selected=ciNotes(notes)[0]||null;
- return{notes,selected,bass:state.instrument==='piano'?bass():locator(notes),from:selected?approachFor(selected).fromMidi:null,symbol:root().symbol+(state.quality==='minor'?'m':'')}}
+function chord(){
+ const notes=state.instrument==='piano'?piano():guitar();
+ const first=isApproach()?chosenApproaches(notes)[0]:null,selected=first||ciNotes(notes)[0]||null;
+ return{notes,selected,bass:state.instrument==='piano'?bass():locator(notes),from:first?first.fromMidi:selected&&state.kind!=='combo'?approachFor(selected).fromMidi:null,symbol:root().symbol+(state.quality==='minor'?'m':'')}
+}
 function svg(tag,attrs,p){const e=document.createElementNS(NS,tag);for(let [a,b]of Object.entries(attrs))e.setAttribute(a,String(b));p.append(e);return e}
 const COLORS={'1':'#e58c42','3':'#5c95cd','♭3':'#5c95cd','5':'#6c78db'};
 let visualNodes=[];
@@ -233,7 +247,7 @@ function keyboard(id,notes,selected){
   svg('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'middle',fill:'#151e28','font-size':d.length>2?10:17,'font-weight':850},el).textContent=d}
  const ids=new Set(selected.map(n=>n.idx));
  for(const n of notes)mark(n.midi,n.degree,ids.has(n.idx)?'#f8b780':COLORS[n.degree]);
- for(const n of selected)mark(n.fromMidi,approachMode().abbrev,'#70cadb');
+ for(const n of selected)mark(n.fromMidi,n.abbrev,'#70cadb');
 }
 function pianoUI(){
  const left=[bass()],right=piano(),selected=chosenApproaches(right);
@@ -243,7 +257,7 @@ function pianoUI(){
   const el=$(id);el.replaceChildren();
   const ids=new Set(selected.map(n=>n.idx));
   for(const n of notes){const item=document.createElement('div');item.className='ci-card'+(ids.has(n.idx)?' active':'');item.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';item.dataset.midi=String(n.midi);el.append(item)}
-  if(append)for(const n of selected){const item=document.createElement('div');item.className='ci-card ci';item.innerHTML='<b>'+approachMode().abbrev+n.degree+'</b><small>'+n.fromName+'</small>';item.dataset.midi=String(n.fromMidi);el.append(item)}
+  if(append)for(const n of selected){const item=document.createElement('div');item.className='ci-card ci';item.innerHTML='<b>'+n.abbrev+n.degree+'</b><small>'+n.fromName+'</small>';item.dataset.midi=String(n.fromMidi);el.append(item)}
  };
  cards('leftCards',left,[],false);
  cards('rightCards',right,selected,true);
@@ -270,7 +284,7 @@ function guitarUI(){
    const source=selected.find(x=>x.idx===n.idx),f=n.fret+(source.fromMidi-n.midi);
    if(f>=0&&f<=19){
     recordNote(svg('circle',{cx:X(f),cy:y,r:16,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el),source.fromMidi,'#6ec5d7','#d6fbff');
-    svg('text',{x:X(f),y:y+1,fill:'#112733','font-size':9,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent=approachMode().abbrev;
+    svg('text',{x:X(f),y:y+1,fill:'#112733','font-size':9,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent=source.abbrev;
     svg('line',{x1:X(f)+(f<n.fret?13:-13),y1:y-25,x2:x+(f<n.fret?-14:14),y2:y-25,stroke:'#a1e6f0','stroke-width':2.5},el);
    }
   }
