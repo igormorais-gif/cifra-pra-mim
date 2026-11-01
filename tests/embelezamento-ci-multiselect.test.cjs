@@ -51,7 +51,7 @@ test("C.I.1, C.I.3 e C.I.5 são botões independentes, inclusive sem seleção",
  b[0].onclick();assert.deepEqual(app.get().ciSelected,["3","5"]);
  b[2].onclick();b[1].onclick();assert.deepEqual(app.get().ciSelected,[]);
  assert.equal(el("playPair").disabled,false);
- assert.equal(el("motion").textContent,"Nenhum C.I. selecionado");
+ assert.equal(el("motion").textContent,"Nenhuma aproximação selecionada");
  assert.deepEqual(b.map(x=>x.attrs["aria-pressed"]),["false","false","false"]);
 });
 test("violão C/513/321 preserva o localizador e dois C.I. aparecem ao mesmo tempo",()=>{
@@ -115,7 +115,7 @@ test("C/513/321 com D.I. e D.S. mantém baixo na casa 15 e várias bolinhas ativ
   assert.equal(el("guitar").children.filter(n=>n.tag==="text"&&n.textContent===label).length,2);
  }
 });
-test("D.I. e D.S. percorrem só os alvos marcados e mantêm as outras conexões",()=>{
+test("D.I. e D.S. preservam os três alvos, ornamentam os marcados e mantêm outras conexões",()=>{
  const {app,buttons,el,sounds}=setup();
  app.show("C","513","1","guitar","major","321");
  buttons["[data-target]"][2].onclick();
@@ -132,7 +132,7 @@ test("D.I. e D.S. percorrem só os alvos marcados e mantêm as outras conexões"
  assert.deepEqual(app.get().connSelected,[0,1]);
 });
 
-test("players não redundantes: percurso das três vozes ou em contexto de tríade",()=>{
+test("players sem redundância: sequência completa ou em contexto de tríade",()=>{
  const {app,el,sounds}=setup();
  app.show("C","513","1","guitar","major","321");
  assert.equal(typeof el("playPair").onclick,"function");
