@@ -12,7 +12,13 @@
 })(typeof globalThis!=="undefined"?globalThis:this,function(E){
   "use strict";
   const ALLOWED=[8,6,4,3,2,1];
-  const LETTERS={60:114,64:102,67:90,71:78};
+  const DIATONIC={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+  function noteY(t){
+    if(t.letter&&Number.isInteger(t.octave)){
+      return 114-((t.octave-4)*7+DIATONIC[t.letter])*6;
+    }
+    return ({60:114,64:102,67:90,71:78})[t.midi]??78;
+  }
   const escape=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   function splitNote(e){
     const res=[];let at=e.tick,left=e.length;
@@ -24,7 +30,7 @@
       if(at%4!==0&&left>boundary)wanted=boundary;
       const d=ALLOWED.find(x=>x<=wanted);
       if(!d)throw new Error("Duração notável não encontrada");
-      res.push({kind:"note",tick:at,length:d,index:e.index,midi:e.midi,name:e.name,degree:e.degree,first:res.length===0});
+      res.push({kind:"note",tick:at,length:d,index:e.index,midi:e.midi,name:e.name,degree:e.degree,letter:e.letter,octave:e.octave,alteration:e.alteration,first:res.length===0});
       at+=d;left-=d;
     }
     res.forEach((x,i)=>{x.tieIn=i>0;x.tieOut=i<res.length-1});
@@ -41,8 +47,8 @@
     }
     return items;
   }
-  function plan(id){
-    const seq=E.events(id);
+  function plan(id,seq=E.events(id)){
+    if(!Array.isArray(seq)||seq.length!==4)throw new RangeError("Quatro ataques são necessários");
     const tokens=[];let cursor=0;
     for(const e of seq){
       if(e.tick>cursor)tokens.push(...splitRest(cursor,e.tick-cursor));
@@ -59,12 +65,12 @@
   }
   const pos=t=>145+t*53;
   function noteSvg(t,mode){
-    const x=pos(t.tick),y=mode==="melodic"?(LETTERS[t.midi]??78):80;
+    const x=pos(t.tick),y=mode==="melodic"?noteY(t):80;
     const stem=x+8,up=y-40,dotted=t.length===3||t.length===6;
     const flags=t.length===1?2:t.length===2||t.length===3?1:0;
     const hollow=t.length===8;
     let out='<g class="score-hit" data-index="'+t.index+'" data-tick="'+t.tick+'" data-length="'+t.length+'">';
-    if(mode==="melodic"&&t.midi===60)out+=line(x-16,114,x+16,114,"#33434e",1.9);
+    if(mode==="melodic"&&y>=114)for(let ledger=114;ledger<=y;ledger+=12)out+=line(x-16,ledger,x+16,ledger,"#33434e",1.9);
     if(mode==="rhythm"){
       out+='<path class="score-note" d="M '+(x-8)+' '+(y-6)+' L '+(x+8)+' '+(y+6)+' M '+(x+8)+' '+(y-6)+' L '+(x-8)+' '+(y+6)+'" stroke="#203543" stroke-width="3" stroke-linecap="round" fill="none"/>';
     }else{
@@ -76,6 +82,8 @@
       out+='<path d="M '+stem+' '+fy+' C '+(stem+26)+' '+(fy+4)+' '+(stem+25)+' '+(fy+25)+' '+(stem+8)+' '+(fy+29)+' C '+(stem+19)+' '+(fy+13)+' '+(stem+11)+' '+(fy+10)+' '+stem+' '+(fy+10)+' Z" fill="#203543"/>';
     }
     if(dotted)out+='<circle cx="'+(x+24)+'" cy="'+(y-4)+'" r="3.2" fill="#203543"/>';
+    if(mode==="melodic"&&t.alteration&&t.first)
+      out+='<text x="'+(x-23)+'" y="'+(y+6)+'" text-anchor="middle" font-family="Georgia,serif" font-size="25" fill="#203543">'+escape(t.alteration)+'</text>';
     if(t.first)out+='<text x="'+x+'" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#344752">'+escape(mode==="melodic"?t.name:t.degree)+'</text>';
     out+='</g>';
     return out;
@@ -96,9 +104,9 @@
     if(dotted)out+='<circle cx="'+(x+14)+'" cy="82" r="3.2" fill="#596d7c"/>';
     return out+'</g>';
   }
-  function svg(id,mode="melodic"){
+  function svg(id,mode="melodic",seq=E.events(id)){
     if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura inválido");
-    const tokens=plan(id),p=E.pattern(id);
+    const tokens=plan(id,seq),p=E.pattern(id);
     let out='<svg class="score-svg" viewBox="0 0 1100 195" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escape(p.title+" — "+(mode==="melodic"?"partitura melódica":"partitura rítmica")+", um compasso 4/4")+'">';
     out+='<rect x="2" y="1" width="1096" height="192" rx="12" fill="#fbf7ee"/>';
     if(mode==="melodic"){
@@ -118,7 +126,7 @@
     for(let i=0;i<tokens.length-1;i++){
       const t=tokens[i],next=tokens[i+1];
       if(t.kind!=="note"||!t.tieOut||next.kind!=="note"||next.index!==t.index)continue;
-      const a=pos(t.tick)+10,b=pos(next.tick)-10,y=mode==="rhythm"?97:Math.max(LETTERS[t.midi]+20,102);
+      const a=pos(t.tick)+10,b=pos(next.tick)-10,y=mode==="rhythm"?97:Math.max(noteY(t)+20,102);
       out+='<path class="score-tie" d="M '+a+' '+y+' Q '+((a+b)/2)+' '+(y+14)+' '+b+' '+y+'" fill="none" stroke="#203543" stroke-width="2.2"/>';
     }
     out+=line(1043,mode==="melodic"?54:67,1043,mode==="melodic"?102:94,"#243744",3);
