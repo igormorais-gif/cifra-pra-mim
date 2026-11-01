@@ -31,6 +31,7 @@
     }
     schedule(nextAt,cycle);
     planned.push(nextAt);
+    if(planned.length>32)planned.shift(); // histórico limitado: loop pode ficar horas ligado
     lastEnd=nextAt+cycleSeconds;
     nextAt=lastEnd;cycle++;
    }
