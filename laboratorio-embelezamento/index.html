@@ -164,10 +164,30 @@ function locator(notes){if(!notes.length)return null;const string=LOCATOR[state.
  const options=[];for(let f=0;f<=19;f++)if(P(OPEN[string]+f)===root().pc&&OPEN[string]+f<lowest)
   options.push({string,fret:f,midi:OPEN[string]+f,score:Math.abs(f-avg)});
  return options.sort((a,b)=>a.score-b.score)[0]||null}
+const APPROACH_MODES={
+ ci:{name:'Cromático Inferior',abbrev:'C.I.',direction:-1},
+ di:{name:'Diatônico Inferior',abbrev:'D.I.',direction:-1},
+ ds:{name:'Diatônico Superior',abbrev:'D.S.',direction:1}
+};
+const approachMode=()=>APPROACH_MODES[state.kind]||APPROACH_MODES.ci;
+const isApproach=()=>Object.prototype.hasOwnProperty.call(APPROACH_MODES,state.kind);
 function ciNotes(notes){
-  // A ordem do exercício acompanha as vozes da forma: 135, 351 ou 513.
+  // A ordem acompanha as três vozes (135, 351 ou 513), mesmo com múltiplos alvos.
   return notes.filter(n=>state.ciSelected.has(n.degree==='♭3'?'3':n.degree));
 }
+function approachFor(note){
+ const mode=approachMode(),dir=mode.direction;
+ let midi=note.midi+dir;
+ if(state.kind!=='ci'){
+  // Na maior e na menor natural, use a nota vizinha da escala.
+  // Pode estar a 1 OU 2 semitons da nota-alvo.
+  const tones=CONN_SCALES[state.quality];
+  while(!tones.includes(P(midi-root().pc)))midi+=dir;
+ }
+ return {...note,fromMidi:midi,fromName:state.kind==='ci'?before(note.degree):connName(midi),distance:Math.abs(midi-note.midi)};
+}
+function chosenApproaches(notes){return ciNotes(notes).map(approachFor)}
+
 function chord(){const notes=state.instrument==='piano'?piano():guitar(),selected=ciNotes(notes)[0]||null;
  return{notes,selected,bass:state.instrument==='piano'?bass():locator(notes),from:selected?selected.midi-1:null,symbol:root().symbol+(state.quality==='minor'?'m':'')}}
 function svg(tag,attrs,p){const e=document.createElementNS(NS,tag);for(let [a,b]of Object.entries(attrs))e.setAttribute(a,String(b));p.append(e);return e}
@@ -188,17 +208,17 @@ function keyboard(id,notes,selected){
   svg('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'middle',fill:'#151e28','font-size':d.length>2?10:17,'font-weight':850},el).textContent=d}
  const ids=new Set(selected.map(n=>n.idx));
  for(const n of notes)mark(n.midi,n.degree,ids.has(n.idx)?'#f8b780':COLORS[n.degree]);
- for(const n of selected)mark(n.midi-1,'C.I.','#70cadb');
+ for(const n of selected)mark(n.fromMidi,approachMode().abbrev,'#70cadb');
 }
 function pianoUI(){
- const left=[bass()],right=piano(),selected=ciNotes(right);
+ const left=[bass()],right=piano(),selected=chosenApproaches(right);
  keyboard('leftKeys',left,[]);
  keyboard('rightKeys',right,selected);
  const cards=(id,notes,selected,append)=>{
   const el=$(id);el.replaceChildren();
   const ids=new Set(selected.map(n=>n.idx));
   for(const n of notes){const item=document.createElement('div');item.className='ci-card'+(ids.has(n.idx)?' active':'');item.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';item.dataset.midi=String(n.midi);el.append(item)}
-  if(append)for(const n of selected){const item=document.createElement('div');item.className='ci-card ci';item.innerHTML='<b>C.I.'+n.degree+'</b><small>'+before(n.degree)+'</small>';item.dataset.midi=String(n.midi-1);el.append(item)}
+  if(append)for(const n of selected){const item=document.createElement('div');item.className='ci-card ci';item.innerHTML='<b>'+approachMode().abbrev+n.degree+'</b><small>'+n.fromName+'</small>';item.dataset.midi=String(n.fromMidi);el.append(item)}
  };
  cards('leftCards',left,[],false);
  cards('rightCards',right,selected,true);
@@ -207,8 +227,8 @@ function pianoUI(){
 function guitarUI(){
  const el=$('guitar');el.replaceChildren();
  const notes=guitar();if(!notes.length)return;
- const bass=locator(notes),selected=ciNotes(notes),selectedIds=new Set(selected.map(n=>n.idx));
- const fs=notes.map(n=>n.fret).concat(bass?[bass.fret]:[]).concat(selected.map(n=>n.fret-1));
+ const bass=locator(notes),selected=chosenApproaches(notes),selectedIds=new Set(selected.map(n=>n.idx));
+ const fs=notes.map(n=>n.fret).concat(bass?[bass.fret]:[]).concat(selected.map(n=>n.fret+(n.fromMidi-n.midi)));
  let low=Math.max(1,Math.min(...fs)-2),high=low+10;
  if(high<Math.max(...fs)+1){low=Math.max(1,Math.max(...fs)-10);high=low+10}
  if(high>19){high=19;low=9}
@@ -221,10 +241,13 @@ function guitarUI(){
   const fill=on?'#f5ae77':COLORS[n.degree],stroke=on?'#ffdeaf':'#d6d5d2';
   recordNote(svg('circle',{cx:x,cy:y,r:16,fill,stroke,'stroke-width':on?2.5:2},el),n.midi,fill,stroke);
   svg('text',{x,y:y+1,'font-size':15,'font-weight':900,fill:'#1a2530','text-anchor':'middle','dominant-baseline':'middle'},el).textContent=n.degree;
-  if(on&&n.fret>0){
-   recordNote(svg('circle',{cx:X(n.fret-1),cy:y,r:16,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el),n.midi-1,'#6ec5d7','#d6fbff');
-   svg('text',{x:X(n.fret-1),y:y+1,fill:'#112733','font-size':9,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='C.I.';
-   svg('line',{x1:X(n.fret-1)+13,y1:y-25,x2:x-14,y2:y-25,stroke:'#a1e6f0','stroke-width':2.5},el)
+  if(on){
+   const source=selected.find(x=>x.idx===n.idx),f=n.fret+(source.fromMidi-n.midi);
+   if(f>=0&&f<=19){
+    recordNote(svg('circle',{cx:X(f),cy:y,r:16,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el),source.fromMidi,'#6ec5d7','#d6fbff');
+    svg('text',{x:X(f),y:y+1,fill:'#112733','font-size':9,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent=approachMode().abbrev;
+    svg('line',{x1:X(f)+(f<n.fret?13:-13),y1:y-25,x2:x+(f<n.fret?-14:14),y2:y-25,stroke:'#a1e6f0','stroke-width':2.5},el);
+   }
   }
  }
  if(bass){recordNote(svg('circle',{cx:X(bass.fret),cy:Y(bass.string),r:16,fill:'#241c34',stroke:'#d7b8fc','stroke-width':2,'stroke-dasharray':'4 3'},el),bass.midi,'#241c34','#d7b8fc');svg('text',{x:X(bass.fret),y:Y(bass.string)+1,fill:'#d7b8fc','font-size':10,'font-weight':900,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='1B'}
