@@ -104,3 +104,13 @@ A aba **Combinações** funciona sem eliminar os módulos de estudo isolado. Cad
 Assim, em C maior, 135, é possível definir **C.I.1 por aproximação**, **D.S.3 por bordadura** e **D.I.5 por aproximação**. A sequência resultante é **Si → Dó → Mi → Fá → Mi → Fá → Sol**. Os dois players percorrem sempre as três notas da tríade na ordem original; **Ouvir com tríade** também apresenta o acorde e o baixo e encerra com o acorde. É possível deixar qualquer grau sem embelezamento; não existem notas fixas extras no acorde.
 
 No violão, as notas ornamentais permanecem na mesma corda de sua voz estrutural. As formas são escolhidas de modo a comportar as casas superiores/inferiores necessárias, e o localizador 1B acompanha a posição. O seletor 4–3–2 / 3–2–1 permanece disponível. Os modos C.I., D.I., D.S. e as duas conexões continuam independentes e preservam suas próprias seleções.
+
+## Laboratório de Improvisação · Experimento 01: Ritmo e intervalos
+
+Página: [laboratorio-improviso/](laboratorio-improviso/). Protótipo isolado e navegável, com acesso na página inicial e no Laboratório de Embelezamentos.
+
+**Hipótese pedagógica:** estudar o vocabulário rítmico sem reproduzir a frase melódica de um lick. No primeiro exercício, a tétrade C7M em posição fechada (Dó4–Mi4–Sol4–Si4, graus 1–3–5–7) permanece fixa. Cinco células rítmicas **originais**, sem copiar material musical dos três livros enviados, variam exclusivamente os inícios e durações dos quatro ataques em um compasso 4/4. As figuras são: quatro semínimas (pulso), contratempos no 2& e 4&, deslocamentos para 1& e 3&, antecipações na última semicolcheia de cada tempo e ataques curtos com pausas. Todas usam grade de 16 semicolcheias, sem sobreposição de eventos.
+
+A interface permite selecionar e visualizar uma célula, ouvi-la, ouvir as cinco em sequência com um tempo de espaço entre os compassos, ativar/desativar um metrônomo e controlar o BPM (50–160). O áudio é sintetizado localmente no navegador com Web Audio, sem arquivos de terceiros. O motor independente `src/rhythm-lab.js` gera os eventos e sua métrica, com testes em `tests/rhythm-lab.test.cjs`. O capítulo é **experimental**: ainda não contém os 96 percursos, escolha dos sete modos, combinações de embelezamentos nem importação de ritmos dos livros. Estes são eixos de desenvolvimento futuros.
+
+A publicação no GitHub Pages pode demorar a refletir um commit recente; em iPhone, testar o áudio com um toque nos controles do player após abrir a página.
