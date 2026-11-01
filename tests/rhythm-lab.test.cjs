@@ -4,7 +4,7 @@ const E=require("../src/rhythm-lab.js");
 
 test("há exatamente doze células originais, todas em 4/4",()=>{
  assert.equal(E.PATTERNS.length,12);
- assert.equal(new Set(E.PATTERNS.map(p=>p.id)).size,5);
+ assert.equal(new Set(E.PATTERNS.map(p=>p.id)).size,12);
  for(const p of E.PATTERNS)assert.equal(E.validate(p),true,p.id);
 });
 test("as células usam as mesmas quatro alturas e a mesma sequência de graus",()=>{
