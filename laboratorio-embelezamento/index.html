@@ -520,7 +520,7 @@ function render(){visualNodes=[];const c=chord(),mode=approachMode(),approach=is
  $('playPair').textContent='▶ Ouvir sequência';
  $('playTriad').textContent='▶ Ouvir com tríade';
  $('motion').textContent=selected.length?selected.map(n=>n.fromName+' → '+n.name).join('   ·   '):'Nenhuma aproximação selecionada';
- $('moveDetail').textContent=selected.length?selected.map(n=>mode.abbrev+(n.degree==='♭3'?'3':n.degree)+' · '+n.distance+' semitom'+(n.distance===1?'':'s')+(mode.direction>0?' acima':' abaixo')).join('  |  '):'Toque nos graus para ativar uma ou mais aproximações.';
+ $('moveDetail').textContent=selected.length?selected.map(n=>mode.abbrev+(n.degree==='♭3'?'3':n.degree)+' · '+n.distance+' '+(n.distance===1?'semitom':'semitons')+(mode.direction>0?' acima':' abaixo')).join('  |  '):'Toque nos graus para ativar uma ou mais aproximações.';
  $('tip').textContent=selected.length?
   mode.name+': '+selected.length+' aproximação(ões) independente(s). '+(state.kind==='ci'?'Cada uma está 1 semitom abaixo da nota-alvo.':'Cada uma usa a nota vizinha da escala '+(state.quality==='minor'?'menor natural':'maior')+', a 1 ou 2 semitons.')+
   ' A execução percorre sempre as três notas originais, acrescentando a aproximação só antes dos graus marcados. A forma '+state.form+' não ganha vozes fixas adicionais.'+
