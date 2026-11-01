@@ -82,6 +82,7 @@
   <p class="disclaimer">A representação usa a afinação padrão Mi–Lá–Ré–Sol–Si–Mi. As formas são tríades de três vozes; o baixo localizador aparece separadamente e pode exigir deslocamento de posição.</p>
   <footer class="foot"><span>Referência pedagógica: O Mapa dos Acordes, de Sérgio Benevenuto — tríades, pontas e localizadores</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer>
 </div>
+<script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
@@ -255,7 +256,14 @@ function render(){let c=computed();currentComputed=c;const r=root();$('root').va
  if(window.innerWidth<661){const svg=$('fretboard'),width=svg.getBoundingClientRect().width;const mid=(c.frets.reduce((a,b)=>a+b,0)/3),x=xFor(mid)/1080*width;const scroller=$('boardScroll');scroller.scrollLeft=Math.max(0,x-scroller.clientWidth/2)}
 }
 function updatePlaying(){visNodes.forEach((el,i)=>el?.classList.toggle('playing',i===state.playing));document.querySelectorAll('.note-card').forEach((el,i)=>el.classList.toggle('playing',i===state.playing))}
-function stop(){state.token++;state.playing=-1;updatePlaying();['playOne','playAll'].forEach(id=>$(id).disabled=false)}
+let loopClock=null,loopVoices=[],loopHighlights=[];
+function stop(){
+ if(loopClock){loopClock.cancel();loopClock=null}
+ for(const id of loopHighlights)clearTimeout(id);
+ loopHighlights=[];
+ for(const osc of loopVoices)try{osc.stop()}catch(e){}
+ loopVoices=[];
+ state.token++;state.playing=-1;updatePlaying();['playOne','playAll'].forEach(id=>$(id).disabled=false)}
 function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
 // Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
@@ -298,9 +306,9 @@ function sweetOutput(node,flavor){
  node.connect(room.dry);
  if(room.send)node.connect(room.send);
 }
-function pluck(midi,sec,bass=false){
+function pluck(midi,sec,bass=false,at=null){
  if(!audio)return;
- const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
+ const start=at??audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
  const duration=Math.max(.38,sec+.32);
  for(const [multiple,volume] of [[1,bass?.23:.17],[2,.039],[3,.014],[4,.005]]){
   const osc=audio.createOscillator(),gain=audio.createGain(),filter=audio.createBiquadFilter();
@@ -310,29 +318,46 @@ function pluck(midi,sec,bass=false){
   gain.gain.exponentialRampToValueAtTime(volume,start+.017);
   gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
   osc.connect(filter);filter.connect(gain);sweetOutput(gain,'guitar');
-  osc.start(start);osc.stop(start+duration+.06);
+  osc.start(start);osc.stop(start+duration+.06);loopVoices.push(osc);
+  osc.onended=()=>{const i=loopVoices.indexOf(osc);if(i>=0)loopVoices.splice(i,1)};
  }
 }
 async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='O navegador bloqueou o áudio. Toque novamente para ativá-lo.';return false}}
-async function arpeggio(token){let c=currentComputed;const notes=[...c.noteMidi,c.bass.midi],beats=[.5,.5,1,1],duration=60/state.bpm;for(let i=0;i<4;i++){if(token!==state.token)return;state.playing=i;updatePlaying();pluck(notes[i],beats[i]*duration,i===3);await wait(beats[i]*duration*1000)}if(token===state.token){state.playing=-1;updatePlaying()}}
+function visualAt(at,token,cb){
+ const id=setTimeout(()=>{if(token===state.token)cb()},Math.max(0,(at-audio.currentTime)*1000));
+ loopHighlights.push(id);
+}
 async function play(sequence){
  stop();const token=state.token;
  if(!await unlock()||token!==state.token)return;
  $('playOne').disabled=true;$('playAll').disabled=true;
- do{
-  const total=sequence?route().length:1;
-  for(let i=0;i<total;i++){
+ const beat=60/state.bpm,phraseLength=3*beat;
+ const count=sequence?route().length:1;
+ const originalStage=state.stage;
+ loopClock=window.SeamlessLoop.create({
+  audio,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
+  schedule:at=>{
+   for(let j=0;j<count;j++){
+    if(sequence){state.stage=j;render()}
+    else{state.stage=originalStage;render()}
+    const c=currentComputed,begin=at+j*phraseLength;
+    const notes=[...c.noteMidi,c.bass.midi],durations=[.5,.5,1,1];
+    let offset=0;
+    for(let i=0;i<4;i++){
+     const onset=begin+offset*beat;
+     pluck(notes[i],durations[i]*beat,i===3,onset);
+     visualAt(onset,token,()=>{state.playing=i;updatePlaying()});
+     offset+=durations[i];
+    }
+    if(sequence)visualAt(begin,token,()=>{state.stage=j;render()});
+   }
+  },
+  onFinish:()=>{
    if(token!==state.token)return;
-   if(sequence){state.stage=i;render();if(i)await wait(210)}
-   if(token!==state.token)return;
-   await arpeggio(token);
-   if(token!==state.token)return;
-   if(i<total-1)await wait(160);
+   loopClock=null;state.playing=-1;updatePlaying();
+   $('playOne').disabled=false;$('playAll').disabled=false;
   }
-  if(!state.loop||token!==state.token)break;
-  await wait(130);
- }while(token===state.token&&state.loop);
- if(token===state.token)stop();
+ });
 }
 const pageParams=typeof window!=='undefined'&&window.location?.search?new URLSearchParams(window.location.search):null;if(pageParams){const group=pageParams.get('set'),rootChoice=pageParams.get('root');if(['432','321'].includes(group))state.strings=group;if(ROOTS.some(r=>r.symbol===rootChoice))state.root=rootChoice;}
 ROOTS.forEach(r=>{let op=document.createElement('option');op.value=r.symbol;op.textContent=r.symbol+' · '+r.name;$('root').append(op)});$('root').value=state.root;
