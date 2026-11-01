@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0c121b"><title>Cifra pra Mim · C.I. na Condução Harmônica</title>
+<style>
+:root{color-scheme:dark;--bg:#0c121b;--panel:#15202c;--edge:#33485b;--text:#f8eee6;--muted:#a8bac9;--orange:#ffbb83;--blue:#75bdd4}
+*{box-sizing:border-box}body{margin:0;color:var(--text);background:radial-gradient(1000px 370px at 45% -290px,#7e4d37,transparent),var(--bg);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button,select{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #ffd5aa;outline-offset:2px}button:disabled{opacity:.48;cursor:default}[hidden]{display:none!important}
+.shell{max-width:1200px;margin:auto;padding:16px 18px 50px}
+header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:0 0 20px}
+.brand{display:flex;gap:12px;align-items:center}.brandmark{width:46px;height:46px;border-radius:50%;background:linear-gradient(125deg,#ffdeb1,#a76f50);display:grid;place-items:center;font-size:25px;color:#492b21}
+h1{font:750 clamp(27px,4vw,39px)/1 Georgia,serif;letter-spacing:-.055em;margin:0}h1 em{font-style:normal;color:#ffc18e}
+.micro{font-size:10px;font-weight:850;letter-spacing:.14em;text-transform:uppercase;color:#a7bbc9;margin-top:5px}
+nav{display:flex;gap:7px;flex-wrap:wrap}nav a{color:#c7d7e3;text-decoration:none;font-size:11px;font-weight:800;border:1px solid #405164;border-radius:9px;padding:9px 12px;background:#182536}
+.panel{border:1px solid var(--edge);border-radius:16px;background:linear-gradient(135deg,#192737,#101c28);margin-bottom:13px;overflow:hidden;box-shadow:0 12px 25px #0002}
+.intro{padding:23px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.intro h2{font:750 clamp(26px,4vw,36px)/1.17 Georgia,serif;letter-spacing:-.025em;margin:0 0 10px}
+.intro p{max-width:760px;color:#b9cad6;margin:0;font-size:12px}
+.module{white-space:nowrap;border:1px solid #96684c;background:#4a3025;border-radius:10px;padding:8px 12px;color:#ffd7b5;font-size:11px;font-weight:850}
+.controls{padding:18px 20px}.controls h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fbd0ae;margin:0 0 12px}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice-card{border:1px solid #354c61;border-radius:12px;padding:13px;background:#111e2c;min-width:0}
+.choice-card .chord{font:750 43px/1 Georgia,serif;margin:2px 0 7px;color:#ffe2c9}
+.choice-card .small{font-size:11px;color:#9fb6c6;margin-bottom:9px}
+.label{display:block;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:#aabed0;margin-bottom:7px}
+.segs{display:flex;gap:5px;flex-wrap:wrap}.segs button{flex:1;min-width:57px;background:#1e3245;color:#d4e0ea;border:1px solid #435b70;border-radius:9px;padding:9px 10px;font-weight:850}
+.segs button.active{background:#eab084;border-color:#f5c8a7;color:#291b16}
+.tools{border-top:1px solid #304457;margin-top:15px;padding-top:14px;display:flex;flex-wrap:wrap;gap:18px;align-items:end;justify-content:space-between}
+.tool-label{display:block;font-weight:850;font-size:10px;color:#a9bdcf;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+.target-group{display:flex;gap:6px;flex-wrap:wrap}.target-group button{background:#24384b;color:#d6e3eb;border:1px solid #4b647a;padding:9px 13px;font-weight:850;border-radius:9px}
+.target-group button.active{background:#63452d;border-color:#ffc28a;color:#ffe3c6}
+.summary{padding:17px 21px}.summary-line{display:flex;align-items:center;flex-wrap:wrap;gap:12px;justify-content:space-between}
+.progression{font:750 clamp(31px,5.5vw,51px)/1.15 Georgia,serif;letter-spacing:-.04em}.progression span{color:#ffbc86}
+.approach{margin-top:9px;color:#c1d4e0;font-size:12px}.approach strong{color:#a4e4f0;font-size:15px}
+.tempo{display:flex;gap:9px;align-items:center;color:#bacbd8;font-size:11px}.tempo input{accent-color:#f4b285;width:115px}.tempo output{color:#ffdbb4;font-weight:850}
+.transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#142537;border:1px solid #40586c;border-radius:12px;padding:10px;margin-top:15px}
+.play{border:1px solid #516b7e;border-radius:9px;background:#2a4052;color:#f1f5f7;padding:11px 13px;font-size:12px;font-weight:850}
+.play.primary{border:0;background:linear-gradient(125deg,#ffd69f,#ed9b67);color:#2d1c13}
+.play.stop{background:#463038;border-color:#875966;color:#f7cdd5}
+.transport .tempo{margin-left:auto}
+.playback{color:#a9bece;font-size:11px;padding:10px 2px 0;min-height:29px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.chord-card{min-width:0;border:1px solid #3b5265;background:#101c2a;border-radius:12px;overflow:hidden}
+.chord-card.top{border-color:#9a6246}
+.chord-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 15px 8px;flex-wrap:wrap}
+.chord-heading strong{font:750 27px/1 Georgia,serif}
+.chord-heading small{color:#abbecd;font-size:10px;font-weight:800}
+.hands{padding:0 12px 10px}
+.hand-title{font-size:10px;font-weight:800;color:#9db8c9;display:flex;justify-content:space-between;padding:7px 1px 4px}
+.scroll{overflow-x:auto;scrollbar-width:thin;padding-bottom:5px}
+.keys{min-width:600px;width:100%;height:auto;display:block;aspect-ratio:1000/210}
+.keys.bass{min-width:440px}
+.fretboard{display:block;min-width:580px;width:100%;height:auto;aspect-ratio:1110/345}
+.degree-line{display:flex;gap:7px;flex-wrap:wrap;padding:0 15px 15px}
+.degree{border-radius:8px;border:1px solid #465e72;background:#1b3042;padding:7px 9px;color:#d9e5eb;font-size:11px}
+.degree strong{color:#ffd9b9;font-size:15px;margin-right:6px}
+.degree.ci{border-color:#6b9eb3;background:#1a4150}
+.degree.ci strong{color:#a6e7f0}
+.degree.on{border-color:#ff909a!important;background:#65343c!important}
+.degree.on strong{color:#ffc4c9!important}
+.legend{display:flex;gap:13px;flex-wrap:wrap;font-size:10px;color:#b0c5d2;padding:2px 15px 15px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.tip{border-top:1px solid #36485a;padding:14px 20px 17px;margin-top:5px;background:#1b232e}
+.tip b{font-size:11px;color:#ffd5b0}.tip p{margin:5px 0 0;font-size:12px;color:#cad6dd}
+footer{padding:8px 3px;color:#859aab;font-size:11px;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+footer a{color:#c9d9e2;text-decoration:none}
+@media(max-width:700px){
+.shell{padding:10px 9px 25px}
+.intro{padding:16px}.controls{padding:12px}.choice-grid,.cards{grid-template-columns:1fr}
+.tools{gap:12px}.summary{padding:14px}.transport{display:grid;grid-template-columns:1fr 1fr;gap:6px}.transport .play{padding:10px 5px;font-size:11px;min-height:43px}.transport .tempo{grid-column:1/-1;margin:0;justify-content:center}
+.cards{padding:8px;gap:8px}.keys{width:650px}.keys.bass{width:500px}.fretboard{width:750px}
+}
+</style></head><body><div class="shell">
+<header><div class="brand"><div class="brandmark">♫</div><div><h1>Cifra <em>pra Mim</em></h1><div class="micro">Laboratório de Notas de Embelezamento · Módulo 02</div></div></div><nav><a href="../">Módulo 01 · C.I.</a><a href="../../">Início</a></nav></header>
+<section class="panel intro"><div><h2>Do acorde de origem ao destino</h2><p>O Cromático Inferior prepara uma nota do acorde de chegada. Aqui, você ouve a passagem de <strong>Dó maior para Fá maior</strong>, escolhe as formas e decide qual grau de F recebe a aproximação. A ordem das notas acompanha a região grave-aguda de cada forma.</p></div><div class="module">MÓDULO 02 · C → F</div></section>
+<section class="panel controls">
+<h3>Escolha as formas da transição</h3>
+<div class="choice-grid"><div class="choice-card">
+<span class="label">Origem · Tríade de Dó maior</span><div class="chord">C</div><div class="small">Dó – Mi – Sol</div>
+<span class="label">Forma original</span><div class="segs" id="originForms"><button data-origin="135" class="active" aria-pressed="true">135</button><button data-origin="351" aria-pressed="false">351</button><button data-origin="513" aria-pressed="false">513</button></div></div>
+<div class="choice-card"><span class="label">Destino · Tríade de Fá maior</span><div class="chord">F</div><div class="small">Fá – Lá – Dó</div>
+<span class="label">Forma original</span><div class="segs" id="destForms"><button data-dest="135" class="active" aria-pressed="true">135</button><button data-dest="351" aria-pressed="false">351</button><button data-dest="513" aria-pressed="false">513</button></div></div></div>
+<div class="tools"><div><span class="tool-label">Nota de destino com C.I.</span><div class="target-group" id="targets"><button data-target="1">C.I.1</button><button data-target="3" class="active">C.I.3</button><button data-target="5">C.I.5</button></div></div>
+<div><span class="tool-label">Instrumento</span><div class="segs"><button data-instrument="piano" class="active">🎹 Piano</button><button data-instrument="guitar">🎸 Violão</button></div></div>
+<div id="stringPanel" hidden><span class="tool-label">Cordas do violão</span><div class="segs"><button data-group="432">4–3–2</button><button data-group="321" class="active">3–2–1</button></div></div></div>
+</section>
+<section class="panel summary"><div class="summary-line"><div><span class="label">Condução harmônica</span><div class="progression">C <span>→</span> F</div><div class="approach" id="approach">C.I.3 de F · Sol♯ → Lá · 1 st abaixo</div></div><div class="module" id="order">135 → 135</div></div>
+<div class="transport"><button id="playTransition" class="play primary">▶ Ouvir C → F</button><button id="playArrival" class="play">▶ Só a chegada em F</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="55" max="145" step="5" value="80"><output id="bpmLabel">80</output> BPM</div></div>
+<div class="playback" id="playback" aria-live="polite">Toque em “Ouvir C → F” para escutar a condução.</div></section>
+<section class="panel"><div class="cards"><div class="chord-card" id="originCard"><div class="chord-heading"><strong>C</strong><small id="originSub">ORIGEM · 135</small></div>
+<div class="hands" id="originPiano"><div class="hand-title"><span>M.E. · fundamental</span></div><div class="scroll"><svg class="keys bass" id="originBass" viewBox="0 0 1000 210" aria-label="Baixo do acorde C"></svg></div><div class="hand-title"><span>M.D. · tríade</span></div><div class="scroll"><svg class="keys" id="originKeys" viewBox="0 0 1000 210" aria-label="Forma de C no teclado"></svg></div></div>
+<div id="originGuitar" hidden><div class="scroll"><svg class="fretboard" id="originFrets" viewBox="0 0 1110 345" aria-label="Forma de C no violão"></svg></div></div><div class="degree-line" id="originDegrees"></div></div>
+<div class="chord-card top" id="destCard"><div class="chord-heading"><strong>F</strong><small id="destSub">DESTINO · 135 · C.I.3</small></div>
+<div class="hands" id="destPiano"><div class="hand-title"><span>M.E. · fundamental</span></div><div class="scroll"><svg class="keys bass" id="destBass" viewBox="0 0 1000 210" aria-label="Baixo do acorde F"></svg></div><div class="hand-title"><span>M.D. · nota-alvo destacada</span></div><div class="scroll"><svg class="keys" id="destKeys" viewBox="0 0 1000 210" aria-label="Forma de F e C.I. no teclado"></svg></div></div>
+<div id="destGuitar" hidden><div class="scroll"><svg class="fretboard" id="destFrets" viewBox="0 0 1110 345" aria-label="Forma de F e C.I. no violão"></svg></div></div><div class="degree-line" id="destDegrees"></div></div></div>
+<div class="legend"><span><i style="background:#e58c42"></i>Fundamental</span><span><i style="background:#609cd4"></i>Terça</span><span><i style="background:#8176d9"></i>Quinta</span><span><i style="background:#70cedf"></i>Cromático Inferior</span><span><i style="background:#ff6471"></i>Nota soando</span></div>
+<div class="tip"><b>✧ DICA RÁPIDA</b><p>Cromático Inferior (C.I.) é uma nota de aproximação situada sempre <strong>1 semitom (1 st) abaixo da nota-alvo</strong>. Na condução C → F, ele prepara uma nota do acorde de F sem modificar os graus estruturais da tríade. As vozes não ornamentadas pertencem ao acorde de destino.</p></div></section>
+<footer><span>Cifra pra Mim · Laboratório de Embelezamento · Módulo 02</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer">@igmoraisb</a></span></footer>
+</div><script>
+(()=>{"use strict";
+const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
+const FORMS={"135":["1","3","5"],"351":["3","5","1"],"513":["5","1","3"]};
+const OPEN={6:40,5:45,4:50,3:55,2:59,1:64},STRINGS={"432":[4,3,2],"321":[3,2,1]};
+const NAMES={C:{"1":"Dó","3":"Mi","5":"Sol"},F:{"1":"Fá","3":"Lá","5":"Dó"}};
+const FROM={"1":"Mi","3":"Sol♯","5":"Si"},COLOR={"1":"#e58c42","3":"#619bd1","5":"#8176d9"};
+const st={origin:"135",dest:"135",target:"3",instrument:"piano",group:"321",bpm:80,token:0};
+const mod12=n=>(n%12+12)%12,degreePc=(root,degree)=>mod12((root==="C"?0:5)+{"1":0,"3":4,"5":7}[degree]);
+function pianoChord(root,form){
+ const r=root==="C"?60:65,base={"135":[r,r+4,r+7],"351":[r+4,r+7,r+12],"513":[r-5,r,r+4]}[form];
+ return {notes:FORMS[form].map((d,i)=>({degree:d,midi:base[i],name:NAMES[root][d],idx:i})),bass:root==="C"?48:53};
+}
+function candidates(root,form,group){
+ const strings=STRINGS[group],degrees=FORMS[form];
+ const options=degrees.map((d,i)=>Array.from({length:19},(_,j)=>j+1).filter(f=>mod12(OPEN[strings[i]]+f)===degreePc(root,d)));
+ const out=[];
+ for(const a of options[0])for(const b of options[1])for(const c of options[2]){
+  const frets=[a,b,c],midis=frets.map((f,i)=>OPEN[strings[i]]+f);
+  if(Math.max(...frets)-Math.min(...frets)>5||midis[0]>=midis[1]||midis[1]>=midis[2])continue;
+  out.push({notes:frets.map((f,i)=>({degree:degrees[i],fret:f,string:strings[i],midi:midis[i],name:NAMES[root][degrees[i]],idx:i})),frets,midis});
+ }
+ return out;
+}
+function guitarPair(){
+ const ca=candidates("C",st.origin,st.group),fa=candidates("F",st.dest,st.group);let selected=null,best=Infinity;
+ for(const c of ca)for(const f of fa){
+  const range=Math.max(...c.frets,...f.frets)-Math.min(...c.frets,...f.frets);
+  const moves=c.frets.reduce((sum,v,i)=>sum+Math.abs(v-f.frets[i]),0);
+  const width=Math.max(...c.frets)-Math.min(...c.frets)+Math.max(...f.frets)-Math.min(...f.frets);
+  const cost=moves+range*.8+width*.3+Math.max(...c.frets,...f.frets)*.23;
+  if(cost<best){best=cost;selected={c:{notes:c.notes,bass:null},f:{notes:f.notes,bass:null}}}
+ }
+ return selected;
+}
+function pair(){
+ if(st.instrument==="piano")return{c:pianoChord("C",st.origin),f:pianoChord("F",st.dest)};
+ return guitarPair();
+}
+function svg(tag,attrs,parent){const el=document.createElementNS(NS,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,String(v));parent.append(el);return el}
+let markers=[];
+function dot(parent,midi,card,x,y,label,fill,size=17){
+ const circ=svg("circle",{cx:x,cy:y,r:size,fill,stroke:"#dee3eb","stroke-width":2},parent);
+ svg("text",{x,y:y+1,"text-anchor":"middle","dominant-baseline":"middle","font-size":label.length>2?10:15,"font-weight":850,fill:"#1a2630"},parent).textContent=label;
+ markers.push({el:circ,midi,card,fill});
+}
+function keyboard(id,notes,card,focus,bass=false){
+ const el=$(id);el.replaceChildren();
+ // A mesma faixa de teclas nos dois acordes e em todos os C.I. selecionados.
+ const low=bass?36:48,whiteCount=bass?14:21,w=1000/whiteCount;
+ const whites=[];for(let m=low;whites.length<whiteCount;m++)if([0,2,4,5,7,9,11].includes(mod12(m)))whites.push(m);
+ svg("rect",{x:0,y:0,width:1000,height:207,rx:9,fill:"#0b1420"},el);
+ for(let i=0;i<whites.length;i++){
+  svg("rect",{x:i*w+1,y:4,width:w-2,height:192,rx:4,fill:"#f7f4ef",stroke:"#8795a2","stroke-width":1},el);
+  if(mod12(whites[i])===0)svg("text",{x:(i+.5)*w,y:191,fill:"#8b9ba7","font-size":13,"text-anchor":"middle"},el).textContent="C"+(Math.floor(whites[i]/12)-1);
+ }
+ for(let i=0;i<whites.length;i++)if([0,2,5,7,9].includes(mod12(whites[i])))svg("rect",{x:(i+1)*w-w*.30,y:4,width:w*.60,height:119,rx:3,fill:"#28303a",stroke:"#506372"},el);
+ for(const note of notes){
+  const black=[1,3,6,8,10].includes(mod12(note.midi)),i=whites.indexOf(black?note.midi-1:note.midi);
+  if(i<0)continue;
+  const x=(i+(black?1:.5))*w,y=black?86:154;
+  dot(el,note.midi,card,x,y,note.label,note.fill,note.label==="C.I."?17:19);
+ }
+}
+function drawPiano(p){
+ const ci=p.f.notes.find(n=>n.degree===st.target);
+ keyboard("originBass",[{midi:p.c.bass,label:"1",fill:"#b79be5"}],"c",null,true);
+ keyboard("destBass",[{midi:p.f.bass,label:"1",fill:"#b79be5"}],"f",null,true);
+ keyboard("originKeys",p.c.notes.map(n=>({midi:n.midi,label:n.degree,fill:COLOR[n.degree]})),"c");
+ keyboard("destKeys",p.f.notes.map(n=>({midi:n.midi,label:n.degree,fill:n.degree===st.target?"#f7b681":COLOR[n.degree]})).concat([{midi:ci.midi-1,label:"C.I.",fill:"#72ccde"}]),"f");
+}
+function drawGuitar(id,notes,card,low,high,ci){
+ const el=$(id);el.replaceChildren();
+ const L=152,R=1070,w=(R-L)/(high-low+1),xx=f=>f===0?L-30:L+(f-low+.5)*w,yy=s=>20+s*43;
+ svg("rect",{x:85,y:58,width:1000,height:256,rx:9,fill:"#3b291f",stroke:"#84614c","stroke-width":2},el);
+ for(let f=low;f<=high;f++){
+  const x=L+(f-low)*w;svg("line",{x1:x,y1:62,x2:x,y2:303,stroke:"#c8a88c","stroke-width":2},el);
+  svg("text",{x:xx(f),y:327,"text-anchor":"middle",fill:"#dac1ac","font-size":13},el).textContent=f;
+ }
+ for(let string=1;string<=6;string++){
+  const y=yy(string);svg("line",{x1:L,y1:y,x2:R,y2:y,stroke:"#e0d9cf","stroke-width":1+string*.2},el);
+  svg("text",{x:117,y:y+4,"text-anchor":"middle",fill:"#b9cbd7","font-size":13},el).textContent=string+"ª";
+ }
+ for(const n of notes)dot(el,n.midi,card,xx(n.fret),yy(n.string),n.degree,n.degree===st.target&&card==="f"?"#f7b681":COLOR[n.degree],16);
+ if(ci)dot(el,ci.midi-1,card,xx(ci.fret-1),yy(ci.string),"C.I.","#72ccde",16);
+}
+function drawGuitars(p){
+ const t=p.f.notes.find(n=>n.degree===st.target);
+ const frets=p.c.notes.concat(p.f.notes).map(n=>n.fret).concat([t.fret-1]);
+ // Os dois braços compartilham a MESMA região e a mesma escala gráfica.
+ const low=Math.max(1,Math.min(...frets)-1),high=Math.min(19,Math.max(Math.max(...frets)+1,low+8));
+ drawGuitar("originFrets",p.c.notes,"c",low,high,null);
+ drawGuitar("destFrets",p.f.notes,"f",low,high,t);
+}
+function degreeCards(id,notes,card,targetNote){
+ const el=$(id);el.replaceChildren();
+ for(const n of notes){
+  const pill=document.createElement("div");pill.className="degree";pill.dataset.midi=String(n.midi);pill.dataset.card=card;
+  pill.innerHTML="<strong>"+n.degree+"</strong>"+n.name;el.append(pill);
+ }
+ if(targetNote){
+  const pill=document.createElement("div");pill.className="degree ci";pill.dataset.midi=String(targetNote.midi-1);pill.dataset.card=card;
+  pill.innerHTML="<strong>C.I.</strong>"+FROM[st.target];el.append(pill);
+ }
+}
+function render(){
+ stop();
+ markers=[];const p=pair();if(!p){$("playback").textContent="Não foi possível encontrar estas formas na região escolhida.";return}
+ $("originSub").textContent="ORIGEM · "+st.origin;
+ $("destSub").textContent="DESTINO · "+st.dest+" · C.I."+st.target;
+ $("order").textContent=st.origin+" → "+st.dest;
+ $("approach").innerHTML="C.I."+st.target+" de F · <strong>"+FROM[st.target]+" → "+NAMES.F[st.target]+"</strong> · 1 st abaixo";
+ for(const key of ["origin","dest","target","instrument","group"])document.querySelectorAll("[data-"+key+"]").forEach(b=>{
+  const active=b.dataset[key]===st[key];b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));
+ });
+ $("stringPanel").hidden=st.instrument!=="guitar";
+ for(const id of ["originPiano","destPiano"])$(id).hidden=st.instrument!=="piano";
+ for(const id of ["originGuitar","destGuitar"])$(id).hidden=st.instrument!=="guitar";
+ if(st.instrument==="piano")drawPiano(p);else drawGuitars(p);
+ degreeCards("originDegrees",p.c.notes,"c",null);
+ degreeCards("destDegrees",p.f.notes,"f",p.f.notes.find(n=>n.degree===st.target));
+ $("playback").textContent="Escolha as formas e ouça a passagem de C para F.";
+}
+let audio=null,voices=[],timers=[],rooms={};
+function initAudio(){
+ try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error("Web Audio indisponível");audio=audio||new C();
+  if(audio.state==="suspended"&&audio.resume){const p=audio.resume();if(p&&p.catch)p.catch(()=>{})}return true;
+ }catch(e){$("playback").textContent="Não foi possível iniciar o áudio. Toque novamente e confira o volume.";return false}
+}
+function sweetBus(){
+ if(rooms.main)return rooms.main;
+ const dry=audio.createGain();dry.gain.value=.93;dry.connect(audio.destination);
+ try{
+  const rate=audio.sampleRate||44100,len=Math.round(rate*1.23),buffer=audio.createBuffer(2,len,rate);
+  for(let ch=0;ch<2;ch++){const data=buffer.getChannelData(ch);let seed=(ch+1)*37489;
+   for(let i=0;i<len;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const t=i/len;data[i]=(seed/4294967296*2-1)*Math.pow(1-t,2.8)}
+  }
+  const convolver=audio.createConvolver();convolver.buffer=buffer;
+  const lowpass=audio.createBiquadFilter();lowpass.type="lowpass";lowpass.frequency.value=3550;
+  const wet=audio.createGain();wet.gain.value=.16;
+  convolver.connect(lowpass);lowpass.connect(wet);wet.connect(audio.destination);
+  rooms.main={dry,wet:convolver};
+ }catch(e){rooms.main={dry,wet:null}}
+ return rooms.main;
+}
+function tone(midi,at,duration,volume=.12){
+ const hz=440*Math.pow(2,(midi-69)/12),guitar=st.instrument==="guitar",bus=sweetBus();
+ for(const [mul,mix]of [[1,1],[2,guitar?.23:.16],[3,.045]]){
+  const osc=audio.createOscillator(),gain=audio.createGain();
+  osc.type=mul===1?"sine":"triangle";osc.frequency.setValueAtTime(hz*mul,at);
+  gain.gain.setValueAtTime(.0001,at);
+  gain.gain.exponentialRampToValueAtTime(volume*mix,at+(guitar?.014:.026));
+  gain.gain.exponentialRampToValueAtTime(.0001,at+Math.max(.22,duration));
+  osc.connect(gain);gain.connect(bus.dry);if(bus.wet)gain.connect(bus.wet);
+  osc.start(at);osc.stop(at+Math.max(.27,duration)+.05);voices.push(osc);
+ }
+}
+function light(card,midis){
+ const selection=new Set(midis);
+ for(const m of markers){
+  const on=m.card===card&&selection.has(m.midi);
+  m.el.setAttribute("fill",on?"#ff6471":m.fill);
+  m.el.setAttribute("stroke",on?"#ffdcdf":"#dee3eb");
+  m.el.setAttribute("stroke-width",on?4:2);
+ }
+ for(const id of ["originDegrees","destDegrees"])for(const pill of $(id).children){
+  pill.classList.toggle("on",pill.dataset.card===card&&selection.has(Number(pill.dataset.midi)));
+ }
+}
+function clearLight(){light(null,[])}
+function visual(at,card,midis,text,token){
+ const delay=Math.max(0,(at-audio.currentTime)*1000);
+ timers.push(setTimeout(()=>{if(token!==st.token)return;light(card,midis);if(text)$("playback").textContent=text},delay));
+}
+function stop(){
+ st.token++;for(const id of timers)clearTimeout(id);timers=[];
+ for(const o of voices)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}
+ voices=[];clearLight();if($("playTransition"))$("playTransition").disabled=false;if($("playArrival"))$("playArrival").disabled=false;
+}
+function play(arrivalOnly=false){
+ stop();if(!initAudio())return;
+ const p=pair(),target=p.f.notes.find(n=>n.degree===st.target),others=p.f.notes.filter(n=>n.degree!==st.target);
+ if(!target)return;
+ const token=st.token,beat=60/st.bpm,at=audio.currentTime+.035,base=arrivalOnly?at:at+beat*1.5;
+ $("playTransition").disabled=true;$("playArrival").disabled=true;
+ if(!arrivalOnly){
+  tone(p.c.bass??p.c.notes[0].midi,at,beat*1.3,.08);
+  for(const n of p.c.notes)tone(n.midi,at,beat*1.15,.095);
+  visual(at,"c",p.c.notes.map(n=>n.midi).concat(p.c.bass==null?[]:[p.c.bass]),"Origem · C maior · forma "+st.origin,token);
+ }
+ if(p.f.bass!=null)tone(p.f.bass,base,beat*2.1,.10);
+ for(const n of others)tone(n.midi,base,beat*2.1,.078);
+ visual(base,"f",others.map(n=>n.midi).concat(p.f.bass==null?[]:[p.f.bass]),"Destino · F maior · preparando C.I."+st.target,token);
+ const ciAt=base+beat*.75,resolved=base+beat;
+ tone(target.midi-1,ciAt,beat*.25,.145);visual(ciAt,"f",[target.midi-1],"C.I."+st.target+" · "+FROM[st.target],token);
+ tone(target.midi,resolved,beat*1.15,.16);
+ visual(resolved,"f",p.f.notes.map(n=>n.midi).concat(p.f.bass==null?[]:[p.f.bass]),"Resolução · "+NAMES.F[st.target]+" · F maior",token);
+ visual(base+beat*2.15,null,[],"Condução concluída · "+st.origin+" → "+st.dest,token);
+ timers.push(setTimeout(()=>{if(token===st.token){$("playTransition").disabled=false;$("playArrival").disabled=false}},Math.max(0,(base+beat*2.2-audio.currentTime)*1000)));
+}
+for(const k of ["origin","dest","target","instrument","group"])document.querySelectorAll("[data-"+k+"]").forEach(b=>b.addEventListener("click",()=>{st[k]=b.dataset[k];render()}));
+$("playTransition").onclick=()=>play(false);
+$("playArrival").onclick=()=>play(true);
+$("stop").onclick=()=>{stop();$("playback").textContent="Reprodução interrompida."};
+$("bpm").oninput=e=>{st.bpm=Number(e.target.value);$("bpmLabel").textContent=st.bpm};
+window.CifraPraMimConducao={get:()=>({state:{...st},pair:pair()}),set:(update)=>{Object.assign(st,update);render();return window.CifraPraMimConducao.get()},play,stop};
+render();
+})();
+</script></body></html>
