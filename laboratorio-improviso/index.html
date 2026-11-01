@@ -148,6 +148,14 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .subdiv.metro-active{background:#f2bb84!important;color:#211a13!important;box-shadow:inset 0 -4px 0 #db8648}
 .tick.metro-active{background:#344b50!important;border-left-color:#f2bb84!important}
 @media(max-width:620px){.metro-division{gap:5px}.metro-division button{font-size:11px;padding:9px 5px}.metro-division button small{font-size:10px}.metro-feedback{font-size:10px}}
+
+/* v5: controle nativo de subdivisão para iOS / Safari */
+.metro-select-row{display:flex;flex-wrap:wrap;align-items:end;gap:11px;margin-top:13px}
+.metro-select-label{display:flex;flex:1 1 280px;flex-direction:column;gap:6px;color:#d7e5ef;font-size:12px;font-weight:750}
+.metro-select-label select{display:block;width:100%;min-height:51px;appearance:auto;-webkit-appearance:menulist;background:#0d2030;color:#f6e8da;border:2px solid #d3a577;border-radius:11px;padding:10px 12px;font-size:16px;font-weight:800}
+.metro-select-label select:focus-visible{outline:3px solid #f3c394;outline-offset:3px}
+.metro-solo{flex:0 1 auto;min-height:51px;border-color:#c69777;background:#354451}
+@media(max-width:620px){.metro-select-row{gap:10px}.metro-select-label{flex-basis:100%}.metro-solo{width:100%}}
 </style>
 </head>
 <body>
@@ -188,10 +196,16 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
         <label class="toggle metro-toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
         <span class="metro-hint">Escolha quais subdivisões serão marcadas pelo clique.</span>
       </div>
-      <div class="metro-division" role="group" aria-label="Divisão do metrônomo">
-        <button type="button" data-metro-mode="beats" class="active" aria-pressed="true">Tempos <small>1 2 3 4</small></button>
-        <button type="button" data-metro-mode="eighths" aria-pressed="false">Colcheias <small>1 &amp;</small></button>
-        <button type="button" data-metro-mode="sixteenths" aria-pressed="false">Semicolcheias <small>1 e &amp; a</small></button>
+      <div class="metro-select-row">
+        <label class="metro-select-label" for="metro-mode">
+          <span>Subdivisão do metrônomo</span>
+          <select id="metro-mode" aria-describedby="metro-description">
+            <option value="beats">Tempos — 1 2 3 4</option>
+            <option value="eighths">Colcheias — 1 &amp; 2 &amp; 3 &amp; 4 &amp;</option>
+            <option value="sixteenths">Semicolcheias — 1 e &amp; a</option>
+          </select>
+        </label>
+        <button class="action metro-solo" id="metro-solo" type="button">▶ Ouvir só o metrônomo</button>
       </div>
       <div class="metro-feedback">
         <span id="metro-description">4 cliques por compasso · somente os tempos</span>
@@ -240,8 +254,8 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </main>
 <footer class="bottom"><span>Cifra pra Mim · Pesquisa didática de criação e improvisação</span><span>Próximos eixos: 96 percursos · 7 modos · embelezamentos</span></footer>
 </div>
-<script src="../src/rhythm-lab.js?v=2"></script>
-<script src="../src/rhythm-notation.js?v=1"></script>
+<script src="../src/rhythm-lab.js?v=5"></script>
+<script src="../src/rhythm-notation.js?v=5"></script>
 <script>
 (function(){
 "use strict";
@@ -340,6 +354,7 @@ function stop(){
  state.voices=[];
  $("play").disabled=false;$("compare").disabled=false;
  $("diag-e").disabled=false;$("diag-and").disabled=false;
+ $("metro-solo").disabled=false;
  for(const chip of document.querySelectorAll(".sounding"))chip.classList.remove("sounding");
 }
 function later(seconds,callback,token){
@@ -472,11 +487,7 @@ for(const button of document.querySelectorAll("[data-score-mode]"))button.addEve
  stop();state.scoreMode=button.dataset.scoreMode;renderScore();
 });
 function renderMetronomeMode(){
- for(const btn of document.querySelectorAll("[data-metro-mode]")){
-  const active=btn.dataset.metroMode===state.metronomeMode;
-  btn.classList.toggle("active",active);
-  btn.setAttribute("aria-pressed",String(active));
- }
+ $("metro-mode").value=state.metronomeMode;
  const descriptions={
   beats:"4 cliques por compasso · somente os tempos",
   eighths:"8 cliques por compasso · tempos e contratempos (&)",
@@ -484,12 +495,34 @@ function renderMetronomeMode(){
  };
  $("metro-description").textContent=descriptions[state.metronomeMode];
 }
-for(const btn of document.querySelectorAll("[data-metro-mode]"))btn.addEventListener("click",()=>{
+function setMetronomeMode(mode){
+ if(!E.METRONOME_MODES.some(m=>m.id===mode))throw new RangeError("Divisão de metrônomo inválida");
  stop();
- state.metronomeMode=btn.dataset.metroMode;
+ state.metronomeMode=mode;
  renderMetronomeMode();
- setStatus("Metrônomo: "+$("metro-description").textContent+". Reproduza a célula para comparar os ataques.");
-});
+ setStatus("Selecionado: "+$("metro-description").textContent+". Toque a célula ou use 'Ouvir só o metrônomo'.");
+}
+$("metro-mode").addEventListener("change",event=>setMetronomeMode(event.target.value));
+async function playMetronomeOnly(){
+ stop();
+ if(!state.click){
+  state.click=true;$("click").checked=true;
+ }
+ const token=state.token;
+ const ctx=await audioContext();
+ if(!ctx||state.token!==token)return;
+ const beat=60/state.bpm;
+ $("metro-solo").disabled=true;
+ const at=ctx.currentTime+.12;
+ scheduleMetronome(at,token,.12);
+ setStatus("Metrônomo isolado: "+$("metro-description").textContent+" · "+state.bpm+" BPM.");
+ later(.12+4*beat+.12,()=>{
+  $("metro-solo").disabled=false;
+  $("metro-current").textContent="—";
+  setStatus("Metrônomo concluído. Altere a subdivisão e toque novamente.");
+ },token);
+}
+$("metro-solo").addEventListener("click",playMetronomeOnly);
 $("diag-e").addEventListener("click",()=>diagnostic(5));
 $("diag-and").addEventListener("click",()=>diagnostic(6));
 $("play").addEventListener("click",playSelected);
@@ -505,6 +538,7 @@ $("click").addEventListener("change",e=>{stop();state.click=e.target.checked;set
 window.addEventListener("pagehide",stop);
 window.RhythmLabUI={
  get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:E.events(state.id),notation:N.plan(state.id)}),
+ setMetronomeMode,
  select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
  score:mode=>{if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");stop();state.scoreMode=mode;renderScore()}
