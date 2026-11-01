@@ -218,7 +218,7 @@ function pluck(midi,sec,at=null){
  }
 }
 function visualAt(at,token,callback){
- const t=setTimeout(()=>{if(token===state.token)callback()},Math.max(0,(at-audio.currentTime)*1000));
+ const t=setTimeout(()=>{const i=loopHighlights.indexOf(t);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)callback()},Math.max(0,(at-audio.currentTime)*1000));
  loopHighlights.push(t);
 }
 async function play(all){
