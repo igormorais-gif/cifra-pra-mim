@@ -180,6 +180,23 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .axis-degree.structural{color:#2a1c13;background:#f0bb88;border-color:#e0ae80}
 .axis-warning{font-size:12px;line-height:1.5;color:#b7cbd9;margin:0}
 @media(max-width:740px){.axis-fields{grid-template-columns:1fr}.axis-insight{grid-template-columns:1fr}.melodic-axes{padding:15px}.axis-position{margin-left:0;width:100%}}
+
+/* Registro e caminho melódico: comparação sem confundir posição com ordem. */
+.axis-guide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.axis-guide-pane{min-width:0;border:1px solid #47657a;background:#112637;border-radius:12px;padding:13px}
+.axis-guide-head{display:flex;gap:9px;align-items:flex-start}
+.axis-guide-step{font:800 12px/1 ui-monospace,monospace;color:#291d13;background:#e9b587;border-radius:6px;padding:7px 8px}
+.axis-guide-head div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.axis-guide-head strong{font-size:13px;color:#ebd6bf}
+.axis-guide-head small{font-size:11px;line-height:1.4;color:#b8cad6}
+.axis-note-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:13px}
+.axis-note-tile{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#203749;border:1px solid #526f83;border-radius:8px;padding:8px 2px;white-space:nowrap}
+.axis-note-tile small{color:#b8cbd8;font:750 10px/1.3 system-ui,sans-serif}
+.axis-note-tile strong{color:#f1dcc4;font-size:13px;letter-spacing:-.025em}
+.axis-note-row--phrase .axis-note-tile{background:#3a322d;border-color:#ba906c;position:relative}
+.axis-note-row--phrase .axis-note-tile strong{color:#ffd3a8}
+.axis-note-row--phrase .axis-note-tile:not(:last-child)::after{content:"›";position:absolute;z-index:2;right:-7px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:900;color:#ffca9b;text-shadow:0 0 5px #162330}
+@media(max-width:740px){.axis-guide{grid-template-columns:1fr}.axis-guide-pane{padding:11px}.axis-note-tile strong{font-size:clamp(12px,3.7vw,16px)}}
 </style>
 </head>
 <body>
@@ -206,13 +223,29 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
   <section class="card melodic-axes" aria-labelledby="axes-title">
     <div class="card-heading">
       <h2 id="axes-title">Construa o percurso melódico</h2>
-      <span id="axis-total">7 modos × 4 disposições × 24 ordens</span>
+      <span id="axis-total">7 modos × 4 registros × 24 ordens</span>
     </div>
-    <p class="axes-intro">Quatro notas por compasso. São seis ordens que começam no grau 1; suas quatro rotações geram 24 percursos, que se cruzam com quatro disposições fechadas: 96 configurações por modo. Escolha o modo, a disposição e a ordem. O ritmo continua independente.</p>
+    <p class="axes-intro">Quatro notas por compasso. São seis ordens que começam no grau 1; suas quatro rotações geram 24 percursos. Cada percurso pode usar quatro registros da tétrade: 96 configurações por modo. O registro define as oitavas disponíveis; a ordem melódica define a sequência tocada. O ritmo continua independente.</p>
     <div class="axis-fields">
       <label class="axis-field" for="axis-mode"><span>01 · Modo (Dó como centro)</span><select id="axis-mode"></select></label>
-      <label class="axis-field" for="axis-inversion"><span>02 · Disposição fechada</span><select id="axis-inversion"></select></label>
-      <label class="axis-field" for="axis-path"><span>03 · Percurso de quatro graus</span><select id="axis-path"></select></label>
+      <label class="axis-field" for="axis-inversion"><span>02 · Registro das quatro notas</span><select id="axis-inversion"></select></label>
+      <label class="axis-field" for="axis-path"><span>03 · Ordem melódica</span><select id="axis-path"></select></label>
+    </div>
+    <div class="axis-guide" aria-label="Diferença entre registro e ordem">
+      <div class="axis-guide-pane">
+        <div class="axis-guide-head">
+          <span class="axis-guide-step">02</span>
+          <div><strong>Registro — notas disponíveis</strong><small>Do grave para o agudo. Define a oitava de cada grau, não a ordem em que ele toca.</small></div>
+        </div>
+        <div class="axis-note-row" id="axis-register" role="img" aria-label="Notas disponíveis no registro escolhido"></div>
+      </div>
+      <div class="axis-guide-pane">
+        <div class="axis-guide-head">
+          <span class="axis-guide-step">03</span>
+          <div><strong>Ordem — caminho da melodia</strong><small>Primeiro, segundo, terceiro e quarto ataque. Escolhe por onde a melodia passa.</small></div>
+        </div>
+        <div class="axis-note-row axis-note-row--phrase" id="axis-sequence" role="img" aria-label="Notas na ordem em que serão tocadas"></div>
+      </div>
     </div>
     <div class="axis-actions">
       <button type="button" class="action" id="prev-path">← Percurso anterior</button>
@@ -320,7 +353,7 @@ function renderAxes(){
  $("axis-mode").value=mode.id;
  $("axis-inversion").value=String(inversion.id);
  $("axis-path").value=String(path.id);
- $("axis-position").textContent="Percurso "+String(path.id+1).padStart(2,"0")+" de 24";
+ $("axis-position").textContent="Ordem "+String(path.id+1).padStart(2,"0")+" de 24";
  $("axis-scale").replaceChildren();
  for(const item of M.modalColors(mode.id)){
   const el=make("span","axis-degree",item);
@@ -338,8 +371,25 @@ function renderAxes(){
   pitches.append(p);
  }
  const list=M.notes(state);
+ const register=[...list].sort((a,b)=>a.midi-b.midi);
+ const registerNode=$("axis-register"),sequenceNode=$("axis-sequence");
+ registerNode.replaceChildren();sequenceNode.replaceChildren();
+ for(const [index,n] of register.entries()){
+  const tile=make("div","axis-note-tile");
+  tile.append(make("small","",n.degree),make("strong","",n.name+n.octave));
+  tile.title=n.degree+" · "+n.name+n.octave+" · posição "+(index+1)+" no registro";
+  registerNode.append(tile);
+ }
+ for(const [index,n] of list.entries()){
+  const tile=make("div","axis-note-tile");
+  tile.append(make("small","",String(index+1)+"º ataque · "+n.degree),make("strong","",n.name+n.octave));
+  tile.title="Ataque "+(index+1)+": "+n.name+n.octave+" ("+n.degree+")";
+  sequenceNode.append(tile);
+ }
+ registerNode.setAttribute("aria-label","Registro grave a agudo: "+register.map(n=>n.name+n.octave).join(", "));
+ sequenceNode.setAttribute("aria-label","Ordem de execução: "+list.map(n=>n.name+n.octave).join(", "));
  $("material-title").textContent="Material intervalar · "+M.chordSymbol(mode.id)+" · Dó "+mode.name.toLowerCase();
- $("fixed-meta").textContent="Disposição: "+inversion.title+" ("+inversion.order+"). Percurso: "+path.label+". Alturas: "+list.map(n=>n.name+n.octave).join(" → ")+".";
+ $("fixed-meta").textContent="Registro: "+inversion.order+" (grave → agudo). Ordem melódica: "+path.label+". Som: "+list.map(n=>n.name+n.octave).join(" → ")+".";
 }
 function setStatus(message){$("status").textContent=message}
 function make(tag,cls,txt){const el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el}
@@ -636,8 +686,8 @@ window.RhythmLabUI={
  score:mode=>{if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");stop();state.scoreMode=mode;renderScore()}
 };
 for(const item of M.MODES){const opt=make("option","",item.name);opt.value=item.id;$("axis-mode").append(opt)}
-for(const item of M.INVERSIONS){const opt=make("option","",item.title+" · "+item.order);opt.value=String(item.id);$("axis-inversion").append(opt)}
-for(const item of M.PATHS){const opt=make("option","","Percurso "+String(item.id+1).padStart(2,"0")+" · "+item.label);opt.value=String(item.id);$("axis-path").append(opt)}
+for(const item of M.INVERSIONS){const opt=make("option","",item.order+" · "+item.title);opt.value=String(item.id);$("axis-inversion").append(opt)}
+for(const item of M.PATHS){const opt=make("option","","Ordem "+String(item.id+1).padStart(2,"0")+" · "+item.label);opt.value=String(item.id);$("axis-path").append(opt)}
 function changeAxis(field,value){
  stop();
  state[field]=field==="mode"?value:Number(value);
