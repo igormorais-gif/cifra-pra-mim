@@ -20,10 +20,12 @@ function setup(){
  const groups={};
  for(const [name,key,values] of [
    ["target","target",["1","3","5"]],["conn-index","connIndex",["0","1"]],
-   ["kind","kind",["ci","di","ds","diatonic","chromatic"]],["form","form",["135","351","513"]],
+   ["kind","kind",["ci","di","ds","combo","diatonic","chromatic"]],["form","form",["135","351","513"]],
    ["group","group",["321","432"]],["quality","quality",["major","minor"]],
    ["instrument","instrument",["piano","guitar"]],["conn-group","connGroup",["321","432"]]
  ])groups["[data-"+name+"]"]=values.map(v=>new Node("button",{[key]:v}));
+ groups["[data-combo-kind]"]=["1","3","5"].flatMap(d=>["none","ci","di","ds"].map(k=>new Node("button",{comboDegree:d,comboKind:k})));
+ groups["[data-combo-figure]"]=["1","3","5"].flatMap(d=>["approach","border"].map(k=>new Node("button",{comboDegree:d,comboFigure:k})));
  const document={
   getElementById(id){if(!elements.has(id))elements.set(id,new Node(id));return elements.get(id)},
   createElement:t=>new Node(t),createElementNS:(_,t)=>new Node(t),
@@ -81,7 +83,7 @@ test("áudio percorre todas as vozes e embeleza somente os graus escolhidos",()=
 test("a multi-seleção do C.I. não altera os botões de conexão",()=>{
  const {app,buttons}=setup();
  buttons["[data-target]"][1].onclick();
- buttons["[data-kind]"][3].onclick();
+ buttons["[data-kind]"][4].onclick();
  buttons["[data-conn-index]"][1].onclick();
  assert.deepEqual(app.get().connSelected,[0,1]);
  buttons["[data-kind]"][0].onclick();
@@ -127,7 +129,7 @@ test("D.I. e D.S. preservam os três alvos, ornamentam os marcados e mantêm out
  el("playPair").onclick();
  assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[69,67,74,72,76]);
  assert.deepEqual(app.get().ciSelected,["1","5"]);
- buttons["[data-kind]"][3].onclick();
+ buttons["[data-kind]"][4].onclick();
  buttons["[data-conn-index]"][1].onclick();
  assert.deepEqual(app.get().connSelected,[0,1]);
 });
@@ -151,7 +153,7 @@ test("players sem redundância: sequência completa ou em contexto de tríade",(
 test("conexões selecionadas dispensam segundo player",()=>{
  const {app,buttons,el,sounds}=setup();
  app.show("C","513","1","guitar","major","321");
- buttons["[data-kind]"][3].onclick();
+ buttons["[data-kind]"][4].onclick();
  buttons["[data-conn-index]"][1].onclick();
  assert.deepEqual(app.get().connSelected,[0,1]);
  assert.equal(typeof el("connPlay").onclick,"function");
@@ -201,4 +203,74 @@ test("inversões 351 e 513 preservam a ordem ao ornamentar a voz do meio",()=>{
   const chosen=app.get().notes.map(n=>n.degree==="1"?[n.midi-1,n.midi]:[n.midi]).flat();
   assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),chosen);
  }
+});
+
+test("eixo de Combinações: C 135 une C.I.1, D.S.3 bordadura e D.I.5",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","135","1","piano","major","321");
+ buttons["[data-kind]"][3].onclick();
+ assert.equal(app.get().kind,"combo");
+ assert.equal(el("soloApproachPicker").hidden,true);
+ assert.equal(el("comboPicker").hidden,false);
+ assert.equal(el("ciOrder").textContent,"C.I.1 → 1 → 3 → D.S.3 → 3 → D.I.5 → 5");
+ assert.equal(el("motion").textContent,"Si → Dó   ·   Mi → Fá → Mi   ·   Fá → Sol");
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[59,60,64,65,64,65,67]);
+});
+test("cada grau da combinação pode desligar o ornamento sem desligar os demais",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","135","1","piano","major","321");
+ buttons["[data-kind]"][3].onclick();
+ const disable3=buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="3"&&b.dataset.comboKind==="none");
+ disable3.onclick();
+ assert.equal(app.get().comboSettings["3"].kind,"none");
+ assert.equal(el("ciOrder").textContent,"C.I.1 → 1 → 3 → D.I.5 → 5");
+ assert.ok(buttons["[data-combo-figure]"].filter(b=>b.dataset.comboDegree==="3").every(b=>b.disabled));
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[59,60,64,65,67]);
+});
+test("bordadura de C.I.1 toca Dó-Si-Dó, mantendo o restante da tríade",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","135","1","piano","major","321");
+ buttons["[data-kind]"][3].onclick();
+ buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="3"&&b.dataset.comboKind==="none").onclick();
+ buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="5"&&b.dataset.comboKind==="none").onclick();
+ buttons["[data-combo-figure]"].find(b=>b.dataset.comboDegree==="1"&&b.dataset.comboFigure==="border").onclick();
+ assert.equal(el("motion").textContent,"Dó → Si → Dó");
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[60,59,60,64,67]);
+});
+test("forma 513 no violão conserva baixo e tríade com ornamentos mistos",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","513","1","guitar","major","321");
+ buttons["[data-kind]"][3].onclick();
+ assert.equal(app.get().bass.string,5);
+ assert.equal(app.get().bass.fret,15);
+ assert.deepEqual(app.get().notes.map(n=>n.string),[3,2,1]);
+ assert.deepEqual(app.get().notes.map(n=>n.fret),[12,13,12]);
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[65,67,71,72,76,77,76]);
+});
+test("nenhum embelezamento em Combinações toca as três vozes e não bloqueia os players",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","135","1","piano","major","321");
+ buttons["[data-kind]"][3].onclick();
+ for(const d of ["1","3","5"])buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree===d&&b.dataset.comboKind==="none").onclick();
+ assert.equal(el("ciOrder").textContent,"1 → 3 → 5");
+ assert.equal(el("playPair").disabled,false);
+ el("playPair").onclick();
+ assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[60,64,67]);
+});
+test("mudar de Combinações para Conexão Diatônica e voltar não quebra a renderização",()=>{
+ const {app,buttons,el}=setup();
+ buttons["[data-kind]"][3].onclick();
+ buttons["[data-kind]"][4].onclick();
+ assert.equal(app.get().kind,"diatonic");
+ assert.equal(el("connSection").hidden,false);
+ buttons["[data-kind]"][3].onclick();
+ assert.equal(app.get().kind,"combo");
+ assert.equal(el("connSection").hidden,true);
+ buttons["[data-kind]"][0].onclick();
+ assert.equal(app.get().kind,"ci");
+ assert.equal(el("soloApproachPicker").hidden,false);
 });
