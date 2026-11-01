@@ -71,6 +71,9 @@ button:disabled{opacity:.42;cursor:default}
 .conn-pairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:9px 0 10px}
 .conn-pairs button{padding:11px 8px;background:#22394b;color:#d7e5ed;border:1px solid #4a6579;border-radius:10px;font-size:15px;font-weight:850}
 .conn-pairs button.active{background:linear-gradient(120deg,#ffd3a0,#f3a469);color:#291910;border-color:#edb47c}
+.conn-pairs button.playing{box-shadow:0 0 0 2px #ff919c,inset 0 0 0 2px #e44c5a}
+#connPath{display:block;white-space:pre-line;line-height:1.55}
+#connTour.tour-display{border-color:#e5a576;color:#ffddbc;background:#443528}
 .conn-hint{font-size:10px;color:#aac0cd}
 .conn-string-line{border-top:1px solid #31495d;padding-top:9px}
 #connSection .ci-card.ci b{font-size:14px}
@@ -132,7 +135,7 @@ const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const ROOTS=[['C','Dó',0,'C'],['C#','Dó sustenido',1,'C'],['Db','Ré bemol',1,'D'],['D','Ré',2,'D'],['D#','Ré sustenido',3,'D'],['Eb','Mi bemol',3,'E'],['E','Mi',4,'E'],['F','Fá',5,'F'],['F#','Fá sustenido',6,'F'],['Gb','Sol bemol',6,'G'],['G','Sol',7,'G'],['G#','Sol sustenido',8,'G'],['Ab','Lá bemol',8,'A'],['A','Lá',9,'A'],['A#','Lá sustenido',10,'A'],['Bb','Si bemol',10,'B'],['B','Si',11,'B']].map(([symbol,name,pc,letter])=>({symbol,name,pc,letter}));
 const P=x=>(x%12+12)%12,FORMS={'135':['1','3','5'],'351':['3','5','1'],'513':['5','1','3']},GROUPS={'432':[4,3,2],'321':[3,2,1]},OPEN={6:40,5:45,4:50,3:55,2:59,1:64},LOCATOR={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':5}};
 const LETTERS=['C','D','E','F','G','A','B'],SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11},PT={C:'Dó',D:'Ré',E:'Mi',F:'Fá',G:'Sol',A:'Lá',B:'Si'};
-const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',bpm:80,token:0,kind:'ci',connIndex:0};
+const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',bpm:80,token:0,kind:'ci',connIndex:0,connAll:false};
 const root=()=>ROOTS.find(r=>r.symbol===state.root),ds=()=>FORMS[state.form].map(d=>state.quality==='minor'&&d==='3'?'♭3':d),off=d=>d==='1'?0:d==='5'?7:d==='♭3'?3:4,target=()=>state.target==='3'&&state.quality==='minor'?'♭3':state.target,pcDegree=d=>P(root().pc+off(d));
 function spelling(d){const r=root(),i=d==='1'?0:d==='5'?4:2,letter=LETTERS[(LETTERS.indexOf(r.letter)+i)%7],diff=((pcDegree(d)-SEMI[letter]+18)%12)-6;return PT[letter]+(diff>0?'♯'.repeat(diff):'♭'.repeat(-diff))}
 const SH=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'],FL=['Dó','Ré♭','Ré','Mi♭','Mi','Fá','Sol♭','Sol','Lá♭','Lá','Si♭','Si'];
@@ -246,7 +249,7 @@ function connGuitar(){
   const score=fs.reduce((sum,n)=>sum+n,0)/3+
    (Math.max(...fs)-Math.min(...fs))*.8+
    Math.max(0,Math.max(...fs)-12)*1.2+
-   (selected?0:1000)+(both?0:30);
+   ((state.connAll?both:selected)?0:1000)+(both?0:30);
   entries.push({notes,score});
  }
  entries.sort((a,b)=>a.score-b.score);
@@ -254,16 +257,17 @@ function connGuitar(){
 }
 function connChord(){return state.instrument==='piano'?piano():connGuitar()}
 function connectionData(){
- const notes=connChord(),chosen=connNotes(notes,state.connIndex);
- return{notes,chosen,bass:state.instrument==='piano'?bass():locator(notes)}
+ const notes=connChord(),pairs=[connNotes(notes,0),connNotes(notes,1)];
+ return{notes,pairs,chosen:pairs[state.connIndex],bass:state.instrument==='piano'?bass():locator(notes)}
 }
+const visibleConnections=data=>state.connAll?data.pairs:[data.chosen];
 function connMarkCard(parent,notes,selected){
  parent.replaceChildren();
+ const targets=Array.isArray(selected)?selected:[selected];
  for(const n of notes){
   const card=document.createElement('div');
-  card.className='ci-card'+(n.connection?' ci':n===selected?' active':'');
-  const label=n.connection?'Con.':n.degree;
-  card.innerHTML='<b>'+label+'</b><small>'+n.name+'</small>';
+  card.className='ci-card'+(n.connection?' ci':targets.includes(n)?' active':'');
+  card.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';
   card.dataset.midi=String(n.midi);
   parent.append(card)
  }
@@ -288,21 +292,24 @@ function connKeyboard(id,notes,focus,extras){
   svg('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'middle',
    fill:'#15212b','font-size':label.length>2?11:16,'font-weight':850},el).textContent=label
  };
- for(const n of notes)mark(n,n.degree,n.degree===focus?'#f8b780':COLORS[n.degree],19);
+ const targets=Array.isArray(focus)?focus:[focus];
+ for(const n of notes)mark(n,n.degree,targets.includes(n.degree)?'#f8b780':COLORS[n.degree],19);
  for(const n of extras)mark(n,n.degree,'#70cadb',18)
 }
 function connPianoUI(data){
- const chosen=data.chosen,right=data.notes;
+ const paths=visibleConnections(data),right=data.notes,targets=paths.map(p=>p.to);
+ const intermediate=paths.flatMap(p=>p.passing);
  connKeyboard('connLeftKeys',[{degree:'1',midi:data.bass.midi}],null,[]);
- connKeyboard('connRightKeys',right,chosen.to.degree,chosen.passing);
+ connKeyboard('connRightKeys',right,targets.map(n=>n.degree),intermediate);
  connMarkCard($('connLeftCards'),[{midi:data.bass.midi,name:spelling('1'),degree:'1'}],null);
- connMarkCard($('connRightCards'),right.concat(chosen.passing.map(n=>({...n,connection:true}))),chosen.to);
+ const ordered=right.concat(intermediate.map(n=>({...n,connection:true}))).sort((a,b)=>a.midi-b.midi);
+ connMarkCard($('connRightCards'),ordered,targets);
  $('connRightForm').textContent=state.form
 }
 function connGuitarUI(data){
  const el=$('connGuitar');el.replaceChildren();
- const notes=data.notes,chosen=data.chosen,bass=data.bass;
- const intermediate=chosen.passing;
+ const notes=data.notes,bass=data.bass,paths=visibleConnections(data);
+ const intermediate=paths.flatMap(p=>p.passing),targets=paths.map(p=>p.to);
  const frets=notes.map(n=>n.fret).concat(intermediate.map(n=>n.fret)).concat(bass?[bass.fret]:[]);
  let low=Math.max(1,Math.min(...frets)-2),high=low+10;
  if(high<Math.max(...frets)+1){low=Math.max(1,Math.max(...frets)-10);high=low+10}
@@ -324,7 +331,7 @@ function connGuitarUI(data){
   svg('text',{x,y:y+1,fill:'#16242e','font-size':label.length>2?11:15,
    'font-weight':900,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent=label
  };
- for(const n of notes)draw(n,n.degree,n===chosen.to?'#f8b780':COLORS[n.degree]);
+ for(const n of notes)draw(n,n.degree,targets.includes(n)?'#f8b780':COLORS[n.degree]);
  for(const n of intermediate)draw(n,n.degree,'#70cadb');
  if(bass){
   const x=X(bass.fret),y=Y(bass.string);
@@ -333,15 +340,17 @@ function connGuitarUI(data){
   svg('text',{x,y:y+1,fill:'#d7b8fc','font-size':10,'font-weight':900,
    'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='1B'
  }
- $('connGuitarLabel').textContent=chosen.from.degree+' → '+chosen.to.degree;
- $('connFretSummary').textContent=chosen.passing.map(n=>n.degree+' · '+n.string+'ª corda · casa '+n.fret).join(' | ');
- $('connBassSummary').textContent='Chegada: '+chosen.to.string+'ª corda · casa '+chosen.to.fret
+ $('connGuitarLabel').textContent=paths.map(p=>p.from.degree+' → '+p.to.degree).join(' · ');
+ $('connFretSummary').textContent=paths.map(p=>
+  p.from.degree+' → '+p.to.degree+': '+(p.passing.map(n=>n.degree+' (casa '+n.fret+')').join(' · ')||'sem nota intermediária')+
+  ' · '+p.to.string+'ª corda').join(' | ');
+ $('connBassSummary').textContent=state.connAll?'Duas conexões · cordas de chegada respeitadas':
+  'Chegada: '+paths[0].to.string+'ª corda · casa '+paths[0].to.fret
 }
 function renderConnection(){
  visualNodes=[];
- const d=connectionData();
- if(!d.chosen)return;
- const path=d.chosen.sequence.map(n=>n.name).join(' → ');
+ const d=connectionData();if(!d.chosen)return;
+ const paths=visibleConnections(d);
  $('connChord').textContent=root().symbol+(state.quality==='minor'?'m':'');
  $('connChordName').textContent=root().name+' · '+(state.quality==='minor'?'menor':'maior')+' · '+state.form;
  $('connForm').textContent=(state.instrument==='piano'?'M.D. · ':state.group.split('').join('–')+' · ')+state.form;
@@ -349,8 +358,9 @@ function renderConnection(){
  for(const b of document.querySelectorAll('[data-conn-index]')){
   const index=Number(b.dataset.connIndex),a=d.notes[index],z=d.notes[index+1];
   b.textContent=a.degree+' → '+z.degree;
-  b.classList.toggle('active',index===state.connIndex);
-  b.setAttribute('aria-pressed',String(index===state.connIndex))
+  const active=state.connAll||index===state.connIndex;
+  b.classList.toggle('active',active);b.classList.remove('playing');
+  b.setAttribute('aria-pressed',String(active))
  }
  for(const b of document.querySelectorAll('[data-conn-group]')){
   const active=b.dataset.connGroup===state.group;
@@ -359,20 +369,34 @@ function renderConnection(){
  $('connStringPicker').hidden=state.instrument!=='guitar';
  $('connPianoPanel').hidden=state.instrument!=='piano';
  $('connGuitarPanel').hidden=state.instrument!=='guitar';
- $('connPath').textContent=path;
- $('connDetail').textContent=d.chosen.from.degree+' → '+d.chosen.to.degree+
-  ' · '+d.chosen.passing.length+' nota'+(d.chosen.passing.length===1?'':'s')+' de conexão';
+ $('connPath').textContent=paths.map(p=>(state.connAll?p.from.degree+' → '+p.to.degree+' · ':'')+
+  p.sequence.map(n=>n.name).join(' → ')).join('\n');
+ $('connDetail').textContent=state.connAll?'Percurso completo · as duas conexões permanecem visíveis.':
+  d.chosen.from.degree+' → '+d.chosen.to.degree+' · '+d.chosen.passing.length+' nota(s) de conexão';
  $('connStringHint').textContent=state.instrument==='guitar'?
-  'As notas intermediárias ficam na '+d.chosen.to.string+'ª corda, junto da nota de chegada.':
+  (state.connAll?paths.map(p=>p.from.degree+' → '+p.to.degree+' na '+p.to.string+'ª corda').join(' · '):
+   'As notas intermediárias ficam na '+d.chosen.to.string+'ª corda, junto da nota de chegada.'):
   'As teclas permanecem na mesma região visual.';
+ $('connTour').classList.toggle('tour-display',state.connAll);
  $('connBpm').value=state.bpm;$('connTempo').textContent=state.bpm;
  $('connTip').textContent=state.kind==='diatonic'?
   'Conexão diatônica: ligue duas notas estruturais do acorde por notas intermediárias pertencentes à escala '+(state.quality==='minor'?'menor natural':'maior')+'. As notas-alvo permanecem as mesmas.'+(state.instrument==='guitar'?' No violão, as notas de conexão ocupam a mesma corda da chegada.':''):
   'Conexão cromática: percorra os semitons entre duas notas estruturais do acorde. O ouvido reconhece os pontos de partida e chegada, mesmo quando existem notas cromáticas no caminho.'+(state.instrument==='guitar'?' No violão, todas as notas intermediárias ficam na corda da nota de chegada.':'');
  if(state.instrument==='piano')connPianoUI(d);else connGuitarUI(d)
 }
+function scheduleConnectionStage(when,index,token){
+ const delay=Math.max(0,(when-audio.currentTime)*1000);
+ timers.push(setTimeout(()=>{
+  if(token!==state.token)return;
+  for(const b of document.querySelectorAll('[data-conn-index]'))
+   b.classList.toggle('playing',index!==null&&Number(b.dataset.connIndex)===index);
+ },delay))
+}
 function playConnection(tour=false){
- stop();if(!unlock())return;
+ stop();
+ state.connAll=tour;
+ renderConnection(); // duas ligações desenhadas antes do som
+ if(!unlock())return;
  const data=connectionData();if(!data.chosen)return;
  const beat=60/state.bpm,at=audio.currentTime+.04,token=state.token;
  const indexes=tour?[0,1]:[state.connIndex];
@@ -380,9 +404,8 @@ function playConnection(tour=false){
  if(state.instrument==='piano'&&data.bass)tone(data.bass.midi,at,beat*(tour?6:3),.075);
  let offset=0;
  for(const i of indexes){
-  const connection=connNotes(data.notes,i);
-  // Movimento ascendente entre as duas notas estruturais: nenhuma nota isolada
-  // de "cromático superior" como embelezamento de uma única ponta.
+  const connection=data.pairs[i];
+  scheduleConnectionStage(at+offset,i,token);
   for(let j=0;j<connection.sequence.length;j++){
    const n=connection.sequence[j],when=at+offset+beat*j*.48;
    tone(n.midi,when,beat*.43,.16);
@@ -391,6 +414,7 @@ function playConnection(tour=false){
   offset+=beat*(connection.sequence.length*.48+.55)
  }
  scheduleHighlight(at+offset,[],token);
+ scheduleConnectionStage(at+offset,null,token);
  timers.push(setTimeout(()=>{
   if(token===state.token){$('connPlay').disabled=false;$('connTour').disabled=false}
  },offset*1000+100))
@@ -437,7 +461,7 @@ function focusAt(degree,when,token){
  },delay));
 }
 
-function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playTour').disabled=false;$('playTriad').disabled=false;$('connPlay').disabled=false;$('connTour').disabled=false;highlight([])}
+function stop(){state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playTour').disabled=false;$('playTriad').disabled=false;$('connPlay').disabled=false;$('connTour').disabled=false;for(const b of document.querySelectorAll('[data-conn-index]'))b.classList.remove('playing');highlight([])}
 function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
 // Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
@@ -555,14 +579,14 @@ $('root').onchange=e=>{stop();state.root=e.target.value;render()};
 for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>b.onclick=()=>{stop();state[k]=b.dataset[k];render()});
 
 for(const b of document.querySelectorAll('[data-kind]'))b.onclick=()=>{stop();state.kind=b.dataset.kind;render()};
-for(const b of document.querySelectorAll('[data-conn-index]'))b.onclick=()=>{stop();state.connIndex=Number(b.dataset.connIndex);render()};
+for(const b of document.querySelectorAll('[data-conn-index]'))b.onclick=()=>{stop();state.connAll=false;state.connIndex=Number(b.dataset.connIndex);render()};
 for(const b of document.querySelectorAll('[data-conn-group]'))b.onclick=()=>{stop();state.group=b.dataset.connGroup;render()};
 $('connPlay').onclick=()=>playConnection(false);
 $('connTour').onclick=()=>playConnection(true);
 $('connStop').onclick=stop;
 $('playPair').onclick=playPair;$('playTour').onclick=playTour;$('playTriad').onclick=playTriad;$('stop').onclick=stop;$('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm;$('connBpm').value=state.bpm;$('connTempo').textContent=state.bpm};
 $('connBpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpm').value=state.bpm;$('bpmLabel').textContent=state.bpm;$('connTempo').textContent=state.bpm};
-window.CifraPraMimEmbelezamento={get:()=>{const c=chord(),connection=state.kind==='ci'?null:connectionData();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),kind:state.kind,connIndex:state.connIndex,notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol,connection}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});render();return window.CifraPraMimEmbelezamento.get()},set:(updates)=>{stop();Object.assign(state,updates);render();return window.CifraPraMimEmbelezamento.get()},playConnection};
+window.CifraPraMimEmbelezamento={get:()=>{const c=chord(),connection=state.kind==='ci'?null:connectionData();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),kind:state.kind,connIndex:state.connIndex,connAll:state.connAll,notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol,connection}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});render();return window.CifraPraMimEmbelezamento.get()},set:(updates)=>{stop();Object.assign(state,updates);render();return window.CifraPraMimEmbelezamento.get()},playConnection};
 render();
 })();
 </script></body></html>
