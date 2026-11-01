@@ -31,20 +31,20 @@ test("pulso de referência usa os quatro tempos",()=>{
  assert.deepEqual(E.events("regular").map(n=>n.at),["1","2","3","4"]);
  assert.deepEqual(E.events("regular").map(n=>n.durationBeats),[1,1,1,1]);
 });
-test("contratempos respeitam os ataques em 2& e 4&",()=>{
- assert.deepEqual(E.events("contratempos").map(n=>n.at),["1","2&","3","4&"]);
+test("contratempos respeitam os ataques no e dos tempos 2 e 4",()=>{
+ assert.deepEqual(E.events("contratempos").map(n=>n.at),["1","2e","3","4e"]);
  assert.deepEqual(E.events("contratempos").map(n=>n.tick),[0,6,8,14]);
 });
 test("deslocamento preserva alturas e move apenas posições de ataque",()=>{
- assert.deepEqual(E.events("deslocado").map(n=>n.at),["1&","2","3&","4"]);
+ assert.deepEqual(E.events("deslocado").map(n=>n.at),["1e","2","3e","4"]);
  assert.deepEqual(E.events("deslocado").map(n=>n.midi),E.events("regular").map(n=>n.midi));
 });
 test("antecipações usam a última semicolcheia de cada tempo",()=>{
- assert.deepEqual(E.events("antecipado").map(n=>n.at),["1a","2a","3a","4a"]);
+ assert.deepEqual(E.events("antecipado").map(n=>n.at),["1i₂","2i₂","3i₂","4i₂"]);
  assert.deepEqual(E.events("antecipado").map(n=>n.durationBeats),[.25,.25,.25,.25]);
 });
 test("respiros incluem quatro notas curtas e espaços de silêncio",()=>{
- assert.deepEqual(E.events("respiros").map(n=>n.at),["1","2e","3&","4&"]);
+ assert.deepEqual(E.events("respiros").map(n=>n.at),["1","2i₁","3e","4e"]);
  assert.deepEqual(E.events("respiros").map(n=>n.length),[2,2,2,2]);
 });
 test("conversão de semicolcheia e BPM",()=>{
@@ -63,8 +63,8 @@ test("em cada compasso, as alturas mantêm a mesma ordem na comparação",()=>{
  const plan=E.comparePlan();
  for(const p of E.PATTERNS)assert.deepEqual(plan.filter(x=>x.patternId===p.id).map(x=>x.midi),[60,64,67,71]);
 });
-test("rótulos das subdivisões seguem a grade 1 e & a, até o quarto tempo",()=>{
- assert.deepEqual([0,1,2,3,4,5,6,7,12,13,14,15].map(E.beatLabel),["1","1e","1&","1a","2","2e","2&","2a","4","4e","4&","4a"]);
+test("rótulos das subdivisões seguem a grade O Passo 1 i e i até o quarto tempo",()=>{
+ assert.deepEqual([0,1,2,3,4,5,6,7,12,13,14,15].map(E.beatLabel),["1","1i₁","1e","1i₂","2","2i₁","2e","2i₂","4","4i₁","4e","4i₂"]);
  assert.throws(()=>E.beatLabel(16),RangeError);
 });
 test("padrões inexistentes e células com sobreposição são rejeitados",()=>{
@@ -90,7 +90,7 @@ test("comparação parcial usa somente a família pedida e pausa entre compassos
  assert.deepEqual(plan.filter(e=>e.index===0).map(e=>e.globalTick),ids.map((id,i)=>i*20+E.pattern(id).hits[0].tick));
 });
 
-test("checagem auditiva: a 80 BPM 2e e 2& estão separados por uma semicolcheia",()=>{
+test("checagem auditiva: a 80 BPM 2i₁ e 2e estão separados por uma semicolcheia",()=>{
  const bpm=80;
  const beat2=E.beatsToSeconds(4,bpm);
  const secondE=E.beatsToSeconds(5,bpm);
@@ -98,9 +98,9 @@ test("checagem auditiva: a 80 BPM 2e e 2& estão separados por uma semicolcheia"
  assert.equal(secondE-beat2,.1875);
  assert.equal(secondAnd-beat2,.375);
  assert.equal(secondAnd-secondE,.1875);
- assert.deepEqual([E.beatLabel(5),E.beatLabel(6)],["2e","2&"]);
+ assert.deepEqual([E.beatLabel(5),E.beatLabel(6)],["2i₁","2e"]);
 });
-test("Respiros: Mi toca em 2e, Sol em 3& e Si em 4&, na ordem registrada no áudio",()=>{
+test("Respiros: Mi em 2i₁, Sol em 3e e Si em 4e, mantendo o áudio",()=>{
  const notes=E.events("respiros");
  assert.deepEqual(notes.map(x=>x.at),["1","2e","3&","4&"]);
  assert.deepEqual(notes.map(x=>x.tick),[0,5,10,14]);
@@ -114,13 +114,13 @@ test("metrônomo oferece 4, 8 ou 16 cliques por compasso",()=>{
  assert.deepEqual(E.metronomePlan("eighths",80).map(x=>x.tick),[0,2,4,6,8,10,12,14]);
  assert.deepEqual(E.metronomePlan("sixteenths",80).map(x=>x.tick),Array.from({length:16},(_,i)=>i));
 });
-test("metrônomo em semicolcheias marca 1 e & a em todos os tempos",()=>{
+test("metrônomo em semicolcheias marca O Passo 1 i e i em todos os tempos",()=>{
  const clicks=E.metronomePlan("sixteenths",80);
- assert.deepEqual(clicks.map(p=>p.label),["1","1e","1&","1a","2","2e","2&","2a","3","3e","3&","3a","4","4e","4&","4a"]);
+ assert.deepEqual(clicks.map(p=>p.label),["1","1i₁","1e","1i₂","2","2i₁","2e","2i₂","3","3i₁","3e","3i₂","4","4i₁","4e","4i₂"]);
  assert.deepEqual(clicks.slice(0,4).map(p=>p.accent),["downbeat","subdivision","offbeat","subdivision"]);
  assert.equal(clicks.at(-1).offsetSeconds,2.8125);
 });
-test("no modo 1 e & a, cada nota de Respiros coincide com um clique da mesma subdivisão",()=>{
+test("no modo 1 i e i, cada nota de Respiros coincide com um clique da mesma subdivisão",()=>{
  const clicks=E.metronomePlan("sixteenths",80);
  for(const note of E.events("respiros")){
   const matching=clicks.find(c=>c.tick===note.tick);
@@ -129,12 +129,18 @@ test("no modo 1 e & a, cada nota de Respiros coincide com um clique da mesma sub
   assert.equal(matching.offsetSeconds,E.beatsToSeconds(note.tick,80));
  }
 });
-test("no modo de colcheias, os & caem nas mesmas posições das notas no 3& e 4&",()=>{
+test("no modo de colcheias, os e caem nas mesmas posições das notas no 3e e 4e",()=>{
  const clicks=E.metronomePlan("eighths",80);
  for(const note of E.events("respiros").slice(2))assert.equal(clicks.find(c=>c.tick===note.tick).offsetSeconds,E.beatsToSeconds(note.tick,80));
- assert.ok(!clicks.some(c=>c.tick===5),"2e não deve ter clique quando só as colcheias estão ativas");
+ assert.ok(!clicks.some(c=>c.tick===5),"primeiro i do tempo 2 não deve ter clique quando só as colcheias estão ativas");
 });
 test("modo de metrônomo inválido ou BPM inválido não produz cliques",()=>{
  assert.throws(()=>E.metronomePlan("tercinas",80),RangeError);
  assert.throws(()=>E.metronomePlan("sixteenths",0),RangeError);
+});
+
+test("O Passo usa e na terceira subdivisão e distingue dois i apenas nas etiquetas",()=>{
+ assert.deepEqual(E.METRONOME_MODES.map(x=>x.label),["1 2 3 4","1 e","1 i e i"]);
+ assert.deepEqual([E.beatLabel(1),E.beatLabel(2),E.beatLabel(3)],["1i₁","1e","1i₂"]);
+ assert.deepEqual(E.events("antecipado").map(x=>x.at),["1i₂","2i₂","3i₂","4i₂"]);
 });
