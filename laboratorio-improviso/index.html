@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101820">
-<meta name="description" content="Laboratório de Improvisação: quatro notas, doze células rítmicas e partitura 4/4 sincronizada.">
-<title>Cifra pra Mim · Laboratório de Ritmo</title>
+<meta name="description" content="Laboratório de Improvisação: 12 ritmos, 7 modos e 96 percursos melódicos por modo, com partitura e Loop.">
+<title>Cifra pra Mim · Laboratório de Improvisação</title>
 <style>
 :root{color-scheme:dark;--bg:#101820;--panel:#172532;--panel2:#192c3b;--line:#345064;--text:#f2ede4;--muted:#a7b8c5;--accent:#f4bb84;--cyan:#89c9ce}
 *{box-sizing:border-box}
@@ -163,6 +163,23 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 
 .loop-toggle{border:1px solid #7691a5;background:#25394a;color:#e9eff2}
 .loop-toggle[aria-pressed="true"]{border-color:#f5c89b;background:#f1bc89;color:#2d1f15}
+
+/* Eixos melódicos: escolha modal, disposição e percurso */
+.melodic-axes{padding:20px;margin-bottom:16px}
+.axes-intro{color:#b9cbd7;font-size:13px;line-height:1.5;margin:0 0 15px;max-width:760px}
+.axis-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.axis-field{display:flex;flex-direction:column;gap:7px;font-size:11px;font-weight:800;color:#e5c49f}
+.axis-field select{min-height:47px;width:100%;border-radius:9px;border:1px solid #57758a;background:#0e2030;color:#f4ece3;padding:9px;font:700 14px system-ui,-apple-system,sans-serif;-webkit-appearance:menulist}
+.axis-field select:focus-visible{outline:3px solid #f3bd87;outline-offset:2px}
+.axis-actions{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:13px 0}
+.axis-position{margin-left:auto;color:#e8c39f;font-size:12px;font-weight:800;white-space:nowrap}
+.axis-insight{display:grid;grid-template-columns:minmax(260px,1fr) minmax(250px,1.2fr);gap:14px;background:#102434;border:1px solid #3f6076;padding:13px;border-radius:11px}
+.axis-label{font-size:10px;color:#a9c5d8;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.axis-scale{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.axis-degree{padding:6px 11px;border:1px solid #4b6880;border-radius:8px;color:#bbccda;background:#1a3245;font:800 14px/1.2 ui-monospace,monospace}
+.axis-degree.structural{color:#2a1c13;background:#f0bb88;border-color:#e0ae80}
+.axis-warning{font-size:12px;line-height:1.5;color:#b7cbd9;margin:0}
+@media(max-width:740px){.axis-fields{grid-template-columns:1fr}.axis-insight{grid-template-columns:1fr}.melodic-axes{padding:15px}.axis-position{margin-left:0;width:100%}}
 </style>
 </head>
 <body>
@@ -176,14 +193,36 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </header>
 <main>
   <section class="hero">
-    <div><span class="kicker">Laboratório de improvisação / Eixo rítmico</span><h1>Uma tétrade.<br>Doze ritmos.</h1><p>Mantenha as mesmas quatro alturas e a mesma ordem intervalar. Mude só a distribuição dos ataques em um compasso 4/4 e escute o que acontece com a frase.</p></div>
-    <div class="hero-side"><strong>Não é um catálogo de licks.</strong>Este experimento isola o ritmo: as doze células são originais, não foram copiadas dos livros de improvisação. Depois, poderemos cruzá-las com os 96 percursos, os modos e os embelezamentos.</div>
+    <div><span class="kicker">Laboratório de improvisação / Eixos rítmico e melódico</span><h1>Um ritmo.<br>Muitos caminhos.</h1><p>Isole cada variável: escolha uma célula rítmica, um modo, uma disposição fechada e uma ordem de quatro notas. Escute as combinações com Loop e confira a mesma música na grade e na partitura.</p></div>
+    <div class="hero-side"><strong>Não é um catálogo de licks.</strong>As doze células são originais, sem reprodução de licks dos livros. Os eixos melódicos agora podem ser combinados com cada ritmo. Os embelezamentos serão um próximo desenvolvimento.</div>
   </section>
-  <section class="card purpose" aria-label="Material intervalar fixo">
-    <h2>Estrutura intervalar fixa · C7M · disposição fechada</h2>
+  <section class="card purpose" aria-label="Material intervalar selecionado">
+    <h2 id="material-title">Material intervalar · C7M · Dó jônico</h2>
     <div class="fixed">
       <div class="notes" id="pitches"><div class="pitch"><strong>Dó</strong><small>1</small></div><div class="pitch"><strong>Mi</strong><small>3</small></div><div class="pitch"><strong>Sol</strong><small>5</small></div><div class="pitch"><strong>Si</strong><small>7</small></div></div>
-      <div class="fixed-meta"><b>Ordem:</b> 1–3–5–7. <b>Registro:</b> Dó4–Mi4–Sol4–Si4.<br>As notas não mudam quando você troca de célula.</div>
+      <div class="fixed-meta" id="fixed-meta"><b>Ordem:</b> 1–3–5–7. <b>Registro:</b> Dó4–Mi4–Sol4–Si4.<br>O ritmo e a ordem melódica podem ser alterados independentemente.</div>
+    </div>
+  </section>
+  <section class="card melodic-axes" aria-labelledby="axes-title">
+    <div class="card-heading">
+      <h2 id="axes-title">Construa o percurso melódico</h2>
+      <span id="axis-total">7 modos × 4 disposições × 24 ordens</span>
+    </div>
+    <p class="axes-intro">Quatro notas por compasso. Primeiro escolha a coleção modal, depois a disposição fechada dessas alturas e, por último, a ordem em que serão tocadas. O ritmo continua independente.</p>
+    <div class="axis-fields">
+      <label class="axis-field" for="axis-mode"><span>01 · Modo (Dó como centro)</span><select id="axis-mode"></select></label>
+      <label class="axis-field" for="axis-inversion"><span>02 · Disposição fechada</span><select id="axis-inversion"></select></label>
+      <label class="axis-field" for="axis-path"><span>03 · Percurso de quatro graus</span><select id="axis-path"></select></label>
+    </div>
+    <div class="axis-actions">
+      <button type="button" class="action" id="prev-path">← Percurso anterior</button>
+      <button type="button" class="action" id="next-path">Próximo percurso →</button>
+      <button type="button" class="action" id="random-path">Sortear percurso</button>
+      <span class="axis-position" id="axis-position">Percurso 01 de 24</span>
+    </div>
+    <div class="axis-insight">
+      <div><span class="axis-label">Coleção modal (sete graus)</span><div id="axis-scale" class="axis-scale"></div></div>
+      <p id="axis-warning" class="axis-warning">Neste eixo, somente os graus 1–3–5–7 soam. Outros graus característicos do modo ainda não entram na frase.</p>
     </div>
   </section>
   <section class="card choose" aria-labelledby="choose-title">
@@ -256,24 +295,52 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
     </div>
   </section>
   <section class="details" aria-label="Como estudar">
-    <div class="card"><h3>O que permanece igual?</h3><p><b>Dó → Mi → Sol → Si</b>, suas oitavas e as relações intervalares. Estamos mudando apenas <b>quando</b> cada altura entra, quanto dura e onde aparece o silêncio.</p></div>
-    <div class="card"><h3>O que observar?</h3><p>Como um ataque no contratempo transforma a percepção da frase? O que acontece quando a mesma nota chega antes, depois ou exatamente sobre um tempo forte?</p></div>
+    <div class="card"><h3>O que permanece igual?</h3><p>Quando você troca apenas o <b>ritmo</b>, as alturas permanecem. Quando troca apenas o <b>percurso</b>, os ataques permanecem nas mesmas subdivisões. Assim é possível ouvir uma transformação de cada vez.</p></div>
+    <div class="card"><h3>O que observar?</h3><p>A mesma ordem de graus em outra inversão muda os saltos? Os 24 percursos conservam as quatro notas, mas distribuem os intervalos de modo diferente. Modos que compartilham a tétrade exigirão outras notas para revelar cores próprias.</p></div>
   </section>
 </main>
-<footer class="bottom"><span>Cifra pra Mim · Pesquisa didática de criação e improvisação</span><span>Próximos eixos: 96 percursos · 7 modos · embelezamentos</span></footer>
+<footer class="bottom"><span>Cifra pra Mim · Pesquisa didática de criação e improvisação</span><span>Ativos: 12 ritmos · 7 modos · 96 percursos por modo · Próximo eixo: embelezamentos</span></footer>
 </div>
 <script src="../src/rhythm-lab.js?v=6"></script>
-<script src="../src/rhythm-notation.js?v=6"></script>
+<script src="../src/melodic-axis.js?v=9"></script>
+<script src="../src/rhythm-notation.js?v=9"></script>
 <script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (function(){
 "use strict";
-const E=window.RhythmLabEngine,N=window.RhythmLabNotation;
+const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,mode:"ionian",inversion:0,path:0,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 let loopTransport=null;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
+const currentEvents=(id=state.id)=>M.events(id,state);
+function renderAxes(){
+ const {mode,inversion,path}=M.option(state);
+ $("axis-mode").value=mode.id;
+ $("axis-inversion").value=String(inversion.id);
+ $("axis-path").value=String(path.id);
+ $("axis-position").textContent="Percurso "+String(path.id+1).padStart(2,"0")+" de 24";
+ $("axis-scale").replaceChildren();
+ for(const item of M.modalColors(mode.id)){
+  const el=make("span","axis-degree",item);
+  if(["1","3","♭3","5","♭5","7","♭7"].includes(item))el.classList.add("structural");
+  $("axis-scale").append(el);
+ }
+ const family=M.distinctTetrads().find(group=>group.includes(mode.name));
+ $("axis-warning").textContent=family.length>1
+  ?"Atenção: "+family.join(", ")+" têm as mesmas notas 1–3–5–7 em Dó. A diferença modal só fica audível quando entram graus como 2, 4 ou 6."
+  :"Neste eixo tocam apenas os graus 1–3–5–7. As demais notas da coleção aparecem como referência, mas ainda não são tocadas.";
+ const pitches=$("pitches");pitches.replaceChildren();
+ for(const n of M.notes(state)){
+  const p=make("div","pitch");
+  p.append(make("strong","",n.name+String(n.octave)),make("small","",n.degree));
+  pitches.append(p);
+ }
+ const list=M.notes(state);
+ $("material-title").textContent="Material intervalar · "+M.chordSymbol(mode.id)+" · Dó "+mode.name.toLowerCase();
+ $("fixed-meta").textContent="Disposição: "+inversion.title+" ("+inversion.order+"). Percurso: "+path.label+". Alturas: "+list.map(n=>n.name+n.octave).join(" → ")+".";
+}
 function setStatus(message){$("status").textContent=message}
 function make(tag,cls,txt){const el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el}
 function fillMini(node,p){
@@ -309,7 +376,8 @@ function showChoices(){
  }
 }
 function render(){
- const p=E.pattern(state.id),ev=E.events(state.id);
+ const p=E.pattern(state.id),ev=currentEvents();
+ renderAxes();
  showFilters();showChoices();
  $("rhythm-count").textContent=visiblePatterns().length+" células · 4 ataques por compasso";
  $("selected-title").textContent=p.title;
@@ -348,9 +416,9 @@ function renderScore(){
   const active=btn.dataset.scoreMode===state.scoreMode;
   btn.classList.toggle("active",active);btn.setAttribute("aria-pressed",String(active));
  }
- $("score").innerHTML=N.svg(state.id,state.scoreMode);
+ $("score").innerHTML=N.svg(state.id,state.scoreMode,currentEvents());
  $("score-help").textContent=state.scoreMode==="melodic"
-  ?"Clave de sol · Dó4, Mi4, Sol4 e Si4. As ligaduras unem fragmentos da mesma nota; pausas ocupam os silêncios."
+  ?"Clave de sol · "+currentEvents().map(n=>n.name+n.octave).join(" → ")+". Ligaduras unem fragmentos de uma mesma nota; pausas representam silêncios."
   :"Pauta rítmica de uma linha. Todos os ataques ficam na mesma altura; figuras, pontos, pausas e ligaduras representam só a duração.";
 }
 function stop(){
@@ -425,7 +493,7 @@ function sounding(index,on){
  for(const item of document.querySelectorAll('[data-index="'+index+'"]'))item.classList.toggle("sounding",on);
 }
 function schedulePattern(id,begin,token,offsetSeconds=0){
- const ev=E.events(id);
+ const ev=currentEvents(id);
  scheduleMetronome(begin,token,offsetSeconds);
  for(const n of ev){
   const dt=E.beatsToSeconds(n.tick,state.bpm);
@@ -561,12 +629,27 @@ $("bpm").addEventListener("input",e=>{
 $("click").addEventListener("change",e=>{stop();state.click=e.target.checked;setStatus(state.click?"Metrônomo ativado.":"Metrônomo desativado.");});
 window.addEventListener("pagehide",stop);
 window.RhythmLabUI={
- get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,loop:state.loop,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:E.events(state.id),notation:N.plan(state.id)}),
+ get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,loop:state.loop,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:currentEvents(),notes:M.notes(state),notation:N.plan(state.id,currentEvents()),mode:state.mode,inversion:state.inversion,path:state.path,modalScale:M.modalColors(state.mode)}),
  setMetronomeMode,
  select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
  score:mode=>{if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");stop();state.scoreMode=mode;renderScore()}
 };
+for(const item of M.MODES){const opt=make("option","",item.name);opt.value=item.id;$("axis-mode").append(opt)}
+for(const item of M.INVERSIONS){const opt=make("option","",item.title+" · "+item.order);opt.value=String(item.id);$("axis-inversion").append(opt)}
+for(const item of M.PATHS){const opt=make("option","","Percurso "+String(item.id+1).padStart(2,"0")+" · "+item.label);opt.value=String(item.id);$("axis-path").append(opt)}
+function changeAxis(field,value){
+ stop();
+ state[field]=field==="mode"?value:Number(value);
+ M.option(state);render();
+ setStatus("Eixo melódico atualizado: "+M.option(state).mode.name+" · "+M.option(state).path.label+".");
+}
+$("axis-mode").addEventListener("change",e=>changeAxis("mode",e.target.value));
+$("axis-inversion").addEventListener("change",e=>changeAxis("inversion",e.target.value));
+$("axis-path").addEventListener("change",e=>changeAxis("path",e.target.value));
+$("prev-path").addEventListener("click",()=>changeAxis("path",(state.path+23)%24));
+$("next-path").addEventListener("click",()=>changeAxis("path",(state.path+1)%24));
+$("random-path").addEventListener("click",()=>changeAxis("path",Math.floor(Math.random()*24)));
 render();renderMetronomeMode();updateTimingCaption();
 })();
 </script>
