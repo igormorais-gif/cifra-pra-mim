@@ -133,7 +133,7 @@ button:disabled{opacity:.42;cursor:default}
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const ROOTS=[['C','Dó',0,'C'],['C#','Dó sustenido',1,'C'],['Db','Ré bemol',1,'D'],['D','Ré',2,'D'],['D#','Ré sustenido',3,'D'],['Eb','Mi bemol',3,'E'],['E','Mi',4,'E'],['F','Fá',5,'F'],['F#','Fá sustenido',6,'F'],['Gb','Sol bemol',6,'G'],['G','Sol',7,'G'],['G#','Sol sustenido',8,'G'],['Ab','Lá bemol',8,'A'],['A','Lá',9,'A'],['A#','Lá sustenido',10,'A'],['Bb','Si bemol',10,'B'],['B','Si',11,'B']].map(([symbol,name,pc,letter])=>({symbol,name,pc,letter}));
-const P=x=>(x%12+12)%12,FORMS={'135':['1','3','5'],'351':['3','5','1'],'513':['5','1','3']},GROUPS={'432':[4,3,2],'321':[3,2,1]},OPEN={6:40,5:45,4:50,3:55,2:59,1:64},LOCATOR={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':5}};
+const P=x=>(x%12+12)%12,FORMS={'135':['1','3','5'],'351':['3','5','1'],'513':['5','1','3']},GROUPS={'432':[4,3,2],'321':[3,2,1]},OPEN={6:40,5:45,4:50,3:55,2:59,1:64},LOCATOR={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':4}};
 const LETTERS=['C','D','E','F','G','A','B'],SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11},PT={C:'Dó',D:'Ré',E:'Mi',F:'Fá',G:'Sol',A:'Lá',B:'Si'};
 const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',bpm:80,token:0,kind:'ci',connIndex:0,connAll:false};
 const root=()=>ROOTS.find(r=>r.symbol===state.root),ds=()=>FORMS[state.form].map(d=>state.quality==='minor'&&d==='3'?'♭3':d),off=d=>d==='1'?0:d==='5'?7:d==='♭3'?3:4,target=()=>state.target==='3'&&state.quality==='minor'?'♭3':state.target,pcDegree=d=>P(root().pc+off(d));
@@ -227,10 +227,18 @@ function connNotes(chordNotes,index){
  const from=chordNotes[index],to=chordNotes[index+1];
  if(!from||!to)return null;
  const passing=[];
+ // Nas conexões cromáticas 5 → 1, mantenha 5 e seu primeiro cromatismo
+ // na corda de PARTIDA. Os demais semitons ficam na corda de chegada.
+ // Assim evitamos concentrar cinco posições consecutivas numa única corda.
+ const divideFifth=state.instrument==='guitar'&&state.kind==='chromatic'&&
+  from.degree==='5'&&to.degree==='1'&&to.midi-from.midi===5&&
+  from.fret!=null&&from.fret+1<=19;
  for(let midi=from.midi+1;midi<to.midi;midi++){
   if(state.kind==='diatonic'&&!CONN_SCALES[state.quality].includes(P(midi-root().pc)))continue;
-  passing.push({midi,degree:connDegree(midi),name:connName(midi),
-   string:to.string??null,fret:to.fret==null?null:to.fret-(to.midi-midi)});
+  const onDeparture=divideFifth&&midi===from.midi+1;
+  const string=onDeparture?from.string:(to.string??null);
+  const fret=onDeparture?from.fret+1:(to.fret==null?null:to.fret-(to.midi-midi));
+  passing.push({midi,degree:connDegree(midi),name:connName(midi),string,fret});
  }
  return{from,to,passing,sequence:[from,...passing,to]}
 }
@@ -342,9 +350,9 @@ function connGuitarUI(data){
  }
  $('connGuitarLabel').textContent=paths.map(p=>p.from.degree+' → '+p.to.degree).join(' · ');
  $('connFretSummary').textContent=paths.map(p=>
-  p.from.degree+' → '+p.to.degree+': '+(p.passing.map(n=>n.degree+' (casa '+n.fret+')').join(' · ')||'sem nota intermediária')+
-  ' · '+p.to.string+'ª corda').join(' | ');
- $('connBassSummary').textContent=state.connAll?'Duas conexões · cordas de chegada respeitadas':
+  p.from.degree+' → '+p.to.degree+': '+(p.passing.map(n=>n.degree+' ('+n.string+'ª corda, casa '+n.fret+')').join(' · ')||'sem nota intermediária')+
+  ' · chegada na '+p.to.string+'ª corda').join(' | ');
+ $('connBassSummary').textContent=state.connAll?'Duas conexões · digitação distribuída':
   'Chegada: '+paths[0].to.string+'ª corda · casa '+paths[0].to.fret
 }
 function renderConnection(){
@@ -374,14 +382,15 @@ function renderConnection(){
  $('connDetail').textContent=state.connAll?'Percurso completo · as duas conexões permanecem visíveis.':
   d.chosen.from.degree+' → '+d.chosen.to.degree+' · '+d.chosen.passing.length+' nota(s) de conexão';
  $('connStringHint').textContent=state.instrument==='guitar'?
-  (state.connAll?paths.map(p=>p.from.degree+' → '+p.to.degree+' na '+p.to.string+'ª corda').join(' · '):
-   'As notas intermediárias ficam na '+d.chosen.to.string+'ª corda, junto da nota de chegada.'):
+  paths.map(p=>p.passing.some(n=>n.string===p.from.string)?
+   p.from.degree+' → '+p.to.degree+': primeiro cromatismo na '+p.from.string+'ª corda; demais na '+p.to.string+'ª':
+   p.from.degree+' → '+p.to.degree+': conexão na '+p.to.string+'ª corda').join(' · '):
   'As teclas permanecem na mesma região visual.';
  $('connTour').classList.toggle('tour-display',state.connAll);
  $('connBpm').value=state.bpm;$('connTempo').textContent=state.bpm;
  $('connTip').textContent=state.kind==='diatonic'?
   'Conexão diatônica: ligue duas notas estruturais do acorde por notas intermediárias pertencentes à escala '+(state.quality==='minor'?'menor natural':'maior')+'. As notas-alvo permanecem as mesmas.'+(state.instrument==='guitar'?' No violão, as notas de conexão ocupam a mesma corda da chegada.':''):
-  'Conexão cromática: percorra os semitons entre duas notas estruturais do acorde. O ouvido reconhece os pontos de partida e chegada, mesmo quando existem notas cromáticas no caminho.'+(state.instrument==='guitar'?' No violão, todas as notas intermediárias ficam na corda da nota de chegada.':'');
+  'Conexão cromática: percorra os semitons entre duas notas estruturais do acorde. O ouvido reconhece os pontos de partida e chegada.'+(state.instrument==='guitar'?' No violão, priorize a corda da chegada, mas na conexão 5 → 1 o primeiro cromatismo permanece na corda do 5 para facilitar a digitação.':'');
  if(state.instrument==='piano')connPianoUI(d);else connGuitarUI(d)
 }
 function scheduleConnectionStage(when,index,token){
@@ -425,7 +434,7 @@ function render(){visualNodes=[];const c=chord(),d=target();$('root').value=stat
  $('activeModuleTag').textContent=state.kind==='ci'?'C.I. · NOTA-ALVO':state.kind==='diatonic'?'CONEXÃO · DIATÔNICA':'CONEXÃO · CROMÁTICA';
  $('introDescription').textContent=state.kind==='ci'?
   'Três notas na forma 135, 351 ou 513. O Cromático Inferior (C.I.) conduz à nota-alvo por um semitom abaixo. O acorde não ganha uma quarta nota fixa: uma das três vozes recebe o embelezamento.':
-  'Nas formas 135, 351 e 513, conecte duas notas estruturais do mesmo acorde por notas da escala (diatônicas) ou por semitons (cromáticas). No violão, as notas intermediárias ficam na corda da nota de chegada.';
+  'Nas formas 135, 351 e 513, conecte duas notas estruturais do mesmo acorde por notas da escala (diatônicas) ou por semitons (cromáticas). No violão, priorizamos a corda de chegada, distribuindo o cromatismo de 5 → 1 entre as duas cordas.';
  for(const b of document.querySelectorAll('[data-kind]')){const active=b.dataset.kind===state.kind;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))}
  $('ciOrder').textContent=ds().map(degree=>'C.I.'+(degree==='♭3'?'3':degree)).join(' → ');
  $('chord').textContent=c.symbol;$('chordName').textContent=root().name+' · tríade '+(state.quality==='minor'?'menor':'maior')+' · '+state.form;$('formBadge').textContent=(state.instrument==='piano'?'M.D. · ':state.group.split('').join('–')+' · ')+state.form;$('triadFormula').textContent=state.quality==='minor'?'3st/4st':'4st/3st';
