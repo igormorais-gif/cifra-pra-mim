@@ -1,3 +1,13 @@
+## Laboratório de Improvisação — interface móvel (v11)
+
+O iPhone agora exibe a **grade rítmica inteira** (16 semicolcheias, `1 i e i | 2 i e i | 3 i e i | 4 i e i`) dentro da largura disponível, sem rolagem lateral na grade. A página preserva os ataques em seus ticks originais e as quatro divisões de tempo. Etiquetas de notas muito curtas permanecem acessíveis nos chips logo abaixo da grade. A partitura tradicional continua com rolagem própria para preservar legibilidade.
+
+**Player flutuante:** em telas de até 740 px, a barra de reprodução torna-se fixa no rodapé com os controles Ouvir, Comparar, Parar, Loop e andamento/BPM. Só os controles essenciais ficam fixos; o metrônomo detalhado e o teste auditivo continuam no corpo da seção para evitar que a barra cubra os exercícios. A legenda flutuante mostra o nome da célula e BPM selecionados. O botão Loop expõe o mesmo `aria-pressed` de antes, com rótulo compacto no celular; não existe um segundo estado de Loop. O rodapé reserva espaço extra, inclusive `safe-area-inset-bottom` para a interface iOS. Desktop mantém player completo na posição original.
+
+Trocar modo, registro, percurso ou célula ainda **interrompe a reprodução anterior** para evitar a sobreposição indevida de frases; o player continua ao alcance do dedo para ouvir a escolha atual sem voltar ao ponto original da página. A programação temporal do Loop contínuo não foi alterada.
+
+Validação: `tests/improv-mobile-layout.test.cjs` verifica largura, responsividade, controles e espaçamento da barra; a simulação da interface verificou que a legenda acompanha seleção e BPM e que o Loop ligado/desligado altera o mesmo controle. O layout visual real no Safari/iPhone ainda requer conferência.
+
 ## Laboratório de Improvisação — eixos melódicos (versão 9)
 
 O Laboratório combina **12 células rítmicas originais** em 4/4 (mesmos 16 ticks em áudio, grade e pauta) com uma coleção modal em Dó, uma disposição fechada de quatro vozes e um percurso ordenado de quatro graus. O material é gerado programaticamente em `src/melodic-axis.js`; nenhum lick de terceiros foi incorporado.
