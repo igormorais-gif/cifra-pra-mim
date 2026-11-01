@@ -1,3 +1,20 @@
+## Regra geral dos players — Loop (versão 7)
+
+Todos os laboratórios com reprodução de áudio compartilham o botão **↻ Loop: desligado / ↻ Loop: ligado**. O controle começa desligado e é acessível por toque, teclado e `aria-pressed`. Quando ligado, **a reprodução escolhida** (arpejo, acorde, sequência, conexões ou célula) reinicia automaticamente ao chegar ao fim. Quando desligado durante a reprodução, a passagem atual termina sem recomeçar. **■ Parar** cancela o ciclo e os próximos ataques programados, sem apagar a preferência de Loop. Trocar o exercício, a forma, o instrumento ou a seleção interrompe a reprodução anterior, evitando tocar frases de dois exercícios ao mesmo tempo.
+
+Os módulos contemplados são:
+- `laboratorio-cavaquinho/` — arpejo atual ou sequência;
+- `laboratorio-violao/` — arpejo atual ou sequência de acordes;
+- `laboratorio-violao/jogo-4321/` — voicing atual ou percurso;
+- `laboratorio-piano/` — acorde, M.E. → M.D. ou sequência;
+- `laboratorio-embelezamento/` — sequência com aproximações, apresentação com tríade ou conexões; os dois players usam a mesma preferência de Loop;
+- `laboratorio-improviso/` — célula selecionada, comparação da família visível ou metrônomo isolado;
+- `laboratorio.html` — demonstração anterior, agora com Loop e Parar.
+
+A repetição respeita o BPM e a ordem de notas existentes e não modifica o material harmônico. Nos laboratórios modernos, os ciclos usam o token de reprodução para evitar reinício após Parar ou troca de contexto. Nos players com Web Audio que programam muitas notas de uma vez, o próximo ciclo só é agendado ao terminar o anterior, evitando programar loops indefinidos antecipadamente. O som em decaimento do último ataque pode terminar naturalmente após Parar, mas novos ataques não são iniciados. O player fixo do celular foi reorganizado para incluir o botão sem esconder o andamento.
+
+Os testes incluem `tests/loop-controls.test.cjs` e os testes específicos de cada laboratório. A implementação foi conferida por sintaxe JavaScript e simulação de áudio no Laboratório de Improvisação; a audição real no Safari/iPhone ainda precisa ser verificada.
+
 # Cifra pra Mim — Arranja pra mim
 
 Gerador de arranjos para teclado baseado no método autoral **Adaptando Pontas**, de Igor Morais.
