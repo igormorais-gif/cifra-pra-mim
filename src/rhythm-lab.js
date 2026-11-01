@@ -69,6 +69,25 @@
     if(!Number.isFinite(bpm)||bpm<30||bpm>240)throw new RangeError("Andamento fora de 30–240 BPM");
     return ticks*60/bpm/4;
   }
+  // Metrônomo e frase usam a mesma grade temporal de 16 semicolcheias.
+  const METRONOME_MODES=Object.freeze([
+    {id:"beats",label:"1 2 3 4",step:4},
+    {id:"eighths",label:"1 &",step:2},
+    {id:"sixteenths",label:"1 e & a",step:1}
+  ]);
+  function metronomePlan(mode="beats",bpm=80){
+    const selected=METRONOME_MODES.find(x=>x.id===mode);
+    if(!selected)throw new RangeError("Subdivisão de metrônomo desconhecida: "+mode);
+    return Array.from({length:16/selected.step},(_,i)=>{
+      const tick=i*selected.step;
+      return {
+        tick,
+        label:beatLabel(tick),
+        offsetSeconds:beatsToSeconds(tick,bpm),
+        accent:tick===0?"downbeat":tick%4===0?"beat":tick%4===2?"offbeat":"subdivision"
+      };
+    });
+  }
   function comparePlan(ids=PATTERNS.map(p=>p.id),pauseBeats=1){
     if(!Number.isFinite(pauseBeats)||pauseBeats<0)throw new RangeError("Pausa inválida");
     const out=[];
@@ -79,5 +98,5 @@
     return out;
   }
   PATTERNS.forEach(p=>{if(!validate(p))throw new Error("Padrão inválido: "+p.id)});
-  return{NOTES,PATTERNS,FAMILIES,pattern,events,beatLabel,validate,beatsToSeconds,comparePlan};
+  return{NOTES,PATTERNS,FAMILIES,METRONOME_MODES,pattern,events,beatLabel,validate,beatsToSeconds,metronomePlan,comparePlan};
 });
