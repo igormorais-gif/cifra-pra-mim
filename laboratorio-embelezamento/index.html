@@ -98,9 +98,9 @@ button:disabled{opacity:.42;cursor:default}
 </div>
 <section class="panel exercise" id="ciSection">
 <div class="chordhead"><div><div class="chordtitle" id="chord">C</div><div class="chorddesc" id="chordName">Tríade maior · 135</div></div><div class="chordbadges"><span class="chordbadge" id="triadFormula">4st/3st</span><span class="chordbadge" id="formBadge">M.D. · 135</span><span class="chordbadge" id="ciOrder">C.I.1 → C.I.3 → C.I.5</span></div></div>
-<div class="compact-practice"><div class="practice-line"><span class="label">Nota-alvo e embelezamento</span><div class="string-pick" id="stringPicker" hidden><button class="active" data-group="432">4–3–2</button><button data-group="321">3–2–1</button></div></div><div class="triad-targets"><button data-target="1" class="active"><b>C.I.1</b><small>Fundamental</small></button><button data-target="3"><b>C.I.3</b><small>Terça</small></button><button data-target="5"><b>C.I.5</b><small>Quinta</small></button></div></div>
+<div class="compact-practice"><div class="practice-line"><span class="label">Selecione um ou mais C.I. (independentes)</span><div class="string-pick" id="stringPicker" hidden><button class="active" data-group="432">4–3–2</button><button data-group="321">3–2–1</button></div></div><div class="triad-targets" role="group" aria-label="Seleção independente de cromáticos inferiores"><button type="button" data-target="1" class="active" aria-pressed="true"><b>C.I.1</b><small>Fundamental</small></button><button type="button" data-target="3" aria-pressed="false"><b>C.I.3</b><small>Terça</small></button><button type="button" data-target="5" aria-pressed="false"><b>C.I.5</b><small>Quinta</small></button></div></div>
 <div class="ci-info"><div><span class="label">Aproximação → resolução</span><strong id="motion">Si → Dó</strong><p id="moveDetail">C.I.1 · semitom inferior → nota-alvo</p></div></div>
-<div class="ci-player"><div class="ci-transport"><button id="playPair" class="play primary">▶ Aproximação</button><button id="playTour" class="play">▶ Percorrer C.I.</button><button id="playTriad" class="play">▶ C.I. aplicado à tríade</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div></div>
+<div class="ci-player"><div class="ci-transport"><button id="playPair" class="play primary">▶ Aproximações selecionadas</button><button id="playTour" class="play">▶ Percorrer C.I.</button><button id="playTriad" class="play">▶ C.I. aplicado à tríade</button><button id="stop" class="play stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div></div>
 <div class="ci-instruments">
 <div id="pianoPanel"><div class="piano-hands">
 <div class="ci-hand"><div class="ci-hand-title"><strong>M.E.</strong><span>Fundamental no baixo</span></div><div class="keyboard-scroll"><svg id="leftKeys" class="ci-keyboard" viewBox="0 0 1000 240" role="img" aria-label="Mão esquerda no piano"></svg></div><div id="leftCards" class="ci-cards"></div></div>
@@ -135,8 +135,8 @@ const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const ROOTS=[['C','Dó',0,'C'],['C#','Dó sustenido',1,'C'],['Db','Ré bemol',1,'D'],['D','Ré',2,'D'],['D#','Ré sustenido',3,'D'],['Eb','Mi bemol',3,'E'],['E','Mi',4,'E'],['F','Fá',5,'F'],['F#','Fá sustenido',6,'F'],['Gb','Sol bemol',6,'G'],['G','Sol',7,'G'],['G#','Sol sustenido',8,'G'],['Ab','Lá bemol',8,'A'],['A','Lá',9,'A'],['A#','Lá sustenido',10,'A'],['Bb','Si bemol',10,'B'],['B','Si',11,'B']].map(([symbol,name,pc,letter])=>({symbol,name,pc,letter}));
 const P=x=>(x%12+12)%12,FORMS={'135':['1','3','5'],'351':['3','5','1'],'513':['5','1','3']},GROUPS={'432':[4,3,2],'321':[3,2,1]},OPEN={6:40,5:45,4:50,3:55,2:59,1:64},LOCATOR={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':5}};
 const LETTERS=['C','D','E','F','G','A','B'],SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11},PT={C:'Dó',D:'Ré',E:'Mi',F:'Fá',G:'Sol',A:'Lá',B:'Si'};
-const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',bpm:80,token:0,kind:'ci',connSelected:new Set([0])};
-const root=()=>ROOTS.find(r=>r.symbol===state.root),ds=()=>FORMS[state.form].map(d=>state.quality==='minor'&&d==='3'?'♭3':d),off=d=>d==='1'?0:d==='5'?7:d==='♭3'?3:4,target=()=>state.target==='3'&&state.quality==='minor'?'♭3':state.target,pcDegree=d=>P(root().pc+off(d));
+const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',ciSelected:new Set(['1']),bpm:80,token:0,kind:'ci',connSelected:new Set([0])};
+const root=()=>ROOTS.find(r=>r.symbol===state.root),ds=()=>FORMS[state.form].map(d=>state.quality==='minor'&&d==='3'?'♭3':d),off=d=>d==='1'?0:d==='5'?7:d==='♭3'?3:4,target=()=>{const chosen=ds().find(d=>state.ciSelected.has(d==='♭3'?'3':d));return chosen||null},pcDegree=d=>P(root().pc+off(d));
 function spelling(d){const r=root(),i=d==='1'?0:d==='5'?4:2,letter=LETTERS[(LETTERS.indexOf(r.letter)+i)%7],diff=((pcDegree(d)-SEMI[letter]+18)%12)-6;return PT[letter]+(diff>0?'♯'.repeat(diff):'♭'.repeat(-diff))}
 const SH=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'],FL=['Dó','Ré♭','Ré','Mi♭','Mi','Fá','Sol♭','Sol','Lá♭','Lá','Si♭','Si'];
 function before(d){const t=spelling(d),p=P(pcDegree(d)-1),naturals={Dó:'Si',Ré:'Dó♯',Mi:'Ré♯',Fá:'Mi',Sol:'Fá♯',Lá:'Sol♯',Si:'Lá♯'};if(t.includes('♯'))return t.replace('♯','');if(t.includes('♭'))return (state.root.includes('b')?FL:SH)[p];return naturals[t]||(state.root.includes('b')?FL:SH)[p]}
@@ -162,7 +162,11 @@ function locator(notes){if(!notes.length)return null;const string=LOCATOR[state.
  const options=[];for(let f=0;f<=19;f++)if(P(OPEN[string]+f)===root().pc&&OPEN[string]+f<lowest)
   options.push({string,fret:f,midi:OPEN[string]+f,score:Math.abs(f-avg)});
  return options.sort((a,b)=>a.score-b.score)[0]||null}
-function chord(){const notes=state.instrument==='piano'?piano():guitar(),selected=notes.find(n=>n.degree===target());
+function ciNotes(notes){
+  // A ordem do exercício acompanha as vozes da forma: 135, 351 ou 513.
+  return notes.filter(n=>state.ciSelected.has(n.degree==='♭3'?'3':n.degree));
+}
+function chord(){const notes=state.instrument==='piano'?piano():guitar(),selected=ciNotes(notes)[0]||null;
  return{notes,selected,bass:state.instrument==='piano'?bass():locator(notes),from:selected?selected.midi-1:null,symbol:root().symbol+(state.quality==='minor'?'m':'')}}
 function svg(tag,attrs,p){const e=document.createElementNS(NS,tag);for(let [a,b]of Object.entries(attrs))e.setAttribute(a,String(b));p.append(e);return e}
 const COLORS={'1':'#e58c42','3':'#5c95cd','♭3':'#5c95cd','5':'#6c78db'};
