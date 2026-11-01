@@ -258,6 +258,22 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
   .player .control-row{left:5px;right:5px;padding:8px 6px;gap:4px}
   .player .control-row .action{font-size:10px}
 }
+
+/* Partitura com agrupamento editorial e alternativa de zoom no telefone */
+.score-view{display:flex;justify-content:flex-end;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px}
+.score-view span{margin-right:auto;color:#bacbd5;font-size:11px;font-weight:700}
+.score-view button{border:1px solid #557187;border-radius:8px;background:#1b3041;color:#d6e2e8;font-size:11px;font-weight:750;padding:7px 10px;min-height:35px}
+.score-view button[aria-pressed="true"]{border-color:#eabb92;background:#f0bd8c;color:#241a13}
+.score-scroll.score-fitted{overflow-x:hidden}
+.score-scroll.score-fitted .score-svg{width:100%;min-width:0}
+.score-principles{margin-top:12px;color:#b7c7d1;border-top:1px solid #425669;padding-top:11px;font-size:11px;line-height:1.55}
+.score-principles summary{cursor:pointer;font-weight:800;color:#e4c6a7}
+.score-principles p{margin:8px 0 0!important;font-size:11px!important}
+@media(max-width:620px){
+ .score-view{justify-content:stretch;gap:5px}
+ .score-view span{flex:0 0 100%}
+ .score-view button{flex:1}
+}
 </style>
 </head>
 <body>
@@ -380,14 +396,23 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
     <p class="passo-note"><strong>Contagem d’O Passo:</strong> o <strong>e</strong> é o contratempo (metade do tempo); o primeiro <strong>i</strong> vem antes dele e o segundo <strong>i</strong> vem depois. Nas etiquetas, i₁ e i₂ apenas distinguem essas duas posições — ao falar, ambos são “i”.</p>
     <div class="notation" aria-labelledby="score-title">
       <div class="score-head">
-        <div><h3 id="score-title">Partitura · 4/4</h3><p>O mesmo compasso, com notas e pausas correspondentes ao áudio.</p></div>
+        <div><h3 id="score-title">Partitura · leitura métrica 4/4</h3><p>Os mesmos ataques e durações do áudio, escritos para tornar cada tempo reconhecível.</p></div>
         <div class="score-options" role="group" aria-label="Visualização da partitura">
           <button type="button" data-score-mode="rhythm" aria-pressed="false">Ritmo puro</button>
           <button type="button" data-score-mode="melodic" class="active" aria-pressed="true">Com alturas</button>
         </div>
       </div>
-      <div class="score-scroll"><div id="score" aria-live="polite"></div></div>
+      <div class="score-view" role="group" aria-label="Tamanho da partitura">
+        <span>Leitura no celular</span>
+        <button type="button" id="score-fit" aria-pressed="false">Ver compasso inteiro</button>
+        <button type="button" id="score-zoom" aria-pressed="true">Leitura ampliada</button>
+      </div>
+      <div class="score-scroll" id="score-scroll"><div id="score" aria-live="polite"></div></div>
       <p class="score-help" id="score-help">Clave de sol · Dó4, Mi4, Sol4 e Si4. A altura e a duração são escritas no mesmo compasso 4/4.</p>
+      <details class="score-principles">
+        <summary>Critérios de escrita · Larry Monroe, págs. 2–7 do material</summary>
+        <p>Barras de colcheias e semicolcheias agrupadas por tempo; limites dos tempos visíveis e separação 2 | 3 respeitada; pausas sem atravessar a pulsação; prolongamentos representados por pontos e ligaduras entre notas da mesma altura. Os tempos 1 e 3 recebem destaque métrico discreto, sem inserir falsas barras de compasso.</p>
+      </details>
     </div>
   </section>
   <section class="details" aria-label="Como estudar">
@@ -399,14 +424,14 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </div>
 <script src="../src/rhythm-lab.js?v=6"></script>
 <script src="../src/melodic-axis.js?v=9"></script>
-<script src="../src/rhythm-notation.js?v=9"></script>
+<script src="../src/rhythm-notation.js?v=12"></script>
 <script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (function(){
 "use strict";
 const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,mode:"ionian",inversion:0,path:0,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 let loopTransport=null;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
@@ -531,9 +556,12 @@ function renderScore(){
   btn.classList.toggle("active",active);btn.setAttribute("aria-pressed",String(active));
  }
  $("score").innerHTML=N.svg(state.id,state.scoreMode,currentEvents());
+ $("score-scroll").classList.toggle("score-fitted",state.scoreFit);
+ $("score-fit").setAttribute("aria-pressed",String(state.scoreFit));
+ $("score-zoom").setAttribute("aria-pressed",String(!state.scoreFit));
  $("score-help").textContent=state.scoreMode==="melodic"
-  ?"Clave de sol · "+currentEvents().map(n=>n.name+n.octave).join(" → ")+". Ligaduras unem fragmentos de uma mesma nota; pausas representam silêncios."
-  :"Pauta rítmica de uma linha. Todos os ataques ficam na mesma altura; figuras, pontos, pausas e ligaduras representam só a duração.";
+  ?"Clave de sol · "+currentEvents().map(n=>n.name+n.octave).join(" → ")+". Agrupamento por pulsos; ligaduras mantêm o som, sem criar novos ataques."
+  :"Pauta rítmica de uma linha. Barras mostram a pulsação; pausas, pontos e ligaduras registram as durações exatas.";
 }
 function stop(){
  state.token++;
@@ -733,6 +761,8 @@ $("loop").addEventListener("click",()=>{
  $("loop").setAttribute("aria-label",state.loop?"Desativar Loop":"Ativar Loop");
  setStatus(state.loop?"Loop ligado: a reprodução atual se repetirá até Parar.":"Loop desligado: a reprodução atual terminará normalmente.");
 });
+$("score-fit").addEventListener("click",()=>{state.scoreFit=true;renderScore()});
+$("score-zoom").addEventListener("click",()=>{state.scoreFit=false;renderScore()});
 $("play").addEventListener("click",playSelected);
 $("compare").addEventListener("click",compareAll);
 $("stop").addEventListener("click",()=>{stop();setStatus("Reprodução interrompida.")});
