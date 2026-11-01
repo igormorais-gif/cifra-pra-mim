@@ -44,6 +44,10 @@
  .play-near-board .tempo output{font-size:12px}
  .shell{padding-bottom:calc(119px + env(safe-area-inset-bottom,0px))}
 }
+
+.loop-toggle{background:#20374a!important;border:1px solid #718da1!important;color:#e7f0f4!important}
+.loop-toggle[aria-pressed="true"]{background:#eab989!important;border-color:#efbd92!important;color:#251b16!important}
+@media(max-width:660px){.play-near-board .transport{grid-template-columns:repeat(4,minmax(0,1fr))}.play-near-board .tempo{grid-column:1/-1}.play-near-board .loop-toggle{font-size:10px;padding:7px 2px}}
 </style>
 </head>
 <body>
@@ -69,7 +73,7 @@
   <section class="panel board-panel">
     <div class="stage-label"><div><div class="chord-title" id="chord">G</div><div class="chord-sub" id="name">Sol Maior</div><div class="tiny-reading" id="read">Lê-se: Sol</div></div><div class="pill-badges" id="badges"></div></div>
     <div class="wood-caption"><span> <span class="hint-dot"></span>Braço do violão · 6 cordas reais</span><span class="tiny">As bolinhas são graus intervalares</span></div>
-    <div class="play-near-board" aria-label="Reprodução do violão"><div class="transport"><button class="play" id="playOne">▶ Ouvir arpejo</button><button class="play secondary" id="playAll">▶ Sequência</button><button class="play red" id="stop">■ Parar</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="55" max="160" step="5" value="100"><output id="bpmValue">100</output><span>BPM</span></div></div></div>
+    <div class="play-near-board" aria-label="Reprodução do violão"><div class="transport"><button class="play" id="playOne">▶ Ouvir arpejo</button><button class="play secondary" id="playAll">▶ Sequência</button><button class="play red" id="stop">■ Parar</button><button class="play loop-toggle" id="loop" type="button" aria-pressed="false" title="Repetir continuamente até Parar">↻ Loop: desligado</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="55" max="160" step="5" value="100"><output id="bpmValue">100</output><span>BPM</span></div></div></div>
 <div class="board-scroller" id="boardScroll"><svg xmlns="http://www.w3.org/2000/svg" id="fretboard" class="board" viewBox="0 0 1080 387" role="img" aria-label="Braço do violão com seis cordas e quatro notas tocadas"><rect x="180" y="45" width="870" height="288" rx="12" fill="#352721"/><text x="500" y="193" fill="#e4b17b" text-anchor="middle">Carregando braço...</text></svg></div>
     <div class="quick-tip-near" role="status" aria-live="polite"><div class="quick-label">✧ DICA RÁPIDA</div><div class="quick-content"><strong id="hint">Tríade maior: graus 1, 3 e 5.</strong><span id="hintDetail">1B: fundamental que localiza a forma no braço.</span></div></div><div class="surface-bottom"><div><div class="notes" id="cards" aria-label="Graus e nomes das notas"></div><div class="degree-legend"><span><i style="background:#e58c42"></i>1</span><span><i style="background:#5c95cd"></i>3</span><span><i style="background:#6c78db"></i>5</span><span><i style="background:#ad66d0"></i>7</span><span><i style="background:#64ac99"></i>Tensões</span><span><i style="background:#aa8bdf"></i>1B</span></div></div><div class="rhythm"><strong>♪ ♪ ♩ ♩</strong> · colcheia, colcheia, semínima, semínima<br><span>1º, 2º e 3º graus da forma → baixo por último</span></div></div>
     
@@ -91,7 +95,7 @@ const LOCATOR_STRING={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'51
 const CORRELATED_FORM={'432':{'135':'351','351':'513','513':'135'},'321':{'351':'135','513':'351','135':'513'}}; // par de formas que partilha 1B
 function correlatedForm(from,form,to){return from===to?form:CORRELATED_FORM[from]?.[form]||form;}
 const TENSIONS=['7','♭7','♭9','9','♯9','11','♯11','6','♭13','13','♭5','♯5','sus2','sus4'];
-const state={root:'G',strings:'432',form:'135',path:'sevenths',stage:0,mode:'trans',quality:'major',selected:new Set(),sixthSource:'auto',seventhSource:'auto',transitionSeventhSource:'1',generated:null,genError:'',bassString:'auto',bassDegree:'auto',bpm:100,playing:-1,token:0};
+const state={root:'G',strings:'432',form:'135',path:'sevenths',stage:0,mode:'trans',quality:'major',selected:new Set(),sixthSource:'auto',seventhSource:'auto',transitionSeventhSource:'1',generated:null,genError:'',bassString:'auto',bassDegree:'auto',bpm:100,playing:-1,token:0,loop:false};
 let audio=null,visNodes=[],playButtons=[],view={start:1,end:12},currentComputed=null;
 function pc(n){return (n%12+12)%12}
 function root(){return ROOTS.find(r=>r.symbol===state.root)}
@@ -311,7 +315,25 @@ function pluck(midi,sec,bass=false){
 }
 async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='O navegador bloqueou o áudio. Toque novamente para ativá-lo.';return false}}
 async function arpeggio(token){let c=currentComputed;const notes=[...c.noteMidi,c.bass.midi],beats=[.5,.5,1,1],duration=60/state.bpm;for(let i=0;i<4;i++){if(token!==state.token)return;state.playing=i;updatePlaying();pluck(notes[i],beats[i]*duration,i===3);await wait(beats[i]*duration*1000)}if(token===state.token){state.playing=-1;updatePlaying()}}
-async function play(sequence){stop();let token=state.token;if(!await unlock())return;$('playOne').disabled=true;$('playAll').disabled=true;let total=sequence?route().length:1;for(let i=0;i<total;i++){if(token!==state.token)return;if(sequence){state.stage=i;render();if(i)await wait(210);}await arpeggio(token);if(i<total-1)await wait(160)}if(token===state.token)stop()}
+async function play(sequence){
+ stop();const token=state.token;
+ if(!await unlock()||token!==state.token)return;
+ $('playOne').disabled=true;$('playAll').disabled=true;
+ do{
+  const total=sequence?route().length:1;
+  for(let i=0;i<total;i++){
+   if(token!==state.token)return;
+   if(sequence){state.stage=i;render();if(i)await wait(210)}
+   if(token!==state.token)return;
+   await arpeggio(token);
+   if(token!==state.token)return;
+   if(i<total-1)await wait(160);
+  }
+  if(!state.loop||token!==state.token)break;
+  await wait(130);
+ }while(token===state.token&&state.loop);
+ if(token===state.token)stop();
+}
 const pageParams=typeof window!=='undefined'&&window.location?.search?new URLSearchParams(window.location.search):null;if(pageParams){const group=pageParams.get('set'),rootChoice=pageParams.get('root');if(['432','321'].includes(group))state.strings=group;if(ROOTS.some(r=>r.symbol===rootChoice))state.root=rootChoice;}
 ROOTS.forEach(r=>{let op=document.createElement('option');op.value=r.symbol;op.textContent=r.symbol+' · '+r.name;$('root').append(op)});$('root').value=state.root;
 function changeKeepingChord(update){stop();const before={root:state.root,strings:state.strings,form:state.form};update();
@@ -346,6 +368,8 @@ document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>switchStringGro
  $('generateChord').onclick=generateVoicing;
 $('bassString').onchange=e=>{stop();state.bassString=e.target.value;render()};$('bassDegree').onchange=e=>{stop();state.bassDegree=e.target.value;render()};
 $('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmValue').textContent=state.bpm};$('playOne').onclick=()=>play(false);$('playAll').onclick=()=>play(true);$('stop').onclick=stop;
+$('loop').onclick=()=>{state.loop=!state.loop;$('loop').setAttribute('aria-pressed',String(state.loop));$('loop').textContent=state.loop?'↻ Loop: ligado':'↻ Loop: desligado'};
+window.addEventListener('pagehide',stop);
 render();document.documentElement.classList.add('js-ready');
 window.CifraPraMimGuitarDebug={switchGroup:(target)=>{switchStringGroup(target);return window.CifraPraMimGuitarDebug.get()},generate:(degrees,quality='major',sixth='auto',seventh='auto')=>{state.mode='gen';state.quality=quality;state.selected=new Set(degrees);state.sixthSource=sixth;state.seventhSource=seventh;let a=tryGenerate();state.generated=a.error?null:a;state.genError=a.error||'';state.stage=a.error?0:1;render();return window.CifraPraMimGuitarDebug.get()},get:()=>{let c=computed();return{root:state.root,form:state.form,strings:state.strings,stage:state.stage,chord:c.chord.symbol,grades:c.chord.grades,notes:c.notes,frets:c.frets,bass:c.bass,rootPc:root().pc,group:GROUPS[state.strings]};},show:(r,g,f,j=0)=>{state.root=r;state.strings=g;state.form=f;state.stage=j;$('root').value=r;render();return window.CifraPraMimGuitarDebug.get();},chooseBass:(string,degree)=>{state.bassString=String(string);state.bassDegree=String(degree);$('bassString').value=state.bassString;$('bassDegree').value=state.bassDegree;render();return window.CifraPraMimGuitarDebug.get();}};
 })();
