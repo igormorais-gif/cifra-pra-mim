@@ -106,3 +106,35 @@ test("Respiros: Mi toca em 2e, Sol em 3& e Si em 4&, na ordem registrada no áud
  assert.deepEqual(notes.map(x=>x.tick),[0,5,10,14]);
  assert.deepEqual(notes.map(x=>E.beatsToSeconds(x.tick,80)),[0,.9375,1.875,2.625]);
 });
+
+test("metrônomo oferece 4, 8 ou 16 cliques por compasso",()=>{
+ assert.deepEqual(E.METRONOME_MODES.map(m=>m.id),["beats","eighths","sixteenths"]);
+ assert.deepEqual(E.METRONOME_MODES.map(m=>E.metronomePlan(m.id,80).length),[4,8,16]);
+ assert.deepEqual(E.metronomePlan("beats",80).map(x=>x.tick),[0,4,8,12]);
+ assert.deepEqual(E.metronomePlan("eighths",80).map(x=>x.tick),[0,2,4,6,8,10,12,14]);
+ assert.deepEqual(E.metronomePlan("sixteenths",80).map(x=>x.tick),Array.from({length:16},(_,i)=>i));
+});
+test("metrônomo em semicolcheias marca 1 e & a em todos os tempos",()=>{
+ const clicks=E.metronomePlan("sixteenths",80);
+ assert.deepEqual(clicks.map(p=>p.label),["1","1e","1&","1a","2","2e","2&","2a","3","3e","3&","3a","4","4e","4&","4a"]);
+ assert.deepEqual(clicks.slice(0,4).map(p=>p.accent),["downbeat","subdivision","offbeat","subdivision"]);
+ assert.equal(clicks.at(-1).offsetSeconds,2.8125);
+});
+test("no modo 1 e & a, cada nota de Respiros coincide com um clique da mesma subdivisão",()=>{
+ const clicks=E.metronomePlan("sixteenths",80);
+ for(const note of E.events("respiros")){
+  const matching=clicks.find(c=>c.tick===note.tick);
+  assert.ok(matching,"Sem clique para "+note.name+" em "+note.at);
+  assert.equal(matching.label,note.at);
+  assert.equal(matching.offsetSeconds,E.beatsToSeconds(note.tick,80));
+ }
+});
+test("no modo de colcheias, os & caem nas mesmas posições das notas no 3& e 4&",()=>{
+ const clicks=E.metronomePlan("eighths",80);
+ for(const note of E.events("respiros").slice(2))assert.equal(clicks.find(c=>c.tick===note.tick).offsetSeconds,E.beatsToSeconds(note.tick,80));
+ assert.ok(!clicks.some(c=>c.tick===5),"2e não deve ter clique quando só as colcheias estão ativas");
+});
+test("modo de metrônomo inválido ou BPM inválido não produz cliques",()=>{
+ assert.throws(()=>E.metronomePlan("tercinas",80),RangeError);
+ assert.throws(()=>E.metronomePlan("sixteenths",0),RangeError);
+});
