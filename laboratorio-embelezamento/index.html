@@ -499,11 +499,13 @@ function renderConnection(){
 }
 function scheduleConnectionStage(when,index,token){
  const delay=Math.max(0,(when-audio.currentTime)*1000);
- timers.push(setTimeout(()=>{
+ const id=setTimeout(()=>{
+  const n=timers.indexOf(id);if(n>=0)timers.splice(n,1);
   if(token!==state.token)return;
   for(const b of document.querySelectorAll('[data-conn-index]'))
    b.classList.toggle('playing',index!==null&&Number(b.dataset.connIndex)===index);
- },delay))
+ },delay);
+ timers.push(id);
 }
 function scheduleConnectionCycle(at,token,data,indexes,beat){
  if(token!==state.token)return;
@@ -619,7 +621,8 @@ function highlight(midis){
 }
 function scheduleHighlight(when,midis,token){
  const delay=Math.max(0,(when-audio.currentTime)*1000);
- timers.push(setTimeout(()=>{if(token===state.token)highlight(midis)},delay));
+ const id=setTimeout(()=>{const i=timers.indexOf(id);if(i>=0)timers.splice(i,1);if(token===state.token)highlight(midis)},delay);
+ timers.push(id);
 }
 function stop(){if(loopClock){loopClock.cancel();loopClock=null}state.token++;timers.forEach(clearTimeout);timers=[];for(const o of oscillators)try{o.stop((audio?.currentTime||0)+.008)}catch(e){}oscillators=[];$('playPair').disabled=false;$('playTriad').disabled=false;$('connPlay').disabled=state.connSelected.size===0;for(const b of document.querySelectorAll('[data-conn-index]'))b.classList.remove('playing');highlight([])}
 function unlock(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Web Audio unavailable');audio=audio||new C();if(audio.state==='suspended'&&audio.resume){const p=audio.resume();if(p?.catch)p.catch(()=>{})}return true}catch(e){$('tip').textContent='Áudio indisponível. Verifique o volume e tente tocar novamente.';return false}}
