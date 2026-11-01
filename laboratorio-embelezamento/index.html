@@ -96,6 +96,12 @@ button:disabled{opacity:.42;cursor:default}
 .loop-toggle{background:#243849!important;color:#e3eef4!important;border:1px solid #637f92!important}
 .loop-toggle[aria-pressed="true"]{background:#f1bf8c!important;color:#251b15!important;border-color:#f5c99d!important}
 @media(max-width:700px){.ci-player .loop-toggle{flex:1 1 90px;min-height:36px;font-size:11px}}
+@media(max-width:700px){
+ .ci-transport{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ci-transport .tempo{grid-column:1/-1}
+ .shell{padding-bottom:calc(182px + env(safe-area-inset-bottom,0px))}
+ .ci-player .loop-toggle{flex:initial;min-height:38px}
+}
 </style></head><body><div class="shell">
 <header class="head"><div class="brand"><span class="brandmark" aria-hidden="true"></span><div><h1>Cifra <em>pra Mim</em></h1><div class="eyebrow">Laboratório de Notas de Embelezamento</div><div class="inst">C.I. · D.I. · D.S. · NOTAS DE CONEXÃO</div><div class="byline">Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer">@igmoraisb</a></div></div></div><nav class="links" aria-label="Navegação"><a href="../">Início</a><a href="../laboratorio-violao/">Violão</a><a href="../laboratorio-cavaquinho/">Cavaquinho</a><a href="../laboratorio-piano/">Piano</a><a href="../laboratorio-improviso/">Improvisação</a></nav></header>
 
