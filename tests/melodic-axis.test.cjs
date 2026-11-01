@@ -72,3 +72,15 @@ test("combinações inválidas são recusadas",()=>{
  assert.throws(()=>M.notes({inversion:4}),RangeError);
  assert.throws(()=>M.notes({path:24}),RangeError);
 });
+
+test("Registro e ordem são independentes: Dó dórico 7–3–1–5",()=>{
+ const path=M.PATHS.find(x=>x.label==="7–3–1–5");
+ const fundamental=M.notes({mode:"dorian",inversion:0,path:path.id});
+ const second=M.notes({mode:"dorian",inversion:2,path:path.id});
+ assert.deepEqual(fundamental.map(n=>n.name+n.octave),["Si♭4","Mi♭4","Dó4","Sol4"]);
+ assert.deepEqual(second.map(n=>n.name+n.octave),["Si♭4","Mi♭5","Dó5","Sol4"]);
+ assert.deepEqual(fundamental.map(n=>n.diatonic),second.map(n=>n.diatonic));
+ const a=M.events("respiros",{mode:"dorian",inversion:0,path:path.id});
+ const b=M.events("respiros",{mode:"dorian",inversion:2,path:path.id});
+ assert.deepEqual(a.map(n=>[n.tick,n.length]),b.map(n=>[n.tick,n.length]));
+});
