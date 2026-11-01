@@ -304,6 +304,7 @@ test("tríade menor admite D.I. e D.S. com resolução na terça menor",()=>{
  buttons["[data-kind]"][3].onclick();
  buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="1"&&b.dataset.comboKind==="none").onclick();
  buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="3"&&b.dataset.comboKind==="di").onclick();
+ buttons["[data-combo-figure]"].find(b=>b.dataset.comboDegree==="3"&&b.dataset.comboFigure==="approach").onclick();
  buttons["[data-combo-kind]"].find(b=>b.dataset.comboDegree==="5"&&b.dataset.comboKind==="none").onclick();
  assert.equal(el("motion").textContent,"Ré → Mi♭");
  el("playPair").onclick();
