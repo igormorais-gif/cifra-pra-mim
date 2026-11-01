@@ -97,6 +97,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:18px;pa
 </div>
 <div class="foot"><span>Cifra pra Mim · Estudo de voicings e transições cromáticas</span><span>Afinação Ré–Sol–Si–Ré · Som sintetizado · Uso offline no navegador · Prévia de arquivo pode bloquear scripts</span><span class="foot-credit">Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Igor Morais">@igmoraisb</a></span></div>
 </div>
+<script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (function(){'use strict';
 const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
@@ -206,7 +207,14 @@ function render(){let s=current();$('chordSymbol').textContent=s.meta.symbol;$('
  document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));document.querySelectorAll('[data-form]').forEach(b=>b.classList.toggle('selected',b.dataset.form===state.form));renderEnharmonic();showGenMessage();
  if(window.innerWidth<701){let scroller=$('boardScroller'),svgw=$('fretboard').getBoundingClientRect().width,frets=positions(s),mid=frets.reduce((a,b)=>a+b,0)/frets.length,x=fretX(mid)/1140*svgw;scroller.scrollLeft=Math.max(0,x-scroller.clientWidth/2)}
 }
-function stop(){state.token++;state.playing=-1;updateActive();$('playOne').disabled=false;$('playSequence').disabled=false;$('playOne').textContent='▶';$('nowPlaying').textContent='Arpejo'}
+let loopClock=null,loopVoices=[],loopHighlights=[];
+function stop(){
+ if(loopClock){loopClock.cancel();loopClock=null}
+ for(const t of loopHighlights)clearTimeout(t);
+ loopHighlights=[];
+ for(const o of loopVoices)try{o.stop()}catch(e){}
+ loopVoices=[];
+ state.token++;state.playing=-1;updateActive();$('playOne').disabled=false;$('playSequence').disabled=false;$('playOne').textContent='▶';$('nowPlaying').textContent='Arpejo'}
 function updateActive(){nodes.forEach((n,i)=>n.classList.toggle('playing',i===state.playing));document.querySelectorAll('.voicepill').forEach((b,i)=>b.classList.toggle('playing',i===state.playing));}
 async function unlockAudio(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(err){$('tipDetails').textContent='Ative o áudio do navegador e toque novamente.';return false}}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
@@ -250,9 +258,9 @@ function sweetOutput(node,flavor){
  node.connect(room.dry);
  if(room.send)node.connect(room.send);
 }
-function pluck(midi,duration){
+function pluck(midi,duration,at=null){
  if(!audio)return;
- const start=audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
+ const start=at??audio.currentTime,freq=440*Math.pow(2,(midi-69)/12);
  const length=Math.max(.31,Math.min(2.4,duration+.34));
  for(const [multiple,volume] of [[1,.185],[2,.050],[3,.016],[4,.006]]){
   const osc=audio.createOscillator(),gain=audio.createGain();
@@ -261,30 +269,45 @@ function pluck(midi,duration){
   gain.gain.exponentialRampToValueAtTime(volume,start+.014);
   gain.gain.exponentialRampToValueAtTime(.0001,start+length*(multiple===1?1:.82));
   osc.connect(gain);sweetOutput(gain,'cavaquinho');
-  osc.start(start);osc.stop(start+length+.08);
+  osc.start(start);osc.stop(start+length+.08);loopVoices.push(osc);
+  osc.onended=()=>{const i=loopVoices.indexOf(osc);if(i>=0)loopVoices.splice(i,1)};
  }
 }
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function singleArpeggio(token){let s=current(),f=positions(s),beats=[.5,.5,1,2],time=60/state.bpm;for(let i=0;i<4;i++){if(state.token!==token)return;state.playing=i;updateActive();pluck(TUNING[i]+f[i],time*beats[i]);await pause(time*beats[i]*1000)}if(token===state.token){state.playing=-1;updateActive()}}
+function visualAt(at,token,callback){
+ const id=setTimeout(()=>{if(token===state.token)callback()},Math.max(0,(at-audio.currentTime)*1000));
+ loopHighlights.push(id);
+}
 async function playSequence(all){
  stop();const token=state.token;
  if(!await unlockAudio()||token!==state.token)return;
  $('playOne').disabled=true;$('playSequence').disabled=true;
- $('playOne').textContent='· · ·';$('nowPlaying').textContent=all?'Reproduzindo sequência':'Reproduzindo';
- do{
-  const total=all?steps().length:1;
-  for(let j=0;j<total;j++){
+ $('playOne').textContent='· · ·';
+ $('nowPlaying').textContent=all?'Reproduzindo sequência':'Reproduzindo';
+ const beat=60/state.bpm,phraseLength=4*beat,count=all?steps().length:1,initialStage=state.stage;
+ loopClock=window.SeamlessLoop.create({
+  audio,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
+  schedule:at=>{
+   for(let j=0;j<count;j++){
+    state.stage=all?j:initialStage;
+    const c=current(),f=positions(c),begin=at+j*phraseLength;
+    const durations=[.5,.5,1,2];let elapsed=0;
+    for(let i=0;i<4;i++){
+     const time=begin+elapsed*beat;
+     pluck(TUNING[i]+f[i],beat*durations[i],time);
+     visualAt(time,token,()=>{state.playing=i;updateActive()});
+     elapsed+=durations[i];
+    }
+    if(all)visualAt(begin,token,()=>{state.stage=j;render()});
+   }
+  },
+  onFinish:()=>{
    if(token!==state.token)return;
-   if(all){state.stage=j;render();if(j>0)await pause(390)}
-   if(token!==state.token)return;
-   await singleArpeggio(token);
-   if(token!==state.token)return;
-   if(j<total-1)await pause(190);
+   loopClock=null;state.playing=-1;updateActive();
+   $('playOne').disabled=false;$('playSequence').disabled=false;
+   $('playOne').textContent='▶';$('nowPlaying').textContent='Arpejo';
   }
-  if(!state.loop||token!==state.token)break;
-  await pause(130);
- }while(state.loop&&token===state.token);
- if(token===state.token)stop();
+ });
 }
 async function playSingle(i){stop();let ok=await unlockAudio();if(!ok)return;let s=current();state.playing=i;updateActive();pluck(TUNING[i]+positions(s)[i],.7);setTimeout(()=>{if(state.playing===i){state.playing=-1;updateActive()}},550)}
 function generate(){stop();let g=tryGenerate();if(g.error){state.generated=null;state.error=g.error;state.stage=0}else{state.generated=g;state.error='';state.stage=1}state.boardKey='';render()}
