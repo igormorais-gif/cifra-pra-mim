@@ -324,7 +324,7 @@ function pluck(midi,sec,bass=false,at=null){
 }
 async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='O navegador bloqueou o áudio. Toque novamente para ativá-lo.';return false}}
 function visualAt(at,token,cb){
- const id=setTimeout(()=>{if(token===state.token)cb()},Math.max(0,(at-audio.currentTime)*1000));
+ const id=setTimeout(()=>{const i=loopHighlights.indexOf(id);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)cb()},Math.max(0,(at-audio.currentTime)*1000));
  loopHighlights.push(id);
 }
 async function play(sequence){
