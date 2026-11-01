@@ -50,7 +50,7 @@ test("C.I.1, C.I.3 e C.I.5 são botões independentes, inclusive sem seleção",
  b[1].onclick();assert.deepEqual(app.get().ciSelected,["1","3","5"]);
  b[0].onclick();assert.deepEqual(app.get().ciSelected,["3","5"]);
  b[2].onclick();b[1].onclick();assert.deepEqual(app.get().ciSelected,[]);
- assert.equal(el("playTour").disabled,true);
+ assert.equal(el("playPair").disabled,true);
  assert.equal(el("motion").textContent,"Nenhum C.I. selecionado");
  assert.deepEqual(b.map(x=>x.attrs["aria-pressed"]),["false","false","false"]);
 });
@@ -67,7 +67,7 @@ test("áudio toca somente os C.I. escolhidos, sem modificar botões",()=>{
  const {app,buttons,el,sounds}=setup();
  app.show("C","513","1","guitar","major","321");
  buttons["[data-target]"][2].onclick();
- el("playTour").onclick();
+ el("playPair").onclick();
  const sung=sounds.filter(n=>n.type==="sine").map(n=>n.midi);
  assert.deepEqual(sung,[66,67,71,72]);
  assert.deepEqual(app.get().ciSelected,["1","5"]);
@@ -120,14 +120,43 @@ test("D.I. e D.S. percorrem só os alvos marcados e mantêm as outras conexões"
  app.show("C","513","1","guitar","major","321");
  buttons["[data-target]"][2].onclick();
  buttons["[data-kind]"][1].onclick();
- el("playTour").onclick();
+ el("playPair").onclick();
  assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[65,67,71,72]);
  sounds.length=0;
  buttons["[data-kind]"][2].onclick();
- el("playTour").onclick();
+ el("playPair").onclick();
  assert.deepEqual(sounds.filter(n=>n.type==="sine").map(n=>n.midi),[69,67,74,72]);
  assert.deepEqual(app.get().ciSelected,["1","5"]);
  buttons["[data-kind]"][3].onclick();
  buttons["[data-conn-index]"][1].onclick();
  assert.deepEqual(app.get().connSelected,[0,1]);
+});
+
+test("players não redundantes: só aproximações ou em contexto de tríade",()=>{
+ const {app,el,sounds}=setup();
+ app.show("C","513","1","guitar","major","321");
+ assert.equal(typeof el("playPair").onclick,"function");
+ assert.equal(typeof el("playTriad").onclick,"function");
+ assert.equal(el("playTour").onclick,undefined,"player redundante não deve receber handler");
+ el("playPair").onclick();
+ const solo=sounds.filter(n=>n.type==="sine").map(n=>n.midi);
+ assert.deepEqual(solo,[71,72],"aproximações isoladas: Si→Dó");
+ sounds.length=0;
+ el("playTriad").onclick();
+ const complete=sounds.filter(n=>n.type==="sine").map(n=>n.midi);
+ assert.ok(complete.includes(60),"com tríade deve sustentar a fundamental no baixo");
+ assert.ok(complete.includes(67)&&complete.includes(76),"com tríade deve soar as notas estruturais");
+ assert.ok(complete.includes(71)&&complete.includes(72),"a aproximação selecionada deve permanecer");
+});
+test("conexões selecionadas dispensam segundo player",()=>{
+ const {app,buttons,el,sounds}=setup();
+ app.show("C","513","1","guitar","major","321");
+ buttons["[data-kind]"][3].onclick();
+ buttons["[data-conn-index]"][1].onclick();
+ assert.deepEqual(app.get().connSelected,[0,1]);
+ assert.equal(typeof el("connPlay").onclick,"function");
+ assert.equal(el("connTour").onclick,undefined);
+ el("connPlay").onclick();
+ assert.deepEqual(app.get().connSelected,[0,1],"reprodução não deve alterar seleção");
+ assert.ok(sounds.filter(n=>n.type==="sine").length>4,"deve percorrer as duas conexões");
 });
