@@ -25,23 +25,18 @@ function selectStep(index){cancelAudio();selected = index;const step = steps[ind
 selectStep(0);
 
 let ctx;
-let loopEnabled=false;
-let playbackToken=0;
-let loopTimer=null;
+let loopEnabled=false,playbackToken=0,loopClock=null;
 let activeOscillators=[];
 function stopPlayback(){
  playbackToken++;
- if(loopTimer!==null)clearTimeout(loopTimer);
- loopTimer=null;
+ if(loopClock){loopClock.cancel();loopClock=null}
  for(const osc of activeOscillators)try{osc.stop()}catch(e){}
  activeOscillators=[];
 }
 cancelAudio=stopPlayback;
-function playPass(token){
+function schedulePass(start,token){
  if(token!==playbackToken||!ctx)return;
  const notes=steps[selected].midi;
- const start=ctx.currentTime+.02;
- activeOscillators=[];
  for(const [i,midi] of notes.entries()){
   const osc=ctx.createOscillator(),gain=ctx.createGain(),t=start+i*.22;
   osc.type='sine';osc.frequency.value=440*Math.pow(2,(midi-69)/12);
@@ -50,24 +45,22 @@ function playPass(token){
   gain.gain.exponentialRampToValueAtTime(.0001,t+.45);
   osc.connect(gain);gain.connect(ctx.destination);
   osc.start(t);osc.stop(t+.48);activeOscillators.push(osc);
+  osc.onended=()=>{const index=activeOscillators.indexOf(osc);if(index>=0)activeOscillators.splice(index,1)};
  }
- // Deixar o fim de cada arpejo soar antes de decidir se reinicia.
- loopTimer=setTimeout(()=>{
-  if(token===playbackToken){
-   activeOscillators=[];
-   if(loopEnabled)playPass(token);
-  }
- },1150);
 }
 document.querySelector('#play').addEventListener('click',async()=>{
- stopPlayback();
- const token=playbackToken;
+ stopPlayback();const token=playbackToken;
  const Context=window.AudioContext||window.webkitAudioContext;
  if(!Context){alert('Seu navegador não suporta áudio sintetizado.');return}
  ctx??=new Context();
  try{if(ctx.state==='suspended')await ctx.resume()}catch(e){return}
  if(token!==playbackToken)return;
- playPass(token);
+ // Quatro notas: 0, 0,22, 0,44 e 0,66 s. Próximo ciclo em 0,88 s.
+ loopClock=window.SeamlessLoop.create({
+  audio:ctx,cycleSeconds:.88,shouldRepeat:()=>loopEnabled,
+  schedule:at=>schedulePass(at,token),
+  onFinish:()=>{if(token===playbackToken)loopClock=null}
+ });
 });
 document.querySelector('#stop-audio').addEventListener('click',stopPlayback);
 document.querySelector('#loop').addEventListener('click',()=>{
