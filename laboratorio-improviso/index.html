@@ -761,6 +761,16 @@ $("loop").addEventListener("click",()=>{
  $("loop").setAttribute("aria-label",state.loop?"Desativar Loop":"Ativar Loop");
  setStatus(state.loop?"Loop ligado: a reprodução atual se repetirá até Parar.":"Loop desligado: a reprodução atual terminará normalmente.");
 });
+function setScoreMode(mode){
+ if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");
+ if(state.scoreMode===mode)return;
+ // A visualização não deve cancelar áudio, metrônomo ou Loop.
+ state.scoreMode=mode;
+ renderScore();
+}
+for(const btn of document.querySelectorAll("[data-score-mode]")){
+ btn.addEventListener("click",()=>setScoreMode(btn.dataset.scoreMode));
+}
 $("score-fit").addEventListener("click",()=>{state.scoreFit=true;renderScore()});
 $("score-zoom").addEventListener("click",()=>{state.scoreFit=false;renderScore()});
 $("play").addEventListener("click",playSelected);
@@ -780,7 +790,7 @@ window.RhythmLabUI={
  setMetronomeMode,
  select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
- score:mode=>{if(!["rhythm","melodic"].includes(mode))throw new RangeError("Modo de partitura desconhecido");stop();state.scoreMode=mode;renderScore()}
+ score:setScoreMode
 };
 for(const item of M.MODES){const opt=make("option","",item.name);opt.value=item.id;$("axis-mode").append(opt)}
 for(const item of M.INVERSIONS){const opt=make("option","",item.order+" · "+item.title);opt.value=String(item.id);$("axis-inversion").append(opt)}
