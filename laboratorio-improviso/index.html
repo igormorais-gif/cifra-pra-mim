@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101820">
+<meta name="description" content="Laboratório de Improvisação: quatro notas, cinco células rítmicas e infinitas decisões musicais.">
+<title>Cifra pra Mim · Laboratório de Ritmo</title>
+<style>
+:root{color-scheme:dark;--bg:#101820;--panel:#172532;--panel2:#192c3b;--line:#345064;--text:#f2ede4;--muted:#a7b8c5;--accent:#f4bb84;--cyan:#89c9ce}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.48}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+a{color:#d9e7f0}.shell{width:min(1150px,100%);margin:auto;padding:20px 22px 90px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:25px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.wordmark{font:800 28px/1 Georgia,serif;letter-spacing:-1px;color:var(--text);text-decoration:none}
+.wordmark em{font-style:normal;color:var(--accent)}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-top:9px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{border:1px solid var(--line);border-radius:9px;padding:8px 11px;text-decoration:none;font-size:11px;font-weight:750}
+.hero{padding:32px 0 26px;display:grid;grid-template-columns:1.35fr 1fr;gap:25px;align-items:end}
+.kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:800}
+h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;margin:9px 0 15px}
+.hero p{color:#bccbd5;max-width:630px;margin:0;font-size:15px}
+.hero-side{border-left:2px solid #ad8060;padding:3px 0 3px 18px;color:var(--muted);font-size:13px}
+.hero-side strong{display:block;color:var(--text);font-size:16px;margin-bottom:7px}
+.card{border:1px solid var(--line);background:linear-gradient(145deg,#1b2c3b,#14212e);border-radius:16px}
+.purpose{padding:18px 20px;margin-bottom:16px}
+.purpose h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px;color:#e7c29d}
+.fixed{display:flex;gap:15px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.notes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pitch{border:1px solid #4c6477;border-radius:10px;background:#0d1b28;padding:9px 13px;min-width:60px;text-align:center}
+.pitch strong{display:block;font-size:20px}.pitch small{color:var(--muted);font-size:11px}
+.fixed-meta{font-size:12px;color:var(--muted);max-width:310px}
+.card-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.card-heading h2{font:700 22px/1.2 Georgia,serif;margin:0}
+.card-heading span{color:var(--muted);font-size:12px}
+.choose{padding:20px;margin-bottom:16px}
+.rhythm-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.rhythm-card{border:1px solid #3b566d;background:#101e2b;border-radius:12px;color:var(--text);padding:13px;text-align:left;min-height:136px;transition:background .12s,border-color .12s}
+.rhythm-card.active{border-color:var(--accent);background:#3b3029;box-shadow:inset 0 0 0 1px #e5a96d}
+.rhythm-card b{display:block;font-size:14px;margin-bottom:3px}
+.rhythm-card small{display:block;font-size:11px;color:var(--muted);min-height:32px;line-height:1.35}
+.rhythm-card.active small{color:#e4c9b3}
+.mini{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:1px;height:24px;margin-top:16px;align-items:end}
+.mini i{display:block;height:7px;background:#364b5c;border-radius:2px}
+.mini i.on{background:#eab887;height:21px}
+.mini i.offbeat{background:#81c5c8}
+.rhythm-card.active .mini i:not(.on):not(.offbeat){background:#69564a}
+.player{padding:19px 20px;margin-bottom:15px}
+.control-row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.action{border:1px solid #536b7a;border-radius:9px;padding:10px 14px;background:#263a49;color:#edf2f2;font-weight:750;font-size:12px;min-height:42px}
+.action.primary{border-color:#eab78e;background:#f3b988;color:#2e2118}
+.action.stop{background:#372a30;border-color:#71505a}
+.tempo{margin-left:auto;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:12px;white-space:nowrap}
+.tempo input{accent-color:var(--accent);width:125px}
+.tempo output{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.toggle{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;cursor:pointer}
+.toggle input{accent-color:var(--accent)}
+.status{min-height:20px;margin:10px 0 0;color:#a7c8d6;font-size:12px}
+.selected{padding:21px 20px 24px;margin-bottom:16px}
+.selected p{font-size:13px;color:var(--muted);margin:5px 0 20px;max-width:700px}
+.beats{display:grid;grid-template-columns:repeat(4,1fr);margin:0 0 8px;gap:0}
+.beats span{font-size:12px;color:#dbad83;border-left:1px solid #527187;padding-left:8px;font-weight:800}
+.beats span:first-child{border-left:0}
+.chart-scroll{overflow-x:auto;padding-bottom:7px}
+.ticks{position:relative;display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:0;min-width:540px;height:98px;padding:10px 0;border-radius:9px;background:#0e1b26}
+.tick{min-width:0;position:relative;border-left:1px solid #253948}
+.tick.major{border-color:#587287}
+.tick::after{content:attr(data-label);position:absolute;top:2px;left:3px;font-size:9px;color:#869bab}
+.hit{position:relative;grid-row:1;margin:29px 2px 11px;border:1px solid #c79570;border-radius:6px;background:#d6a277;color:#281f1b;min-width:0;z-index:2;font-weight:850;font-size:11px;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap}
+.hit.offbeat{background:#83c3c8;border-color:#62a6aa;color:#102c35}
+.hit.sounding{background:#ff6b78;border-color:#ffb6be;color:#311316}
+.hit.tiny{font-size:0}
+.hit.tiny:after{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.event-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.event-chip{border:1px solid #3d5870;border-radius:8px;padding:7px 11px;background:#102130;font-size:12px;color:#e3edf0}
+.event-chip strong{color:#f8c195}
+.event-chip.sounding{border-color:#fd828c;background:#532e39}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.details .card{padding:18px 20px}
+.details h3{font:700 19px Georgia,serif;margin:0 0 8px}
+.details p{color:#b7c7d1;font-size:13px;margin:0}
+.details b{color:#f1cca7}
+.bottom{margin-top:24px;border-top:1px solid #35495c;padding-top:16px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+@media(max-width:950px){.rhythm-list{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr}.hero-side{max-width:660px}}
+@media(max-width:620px){.shell{padding:13px 13px 100px}.hero{padding:25px 0}.rhythm-list{grid-template-columns:repeat(2,minmax(0,1fr))}.rhythm-card{min-height:120px}.details{grid-template-columns:1fr}.tempo{margin:8px 0 0;width:100%;justify-content:space-between}.tempo input{flex:1;max-width:220px}.selected,.choose,.player,.purpose{padding:15px}.ticks{min-width:520px}.fixed{gap:10px}.pitch{padding:8px 10px;min-width:56px}header nav{width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div>
+    <a class="wordmark" href="../">Cifra <em>pra Mim</em></a>
+    <div class="eyebrow">Método de criação · Experimento 01</div>
+  </div>
+  <nav aria-label="Navegação"><a href="../">Início</a><a href="../laboratorio-embelezamento/">Embelezamentos</a><a href="../laboratorio-piano/">Piano</a><a href="../laboratorio-violao/">Violão</a></nav>
+</header>
+<main>
+  <section class="hero">
+    <div><span class="kicker">Laboratório de improvisação / Eixo rítmico</span><h1>Uma tétrade.<br>Cinco ritmos.</h1><p>Mantenha as mesmas quatro alturas e a mesma ordem intervalar. Mude só a distribuição dos ataques em um compasso 4/4 e escute o que acontece com a frase.</p></div>
+    <div class="hero-side"><strong>Não é um catálogo de licks.</strong>Este experimento isola o ritmo: as cinco células são originais, não foram copiadas dos livros de improvisação. Depois, poderemos cruzá-las com os 96 percursos, os modos e os embelezamentos.</div>
+  </section>
+  <section class="card purpose" aria-label="Material intervalar fixo">
+    <h2>Estrutura intervalar fixa · C7M · disposição fechada</h2>
+    <div class="fixed">
+      <div class="notes" id="pitches"><div class="pitch"><strong>Dó</strong><small>1</small></div><div class="pitch"><strong>Mi</strong><small>3</small></div><div class="pitch"><strong>Sol</strong><small>5</small></div><div class="pitch"><strong>Si</strong><small>7</small></div></div>
+      <div class="fixed-meta"><b>Ordem:</b> 1–3–5–7. <b>Registro:</b> Dó4–Mi4–Sol4–Si4.<br>As notas não mudam quando você troca de célula.</div>
+    </div>
+  </section>
+  <section class="card choose" aria-labelledby="choose-title">
+    <div class="card-heading"><h2 id="choose-title">Escolha uma célula rítmica</h2><span>5 desenhos · 4 ataques por compasso</span></div>
+    <div class="rhythm-list" id="rhythm-list" role="group" aria-label="Cinco células rítmicas"></div>
+  </section>
+  <section class="card player" aria-label="Controles de reprodução">
+    <div class="control-row">
+      <button class="action primary" id="play" type="button">▶ Ouvir esta célula</button>
+      <button class="action" id="compare" type="button">▶ Comparar as cinco</button>
+      <button class="action stop" id="stop" type="button">■ Parar</button>
+      <label class="toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
+      <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite">Selecione uma célula e toque para ouvir.</p>
+  </section>
+  <section class="card selected" aria-labelledby="selected-title">
+    <div class="card-heading"><h2 id="selected-title">Pulso</h2><span id="selected-meta">Quatro semínimas</span></div>
+    <p id="selected-description">Uma nota em cada tempo.</p>
+    <div class="beats" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+    <div class="chart-scroll">
+      <div class="ticks" id="timeline" role="img" aria-label="Posições dos quatro ataques na grade de dezesseis semicolcheias"></div>
+    </div>
+    <div class="event-list" id="event-list" aria-label="Notas e subdivisões"></div>
+  </section>
+  <section class="details" aria-label="Como estudar">
+    <div class="card"><h3>O que permanece igual?</h3><p><b>Dó → Mi → Sol → Si</b>, suas oitavas e as relações intervalares. Estamos mudando apenas <b>quando</b> cada altura entra, quanto dura e onde aparece o silêncio.</p></div>
+    <div class="card"><h3>O que observar?</h3><p>Como um ataque no contratempo transforma a percepção da frase? O que acontece quando a mesma nota chega antes, depois ou exatamente sobre um tempo forte?</p></div>
+  </section>
+</main>
+<footer class="bottom"><span>Cifra pra Mim · Pesquisa didática de criação e improvisação</span><span>Próximos eixos: 96 percursos · 7 modos · embelezamentos</span></footer>
+</div>
+<script src="../src/rhythm-lab.js"></script>
+<script>
+(function(){
+"use strict";
+const E=window.RhythmLabEngine;
+const $=id=>document.getElementById(id);
+const state={id:"regular",bpm:80,click:true,token:0,ctx:null,voices:[],timers:[]};
+const patterns=E.PATTERNS;
+function setStatus(message){$("status").textContent=message}
+function make(tag,cls,txt){const el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el}
+function fillMini(node,p){
+  const onsets=new Map(p.hits.map(h=>[h.tick,h]));
+  for(let t=0;t<16;t++){
+    const bar=make("i",onsets.has(t)?(t%4?"offbeat":"on"):"");
+    node.append(bar);
+  }
+}
+function showChoices(){
+ const wrap=$("rhythm-list");wrap.replaceChildren();
+ for(const p of patterns){
+  const btn=make("button","rhythm-card"+(p.id===state.id?" active":""),undefined);
+  btn.type="button";btn.dataset.rhythm=p.id;
+  btn.setAttribute("aria-pressed",String(p.id===state.id));
+  btn.append(make("b","",p.title),make("small","",p.subtitle));
+  const mini=make("div","mini");mini.setAttribute("aria-hidden","true");fillMini(mini,p);btn.append(mini);
+  btn.addEventListener("click",()=>{stop();state.id=p.id;render();setStatus("Célula escolhida: "+p.title+".")});
+  wrap.append(btn);
+ }
+}
+function render(){
+ const p=E.pattern(state.id),ev=E.events(state.id);
+ showChoices();
+ $("selected-title").textContent=p.title;
+ $("selected-meta").textContent=p.subtitle;
+ $("selected-description").textContent=p.description;
+ const grid=$("timeline");grid.replaceChildren();
+ for(let tick=0;tick<16;tick++){
+  const cell=make("span","tick"+(tick%4===0?" major":""));
+  cell.dataset.label=["","e","&","a"][tick%4];
+  cell.style.gridColumn=String(tick+1);cell.style.gridRow="1";
+  grid.append(cell);
+ }
+ for(const n of ev){
+  const item=make("span","hit"+(n.accent?"":" offbeat")+(n.length<=1?" tiny":"") ,n.name);
+  item.dataset.index=String(n.index);item.title=n.name+" ("+n.degree+") · "+n.at;
+  item.style.gridColumn=(n.tick+1)+" / span "+n.length;
+  grid.append(item);
+ }
+ const chips=$("event-list");chips.replaceChildren();
+ for(const n of ev){
+  const chip=make("span","event-chip");
+  chip.dataset.index=String(n.index);
+  const strong=make("strong","",n.name+" ("+n.degree+")");
+  chip.append(strong,document.createTextNode(" · "+n.at));
+  chips.append(chip);
+ }
+ grid.setAttribute("aria-label",p.title+": "+ev.map(e=>e.name+" no "+e.at).join("; "));
+}
+function stop(){
+ state.token++;
+ for(const t of state.timers)clearTimeout(t);
+ state.timers=[];
+ for(const o of state.voices){try{o.stop()}catch(e){}}
+ state.voices=[];
+ $("play").disabled=false;$("compare").disabled=false;
+ for(const chip of document.querySelectorAll(".sounding"))chip.classList.remove("sounding");
+}
+function later(seconds,callback,token){
+ const id=setTimeout(()=>{if(state.token===token)callback()},Math.max(0,seconds*1000));
+ state.timers.push(id);
+}
+async function audioContext(){
+ const C=window.AudioContext||window.webkitAudioContext;
+ if(!C){setStatus("Este navegador não disponibiliza Web Audio.");return null}
+ if(!state.ctx)state.ctx=new C();
+ try{if(state.ctx.state==="suspended")await state.ctx.resume()}catch(e){setStatus("Toque novamente para permitir o áudio.");return null}
+ return state.ctx;
+}
+function note(midi,at,duration,accent){
+ const ctx=state.ctx,osc=ctx.createOscillator(),gain=ctx.createGain(),vol=accent?.20:.15;
+ osc.type="triangle";osc.frequency.setValueAtTime(440*Math.pow(2,(midi-69)/12),at);
+ gain.gain.setValueAtTime(.0001,at);
+ gain.gain.exponentialRampToValueAtTime(vol,at+.025);
+ gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
+ osc.connect(gain);gain.connect(ctx.destination);
+ osc.start(at);osc.stop(at+duration+.03);state.voices.push(osc);
+}
+function click(at,strong){
+ const ctx=state.ctx,osc=ctx.createOscillator(),gain=ctx.createGain();
+ osc.type="sine";osc.frequency.setValueAtTime(strong?1120:780,at);
+ gain.gain.setValueAtTime(.0001,at);
+ gain.gain.exponentialRampToValueAtTime(strong?.082:.043,at+.006);
+ gain.gain.exponentialRampToValueAtTime(.0001,at+.060);
+ osc.connect(gain);gain.connect(ctx.destination);
+ osc.start(at);osc.stop(at+.08);state.voices.push(osc);
+}
+function sounding(index,on){
+ for(const item of document.querySelectorAll('[data-index="'+index+'"]'))item.classList.toggle("sounding",on);
+}
+function schedulePattern(id,begin,token,offsetSeconds=0){
+ const beat=60/state.bpm,ev=E.events(id);
+ if(state.click)for(let i=0;i<4;i++)click(begin+i*beat,i===0);
+ for(const n of ev){
+  const dt=E.beatsToSeconds(n.tick,state.bpm);
+  const dur=E.beatsToSeconds(n.length,state.bpm);
+  const start=begin+dt;
+  note(n.midi,start,Math.max(.055,dur*.83),n.accent);
+  later(offsetSeconds+dt,()=>sounding(n.index,true),token);
+  later(offsetSeconds+dt+dur*.83,()=>sounding(n.index,false),token);
+ }
+}
+async function playSelected(){
+ stop();
+ const token=state.token;
+ const ctx=await audioContext();
+ if(!ctx||state.token!==token)return;
+ const id=state.id,beat=60/state.bpm,at=ctx.currentTime+.08;
+ $("play").disabled=true;$("compare").disabled=true;
+ schedulePattern(id,at,token,.08);
+ setStatus("Tocando "+E.pattern(id).title+" · "+state.bpm+" BPM.");
+ later(.08+beat*4+.12,()=>{
+  $("play").disabled=false;$("compare").disabled=false;
+  setStatus("Fim do compasso. Escolha outra célula para comparar.");
+ },token);
+}
+async function compareAll(){
+ stop();const token=state.token;
+ const ctx=await audioContext();
+ if(!ctx||state.token!==token)return;
+ const beat=60/state.bpm,at=ctx.currentTime+.08;
+ $("play").disabled=true;$("compare").disabled=true;
+ patterns.forEach((p,i)=>{
+  const delay=i*5*beat;
+  schedulePattern(p.id,at+delay,token,.08+delay);
+  later(.08+delay,()=>{
+   state.id=p.id;render();
+   setStatus("Comparação "+(i+1)+"/5 · "+p.title+".");
+  },token);
+ });
+ later(.08+patterns.length*5*beat,()=>{
+   $("play").disabled=false;$("compare").disabled=false;
+   setStatus("Comparação concluída. As quatro alturas permaneceram iguais.");
+ },token);
+}
+$("play").addEventListener("click",playSelected);
+$("compare").addEventListener("click",compareAll);
+$("stop").addEventListener("click",()=>{stop();setStatus("Reprodução interrompida.")});
+$("bpm").addEventListener("input",e=>{
+  stop();state.bpm=Number(e.target.value);
+  $("bpm-value").textContent=String(state.bpm);
+  setStatus("Andamento: "+state.bpm+" BPM.");
+});
+$("click").addEventListener("change",e=>{state.click=e.target.checked});
+window.addEventListener("pagehide",stop);
+window.RhythmLabUI={get:()=>({rhythm:state.id,bpm:state.bpm,click:state.click,events:E.events(state.id)}),select:id=>{E.pattern(id);stop();state.id=id;render()}};
+render();
+})();
+</script>
+</body>
+</html>
