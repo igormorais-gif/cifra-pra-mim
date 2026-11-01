@@ -172,43 +172,63 @@ function svg(tag,attrs,p){const e=document.createElementNS(NS,tag);for(let [a,b]
 const COLORS={'1':'#e58c42','3':'#5c95cd','♭3':'#5c95cd','5':'#6c78db'};
 let visualNodes=[];
 function recordNote(el,midi,fill,stroke){visualNodes.push({el,midi,fill,stroke});return el}
-function keyboard(id,notes,focus){
+function keyboard(id,notes,selected){
  const el=$(id);el.replaceChildren();
- // Região VISUAL estável: a janela inclui os C.I. de todas as vozes,
- // independentemente do alvo atualmente selecionado ou tocado.
- // Preserva a oitava real de 135, 351 e 513, sem deslizar o teclado na reprodução.
- const lo=Math.min(...notes.map(n=>n.midi-(focus?1:0)));
- const start=12*Math.floor(lo/12);
+ // Região idêntica com 0, 1, 2 ou 3 cromatismos ligados:
+ // inclui sempre o semitom anterior à nota estrutural mais grave.
+ const start=12*Math.floor(Math.min(...notes.map(n=>n.midi-1))/12);
  let whites=[];for(let m=start;whites.length<21;m++)if([0,2,4,5,7,9,11].includes(P(m)))whites.push(m);
  const w=1000/21;svg('rect',{x:0,y:0,width:1000,height:235,rx:8,fill:'#0b1420'},el);
  for(let i=0;i<whites.length;i++){svg('rect',{x:i*w+1,y:5,width:w-2,height:219,rx:3,fill:'#f9f3eb',stroke:'#a4a8aa','stroke-width':1.3},el);if(P(whites[i])===0)svg('text',{x:(i+.5)*w,y:209,'text-anchor':'middle','font-size':13,fill:'#81929e'},el).textContent='C'+(Math.floor(whites[i]/12)-1)}
  for(let i=0;i<whites.length;i++)if([0,2,5,7,9].includes(P(whites[i])))svg('rect',{x:(i+1)*w-w*.31,y:5,width:w*.62,height:136,rx:3,fill:'#222b34',stroke:'#657482'},el);
  function mark(m,d,color){const black=[1,3,6,8,10].includes(P(m)),i=whites.indexOf(black?m-1:m);if(i<0)return;const x=(i+(black?1:.5))*w,y=black?99:174,r=d==='C.I.'?18:19;
- const stroke=d===focus?'#ffe8c8':'#34445a';
- recordNote(svg('circle',{cx:x,cy:y,r,fill:color,stroke,'stroke-width':2.7},el),m,color,stroke);
- svg('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'middle',fill:'#151e28','font-size':d.length>2?10:17,'font-weight':850},el).textContent=d}
- for(const n of notes)mark(n.midi,n.degree,n.degree===focus?'#f8b780':COLORS[n.degree]);
- if(focus){const t=notes.find(n=>n.degree===focus);if(t)mark(t.midi-1,'C.I.','#70cadb')}
+  recordNote(svg('circle',{cx:x,cy:y,r,fill:color,stroke:'#34445a','stroke-width':2.7},el),m,color,'#34445a');
+  svg('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'middle',fill:'#151e28','font-size':d.length>2?10:17,'font-weight':850},el).textContent=d}
+ const ids=new Set(selected.map(n=>n.idx));
+ for(const n of notes)mark(n.midi,n.degree,ids.has(n.idx)?'#f8b780':COLORS[n.degree]);
+ for(const n of selected)mark(n.midi-1,'C.I.','#70cadb');
 }
-function rightTarget(){return piano().find(n=>n.degree===target())}
-function pianoUI(){const left=[bass()],right=piano();keyboard('leftKeys',left,null);keyboard('rightKeys',right,target());
- const cards=(id,notes,append)=>{const p=$(id);p.replaceChildren();for(const n of notes){const d=document.createElement('div');d.className='ci-card'+(n.degree===target()?' active':'');d.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';d.dataset.midi=String(n.midi);p.append(d)}
- if(append){const d=document.createElement('div');d.className='ci-card ci';d.innerHTML='<b>C.I.</b><small>'+before(target())+'</small>';d.dataset.midi=String(rightTarget().midi-1);p.append(d)}};
- cards('leftCards',left,false);cards('rightCards',right,true);$('rightForm').textContent=state.form}
-function guitarUI(){const el=$('guitar');el.replaceChildren();const notes=guitar(),bass=locator(notes),t=notes.find(n=>n.degree===target());if(!notes.length)return;
- const fs=notes.map(n=>n.fret).concat(bass?[bass.fret]:[]).concat([t.fret-1]);let low=Math.max(1,Math.min(...fs)-2),high=low+10;if(high<Math.max(...fs)+1){low=Math.max(1,Math.max(...fs)-10);high=low+10}if(high>19){high=19;low=9}
+function pianoUI(){
+ const left=[bass()],right=piano(),selected=ciNotes(right);
+ keyboard('leftKeys',left,[]);
+ keyboard('rightKeys',right,selected);
+ const cards=(id,notes,selected,append)=>{
+  const el=$(id);el.replaceChildren();
+  const ids=new Set(selected.map(n=>n.idx));
+  for(const n of notes){const item=document.createElement('div');item.className='ci-card'+(ids.has(n.idx)?' active':'');item.innerHTML='<b>'+n.degree+'</b><small>'+n.name+'</small>';item.dataset.midi=String(n.midi);el.append(item)}
+  if(append)for(const n of selected){const item=document.createElement('div');item.className='ci-card ci';item.innerHTML='<b>C.I.'+n.degree+'</b><small>'+before(n.degree)+'</small>';item.dataset.midi=String(n.midi-1);el.append(item)}
+ };
+ cards('leftCards',left,[],false);
+ cards('rightCards',right,selected,true);
+ $('rightForm').textContent=state.form;
+}
+function guitarUI(){
+ const el=$('guitar');el.replaceChildren();
+ const notes=guitar();if(!notes.length)return;
+ const bass=locator(notes),selected=ciNotes(notes),selectedIds=new Set(selected.map(n=>n.idx));
+ const fs=notes.map(n=>n.fret).concat(bass?[bass.fret]:[]).concat(selected.map(n=>n.fret-1));
+ let low=Math.max(1,Math.min(...fs)-2),high=low+10;
+ if(high<Math.max(...fs)+1){low=Math.max(1,Math.max(...fs)-10);high=low+10}
+ if(high>19){high=19;low=9}
  const L=195,R=1082,X=f=>f===0?L-31:L+(f-low+.5)*(R-L)/(high-low+1),Y=n=>65+n*41;
  svg('rect',{x:104,y:62,width:985,height:282,rx:11,fill:'#37261e',stroke:'#8a674e','stroke-width':2},el);
  for(let f=low;f<=high;f++){const x=L+(f-low)*(R-L)/(high-low+1);svg('line',{x1:x,y1:65,x2:x,y2:343,stroke:'#c0a38a','stroke-width':2},el);svg('text',{x:X(f),y:355,'font-size':12,fill:'#d5c1ae','text-anchor':'middle'},el).textContent=String(f)}
  for(let string=1;string<=6;string++){svg('line',{x1:L,y1:Y(string),x2:R,y2:Y(string),stroke:'#d7d2d2','stroke-width':1.1+string*.23},el);svg('text',{x:86,y:Y(string)+5,'font-size':13,fill:'#c6d2dd','text-anchor':'end'},el).textContent=string+'ª'}
- for(const n of notes){const on=n.degree===target(),x=X(n.fret),y=Y(n.string);
- const fill=on?'#f5ae77':COLORS[n.degree],stroke=on?'#ffdeaf':'#d6d5d2';
- // Mesmo raio das outras notas: não encobrir cordas adjacentes (distância 41 px).
- recordNote(svg('circle',{cx:x,cy:y,r:16,fill,stroke,'stroke-width':on?2.5:2},el),n.midi,fill,stroke);
- svg('text',{x,y:y+1,'font-size':15,'font-weight':900,fill:'#1a2530','text-anchor':'middle','dominant-baseline':'middle'},el).textContent=n.degree;
- if(on){recordNote(svg('circle',{cx:X(n.fret-1),cy:y,r:16,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el),n.midi-1,'#6ec5d7','#d6fbff');svg('text',{x:X(n.fret-1),y:y+1,fill:'#112733','font-size':9,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='C.I.';svg('line',{x1:X(n.fret-1)+13,y1:y-25,x2:x-14,y2:y-25,stroke:'#a1e6f0','stroke-width':2.5},el)}}
+ for(const n of notes){
+  const on=selectedIds.has(n.idx),x=X(n.fret),y=Y(n.string);
+  const fill=on?'#f5ae77':COLORS[n.degree],stroke=on?'#ffdeaf':'#d6d5d2';
+  recordNote(svg('circle',{cx:x,cy:y,r:16,fill,stroke,'stroke-width':on?2.5:2},el),n.midi,fill,stroke);
+  svg('text',{x,y:y+1,'font-size':15,'font-weight':900,fill:'#1a2530','text-anchor':'middle','dominant-baseline':'middle'},el).textContent=n.degree;
+  if(on&&n.fret>0){
+   recordNote(svg('circle',{cx:X(n.fret-1),cy:y,r:16,fill:'#6ec5d7',stroke:'#d6fbff','stroke-width':2},el),n.midi-1,'#6ec5d7','#d6fbff');
+   svg('text',{x:X(n.fret-1),y:y+1,fill:'#112733','font-size':9,'font-weight':850,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='C.I.';
+   svg('line',{x1:X(n.fret-1)+13,y1:y-25,x2:x-14,y2:y-25,stroke:'#a1e6f0','stroke-width':2.5},el)
+  }
+ }
  if(bass){recordNote(svg('circle',{cx:X(bass.fret),cy:Y(bass.string),r:16,fill:'#241c34',stroke:'#d7b8fc','stroke-width':2,'stroke-dasharray':'4 3'},el),bass.midi,'#241c34','#d7b8fc');svg('text',{x:X(bass.fret),y:Y(bass.string)+1,fill:'#d7b8fc','font-size':10,'font-weight':900,'text-anchor':'middle','dominant-baseline':'middle'},el).textContent='1B'}
- $('fretSummary').textContent=notes.map(n=>n.degree+' · '+n.string+'ª casa '+n.fret).join(' | ');$('bassSummary').textContent=bass?'1B · '+bass.string+'ª corda · casa '+bass.fret:'1B: fora do alcance do diagrama'}
+ $('fretSummary').textContent=notes.map(n=>n.degree+' · '+n.string+'ª casa '+n.fret).join(' | ');
+ $('bassSummary').textContent=bass?'1B · '+bass.string+'ª corda · casa '+bass.fret:'1B: fora do alcance do diagrama';
+}
 
 // NOTAS DE CONEXÃO: as notas intermediárias pertencem ao percurso entre
 // dois ALVOS adjacentes da forma selecionada, não a uma nova harmonia.
