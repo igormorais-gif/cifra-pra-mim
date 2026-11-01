@@ -215,6 +215,7 @@ function approachFor(note,kind=state.kind){
  return {...note,kind,abbrev:mode.abbrev,figure:'approach',fromMidi:midi,fromName:kind==='ci'?before(note.degree):connName(midi),distance:Math.abs(midi-note.midi)};
 }
 function chosenApproaches(notes){
+ if(!isApproach())return[];
  if(state.kind==='combo'){
   return notes.flatMap(note=>{
    const conf=comboConfig(note.degree);
