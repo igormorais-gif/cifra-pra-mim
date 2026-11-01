@@ -89,3 +89,20 @@ test("comparação parcial usa somente a família pedida e pausa entre compassos
  assert.deepEqual([...new Set(plan.map(e=>e.patternId))],ids);
  assert.deepEqual(plan.filter(e=>e.index===0).map(e=>e.globalTick),ids.map((id,i)=>i*20+E.pattern(id).hits[0].tick));
 });
+
+test("checagem auditiva: a 80 BPM 2e e 2& estão separados por uma semicolcheia",()=>{
+ const bpm=80;
+ const beat2=E.beatsToSeconds(4,bpm);
+ const secondE=E.beatsToSeconds(5,bpm);
+ const secondAnd=E.beatsToSeconds(6,bpm);
+ assert.equal(secondE-beat2,.1875);
+ assert.equal(secondAnd-beat2,.375);
+ assert.equal(secondAnd-secondE,.1875);
+ assert.deepEqual([E.beatLabel(5),E.beatLabel(6)],["2e","2&"]);
+});
+test("Respiros: Mi toca em 2e, Sol em 3& e Si em 4&, na ordem registrada no áudio",()=>{
+ const notes=E.events("respiros");
+ assert.deepEqual(notes.map(x=>x.at),["1","2e","3&","4&"]);
+ assert.deepEqual(notes.map(x=>x.tick),[0,5,10,14]);
+ assert.deepEqual(notes.map(x=>E.beatsToSeconds(x.tick,80)),[0,.9375,1.875,2.625]);
+});
