@@ -114,11 +114,11 @@ button:disabled{opacity:.42;cursor:default}
 <section class="panel exercise connection-exercise" id="connSection" hidden>
 <div class="chordhead"><div><div class="chordtitle" id="connChord">C</div><div class="chorddesc" id="connChordName">Notas de conexão · 135</div></div>
 <div class="chordbadges"><span class="chordbadge" id="connForm">M.D. · 135</span><span class="chordbadge" id="connMode">Conexão diatônica</span></div></div>
-<div class="compact-practice"><div class="practice-line"><span class="label">Escolha duas notas-alvo da forma</span><span class="conn-hint">Partida → chegada · grave para agudo</span></div>
-<div class="conn-pairs"><button data-conn-index="0" class="active">1 → 3</button><button data-conn-index="1">3 → 5</button></div>
+<div class="compact-practice"><div class="practice-line"><span class="label">Selecione uma ou duas conexões</span><span class="conn-hint">Cada botão liga e desliga independentemente</span></div>
+<div class="conn-pairs" role="group" aria-label="Conexões independentes"><button type="button" data-conn-index="0" class="active" aria-pressed="true">1 → 3</button><button type="button" data-conn-index="1" aria-pressed="false">3 → 5</button></div>
 <div class="practice-line conn-string-line"><span class="conn-hint" id="connStringHint">As notas de conexão aproximam-se da nota de chegada.</span><div class="string-pick" id="connStringPicker" hidden><button data-conn-group="432">4–3–2</button><button data-conn-group="321" class="active">3–2–1</button></div></div></div>
 <div class="ci-info"><div><span class="label">Caminho entre os alvos</span><strong id="connPath">Dó → Ré → Mi</strong><p id="connDetail">Conexão diatônica de 1 para 3</p></div></div>
-<div class="ci-player"><div class="ci-transport"><button id="connPlay" class="play primary">▶ Ouvir conexão</button><button id="connTour" class="play">▶ Percorrer as duas conexões</button><button id="connStop" class="play stop">■ Parar</button><div class="tempo"><label for="connBpm">Andamento</label><input id="connBpm" type="range" min="50" max="160" step="5" value="80"><output id="connTempo">80</output><span>BPM</span></div></div></div>
+<div class="ci-player"><div class="ci-transport"><button id="connPlay" class="play primary">▶ Ouvir selecionadas</button><button id="connTour" class="play">▶ Selecionar e ouvir ambas</button><button id="connStop" class="play stop">■ Parar</button><div class="tempo"><label for="connBpm">Andamento</label><input id="connBpm" type="range" min="50" max="160" step="5" value="80"><output id="connTempo">80</output><span>BPM</span></div></div></div>
 <div class="ci-instruments">
 <div id="connPianoPanel"><div class="piano-hands">
 <div class="ci-hand"><div class="ci-hand-title"><strong>M.E.</strong><span>Fundamental no baixo</span></div><div class="keyboard-scroll"><svg id="connLeftKeys" class="ci-keyboard" viewBox="0 0 1000 240" role="img" aria-label="Baixo da tríade"></svg></div><div id="connLeftCards" class="ci-cards"></div></div>
@@ -135,7 +135,7 @@ const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const ROOTS=[['C','Dó',0,'C'],['C#','Dó sustenido',1,'C'],['Db','Ré bemol',1,'D'],['D','Ré',2,'D'],['D#','Ré sustenido',3,'D'],['Eb','Mi bemol',3,'E'],['E','Mi',4,'E'],['F','Fá',5,'F'],['F#','Fá sustenido',6,'F'],['Gb','Sol bemol',6,'G'],['G','Sol',7,'G'],['G#','Sol sustenido',8,'G'],['Ab','Lá bemol',8,'A'],['A','Lá',9,'A'],['A#','Lá sustenido',10,'A'],['Bb','Si bemol',10,'B'],['B','Si',11,'B']].map(([symbol,name,pc,letter])=>({symbol,name,pc,letter}));
 const P=x=>(x%12+12)%12,FORMS={'135':['1','3','5'],'351':['3','5','1'],'513':['5','1','3']},GROUPS={'432':[4,3,2],'321':[3,2,1]},OPEN={6:40,5:45,4:50,3:55,2:59,1:64},LOCATOR={'432':{'135':6,'351':5,'513':5},'321':{'135':5,'351':6,'513':5}};
 const LETTERS=['C','D','E','F','G','A','B'],SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11},PT={C:'Dó',D:'Ré',E:'Mi',F:'Fá',G:'Sol',A:'Lá',B:'Si'};
-const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',bpm:80,token:0,kind:'ci',connIndex:0,connAll:false};
+const state={root:'C',quality:'major',form:'135',instrument:'piano',group:'321',target:'1',bpm:80,token:0,kind:'ci',connSelected:new Set([0])};
 const root=()=>ROOTS.find(r=>r.symbol===state.root),ds=()=>FORMS[state.form].map(d=>state.quality==='minor'&&d==='3'?'♭3':d),off=d=>d==='1'?0:d==='5'?7:d==='♭3'?3:4,target=()=>state.target==='3'&&state.quality==='minor'?'♭3':state.target,pcDegree=d=>P(root().pc+off(d));
 function spelling(d){const r=root(),i=d==='1'?0:d==='5'?4:2,letter=LETTERS[(LETTERS.indexOf(r.letter)+i)%7],diff=((pcDegree(d)-SEMI[letter]+18)%12)-6;return PT[letter]+(diff>0?'♯'.repeat(diff):'♭'.repeat(-diff))}
 const SH=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'],FL=['Dó','Ré♭','Ré','Mi♭','Mi','Fá','Sol♭','Sol','Lá♭','Lá','Si♭','Si'];
@@ -257,11 +257,11 @@ function connGuitar(){
   if(Math.max(...fs)-Math.min(...fs)>5||midis[0]>=midis[1]||midis[1]>=midis[2])continue;
   const notes=degrees.map((degree,i)=>({degree,midi:midis[i],string:strings[i],fret:fs[i],name:spelling(degree),idx:i}));
   const validPair=idx=>notes[idx+1].fret>=notes[idx+1].midi-notes[idx].midi-1;
-  const both=validPair(0)&&validPair(1),selected=validPair(state.connIndex);
+  const both=validPair(0)&&validPair(1),selected=[...state.connSelected].every(validPair);
   const score=fs.reduce((sum,n)=>sum+n,0)/3+
    (Math.max(...fs)-Math.min(...fs))*.8+
    Math.max(0,Math.max(...fs)-12)*1.2+
-   ((state.connAll?both:selected)?0:1000)+(both?0:30);
+   (selected?0:1000)+(both?0:30);
   entries.push({notes,score});
  }
  entries.sort((a,b)=>a.score-b.score);
@@ -270,9 +270,9 @@ function connGuitar(){
 function connChord(){return state.instrument==='piano'?piano():connGuitar()}
 function connectionData(){
  const notes=connChord(),pairs=[connNotes(notes,0),connNotes(notes,1)];
- return{notes,pairs,chosen:pairs[state.connIndex],bass:state.instrument==='piano'?bass():locator(notes)}
+ return{notes,pairs,chosen:pairs[[...state.connSelected][0]]||null,bass:state.instrument==='piano'?bass():locator(notes)}
 }
-const visibleConnections=data=>state.connAll?data.pairs:[data.chosen];
+const visibleConnections=data=>data.pairs.filter((pair,i)=>pair&&state.connSelected.has(i));
 function connMarkCard(parent,notes,selected){
  parent.replaceChildren();
  const targets=Array.isArray(selected)?selected:[selected];
@@ -356,12 +356,12 @@ function connGuitarUI(data){
  $('connFretSummary').textContent=paths.map(p=>
   p.from.degree+' → '+p.to.degree+': '+(p.passing.map(n=>n.degree+' ('+n.string+'ª corda, casa '+n.fret+')').join(' · ')||'sem nota intermediária')+
   ' · chegada na '+p.to.string+'ª corda').join(' | ');
- $('connBassSummary').textContent=state.connAll?'Duas conexões · digitação distribuída':
-  'Chegada: '+paths[0].to.string+'ª corda · casa '+paths[0].to.fret
+ $('connBassSummary').textContent=paths.length===2?'Duas conexões · digitação distribuída':
+  paths.length===1?'Chegada: '+paths[0].to.string+'ª corda · casa '+paths[0].to.fret:'Selecione uma conexão';
 }
 function renderConnection(){
  visualNodes=[];
- const d=connectionData();if(!d.chosen)return;
+ const d=connectionData();if(!d.notes.length)return;
  const paths=visibleConnections(d);
  $('connChord').textContent=root().symbol+(state.quality==='minor'?'m':'');
  $('connChordName').textContent=root().name+' · '+(state.quality==='minor'?'menor':'maior')+' · '+state.form;
@@ -370,7 +370,7 @@ function renderConnection(){
  for(const b of document.querySelectorAll('[data-conn-index]')){
   const index=Number(b.dataset.connIndex),a=d.notes[index],z=d.notes[index+1];
   b.textContent=a.degree+' → '+z.degree;
-  const active=state.connAll||index===state.connIndex;
+  const active=state.connSelected.has(index);
   b.classList.toggle('active',active);b.classList.remove('playing');
   b.setAttribute('aria-pressed',String(active))
  }
@@ -381,16 +381,17 @@ function renderConnection(){
  $('connStringPicker').hidden=state.instrument!=='guitar';
  $('connPianoPanel').hidden=state.instrument!=='piano';
  $('connGuitarPanel').hidden=state.instrument!=='guitar';
- $('connPath').textContent=paths.map(p=>(state.connAll?p.from.degree+' → '+p.to.degree+' · ':'')+
-  p.sequence.map(n=>n.name).join(' → ')).join('\n');
- $('connDetail').textContent=state.connAll?'Percurso completo · as duas conexões permanecem visíveis.':
-  d.chosen.from.degree+' → '+d.chosen.to.degree+' · '+d.chosen.passing.length+' nota(s) de conexão';
+ $('connPath').textContent=paths.length?paths.map(p=>(paths.length===2?p.from.degree+' → '+p.to.degree+' · ':'')+
+  p.sequence.map(n=>n.name).join(' → ')).join('\n'):'Nenhuma conexão selecionada';
+ $('connDetail').textContent=paths.length===2?'Percurso completo · ambas as conexões permanecem visíveis.':
+  paths.length===1?paths[0].from.degree+' → '+paths[0].to.degree+' · '+paths[0].passing.length+' nota(s) de conexão':'Toque nas conexões para selecionar uma ou as duas.';
  $('connStringHint').textContent=state.instrument==='guitar'?
   paths.map(p=>p.passing.some(n=>n.string===p.from.string)?
    p.from.degree+' → '+p.to.degree+': primeiro cromatismo na '+p.from.string+'ª corda; demais na '+p.to.string+'ª':
    p.from.degree+' → '+p.to.degree+': conexão na '+p.to.string+'ª corda').join(' · '):
   'As teclas permanecem na mesma região visual.';
- $('connTour').classList.toggle('tour-display',state.connAll);
+ $('connTour').classList.toggle('tour-display',paths.length===2);
+  $('connPlay').disabled=paths.length===0;
  $('connBpm').value=state.bpm;$('connTempo').textContent=state.bpm;
  $('connTip').textContent=state.kind==='diatonic'?
   'Conexão diatônica: ligue duas notas estruturais do acorde por notas intermediárias pertencentes à escala '+(state.quality==='minor'?'menor natural':'maior')+'. As notas-alvo permanecem as mesmas.'+(state.instrument==='guitar'?' No violão, as notas de conexão ocupam a mesma corda da chegada.':''):
@@ -407,14 +408,15 @@ function scheduleConnectionStage(when,index,token){
 }
 function playConnection(tour=false){
  stop();
- state.connAll=tour;
- renderConnection(); // duas ligações desenhadas antes do som
+ if(tour)state.connSelected=new Set([0,1]);
+ renderConnection(); // desenha as seleções sem desligar outra conexão
+ const data=connectionData();
+ const indexes=[...state.connSelected].sort((a,b)=>a-b);
+ if(!indexes.length||!data.notes.length)return;
  if(!unlock())return;
- const data=connectionData();if(!data.chosen)return;
  const beat=60/state.bpm,at=audio.currentTime+.04,token=state.token;
- const indexes=tour?[0,1]:[state.connIndex];
  $('connPlay').disabled=true;$('connTour').disabled=true;
- if(state.instrument==='piano'&&data.bass)tone(data.bass.midi,at,beat*(tour?6:3),.075);
+ if(state.instrument==='piano'&&data.bass)tone(data.bass.midi,at,beat*(indexes.length===2?6:3),.075);
  let offset=0;
  for(const i of indexes){
   const connection=data.pairs[i];
@@ -592,14 +594,14 @@ $('root').onchange=e=>{stop();state.root=e.target.value;render()};
 for(const k of ['quality','form','instrument','group','target'])document.querySelectorAll('[data-'+k+']').forEach(b=>b.onclick=()=>{stop();state[k]=b.dataset[k];render()});
 
 for(const b of document.querySelectorAll('[data-kind]'))b.onclick=()=>{stop();state.kind=b.dataset.kind;render()};
-for(const b of document.querySelectorAll('[data-conn-index]'))b.onclick=()=>{stop();state.connAll=false;state.connIndex=Number(b.dataset.connIndex);render()};
+for(const b of document.querySelectorAll('[data-conn-index]'))b.onclick=()=>{stop();const index=Number(b.dataset.connIndex);if(state.connSelected.has(index))state.connSelected.delete(index);else state.connSelected.add(index);render()};
 for(const b of document.querySelectorAll('[data-conn-group]'))b.onclick=()=>{stop();state.group=b.dataset.connGroup;render()};
 $('connPlay').onclick=()=>playConnection(false);
 $('connTour').onclick=()=>playConnection(true);
 $('connStop').onclick=stop;
 $('playPair').onclick=playPair;$('playTour').onclick=playTour;$('playTriad').onclick=playTriad;$('stop').onclick=stop;$('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm;$('connBpm').value=state.bpm;$('connTempo').textContent=state.bpm};
 $('connBpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpm').value=state.bpm;$('bpmLabel').textContent=state.bpm;$('connTempo').textContent=state.bpm};
-window.CifraPraMimEmbelezamento={get:()=>{const c=chord(),connection=state.kind==='ci'?null:connectionData();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),kind:state.kind,connIndex:state.connIndex,connAll:state.connAll,notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol,connection}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});render();return window.CifraPraMimEmbelezamento.get()},set:(updates)=>{stop();Object.assign(state,updates);render();return window.CifraPraMimEmbelezamento.get()},playConnection};
+window.CifraPraMimEmbelezamento={get:()=>{const c=chord(),connection=state.kind==='ci'?null:connectionData();return{root:state.root,quality:state.quality,form:state.form,instrument:state.instrument,group:state.group,target:target(),kind:state.kind,connSelected:[...state.connSelected].sort((a,b)=>a-b),notes:c.notes,selected:c.selected,from:c.from,bass:c.bass,symbol:c.symbol,connection}},show:(rootName,form='135',ci='1',instrument='piano',quality='major',group='321')=>{stop();Object.assign(state,{root:rootName,form,target:ci,instrument,quality,group});render();return window.CifraPraMimEmbelezamento.get()},set:(updates)=>{stop();if(updates.connSelected)state.connSelected=new Set(updates.connSelected);Object.assign(state,{...updates,connSelected:state.connSelected});render();return window.CifraPraMimEmbelezamento.get()},playConnection};
 render();
 })();
 </script></body></html>
