@@ -207,8 +207,9 @@
    if(t.kind!=="note"||!t.tieOut||other.kind!=="note"||other.index!==t.index)continue;
    const y=mode==="melodic"?noteY(t):80;
    const x1=pos(t.tick)+11,x2=pos(other.tick)-11;
-   const baseline=y+14;
-   out+='<path class="score-tie" d="M '+x1+' '+baseline+' Q '+((x1+x2)/2)+' '+(baseline+15)+' '+x2+' '+baseline+'" fill="none" stroke="'+COLORS.ink+'" stroke-width="2.5" stroke-linecap="round"/>';
+   // Ligadura de sustentação no lado oposto à haste usual.
+   const above=y<78,baseline=y+(above?-14:14),curve=above?-15:15;
+   out+='<path class="score-tie" d="M '+x1+' '+baseline+' Q '+((x1+x2)/2)+' '+(baseline+curve)+' '+x2+' '+baseline+'" fill="none" stroke="'+COLORS.ink+'" stroke-width="2.5" stroke-linecap="round"/>';
   }
   return out;
  }
