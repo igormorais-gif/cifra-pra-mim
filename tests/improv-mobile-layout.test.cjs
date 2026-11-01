@@ -35,3 +35,14 @@ test("Estado do Loop e legenda móvel compartilham o mesmo controle",()=>{
  assert.match(html,/\$\("transport-caption"\)\.textContent=p\.title/);
  assert.match(html,/\$\("transport-caption"\)\.textContent=E\.pattern\(state\.id\)\.title/);
 });
+
+test("Os dois modos de partitura têm cliques conectados e estado sincronizado",()=>{
+ assert.match(html,/data-score-mode="rhythm"/);
+ assert.match(html,/data-score-mode="melodic"/);
+ assert.match(html,/for\(const btn of document\.querySelectorAll\("\[data-score-mode\]"\)\)\{\s*btn\.addEventListener\("click",\(\)=>setScoreMode\(btn\.dataset\.scoreMode\)\)/);
+ assert.match(html,/state\.scoreMode=mode;\s*renderScore\(\)/);
+ assert.match(html,/score:setScoreMode/);
+ // Alternar uma visualização não pode parar uma frase em Loop.
+ const method=html.slice(html.indexOf("function setScoreMode("),html.indexOf('$("score-fit").addEventListener',html.indexOf("function setScoreMode(")));
+ assert.doesNotMatch(method,/stop\(\)/);
+});
