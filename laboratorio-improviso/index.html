@@ -283,6 +283,21 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 }
 
 .axis-live-status{border:1px solid #6a8393;background:#162c3a;color:#cbdce5;border-radius:9px;padding:9px 12px;font-size:12px;line-height:1.45;margin:13px 0 2px}
+
+/* Eixo 04 — aproximação medida sobre a semicolcheia livre */
+.ornament-axis{padding:19px;margin-bottom:16px}
+.ornament-tag{font-size:11px;color:#e7bea0}
+.ornament-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:12px}
+.ornament-detail{background:#132b3d;border:1px solid #4d7084;border-radius:10px;padding:12px;margin-top:12px}
+.ornament-detail p{margin:0 0 9px;font-size:13px;line-height:1.5}
+.ornament-detail p:last-of-type{margin-bottom:0}
+.ornament-detail #ornament-status{color:#f2c79f;font-weight:700}
+.ornament-rooms{color:#bdd0dc;font-size:12px!important}
+.ornament-footnote{font-size:12px;line-height:1.5;color:#b6c9d8;margin:12px 0 0}
+.ornament-footnote strong{color:#f2ca9e}
+.ornament-hit{background:#d4b28b!important;color:#211e1b!important;border:2px solid #f3d6a9!important}
+.ornament-chip{background:#413a32!important;border:1px solid #c89f73!important;color:#f6dfbe!important}
+@media(max-width:740px){.ornament-options{grid-template-columns:1fr}.ornament-axis{padding:14px}}
 </style>
 </head>
 <body>
@@ -297,7 +312,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 <main>
   <section class="hero">
     <div><span class="kicker">Laboratório de improvisação / Eixos rítmico e melódico</span><h1>Um ritmo.<br>Muitos caminhos.</h1><p>Isole cada variável: escolha uma célula rítmica, um modo, uma disposição fechada e uma ordem de quatro notas. Escute as combinações com Loop e confira a mesma música na grade e na partitura.</p></div>
-    <div class="hero-side"><strong>Não é um catálogo de licks.</strong>As doze células são originais, sem reprodução de licks dos livros. Os eixos melódicos agora podem ser combinados com cada ritmo. Os embelezamentos serão um próximo desenvolvimento.</div>
+    <div class="hero-side"><strong>Não é um catálogo de licks.</strong>As doze células são originais, sem reprodução de licks dos livros. Ritmos, percursos e agora aproximações às notas-alvo podem ser combinados sem perder a leitura musical.</div>
   </section>
   <section class="card purpose" aria-label="Material intervalar selecionado">
     <h2 id="material-title">Material intervalar · C7M · Dó jônico</h2>
@@ -344,6 +359,23 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
       <div><span class="axis-label">Coleção modal (sete graus)</span><div id="axis-scale" class="axis-scale"></div></div>
       <p id="axis-warning" class="axis-warning">Neste eixo, somente os graus 1–3–5–7 soam. Outros graus característicos do modo ainda não entram na frase.</p>
     </div>
+  </section>
+  <section class="card ornament-axis" aria-labelledby="ornament-title">
+    <div class="card-heading">
+      <h2 id="ornament-title">04 · Embelezamentos: aproximações</h2>
+      <span class="ornament-tag">Primeira experiência</span>
+    </div>
+    <p class="axes-intro">Acrescente uma nota de passagem imediatamente antes de uma das quatro notas-alvo. A aproximação usa <strong>uma semicolcheia que já estava em silêncio</strong>, sem deslocar nem encurtar as notas estruturais.</p>
+    <div class="ornament-options">
+      <label class="axis-field" for="ornament-style"><span>Tipo de aproximação</span><select id="ornament-style"></select></label>
+      <label class="axis-field" for="ornament-target"><span>Nota de chegada</span><select id="ornament-target"></select></label>
+    </div>
+    <div class="ornament-detail">
+      <p id="ornament-status" role="status" aria-live="polite">Sem embelezamento. As quatro notas-alvo permanecem iguais.</p>
+      <p id="ornament-room" class="ornament-rooms">Espaços livres de aproximação: —</p>
+      <button type="button" class="action" id="ornament-demo" hidden>Experimentar na célula Respiros</button>
+    </div>
+    <p class="ornament-footnote"><strong>Didática:</strong> aproximação diatônica usa a nota anterior ou seguinte da coleção modal; aproximação cromática usa um semitom. A nota auxiliar tem duração medida e aparece na pauta, não é uma apojatura livre. Bordaduras e combinações de várias notas serão uma etapa posterior.</p>
   </section>
   <section class="card choose" aria-labelledby="choose-title">
     <div class="card-heading"><h2 id="choose-title">Escolha uma célula rítmica</h2><span id="rhythm-count">12 desenhos · 4 ataques por compasso</span></div>
@@ -434,18 +466,19 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </div>
 <script src="../src/rhythm-lab.js?v=6"></script>
 <script src="../src/melodic-axis.js?v=9"></script>
+<script src="../src/ornament-axis.js?v=16"></script>
 <script src="../src/rhythm-notation.js?v=12"></script>
 <script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (function(){
 "use strict";
-const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody;
+const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody,O=window.RhythmLabOrnaments;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,ornament:"none",ornamentTarget:"auto",axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 let loopTransport=null,transportKind=null,axisPending=false;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
-const currentEvents=(id=state.id)=>M.events(id,state);
+const currentEvents=(id=state.id)=>O.events(id,state);
 function renderAxes(){
  const {mode,inversion,path}=M.option(state);
  $("axis-mode").value=mode.id;
@@ -523,11 +556,23 @@ function showChoices(){
   wrap.append(btn);
  }
 }
+function renderOrnament(){
+ const result=O.analyze(state.id,state);
+ $("ornament-style").value=state.ornament;
+ $("ornament-target").value=state.ornamentTarget;
+ $("ornament-status").textContent=result.status;
+ const eligible=result.opportunities.filter(x=>x.free);
+ $("ornament-room").textContent=eligible.length
+  ?"Espaço disponível antes de: "+eligible.map(x=>(x.index+1)+"ª nota ("+x.name+")").join(", ")+"."
+  :"Nenhuma nota desta célula tem uma semicolcheia livre antes do ataque.";
+ $("ornament-demo").hidden=state.ornament==="none"||!!result.ornament;
+}
 function render(){
  const p=E.pattern(state.id),ev=currentEvents();
  renderAxes();
+ renderOrnament();
  showFilters();showChoices();
- $("rhythm-count").textContent=visiblePatterns().length+" células · 4 ataques por compasso";
+ $("rhythm-count").textContent=visiblePatterns().length+" células · 4 alvos + aproximação opcional";
  $("selected-title").textContent=p.title;
  $("selected-meta").textContent=p.subtitle;
  $("selected-description").textContent=p.description;
@@ -544,19 +589,19 @@ function render(){
   grid.append(cell);
  }
  for(const n of ev){
-  const item=make("span","hit"+(n.accent?"":" offbeat")+(n.length<=1?" tiny":""),undefined);
+  const item=make("span","hit"+(n.accent?"":" offbeat")+(n.length<=1?" tiny":"")+(n.ornament?" ornament-hit":""),undefined);
   item.append(make("span","hit-name",n.name));
   item.dataset.index=String(n.index);
-  item.title=n.name+" ("+n.degree+") · "+n.at;
-  item.setAttribute("aria-label",n.name+", grau "+n.degree+", ataque em "+n.at);
+  item.title=(n.ornament?"Aproximação: ":"")+n.name+" ("+n.degree+") · "+n.at;
+  item.setAttribute("aria-label",(n.ornament?"Aproximação ":"Nota-alvo ")+n.name+", grau "+n.degree+", ataque em "+n.at);
   item.style.gridColumn=(n.tick+1)+" / span "+n.length;
   item.style.gridRow="2";grid.append(item);
  }
  const chips=$("event-list");chips.replaceChildren();
  for(const n of ev){
-  const chip=make("span","event-chip");
+  const chip=make("span","event-chip"+(n.ornament?" ornament-chip":""));
   chip.dataset.index=String(n.index);
-  const strong=make("strong","",n.name+" ("+n.degree+")");
+  const strong=make("strong","",(n.ornament?"Aprox. ":"")+n.name+" ("+n.degree+")");
   chip.append(strong,document.createTextNode(" · "+n.at));
   chips.append(chip);
  }
@@ -649,7 +694,7 @@ function sounding(index,on){
  for(const item of document.querySelectorAll('[data-index="'+index+'"]'))item.classList.toggle("sounding",on);
 }
 function schedulePattern(id,begin,token,offsetSeconds=0,axis={mode:state.mode,inversion:state.inversion,path:state.path}){
- const ev=M.events(id,axis);
+ const ev=O.events(id,axis);
  scheduleMetronome(begin,token,offsetSeconds);
  for(const n of ev){
   const dt=E.beatsToSeconds(n.tick,state.bpm);
@@ -701,7 +746,7 @@ function finishTransport(token,message){
 // O áudio é agendado antecipadamente. Alterações de eixo só são
 // aplicadas a uma volta que ainda não foi programada, jamais no meio dela.
 function scheduleAxisBar(id,at,token,onBarStart=null){
- const axis={mode:state.mode,inversion:state.inversion,path:state.path};
+ const axis={mode:state.mode,inversion:state.inversion,path:state.path,ornament:state.ornament,ornamentTarget:state.ornamentTarget};
  const revision=state.axisRevision;
  const seconds=Math.max(0,at-state.ctx.currentTime);
  // Primeiro atualiza a grade/pauta exatamente no pulso da volta nova.
@@ -716,6 +761,7 @@ function scheduleAxisBar(id,at,token,onBarStart=null){
   axisPending=false;
   render();
   $("axis-live-status").textContent="Em execução: "+M.option(axis).mode.name+" · registro "+M.option(axis).inversion.order+" · ordem "+M.option(axis).path.label+".";
+  if(state.ornament!=="none")$("axis-live-status").textContent+=" "+O.analyze(id,axis).status;
  },token);
  schedulePattern(id,at,token,seconds,axis);
 }
@@ -828,7 +874,7 @@ $("bpm").addEventListener("input",e=>{
 $("click").addEventListener("change",e=>{stop();state.click=e.target.checked;setStatus(state.click?"Metrônomo ativado.":"Metrônomo desativado.");});
 window.addEventListener("pagehide",stop);
 window.RhythmLabUI={
- get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,loop:state.loop,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:currentEvents(),notes:M.notes(state),notation:N.plan(state.id,currentEvents()),mode:state.mode,inversion:state.inversion,path:state.path,modalScale:M.modalColors(state.mode)}),
+ get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,loop:state.loop,ornament:state.ornament,ornamentTarget:state.ornamentTarget,ornamentAnalysis:O.analyze(state.id,state).status,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:currentEvents(),notes:M.notes(state),notation:N.plan(state.id,currentEvents()),mode:state.mode,inversion:state.inversion,path:state.path,modalScale:M.modalColors(state.mode)}),
  setMetronomeMode,
  select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
@@ -837,24 +883,27 @@ window.RhythmLabUI={
 for(const item of M.MODES){const opt=make("option","",item.name);opt.value=item.id;$("axis-mode").append(opt)}
 for(const item of M.INVERSIONS){const opt=make("option","",item.order+" · "+item.title);opt.value=String(item.id);$("axis-inversion").append(opt)}
 for(const item of M.PATHS){const opt=make("option","","Ordem "+String(item.id+1).padStart(2,"0")+" · "+item.label);opt.value=String(item.id);$("axis-path").append(opt)}
+for(const item of O.STYLES){const opt=make("option","",item.label);opt.value=item.id;$("ornament-style").append(opt)}
+for(const item of O.TARGETS){const opt=make("option","",item.label);opt.value=item.id;$("ornament-target").append(opt)}
 function changeAxis(field,value){
- const proposed={...state,[field]:field==="mode"?value:Number(value)};
- M.option(proposed); // validar antes de modificar o estado
+ const proposed={...state,[field]:["mode","ornament","ornamentTarget"].includes(field)?value:Number(value)};
+ M.option(proposed);O.settings(proposed); // validar antes de modificar o estado
  if(state[field]===proposed[field])return;
  state[field]=proposed[field];
  state.axisRevision++;
  const axes=M.option(state);
+ const description=["ornament","ornamentTarget"].includes(field)?O.analyze(state.id,state).status:axes.mode.name+" · registro "+axes.inversion.order+" · ordem "+axes.path.label;
  if(loopTransport&&(transportKind==="selected"||transportKind==="compare")){
   // NÃO chamar stop(): mantém vozes, BPM, metrônomo e o relógio do Loop.
   // O seletor responde imediatamente, mas a pauta/grade refletem a
   // mudança apenas no instante em que o novo compasso for ouvido.
   axisPending=true;
   $("axis-position").textContent="Ordem "+String(axes.path.id+1).padStart(2,"0")+" de 24 · aguardando";
-  $("axis-live-status").textContent="Próxima volta disponível: "+axes.mode.name+" · registro "+axes.inversion.order+" · ordem "+axes.path.label+". O compasso atual continua.";
+  $("axis-live-status").textContent="Próxima volta disponível: "+description+". O compasso atual continua.";
   setStatus("Mudança melódica preparada para a próxima volta disponível, sem interromper a reprodução.");
  }else{
   stop();render();
-  $("axis-live-status").textContent="Seleção atualizada. Ative Loop e altere as notas durante a reprodução.";
+  $("axis-live-status").textContent="Seleção atualizada: "+description+". Com Loop ligado, a próxima mudança entrará na virada.";
   setStatus("Eixo melódico atualizado: "+axes.mode.name+" · "+axes.path.label+".");
  }
 }
@@ -864,6 +913,12 @@ $("axis-path").addEventListener("change",e=>changeAxis("path",e.target.value));
 $("prev-path").addEventListener("click",()=>changeAxis("path",(state.path+23)%24));
 $("next-path").addEventListener("click",()=>changeAxis("path",(state.path+1)%24));
 $("random-path").addEventListener("click",()=>changeAxis("path",Math.floor(Math.random()*24)));
+$("ornament-style").addEventListener("change",e=>changeAxis("ornament",e.target.value));
+$("ornament-target").addEventListener("change",e=>changeAxis("ornamentTarget",e.target.value));
+$("ornament-demo").addEventListener("click",()=>{
+ stop();state.id="respiros";state.family="all";render();
+ setStatus("Respiros: escolha a aproximação e ouça a nova nota antes da chegada.");
+});
 render();renderMetronomeMode();updateTimingCaption();
 })();
 </script>
