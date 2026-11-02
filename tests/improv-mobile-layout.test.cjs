@@ -46,3 +46,13 @@ test("Os dois modos de partitura têm cliques conectados e estado sincronizado",
  const method=html.slice(html.indexOf("function setScoreMode("),html.indexOf('$("score-fit").addEventListener',html.indexOf("function setScoreMode(")));
  assert.doesNotMatch(method,/stop\(\)/);
 });
+
+test("Semicolcheias exibem nomes reais, não pontos no lugar das notas",()=>{
+ const css=html.slice(0,html.indexOf("</style>"));
+ assert.match(css,/\.hit\.tiny \.hit-name\{[^}]*writing-mode:vertical-rl/);
+ assert.match(css,/\.hit\.tiny:after\{content:none!important\}/);
+ assert.doesNotMatch(css,/\.hit\.tiny\{font-size:0/);
+ assert.match(html,/item\.append\(make\("span","hit-name",n\.name\)\)/);
+ assert.match(html,/item\.setAttribute\("aria-label",n\.name/);
+ assert.match(html,/item\.style\.gridColumn=\(n\.tick\+1\)\+" \/ span "\+n\.length/);
+});
