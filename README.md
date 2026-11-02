@@ -1,3 +1,13 @@
+## Laboratório de Improvisação — monitor fixo e navegação por abas (v20)
+
+Atualização de usabilidade para iPhone e desktop: **beat (16 subdivisões), partitura e instrumento Piano/Violão** formam um monitor único no início da página. No celular, o monitor permanece **aderente ao topo durante a rolagem**, ao passo que o player de áudio continua fixo abaixo. O monitor apresenta a partitura inteira por padrão (controle **Ampliar** preservado); infos auxiliares e textos redundantes ficam fora da área visível. As opções passam a três abas: **Melodia**, **Ritmos** (12 células estruturais) e **Embelezamentos** (ritmos das notas auxiliares).
+
+A seção **Teste auditivo de subdivisão** foi retirada da interface e dos callbacks de diagnóstico; o metrônomo normal permanece num painel `details` recolhível. Isso não altera as notas, a malha temporal de 16 ticks, o Loop ou o agendamento antecipado.
+
+Os **11 desenhos de embelezamento** são divididos em subabas **1 nota / 2 notas / 3–4 notas**. Os cartões representam as quatro subdivisões anteriores à chegada com **números dos ataques**, **—** para sustentação, **·** para silêncio, e **Alvo** no fim. O tipo de aproximação e a nota de chegada ficam acima das opções; selecionar um desenho ativa D.I. por padrão se os embelezamentos estavam desligados. Os modelos D.I., D.S. e C.I. são preservados e o C.S. permanece excluído. Se a célula não comportar o desenho, há aviso e um único botão que encontra outra célula compatível.
+
+Os monitores e o player são independentes das abas e não são desmontados quando o usuário troca de aba; isso conserva sua leitura e o Loop durante o estudo. `tests/improv-live-axis.test.cjs`, `tests/improv-mobile-layout.test.cjs` e `tests/ornament-rhythm.test.cjs` verificam essas invariantes. Falta avaliação visual real no Safari/iPhone.
+
 ## Laboratório de Improvisação — instrumento visual Piano / Violão (v19)
 
 **Interface:** seção compacta `Instrumento` imediatamente após a partitura, com alternador `Piano / Violão`, registro mínimo da forma/região, indicador de continuação e nota atualmente executada. Sem explicações longas nem novos painéis didáticos. A mudança do visor não reinicia áudio nem Loop.
