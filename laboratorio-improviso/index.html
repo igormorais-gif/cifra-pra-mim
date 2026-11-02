@@ -202,7 +202,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 /* v11 · Grade inteira visível e transport dock durante o scroll */
 .transport-compact,.transport-caption{display:none}
 @media(max-width:740px){
-  html{scroll-padding-bottom:calc(178px + env(safe-area-inset-bottom,0px))}
+  html{scroll-padding-top:66px;scroll-padding-bottom:calc(178px + env(safe-area-inset-bottom,0px))}
   .shell{padding-bottom:calc(180px + env(safe-area-inset-bottom,0px))}
   .chart-scroll{overflow-x:visible;overflow-y:visible;width:100%;padding:0}
   .ticks{
@@ -406,7 +406,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
  header{padding-bottom:7px;margin-bottom:8px;align-items:center}
  header .eyebrow,header nav{display:none}
  header .wordmark{font-size:18px}
- .selected{position:sticky;top:0;z-index:55;padding:9px 10px 10px;margin:0 0 8px;border-color:#557188;border-radius:12px;background:#142433f9;box-shadow:0 8px 22px #050c15b0}
+ .selected{position:static;top:auto;z-index:auto;padding:9px 10px 10px;margin:0 0 8px;border-color:#557188;border-radius:12px;background:#142433f9;box-shadow:0 8px 22px #050c15b0}
  .selected .card-heading{margin-bottom:5px;flex-wrap:nowrap}
  .selected .card-heading h2{font-size:16px}
  .selected .card-heading #selected-meta{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -427,7 +427,8 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
  .selected .instrument-meta{min-height:18px}
  .selected .instrument-head h3{font-size:12px}
  .selected .instrument-switch button{padding:3px 10px;min-height:25px}
- .studio-tabs{margin:7px 0 10px}
+ .studio-tabs{position:sticky;top:0;z-index:60;margin:7px 0 10px;box-shadow:0 6px 16px #050c15bd}
+ #studio-panel-melody,#studio-panel-rhythms,#studio-panel-ornaments{scroll-margin-top:66px}
  .studio-tabs button{font-size:clamp(10px,2.9vw,12px);padding:7px 2px}
  .melodic-axes,.ornament-axis,.choose{padding:13px}
  .melodic-axes .card-heading span{display:none}
@@ -467,8 +468,10 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
  .player .control-row .action{padding:8px;font-size:11px}
  .player .control-row .tempo{margin:3px 0 0;width:100%}
 }
+/* Em retrato e paisagem, o monitor acompanha o fluxo da página: nada cobre as abas. */
 @media(min-width:741px) and (max-width:899px){
- #monitor{position:sticky;top:0;z-index:55}
+ #monitor{position:static;top:auto;z-index:auto}
+ .studio-tabs{position:sticky;top:0;z-index:60;box-shadow:0 6px 16px #050c15bd}
 }
 </style>
 </head>
