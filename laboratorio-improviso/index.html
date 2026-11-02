@@ -700,7 +700,7 @@ function finishTransport(token,message){
 }
 // O áudio é agendado antecipadamente. Alterações de eixo só são
 // aplicadas a uma volta que ainda não foi programada, jamais no meio dela.
-function scheduleAxisBar(id,at,token){
+function scheduleAxisBar(id,at,token,onBarStart=null){
  const axis={mode:state.mode,inversion:state.inversion,path:state.path};
  const revision=state.axisRevision;
  const seconds=Math.max(0,at-state.ctx.currentTime);
@@ -708,6 +708,7 @@ function scheduleAxisBar(id,at,token){
  // Depois, os destaques de metrônomo e ataques podem encontrá-la pronta.
  later(seconds,()=>{
   if(token!==state.token)return;
+  if(onBarStart)onBarStart();
   if(revision!==state.axisRevision){
    $("axis-live-status").textContent="Mudança aguardando a próxima volta disponível, sem interromper o som.";
    return;
@@ -751,13 +752,10 @@ async function compareAll(){
   schedule:at=>{
    const index=barsScheduled%compared.length,p=compared[index];
    barsScheduled++;
-   scheduleAxisBar(p.id,at,token);
-   later(Math.max(0,at-ctx.currentTime),()=>{
-    if(token!==state.token)return;
+   scheduleAxisBar(p.id,at,token,()=>{
     state.id=p.id;
-    if(!axisPending)render();
     setStatus("Comparação "+(index+1)+"/"+compared.length+" · "+p.title+(state.loop?" · Loop":"")+".");
-   },token);
+   });
   },
   onFinish:()=>finishTransport(token,"Comparação concluída.")
  });
@@ -852,8 +850,8 @@ function changeAxis(field,value){
   // mudança apenas no instante em que o novo compasso for ouvido.
   axisPending=true;
   $("axis-position").textContent="Ordem "+String(axes.path.id+1).padStart(2,"0")+" de 24 · aguardando";
-  $("axis-live-status").textContent="Próxima volta: "+axes.mode.name+" · registro "+axes.inversion.order+" · ordem "+axes.path.label+". O compasso atual continua.";
-  setStatus("Mudança melódica preparada para a próxima volta, sem interromper a reprodução.");
+  $("axis-live-status").textContent="Próxima volta disponível: "+axes.mode.name+" · registro "+axes.inversion.order+" · ordem "+axes.path.label+". O compasso atual continua.";
+  setStatus("Mudança melódica preparada para a próxima volta disponível, sem interromper a reprodução.");
  }else{
   stop();render();
   $("axis-live-status").textContent="Seleção atualizada. Ative Loop e altere as notas durante a reprodução.";
