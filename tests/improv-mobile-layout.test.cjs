@@ -53,6 +53,6 @@ test("Semicolcheias exibem nomes reais, não pontos no lugar das notas",()=>{
  assert.match(css,/\.hit\.tiny:after\{content:none!important\}/);
  assert.doesNotMatch(css,/\.hit\.tiny\{font-size:0/);
  assert.match(html,/item\.append\(make\("span","hit-name",n\.name\)\)/);
- assert.match(html,/item\.setAttribute\("aria-label",n\.name/);
+ assert.match(html,/item\.setAttribute\("aria-label",\(n\.ornament\?"Aproximação ":"Nota-alvo "\)\+n\.name/);
  assert.match(html,/item\.style\.gridColumn=\(n\.tick\+1\)\+" \/ span "\+n\.length/);
 });
