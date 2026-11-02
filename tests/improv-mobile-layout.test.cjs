@@ -25,7 +25,7 @@ test("Player flutuante contém controles principais e BPM, sem duplicar IDs",()=
 test("Barra flutuante não encobre o fim do conteúdo",()=>{
  const css=html.slice(html.indexOf("/* v11 · Grade inteira visível"));
  assert.match(css,/\.shell\{padding-bottom:calc\(180px \+ env\(safe-area-inset-bottom,0px\)\)\}/);
- assert.match(css,/html\{scroll-padding-bottom:calc\(178px \+ env\(safe-area-inset-bottom,0px\)\)\}/);
+ assert.match(css,/html\{scroll-padding-top:66px;scroll-padding-bottom:calc\(178px \+ env\(safe-area-inset-bottom,0px\)\)\}/);
 });
 test("Estado do Loop e legenda móvel compartilham o mesmo controle",()=>{
  assert.match(html,/id="loop-label-full"/);
