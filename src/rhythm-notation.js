@@ -65,7 +65,7 @@
   return items;
  }
  function plan(id,seq=E.events(id)){
-  if(!Array.isArray(seq)||seq.length<4||seq.length>5)throw new RangeError("Quatro alvos e até uma aproximação são necessários");
+  if(!Array.isArray(seq)||seq.length<4||seq.length>8)throw new RangeError("Quatro alvos e até quatro notas auxiliares são necessários");
   const tokens=[];let cursor=0;
   for(const ev of seq){
    if(ev.tick>cursor)tokens.push(...splitRest(cursor,ev.tick-cursor));
