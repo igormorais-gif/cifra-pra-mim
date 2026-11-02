@@ -322,6 +322,28 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .ornament-card.unavailable .ornament-availability{color:#e6b0a1}
 @media(max-width:740px){.ornament-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ornament-card{padding:10px 8px}.ornament-card.selected{padding:9px 7px}}
 @media(max-width:370px){.ornament-preview{gap:2px;font-size:13px}.ornament-preview b{font-size:9px}.ornament-card strong{font-size:11px}}
+
+/* Piano / violão: representação instrumental compacta, sem texto auxiliar */
+.instrument-panel{margin-top:20px;padding-top:16px;border-top:1px solid #4b6172}
+.instrument-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.instrument-head h3{margin:0;font-size:16px;color:#e9ece9;letter-spacing:-.02em}
+.instrument-switch{display:flex;gap:3px;border:1px solid #536b7e;border-radius:9px;padding:3px;background:#132634}
+.instrument-switch button{background:transparent;border:0;border-radius:6px;color:#c1d0da;font-size:12px;font-weight:750;padding:8px 15px;min-height:34px;cursor:pointer}
+.instrument-switch button.active,.instrument-switch button[aria-pressed="true"]{background:#efbf8f;color:#30271f}
+.instrument-switch button:focus-visible{outline:2px solid #e9c29a;outline-offset:2px}
+.instrument-meta{display:flex;align-items:center;gap:9px;min-height:34px;color:#b7c8d4;font-size:11px;font-weight:650}
+.instrument-meta #instrument-next{color:#e8b883}
+.instrument-meta #instrument-current{margin-left:auto;color:#f0c89c;font-size:14px}
+.instrument-view{width:100%;overflow:hidden;border-radius:11px;background:#172532}
+.instrument-svg{display:block;width:100%;height:auto;max-height:275px}
+.piano-key.in-path .key-target{transition:fill .08s ease}
+.piano-key.instrument-sounding rect{fill:#f3bb7d;stroke:#f6d1a3;stroke-width:2}
+.piano-key.instrument-sounding .key-target{fill:#ed765f}
+.piano-key.instrument-sounding text{fill:#2b241e}
+.piano-key.black-key.instrument-sounding rect{fill:#e8a569}
+.guitar-mark.instrument-sounding circle{fill:#ed745f;stroke:#ffe6a9;stroke-width:3}
+.guitar-mark.instrument-sounding text{fill:#fff}
+@media(max-width:400px){.instrument-svg{min-height:130px}.instrument-meta{gap:6px}.instrument-switch button{padding:8px 11px}}
 </style>
 </head>
 <body>
@@ -488,6 +510,21 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
         <p>Barras de colcheias e semicolcheias agrupadas por tempo; limites dos tempos visíveis e separação 2 | 3 respeitada; pausas sem atravessar a pulsação; prolongamentos representados por pontos e ligaduras entre notas da mesma altura. Os tempos 1 e 3 recebem destaque métrico discreto, sem inserir falsas barras de compasso.</p>
       </details>
     </div>
+    <section class="instrument-panel" aria-label="Instrumento visual">
+      <div class="instrument-head">
+        <h3>Instrumento</h3>
+        <div class="instrument-switch" role="group" aria-label="Escolha do instrumento">
+          <button type="button" data-instrument="piano" aria-pressed="true">Piano</button>
+          <button type="button" data-instrument="guitar" aria-pressed="false">Violão</button>
+        </div>
+      </div>
+      <div class="instrument-meta">
+        <span id="instrument-form">1–3–5</span>
+        <span id="instrument-next"></span>
+        <strong id="instrument-current" aria-live="off">—</strong>
+      </div>
+      <div id="instrument-view" class="instrument-view" aria-label="Notas no instrumento"></div>
+    </section>
   </section>
   <section class="details" aria-label="Como estudar">
     <div class="card"><h3>O que permanece igual?</h3><p>Quando você troca apenas o <b>ritmo</b>, as alturas permanecem. Quando troca apenas o <b>percurso</b>, os ataques permanecem nas mesmas subdivisões. Assim é possível ouvir uma transformação de cada vez.</p></div>
@@ -499,16 +536,19 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 <script src="../src/rhythm-lab.js?v=6"></script>
 <script src="../src/melodic-axis.js?v=9"></script>
 <script src="../src/ornament-axis.js?v=18"></script>
+<script src="../src/instrument-map.js?v=19"></script>
 <script src="../src/rhythm-notation.js?v=18"></script>
 <script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (function(){
 "use strict";
-const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody,O=window.RhythmLabOrnaments;
+const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody,O=window.RhythmLabOrnaments,I=window.RhythmLabInstruments;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,ornament:"none",ornamentTarget:"auto",ornamentRhythm:"one-sixteenth",axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,ornament:"none",ornamentTarget:"auto",ornamentRhythm:"one-sixteenth",instrument:"piano",axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 let loopTransport=null,transportKind=null,axisPending=false;
+let shownInstrumentNotes=null,shownInstrumentAxis=null;
+const soundingMidis=new Map();
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
 const currentEvents=(id=state.id)=>O.events(id,state);
 function renderAxes(){
@@ -684,6 +724,7 @@ function render(){
  }
  grid.setAttribute("aria-label",p.title+": "+ev.map(e=>e.name+" no "+e.at).join("; "));
  renderScore();
+ renderInstrument(ev,state);
 }
 function renderScore(){
  for(const btn of document.querySelectorAll("[data-score-mode]")){
@@ -698,9 +739,49 @@ function renderScore(){
   ?"Clave de sol · "+currentEvents().map(n=>n.name+n.octave).join(" → ")+". Agrupamento por pulsos; ligaduras mantêm o som, sem criar novos ataques."
   :"Pauta rítmica de uma linha. Barras mostram a pulsação; pausas, pontos e ligaduras registram as durações exatas.";
 }
+function syncInstrumentLights(){
+ for(const node of document.querySelectorAll(".instrument-sounding"))node.classList.remove("instrument-sounding");
+ for(const midi of new Set(soundingMidis.values())){
+  for(const node of document.querySelectorAll('[data-midi="'+midi+'"]'))node.classList.add("instrument-sounding");
+ }
+}
+function renderInstrument(ev=shownInstrumentNotes??currentEvents(),axis=shownInstrumentAxis??state){
+ shownInstrumentNotes=ev.map(n=>({...n}));
+ shownInstrumentAxis={mode:axis.mode,inversion:axis.inversion,path:axis.path};
+ for(const btn of document.querySelectorAll("[data-instrument]")){
+  const selected=btn.dataset.instrument===state.instrument;
+  btn.classList.toggle("active",selected);
+  btn.setAttribute("aria-pressed",String(selected));
+ }
+ if(state.instrument==="guitar"){
+  const model=I.guitar(ev,shownInstrumentAxis);
+  $("instrument-view").innerHTML=I.guitarSvg(ev,shownInstrumentAxis);
+  $("instrument-form").textContent="Forma 1–3–5";
+  $("instrument-next").textContent=model.extension.length?"↗ Outra posição":"";
+ }else{
+  $("instrument-view").innerHTML=I.pianoSvg(ev);
+  $("instrument-form").textContent="Teclado";
+  $("instrument-next").textContent="";
+ }
+ syncInstrumentLights();
+}
+function lightInstrument(index,on,ev){
+ if(ev){
+  if(on)soundingMidis.set(index,ev.midi);
+  else soundingMidis.delete(index);
+ }
+ syncInstrumentLights();
+ const last=on?ev:[...soundingMidis.values()].at(-1);
+ $("instrument-current").textContent=last&&typeof last==="object"
+  ?last.name+last.octave
+  :last!==undefined?I.label(last):"—";
+}
 function stop(){
  state.token++;
  transportKind=null;axisPending=false;
+ soundingMidis.clear();
+ $("instrument-current").textContent="—";
+ syncInstrumentLights();
  if(loopTransport){loopTransport.cancel();loopTransport=null;}
  for(const x of document.querySelectorAll(".subdiv,.tick"))x.classList.remove("metro-active");
  $("metro-current").textContent="—";
@@ -767,8 +848,9 @@ function scheduleMetronome(begin,token,offsetSeconds=0){
   },token);
  }
 }
-function sounding(index,on){
+function sounding(index,on,ev){
  for(const item of document.querySelectorAll('[data-index="'+index+'"]'))item.classList.toggle("sounding",on);
+ lightInstrument(index,on,ev);
 }
 function schedulePattern(id,begin,token,offsetSeconds=0,axis={mode:state.mode,inversion:state.inversion,path:state.path}){
  const ev=O.events(id,axis);
@@ -778,8 +860,8 @@ function schedulePattern(id,begin,token,offsetSeconds=0,axis={mode:state.mode,in
   const dur=E.beatsToSeconds(n.length,state.bpm);
   const start=begin+dt;
   note(n.midi,start,Math.max(.055,dur*.83),n.accent);
-  later(offsetSeconds+dt,()=>sounding(n.index,true),token);
-  later(offsetSeconds+dt+dur*.83,()=>sounding(n.index,false),token);
+  later(offsetSeconds+dt,()=>sounding(n.index,true,n),token);
+  later(offsetSeconds+dt+dur*.83,()=>sounding(n.index,false,n),token);
  }
 }
 function formatMs(value){return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(value)+" ms"}
@@ -992,6 +1074,12 @@ $("next-path").addEventListener("click",()=>changeAxis("path",(state.path+1)%24)
 $("random-path").addEventListener("click",()=>changeAxis("path",Math.floor(Math.random()*24)));
 $("ornament-style").addEventListener("change",e=>changeAxis("ornament",e.target.value));
 $("ornament-target").addEventListener("change",e=>changeAxis("ornamentTarget",e.target.value));
+for(const button of document.querySelectorAll("[data-instrument]")){
+ button.addEventListener("click",()=>{
+  state.instrument=button.dataset.instrument;
+  renderInstrument();
+ });
+}
 $("ornament-demo").addEventListener("click",()=>{
  const id=demoPatternForOrnament();
  if(!id)return;
