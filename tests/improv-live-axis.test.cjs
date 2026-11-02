@@ -41,6 +41,8 @@ function page(){
  const els=new Map();
  const scoreButtons=["rhythm","melodic"].map(v=>new Element("button",{scoreMode:v}));
  const instrumentButtons=["piano","guitar"].map(v=>new Element("button",{instrument:v}));
+ const studioTabs=["melody","rhythms","ornaments"].map(v=>new Element("button",{studioTab:v}));
+ const ornamentGroups=["one","two","phrases"].map(v=>new Element("button",{ornamentGroup:v}));
  const diagButtons=[4,5,6,7].map(v=>new Element("span",{diagTick:String(v)}));
  const walk=e=>e.children.flatMap(c=>[c,...walk(c)]);
  const all=()=>[...els.values()].flatMap(e=>[e,...walk(e)]);
@@ -51,6 +53,8 @@ function page(){
   querySelectorAll(query){
    if(query==="[data-score-mode]")return scoreButtons;
    if(query==="[data-instrument]")return instrumentButtons;
+   if(query==="[data-studio-tab]")return studioTabs;
+   if(query==="[data-ornament-group]")return ornamentGroups;
    if(query==="[data-diag-tick]")return diagButtons;
    if(query===".subdiv,.tick")return all().filter(e=>/^(subdiv|tick)/.test(e.className));
    if(query===".sounding")return all().filter(e=>e.className.split(/\s+/).includes("sounding"));
@@ -84,7 +88,7 @@ function page(){
   now=until;
  }
  const notes=()=>audio.filter(x=>x.type==="triangle").sort((a,b)=>a.at-b.at);
- return {get:id=>document.getElementById(id),window,advance,notes,timers,instrumentButtons};
+ return {get:id=>document.getElementById(id),window,advance,notes,timers,instrumentButtons,studioTabs,ornamentGroups};
 }
 test("Registro e ordem mudam no próximo compasso sem interromper Loop ou metrônomo",async()=>{
  const ui=page(),$=ui.get;
@@ -213,4 +217,37 @@ test("Gráfico permanece na frase que soa até a mudança melódica entrar na vo
  assert.match($("instrument-view").innerHTML,/piano-svg/);
  assert.match($("instrument-view").innerHTML,/data-midi="71"/);
  assert.equal(ui.notes().length,8);
+});
+
+test("Abas Melodia, Ritmos e Embelezamentos alternam sem ocultar o monitor",async()=>{
+ const ui=page(),$=ui.get;
+ assert.equal($("studio-panel-melody").hidden,false);
+ assert.equal($("studio-panel-rhythms").hidden,true);
+ assert.equal($("studio-panel-ornaments").hidden,true);
+ assert.match($("score").innerHTML,/score-svg/);
+ assert.match($("instrument-view").innerHTML,/piano-svg/);
+ $("loop").handlers.click();await $("play").handlers.click();ui.advance(.25);
+ ui.studioTabs[2].handlers.click();
+ assert.equal($("studio-panel-ornaments").hidden,false);
+ assert.equal($("studio-panel-melody").hidden,true);
+ assert.equal(ui.studioTabs[2].attrs["aria-selected"],"true");
+ assert.equal($("play").disabled,true);
+ ui.studioTabs[1].handlers.click();
+ assert.equal($("studio-panel-rhythms").hidden,false);
+ assert.equal($("studio-panel-ornaments").hidden,true);
+ assert.match($("score").innerHTML,/score-svg/);
+ assert.match($("instrument-view").innerHTML,/piano-svg/);
+ ui.advance(3.25);assert.equal(ui.notes().length,8);
+});
+test("Embelezamento mostra somente a família escolhida, sem interromper o áudio",async()=>{
+ const ui=page(),$=ui.get;
+ ui.studioTabs[2].handlers.click();
+ assert.equal($("ornament-rhythm-sections").children.length,1);
+ assert.equal($("ornament-rhythm-sections").children[0].children[2].children.length,3);
+ ui.ornamentGroups[1].handlers.click();
+ assert.equal(ui.ornamentGroups[1].attrs["aria-pressed"],"true");
+ assert.equal($("ornament-rhythm-sections").children[0].children[2].children.length,5);
+ ui.ornamentGroups[2].handlers.click();
+ assert.equal($("ornament-rhythm-sections").children[0].children[2].children.length,3);
+ assert.match($("ornament-rhythm-sections").children[0].children[2].children[0].children[1].children[0].className,/attack|hold|rest/);
 });
