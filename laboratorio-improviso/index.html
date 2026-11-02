@@ -704,7 +704,8 @@ function scheduleAxisBar(id,at,token){
  const axis={mode:state.mode,inversion:state.inversion,path:state.path};
  const revision=state.axisRevision;
  const seconds=Math.max(0,at-state.ctx.currentTime);
- schedulePattern(id,at,token,seconds,axis);
+ // Primeiro atualiza a grade/pauta exatamente no pulso da volta nova.
+ // Depois, os destaques de metrônomo e ataques podem encontrá-la pronta.
  later(seconds,()=>{
   if(token!==state.token)return;
   if(revision!==state.axisRevision){
@@ -715,6 +716,7 @@ function scheduleAxisBar(id,at,token){
   render();
   $("axis-live-status").textContent="Em execução: "+M.option(axis).mode.name+" · registro "+M.option(axis).inversion.order+" · ordem "+M.option(axis).path.label+".";
  },token);
+ schedulePattern(id,at,token,seconds,axis);
 }
 async function playSelected(){
  stop();const token=state.token,ctx=await audioContext();
