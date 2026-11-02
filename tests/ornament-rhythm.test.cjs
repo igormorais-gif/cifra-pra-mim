@@ -64,7 +64,7 @@ test("Modo, ordem e registro não modificam a estrutura rítmica do ornamento",(
 test("O aplicativo mostra famílias, seleção e indisponibilidade sem esconder os ritmos",()=>{
  assert.match(html,/id="ornament-rhythm-sections"/);
  assert.match(html,/function rhythmGlyph\(pattern\)/);
- assert.match(html,/for\(const group of O\.RHYTHM_GROUPS\)/);
+ assert.match(html,/for\(const group of O\.RHYTHM_GROUPS\.filter\(g=>g\.id===state\.ornamentGroup\)\)/);
  assert.match(html,/O\.freeTargets\(result\.base,pattern\)/);
  assert.match(html,/aria-pressed/);
  assert.match(html,/changeAxis\("ornamentRhythm",pattern\.id\)/);
