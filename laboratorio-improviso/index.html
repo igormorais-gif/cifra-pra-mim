@@ -72,8 +72,9 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .hit{position:relative;grid-row:1;margin:29px 2px 11px;border:1px solid #c79570;border-radius:6px;background:#d6a277;color:#281f1b;min-width:0;z-index:2;font-weight:850;font-size:11px;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap}
 .hit.offbeat{background:#83c3c8;border-color:#62a6aa;color:#102c35}
 .hit.sounding{background:#ff6b78;border-color:#ffb6be;color:#311316}
-.hit.tiny{font-size:0}
-.hit.tiny:after{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.hit.tiny{font-size:11px;padding:2px 0;overflow:visible}
+.hit.tiny .hit-name{display:block;writing-mode:vertical-rl;transform:rotate(180deg);text-orientation:mixed;white-space:nowrap;line-height:1;font-size:11px;letter-spacing:0;font-weight:850}
+.hit .hit-name{display:block;max-width:100%;white-space:nowrap}
 .event-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 .event-chip{border:1px solid #3d5870;border-radius:8px;padding:7px 11px;background:#102130;font-size:12px;color:#e3edf0}
 .event-chip strong{color:#f8c195}
@@ -213,8 +214,8 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
   .subdiv{font-size:clamp(9px,2.5vw,12px);letter-spacing:-.04em}
   .subdiv.major{border-left-width:1px}
   .hit{margin:12px 1px 10px;border-radius:4px;font-size:clamp(8px,2.6vw,11px)}
-  .hit.tiny{font-size:0}
-  .hit.tiny:after{width:4px;height:4px}
+  .hit.tiny{font-size:11px;min-width:0;overflow:visible;margin-left:1px;margin-right:1px}
+  .hit.tiny .hit-name{font-size:11px;line-height:1;letter-spacing:0}
   /* Apenas os controles essenciais seguem o scroll; o metrônomo detalhado
      permanece na seção original para não cobrir o material de estudo. */
   .player .control-row{
@@ -273,6 +274,12 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
  .score-view{justify-content:stretch;gap:5px}
  .score-view span{flex:0 0 100%}
  .score-view button{flex:1}
+}
+
+/* v14: cada ataque conserva seu nome, inclusive nas semicolcheias estreitas */
+.hit.tiny:after{content:none!important}
+@media(max-width:370px){
+ .hit.tiny .hit-name{font-size:10px}
 }
 </style>
 </head>
@@ -534,8 +541,11 @@ function render(){
   grid.append(cell);
  }
  for(const n of ev){
-  const item=make("span","hit"+(n.accent?"":" offbeat")+(n.length<=1?" tiny":"") ,n.name);
-  item.dataset.index=String(n.index);item.title=n.name+" ("+n.degree+") · "+n.at;
+  const item=make("span","hit"+(n.accent?"":" offbeat")+(n.length<=1?" tiny":""),undefined);
+  item.append(make("span","hit-name",n.name));
+  item.dataset.index=String(n.index);
+  item.title=n.name+" ("+n.degree+") · "+n.at;
+  item.setAttribute("aria-label",n.name+", grau "+n.degree+", ataque em "+n.at);
   item.style.gridColumn=(n.tick+1)+" / span "+n.length;
   item.style.gridRow="2";grid.append(item);
  }
