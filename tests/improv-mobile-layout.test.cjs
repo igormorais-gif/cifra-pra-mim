@@ -56,3 +56,37 @@ test("Semicolcheias exibem nomes reais, não pontos no lugar das notas",()=>{
  assert.match(html,/item\.setAttribute\("aria-label",\(n\.ornament\?"Aproximação ":"Nota-alvo "\)\+n\.name/);
  assert.match(html,/item\.style\.gridColumn=\(n\.tick\+1\)\+" \/ span "\+n\.length/);
 });
+
+test("Monitor de beat, partitura e instrumento vem antes das abas e fica aderente no celular",()=>{
+ const order=["id=\"monitor\"","id=\"timeline\"","id=\"score\"","id=\"instrument-view\"","class=\"studio-tabs\""];
+ const indices=order.map(x=>html.indexOf(x));
+ assert.ok(indices.every(x=>x>=0));
+ assert.ok(indices.every((x,i)=>i===0||x>indices[i-1]));
+ assert.match(html,/@media\(max-width:740px\)\{[\s\S]*?\.selected\{position:sticky;top:0;z-index:55/);
+ assert.match(html,/scoreFit:true/);
+ assert.match(html,/\.selected \.ticks\{grid-template-rows:22px 46px\}/);
+});
+test("As abas separam Melodia, Ritmos e Embelezamentos sem esconder os três visores",()=>{
+ for(const tab of ["melody","rhythms","ornaments"]){
+  assert.match(html,new RegExp('data-studio-tab="'+tab+'"'));
+  assert.match(html,new RegExp('id="studio-panel-'+tab+'"'));
+ }
+ assert.match(html,/function setStudioTab\(tab\)/);
+ assert.match(html,/\$\("studio-panel-"\+key\)\.hidden=key!==tab/);
+ assert.match(html,/\.studio-tabs button\.active/);
+});
+test("Teste auditivo de subdivisão não ocupa mais a interface principal",()=>{
+ assert.doesNotMatch(html,/id="timing-check-title"/);
+ assert.doesNotMatch(html,/id="diag-first-i"/);
+ assert.doesNotMatch(html,/id="diag-e"/);
+ assert.match(html,/<details class="metro-details">/);
+ assert.match(html,/id="metro-mode"/);
+});
+test("Ornamentos mostram uma família de cada vez com ataques numerados",()=>{
+ for(const group of ["one","two","phrases"])assert.match(html,new RegExp('data-ornament-group="'+group+'"'));
+ assert.match(html,/function rhythmGlyph\(pattern\)/);
+ assert.match(html,/kind:"attack",label:String\(index\+1\)/);
+ assert.match(html,/\.ornament-preview \.ornament-step\.attack/);
+ assert.match(html,/\.ornament-preview \.ornament-step\.rest/);
+ assert.match(html,/\.ornament-preview \.ornament-step\.hold/);
+});
