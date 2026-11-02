@@ -5,6 +5,7 @@ const path=require("node:path");
 const vm=require("node:vm");
 const E=require("../src/rhythm-lab.js");
 const M=require("../src/melodic-axis.js");
+const O=require("../src/ornament-axis.js");
 const N=require("../src/rhythm-notation.js");
 const html=fs.readFileSync(path.join(__dirname,"../laboratorio-improviso/index.html"),"utf8");
 const loopSource=fs.readFileSync(path.join(__dirname,"../src/seamless-loop.js"),"utf8");
@@ -65,7 +66,7 @@ function page(){
   createGain(){return{gain:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){}}}
   async resume(){}
  }
- const window={RhythmLabEngine:E,RhythmLabMelody:M,RhythmLabNotation:N,
+ const window={RhythmLabEngine:E,RhythmLabMelody:M,RhythmLabOrnaments:O,RhythmLabNotation:N,
   SeamlessLoop:sandbox.module.exports,AudioContext,addEventListener(){}};
  const script=html.slice(html.lastIndexOf("<script>")+8,html.lastIndexOf("</script>"));
  vm.runInNewContext(script,{window,document,setTimeout:setTimer,clearTimeout:clearTimer});
@@ -142,4 +143,34 @@ test("Comparação de células usa compassos individuais e continua sem pausa",a
  assert.equal(arr.length,8);
  assert.deepEqual(arr.slice(4,8).map(x=>x.midi),M.notes({inversion:2}).map(x=>x.midi));
  assert.ok(Math.abs(arr[4].at-arr[0].at-3)<1e-9);
+});
+
+test("Aproximação muda na próxima volta sem parar o Loop",async()=>{
+ const ui=page(),$=ui.get;
+ ui.window.RhythmLabUI.select("respiros");
+ $("loop").handlers.click();
+ await $("play").handlers.click();
+ ui.advance(.5);
+ $("ornament-style").handlers.change({target:{value:"diatonic-below"}});
+ assert.equal($("play").disabled,true);
+ assert.match($("axis-live-status").textContent,/Próxima volta disponível/);
+ ui.advance(3.35);
+ const notes=ui.notes();
+ assert.equal(notes.length,9);
+ assert.deepEqual(notes.slice(0,4).map(x=>x.midi),[60,64,67,71]);
+ const applied=O.analyze("respiros",{ornament:"diatonic-below"}).events;
+ assert.deepEqual(notes.slice(4).map(x=>x.midi),applied.map(x=>x.midi));
+ assert.ok(Math.abs(notes[4].at-notes[0].at-3)<1e-9);
+ assert.match($("ornament-status").textContent,/Aproximação/);
+ assert.match($("score").innerHTML,/score-approach/);
+});
+test("Aviso sem espaço e botão de demonstração em Respiros",()=>{
+ const ui=page(),$=ui.get;
+ $("ornament-style").handlers.change({target:{value:"chromatic-below"}});
+ assert.match($("ornament-status").textContent,/não tem semicolcheia livre/);
+ assert.equal($("ornament-demo").hidden,false);
+ $("ornament-demo").handlers.click();
+ assert.equal(ui.window.RhythmLabUI.get().rhythm,"respiros");
+ assert.equal(ui.window.RhythmLabUI.get().events.length,5);
+ assert.equal($("ornament-demo").hidden,true);
 });
