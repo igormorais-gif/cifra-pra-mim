@@ -1,3 +1,15 @@
+## Laboratório de Improvisação — instrumento visual Piano / Violão (v19)
+
+**Interface:** seção compacta `Instrumento` imediatamente após a partitura, com alternador `Piano / Violão`, registro mínimo da forma/região, indicador de continuação e nota atualmente executada. Sem explicações longas nem novos painéis didáticos. A mudança do visor não reinicia áudio nem Loop.
+
+**Fonte das alturas:** `src/instrument-map.js` recebe **os mesmos eventos MIDI exatos agendados** pelo eixo melódico e pelo eixo dos ornamentos. O teclado mostra duas ou mais oitavas suficientes para a frase; teclas e casas são marcadas pelo MIDI real, sem trocar oitavas por conveniência. As notas ativas ficam destacadas pelo mesmo callback `sounding(index,on,event)` já usado na grade. Pausas removem o destaque; `Parar` apaga o estado atual.
+
+**Violão:** afinação padrão E2–A2–D3–G3–B3–E4, casas 0–24. Primeiro são escolhidas posições compactas para os graus **1–3–5** no registro existente; busca-se a digitação exata dos demais graus, passando a outra região quando não cabe na área básica (indicador `↗ Outra posição`). Este mapeamento **não reivindica identificar formas CAGED completas**; é uma proposta de região compacta e continuação de digitação, sempre no MIDI que será ouvido. Para Dó maior no percurso 1–3–5–7, a base aparece nas casas **5 (corda Sol), 5 (corda Si), 3 (corda Mi aguda)** e a sétima na casa **7 da corda Mi aguda**: a sétima maior é exatamente **4 semitons acima da quinta**. Para 7 menor sobre quinta justa, são 3 semitons; com quinta diminuta, o motor usa o intervalo real da combinação modal, não força o número quatro.
+
+**Sincronização:** o evento de mudança de eixo não para o transporte. Ao trocar modo, registro, percurso ou ornamento, o instrumento preserva o material do compasso atual até a próxima volta agendada; o gráfico é redesenhado quando a nova sequência se torna audível. Alternar entre Piano e Violão durante essa espera não antecipa as notas. Os visores têm conteúdo SVG responsivo e não duplicam controles de reprodução.
+
+**Validação:** `tests/instrument-map.test.cjs` cobre digitações reais, 672 combinações modais/inversões/ordens, extensões e acidentes; `tests/improv-live-axis.test.cjs` cobre a troca do visor sem interromper a reprodução. É importante revisar visualmente no Safari/iPhone depois do deploy; o sistema de testes de DOM usado no projeto é uma simulação, não uma captura visual do navegador.
+
 ## Laboratório de Improvisação — troca melódica ao vivo (v15)
 
 O player permite alterar **modo**, **registro das quatro notas** (disposição fechada) ou **ordem melódica** durante a execução de uma célula ou de uma comparação, **sem reiniciar o áudio, o metrônomo ou o Loop**. A mudança é preparada para o próximo compasso ainda não agendado, sempre no mesmo relógio musical de `AudioContext.currentTime`. O compasso já programado termina com as notas originais; não são interrompidas ou substituídas antecipadamente. A programação usa `horizon=.26` e `interval=20` ms: caso o usuário altere a seleção a menos de 260 ms de uma virada já pré-programada, ela entra na próxima virada *disponível*, sem criar pausa nem notas duplicadas.
