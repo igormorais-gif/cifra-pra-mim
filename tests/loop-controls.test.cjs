@@ -51,7 +51,7 @@ test("Improvisação usa relógio comum para célula, comparação e metrônomo"
  const html=read("laboratorio-improviso/index.html");
  assert.equal((html.match(/window\.SeamlessLoop\.create/g)||[]).length,3);
  assert.match(html,/cycleSeconds:4\*beat/);
- assert.match(html,/cycleSeconds:compared\.length\*4\*beat/);
+ assert.match(html,/cycleSeconds:4\*beat,\s*shouldRepeat:\(\)=>barsScheduled<compared\.length\|\|state\.loop/);
  assert.match(html,/cycleSeconds:beat\*4/);
 });
 test("Laboratório legado cancela as vozes ao mudar de exercício",()=>{
