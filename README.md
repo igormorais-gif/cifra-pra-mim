@@ -1,3 +1,15 @@
+## Laboratório de Improvisação — troca melódica ao vivo (v15)
+
+O player permite alterar **modo**, **registro das quatro notas** (disposição fechada) ou **ordem melódica** durante a execução de uma célula ou de uma comparação, **sem reiniciar o áudio, o metrônomo ou o Loop**. A mudança é preparada para o próximo compasso ainda não agendado, sempre no mesmo relógio musical de `AudioContext.currentTime`. O compasso já programado termina com as notas originais; não são interrompidas ou substituídas antecipadamente. A programação usa `horizon=.26` e `interval=20` ms: caso o usuário altere a seleção a menos de 260 ms de uma virada já pré-programada, ela entra na próxima virada *disponível*, sem criar pausa nem notas duplicadas.
+
+As configurações escolhidas pelos controles nativos do iPhone aparecem imediatamente no seletor, com mensagem **“Próxima volta disponível”**. **A grade de 16 subdivisões, a pauta e os destaques só mudam no mesmo instante em que o novo compasso começa a soar**, para não anunciar uma nota que ainda não foi executada. Mudanças rápidas são consolidadas: a última opção escolhida é a que entra. Também funciona com os botões de ordem anterior/próxima e sorteio. O recurso permanece independente do botão “Ritmo puro / Com alturas”.
+
+Se o Loop estiver desligado, a passagem única termina normalmente; não é criado um loop oculto. Com Loop ligado, o novo material continua repetindo até **Parar**. Trocas de ritmo, andamento ou família ainda interrompem a execução anterior, preservando a semântica de seleção de outra célula.
+
+A comparação de padrões agora agenda **um compasso por vez** (em vez de programar a sequência inteira de antemão), para possibilitar a mesma troca ao vivo mesmo durante “Comparar visíveis”. O destaque da célula de comparação é atualizado antes da animação de início do novo compasso.
+
+Validação: `tests/improv-live-axis.test.cjs` simula o relógio do áudio, as notas, a interface e os temporizadores: troca de registro/ordem no próximo compasso, trocas rápidas sem duplicação, mudança tardia após pré-agendamento, comparação contínua e resposta ao botão Parar. Os testes de todos os módulos foram mantidos. A verificação real de latência e apresentação em Safari/iPhone continua recomendada.
+
 ## Partitura do Laboratório de Improvisação — critérios Larry Monroe (v12)
 
 **Fonte primária:** arquivo enviado pelo usuário, Larry Monroe, *Workbook for Ear Training 1* (Berklee College of Music), **páginas 2–7 do PDF** / páginas impressas 1–6, **Lesson One**. O material é digitalização; as regras foram lidas nas páginas escaneadas, não inferidas por OCR.
