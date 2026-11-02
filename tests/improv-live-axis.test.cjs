@@ -174,7 +174,7 @@ test("Aproximação muda na próxima volta sem parar o Loop",async()=>{
 test("Aviso sem espaço e botão de demonstração em célula compatível",()=>{
  const ui=page(),$=ui.get;
  $("ornament-style").handlers.change({target:{value:"chromatic-below"}});
- assert.match($("ornament-status").textContent,/não tem semicolcheia livre/);
+ assert.match($("ornament-status").textContent,/Sem espaço/);
  assert.equal($("ornament-demo").hidden,false);
  $("ornament-demo").handlers.click();
  assert.notEqual(ui.window.RhythmLabUI.get().rhythm,"regular");
