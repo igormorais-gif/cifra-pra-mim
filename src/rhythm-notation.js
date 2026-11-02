@@ -43,7 +43,7 @@
    res.push({
     kind:"note",tick:at,length:d,index:e.index,midi:e.midi,name:e.name,
     degree:e.degree,letter:e.letter,octave:e.octave,alteration:e.alteration,
-    first:res.length===0
+    first:res.length===0,ornament:!!e.ornament
    });
    at+=d;left-=d;
   }
@@ -65,7 +65,7 @@
   return items;
  }
  function plan(id,seq=E.events(id)){
-  if(!Array.isArray(seq)||seq.length!==4)throw new RangeError("Quatro ataques são necessários");
+  if(!Array.isArray(seq)||seq.length<4||seq.length>5)throw new RangeError("Quatro alvos e até uma aproximação são necessários");
   const tokens=[];let cursor=0;
   for(const ev of seq){
    if(ev.tick>cursor)tokens.push(...splitRest(cursor,ev.tick-cursor));
@@ -124,7 +124,7 @@
   const up=stemDir==="up",stemX=x+(up?9:-9),stemEnd=beamInfo?.beamY??(y+(up?-39:39));
   const beamed=!!beamInfo;
   const hollow=t.length===8,notWhole=t.length!==16,dotted=t.length===3||t.length===6;
-  let out='<g class="score-hit" data-index="'+t.index+'" data-tick="'+t.tick+'" data-length="'+t.length+'" data-kind="note">';
+  let out='<g class="score-hit'+(t.ornament?' score-approach':'')+'" data-index="'+t.index+'" data-tick="'+t.tick+'" data-length="'+t.length+'" data-kind="note" data-role="'+(t.ornament?'approach':'target')+'">';
   if(mode==="melodic"){
    for(let ledger=114;ledger<=y;ledger+=12)out+=line(x-16,ledger,x+16,ledger,COLORS.ink,1.8);
    for(let ledger=42;ledger>=y;ledger-=12)out+=line(x-16,ledger,x+16,ledger,COLORS.ink,1.8);
