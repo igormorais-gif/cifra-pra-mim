@@ -638,18 +638,36 @@ function demoPatternForOrnament(){
  const candidate=E.PATTERNS.find(p=>O.analyze(p.id,{...state,ornamentTarget:"auto"}).ornaments.length);
  return candidate?.id??null;
 }
+function setStudioTab(tab){
+ if(!["melody","rhythms","ornaments"].includes(tab))throw new RangeError("Aba desconhecida");
+ state.studioTab=tab;
+ for(const button of document.querySelectorAll("[data-studio-tab]")){
+  const active=button.dataset.studioTab===tab;
+  button.classList.toggle("active",active);
+  button.setAttribute("aria-selected",String(active));
+  button.tabIndex=active?0:-1;
+ }
+ for(const key of ["melody","rhythms","ornaments"])
+  $("studio-panel-"+key).hidden=key!==tab;
+}
 function renderOrnament(){
  const result=O.analyze(state.id,state);
+ $("ornament-context").textContent=E.pattern(state.id).title;
+ for(const button of document.querySelectorAll("[data-ornament-group]")){
+  const active=button.dataset.ornamentGroup===state.ornamentGroup;
+  button.classList.toggle("active",active);
+  button.setAttribute("aria-pressed",String(active));
+ }
  $("ornament-style").value=state.ornament;
  $("ornament-target").value=state.ornamentTarget;
  $("ornament-status").textContent=result.status;
  const eligible=result.opportunities.filter(x=>x.free);
- $("ornament-room").textContent=eligible.length
-  ?"Espaço para este desenho antes de: "+eligible.map(x=>(x.index+1)+"ª nota ("+x.name+", "+x.gapTicks+" subdivisões livres)").join("; ")+"."
-  :"Este desenho precisa de "+result.opportunities[0]?.requiredTicks+" subdivisões livres antes de uma nota-alvo; nenhuma das quatro oferece esse espaço.";
+ $("ornament-room").textContent=state.ornament==="none"
+  ?"Escolha um desenho para ouvir uma aproximação."
+  :eligible.length?"Pronto para ouvir.":"Este desenho não cabe na célula atual.";
  const sections=$("ornament-rhythm-sections");
  sections.replaceChildren();
- for(const group of O.RHYTHM_GROUPS){
+ for(const group of O.RHYTHM_GROUPS.filter(g=>g.id===state.ornamentGroup)){
   const shell=make("section","ornament-family");
   shell.append(make("h3","",group.title),make("p","",group.description));
   const cards=make("div","ornament-cards");
@@ -660,15 +678,18 @@ function renderOrnament(){
    button.type="button";button.dataset.ornamentRhythm=pattern.id;
    button.setAttribute("aria-pressed",String(selected));
    button.setAttribute("aria-label",pattern.title+", "+pattern.notes.length+" notas auxiliares"+(possible?"":"; sem espaço nesta célula"));
-   button.append(make("strong","",pattern.title),make("small","",pattern.subtitle));
+   button.append(make("strong","",pattern.title));
    const preview=make("span","ornament-preview");
    preview.setAttribute("aria-hidden","true");
    for(const syllable of rhythmGlyph(pattern))preview.append(make("span","",syllable));
-   preview.append(make("b","","→ alvo"));
+   preview.append(make("b","","Alvo"));
    button.append(preview);
-   const footer=make("em","ornament-availability",possible?"Cabe nesta célula":"Sem espaço nesta célula");
+   const footer=make("em","ornament-availability",possible?"✓ Cabe nesta célula":"Requer outra célula");
    button.append(footer);
-   button.addEventListener("click",()=>changeAxis("ornamentRhythm",pattern.id));
+   button.addEventListener("click",()=>{
+    if(state.ornament==="none")changeAxis("ornament","diatonic-below");
+    changeAxis("ornamentRhythm",pattern.id);
+   });
    cards.append(button);
   }
   shell.append(cards);sections.append(shell);
@@ -779,13 +800,11 @@ function stop(){
  if(loopTransport){loopTransport.cancel();loopTransport=null;}
  for(const x of document.querySelectorAll(".subdiv,.tick"))x.classList.remove("metro-active");
  $("metro-current").textContent="—";
- for(const x of document.querySelectorAll("[data-diag-tick]"))x.classList.remove("active","playing");
  for(const t of state.timers)clearTimeout(t);
  state.timers=[];
  for(const o of state.voices){try{o.stop()}catch(e){}}
  state.voices=[];
  $("play").disabled=false;$("compare").disabled=false;
- $("diag-first-i").disabled=false;$("diag-e").disabled=false;
  $("metro-solo").disabled=false;
  for(const chip of document.querySelectorAll(".sounding"))chip.classList.remove("sounding");
 }
@@ -857,35 +876,6 @@ function schedulePattern(id,begin,token,offsetSeconds=0,axis={mode:state.mode,in
   later(offsetSeconds+dt,()=>sounding(n.index,true,n),token);
   later(offsetSeconds+dt+dur*.83,()=>sounding(n.index,false,n),token);
  }
-}
-function formatMs(value){return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(value)+" ms"}
-function updateTimingCaption(){
- const beat=60/state.bpm;
- $("diag-caption").textContent="A "+state.bpm+" BPM, o primeiro i do 2 está "+formatMs(beat*250)+" depois do 2; o e do 2 está "+formatMs(beat*500)+" depois do 2.";
-}
-async function diagnostic(tick){
- stop();
- const token=state.token;
- const ctx=await audioContext();
- if(!ctx||state.token!==token)return;
- const start=ctx.currentTime+.12;
- const beat=60/state.bpm;
- scheduleMetronome(start,token,.12);
- const dt=E.beatsToSeconds(tick,state.bpm);
- note(72,start+dt,Math.max(.11,beat*.22),false);
- $("play").disabled=true;$("compare").disabled=true;
- $("diag-first-i").disabled=true;$("diag-e").disabled=true;
- const cells=[...document.querySelectorAll("[data-diag-tick]")];
- const marker=cells.find(x=>Number(x.dataset.diagTick)===tick);
- if(marker)marker.classList.add("active");
- setStatus("Teste auditivo: nota no "+E.beatLabel(tick)+". O metrônomo segue a subdivisão selecionada.");
- later(.12+dt,()=>{if(marker)marker.classList.add("playing")},token);
- later(.12+dt+Math.max(.11,beat*.22),()=>{if(marker)marker.classList.remove("playing")},token);
- later(.12+4*beat+.1,()=>{
-  $("play").disabled=false;$("compare").disabled=false;
-  $("diag-first-i").disabled=false;$("diag-e").disabled=false;
-  setStatus("Teste finalizado: compare o primeiro i e o e do tempo 2.");
- },token);
 }
 function finishTransport(token,message){
  if(token!==state.token)return;
@@ -992,8 +982,6 @@ async function playMetronomeOnly(){
  });
 }
 $("metro-solo").addEventListener("click",playMetronomeOnly);
-$("diag-first-i").addEventListener("click",()=>diagnostic(5));
-$("diag-e").addEventListener("click",()=>diagnostic(6));
 $("loop").addEventListener("click",()=>{
  state.loop=!state.loop;
  $("loop").setAttribute("aria-pressed",String(state.loop));
@@ -1021,7 +1009,6 @@ $("bpm").addEventListener("input",e=>{
   stop();state.bpm=Number(e.target.value);
   $("bpm-value").textContent=String(state.bpm);
   $("transport-caption").textContent=E.pattern(state.id).title+" · "+state.bpm+" BPM";
-  updateTimingCaption();
   setStatus("Andamento: "+state.bpm+" BPM.");
 });
 $("click").addEventListener("change",e=>{stop();state.click=e.target.checked;setStatus(state.click?"Metrônomo ativado.":"Metrônomo desativado.");});
@@ -1068,6 +1055,11 @@ $("next-path").addEventListener("click",()=>changeAxis("path",(state.path+1)%24)
 $("random-path").addEventListener("click",()=>changeAxis("path",Math.floor(Math.random()*24)));
 $("ornament-style").addEventListener("change",e=>changeAxis("ornament",e.target.value));
 $("ornament-target").addEventListener("change",e=>changeAxis("ornamentTarget",e.target.value));
+for(const button of document.querySelectorAll("[data-studio-tab]"))
+ button.addEventListener("click",()=>setStudioTab(button.dataset.studioTab));
+for(const button of document.querySelectorAll("[data-ornament-group]"))
+ button.addEventListener("click",()=>{state.ornamentGroup=button.dataset.ornamentGroup;renderOrnament()});
+setStudioTab(state.studioTab);
 for(const button of document.querySelectorAll("[data-instrument]")){
  button.addEventListener("click",()=>{
   state.instrument=button.dataset.instrument;
@@ -1081,7 +1073,7 @@ $("ornament-demo").addEventListener("click",()=>{
  $("axis-live-status").textContent="Célula "+E.pattern(id).title+": espaço disponível para a fraseologia escolhida.";
  setStatus(E.pattern(id).title+": experimente a nova frase com o Loop ligado.");
 });
-render();renderMetronomeMode();updateTimingCaption();
+render();renderMetronomeMode();
 })();
 </script>
 </body>
