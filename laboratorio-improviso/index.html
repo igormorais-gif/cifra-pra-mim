@@ -298,6 +298,30 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .ornament-hit{background:#d4b28b!important;color:#211e1b!important;border:2px solid #f3d6a9!important}
 .ornament-chip{background:#413a32!important;border:1px solid #c89f73!important;color:#f6dfbe!important}
 @media(max-width:740px){.ornament-options{grid-template-columns:1fr}.ornament-axis{padding:14px}}
+
+/* Ritmos exclusivos para a ornamentação */
+.ornament-rhythms{margin-top:15px}
+.ornament-rhythm-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:#e9c7a4;font-size:13px}
+.ornament-rhythm-heading span{font-size:11px;color:#bacfdc}
+.ornament-rhythm-explainer{margin:8px 0 12px;color:#becedb;font-size:12px;line-height:1.55}
+.ornament-family{margin:13px 0 0}
+.ornament-family h3{font-size:14px;color:#e7c19a;margin:0 0 3px}
+.ornament-family>p{color:#b3cad9;margin:0 0 9px;font-size:11px}
+.ornament-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ornament-card{text-align:left;border:1px solid #597184;background:#172c3e;color:#eaf1f4;border-radius:10px;padding:11px 10px;display:flex;flex-direction:column;gap:5px;min-width:0;cursor:pointer}
+.ornament-card.selected{border:2px solid #eabe91;background:#3d342f;padding:10px 9px}
+.ornament-card:focus-visible{outline:3px solid #e9b98b;outline-offset:2px}
+.ornament-card strong{font-size:12px;line-height:1.35}
+.ornament-card small{font-size:10px;color:#b5c7d3;line-height:1.3}
+.ornament-card.selected small{color:#e1c9ae}
+.ornament-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;align-items:center;gap:3px;margin:4px 0;font:800 15px/1.2 ui-monospace,monospace;color:#f0bd8c}
+.ornament-preview span{text-align:center;border:1px solid #587389;border-radius:4px;background:#0c2030;padding:5px 0}
+.ornament-preview b{font:700 10px/1.2 system-ui,sans-serif;white-space:nowrap;color:#eed1b4}
+.ornament-availability{font-size:10px;font-style:normal;color:#a9d6b3}
+.ornament-card.unavailable{border-style:dashed}
+.ornament-card.unavailable .ornament-availability{color:#e6b0a1}
+@media(max-width:740px){.ornament-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ornament-card{padding:10px 8px}.ornament-card.selected{padding:9px 7px}}
+@media(max-width:370px){.ornament-preview{gap:2px;font-size:13px}.ornament-preview b{font-size:9px}.ornament-card strong{font-size:11px}}
 </style>
 </head>
 <body>
@@ -362,20 +386,28 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
   </section>
   <section class="card ornament-axis" aria-labelledby="ornament-title">
     <div class="card-heading">
-      <h2 id="ornament-title">04 · Embelezamentos: aproximações</h2>
-      <span class="ornament-tag">Primeira experiência</span>
+      <h2 id="ornament-title">04 · Laboratório rítmico dos ornamentos</h2>
+      <span class="ornament-tag">11 fraseologias</span>
     </div>
-    <p class="axes-intro">Acrescente uma nota de passagem imediatamente antes de uma das quatro notas-alvo. A aproximação usa <strong>uma semicolcheia que já estava em silêncio</strong>, sem deslocar nem encurtar as notas estruturais.</p>
+    <p class="axes-intro">Escolha uma aproximação e depois <strong>seu desenho rítmico independente</strong>: uma chamada curta, pares de semicolcheias, colcheias, síncopes ou frases com até quatro ataques auxiliares. O espaço vem dos silêncios antes das notas-alvo; os quatro ataques estruturais não se deslocam.</p>
     <div class="ornament-options">
       <label class="axis-field" for="ornament-style"><span>Tipo de aproximação</span><select id="ornament-style"></select></label>
       <label class="axis-field" for="ornament-target"><span>Nota de chegada</span><select id="ornament-target"></select></label>
+    </div>
+    <div class="ornament-rhythms" aria-label="Seções de ritmos exclusivos para notas de embelezamento">
+      <div class="ornament-rhythm-heading">
+        <strong>Fraseologias rítmicas do ornamento</strong>
+        <span id="ornament-rhythm-count">11 desenhos · 3 famílias</span>
+      </div>
+      <p class="ornament-rhythm-explainer">Cada miniatura representa as quatro subdivisões anteriores à nota-alvo: <strong>●</strong> ataque, <strong>━</strong> sustentação, <strong>·</strong> silêncio. A nota-alvo entra logo após a última coluna.</p>
+      <div id="ornament-rhythm-sections"></div>
     </div>
     <div class="ornament-detail">
       <p id="ornament-status" role="status" aria-live="polite">Sem embelezamento. As quatro notas-alvo permanecem iguais.</p>
       <p id="ornament-room" class="ornament-rooms">Espaços livres de aproximação: —</p>
       <button type="button" class="action" id="ornament-demo" hidden>Experimentar na célula Respiros</button>
     </div>
-    <p class="ornament-footnote"><strong>Didática:</strong> aproximação diatônica usa a nota anterior ou seguinte da coleção modal; aproximação cromática usa um semitom. A nota auxiliar tem duração medida e aparece na pauta, não é uma apojatura livre. Bordaduras e combinações de várias notas serão uma etapa posterior.</p>
+    <p class="ornament-footnote"><strong>Didática:</strong> D.I., D.S. e C.I. determinam a altura auxiliar; o novo eixo rítmico determina <em>quantos ataques</em> haverá, <em>onde</em> acontecem e <em>quanto</em> duram. Nesta primeira etapa, a mesma altura auxiliar é repetida nos desenhos de várias notas, para isolar a diferença rítmica. Não há Cromático Superior. Os desenhos têm durações medidas na partitura, seguindo o agrupamento por tempos.</p>
   </section>
   <section class="card choose" aria-labelledby="choose-title">
     <div class="card-heading"><h2 id="choose-title">Escolha uma célula rítmica</h2><span id="rhythm-count">12 desenhos · 4 ataques por compasso</span></div>
@@ -466,15 +498,15 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </div>
 <script src="../src/rhythm-lab.js?v=6"></script>
 <script src="../src/melodic-axis.js?v=9"></script>
-<script src="../src/ornament-axis.js?v=16"></script>
-<script src="../src/rhythm-notation.js?v=12"></script>
+<script src="../src/ornament-axis.js?v=18"></script>
+<script src="../src/rhythm-notation.js?v=18"></script>
 <script src="../src/seamless-loop.js?v=8"></script>
 <script>
 (function(){
 "use strict";
 const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody,O=window.RhythmLabOrnaments;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,ornament:"none",ornamentTarget:"auto",axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,ornament:"none",ornamentTarget:"auto",ornamentRhythm:"one-sixteenth",axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 let loopTransport=null,transportKind=null,axisPending=false;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
@@ -558,6 +590,21 @@ function showChoices(){
   wrap.append(btn);
  }
 }
+function rhythmGlyph(pattern){
+ const cells=["·","·","·","·"];
+ for(const entry of pattern.notes){
+  const begin=4+entry.off;
+  for(let i=0;i<entry.length;i++)cells[begin+i]=i===0?"●":"━";
+ }
+ return cells;
+}
+function demoPatternForOrnament(){
+ if(state.ornament==="none")return null;
+ const current=O.analyze(state.id,{...state,ornamentTarget:"auto"});
+ if(current.ornaments.length)return state.id;
+ const candidate=E.PATTERNS.find(p=>O.analyze(p.id,{...state,ornamentTarget:"auto"}).ornaments.length);
+ return candidate?.id??null;
+}
 function renderOrnament(){
  const result=O.analyze(state.id,state);
  $("ornament-style").value=state.ornament;
@@ -565,16 +612,44 @@ function renderOrnament(){
  $("ornament-status").textContent=result.status;
  const eligible=result.opportunities.filter(x=>x.free);
  $("ornament-room").textContent=eligible.length
-  ?"Espaço disponível antes de: "+eligible.map(x=>(x.index+1)+"ª nota ("+x.name+")").join(", ")+"."
-  :"Nenhuma nota desta célula tem uma semicolcheia livre antes do ataque.";
- $("ornament-demo").hidden=state.ornament==="none"||!!result.ornament;
+  ?"Espaço para este desenho antes de: "+eligible.map(x=>(x.index+1)+"ª nota ("+x.name+", "+x.gapTicks+" subdivisões livres)").join("; ")+"."
+  :"Este desenho precisa de "+result.opportunities[0]?.requiredTicks+" subdivisões livres antes de uma nota-alvo; nenhuma das quatro oferece esse espaço.";
+ const sections=$("ornament-rhythm-sections");
+ sections.replaceChildren();
+ for(const group of O.RHYTHM_GROUPS){
+  const shell=make("section","ornament-family");
+  shell.append(make("h3","",group.title),make("p","",group.description));
+  const cards=make("div","ornament-cards");
+  for(const pattern of O.RHYTHMS.filter(x=>x.group===group.id)){
+   const possible=O.freeTargets(result.base,pattern).some(x=>x.free);
+   const selected=state.ornamentRhythm===pattern.id;
+   const button=make("button","ornament-card"+(selected?" selected":"")+(possible?"":" unavailable"));
+   button.type="button";button.dataset.ornamentRhythm=pattern.id;
+   button.setAttribute("aria-pressed",String(selected));
+   button.setAttribute("aria-label",pattern.title+", "+pattern.notes.length+" notas auxiliares"+(possible?"":"; sem espaço nesta célula"));
+   button.append(make("strong","",pattern.title),make("small","",pattern.subtitle));
+   const preview=make("span","ornament-preview");
+   preview.setAttribute("aria-hidden","true");
+   for(const syllable of rhythmGlyph(pattern))preview.append(make("span","",syllable));
+   preview.append(make("b","","→ alvo"));
+   button.append(preview);
+   const footer=make("em","ornament-availability",possible?"Cabe nesta célula":"Sem espaço nesta célula");
+   button.append(footer);
+   button.addEventListener("click",()=>changeAxis("ornamentRhythm",pattern.id));
+   cards.append(button);
+  }
+  shell.append(cards);sections.append(shell);
+ }
+ const demoId=demoPatternForOrnament();
+ $("ornament-demo").hidden=state.ornament==="none"||!!result.ornament||!demoId;
+ if(demoId)$("ornament-demo").textContent="Experimentar em "+E.pattern(demoId).title;
 }
 function render(){
  const p=E.pattern(state.id),ev=currentEvents();
  renderAxes();
  renderOrnament();
  showFilters();showChoices();
- $("rhythm-count").textContent=visiblePatterns().length+" células · 4 alvos + aproximação opcional";
+ $("rhythm-count").textContent=visiblePatterns().length+" células · 4 notas-alvo + até 4 auxiliares";
  $("selected-title").textContent=p.title;
  $("selected-meta").textContent=p.subtitle;
  $("selected-description").textContent=p.description;
@@ -748,7 +823,7 @@ function finishTransport(token,message){
 // O áudio é agendado antecipadamente. Alterações de eixo só são
 // aplicadas a uma volta que ainda não foi programada, jamais no meio dela.
 function scheduleAxisBar(id,at,token,onBarStart=null){
- const axis={mode:state.mode,inversion:state.inversion,path:state.path,ornament:state.ornament,ornamentTarget:state.ornamentTarget};
+ const axis={mode:state.mode,inversion:state.inversion,path:state.path,ornament:state.ornament,ornamentTarget:state.ornamentTarget,ornamentRhythm:state.ornamentRhythm};
  const revision=state.axisRevision;
  const seconds=Math.max(0,at-state.ctx.currentTime);
  // Primeiro atualiza a grade/pauta exatamente no pulso da volta nova.
@@ -876,7 +951,7 @@ $("bpm").addEventListener("input",e=>{
 $("click").addEventListener("change",e=>{stop();state.click=e.target.checked;setStatus(state.click?"Metrônomo ativado.":"Metrônomo desativado.");});
 window.addEventListener("pagehide",stop);
 window.RhythmLabUI={
- get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,loop:state.loop,ornament:state.ornament,ornamentTarget:state.ornamentTarget,ornamentAnalysis:O.analyze(state.id,state).status,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:currentEvents(),notes:M.notes(state),notation:N.plan(state.id,currentEvents()),mode:state.mode,inversion:state.inversion,path:state.path,modalScale:M.modalColors(state.mode)}),
+ get:()=>({rhythm:state.id,family:state.family,scoreMode:state.scoreMode,bpm:state.bpm,click:state.click,metronomeMode:state.metronomeMode,loop:state.loop,ornament:state.ornament,ornamentTarget:state.ornamentTarget,ornamentRhythm:state.ornamentRhythm,ornamentAnalysis:O.analyze(state.id,state).status,metronome:E.metronomePlan(state.metronomeMode,state.bpm),events:currentEvents(),notes:M.notes(state),notation:N.plan(state.id,currentEvents()),mode:state.mode,inversion:state.inversion,path:state.path,modalScale:M.modalColors(state.mode)}),
  setMetronomeMode,
  select:id=>{E.pattern(id);stop();state.id=id;state.family="all";render()},
  filter:family=>{if(!E.FAMILIES.some(f=>f.id===family))throw new RangeError("Família desconhecida");stop();state.family=family;if(!visiblePatterns().some(p=>p.id===state.id))state.id=visiblePatterns()[0].id;render()},
@@ -888,13 +963,13 @@ for(const item of M.PATHS){const opt=make("option","","Ordem "+String(item.id+1)
 for(const item of O.STYLES){const opt=make("option","",item.label);opt.value=item.id;$("ornament-style").append(opt)}
 for(const item of O.TARGETS){const opt=make("option","",item.label);opt.value=item.id;$("ornament-target").append(opt)}
 function changeAxis(field,value){
- const proposed={...state,[field]:["mode","ornament","ornamentTarget"].includes(field)?value:Number(value)};
+ const proposed={...state,[field]:["mode","ornament","ornamentTarget","ornamentRhythm"].includes(field)?value:Number(value)};
  M.option(proposed);O.settings(proposed); // validar antes de modificar o estado
  if(state[field]===proposed[field])return;
  state[field]=proposed[field];
  state.axisRevision++;
  const axes=M.option(state);
- const description=["ornament","ornamentTarget"].includes(field)?O.analyze(state.id,state).status:axes.mode.name+" · registro "+axes.inversion.order+" · ordem "+axes.path.label;
+ const description=["ornament","ornamentTarget","ornamentRhythm"].includes(field)?O.analyze(state.id,state).status:axes.mode.name+" · registro "+axes.inversion.order+" · ordem "+axes.path.label;
  if(loopTransport&&(transportKind==="selected"||transportKind==="compare")){
   // NÃO chamar stop(): mantém vozes, BPM, metrônomo e o relógio do Loop.
   // O seletor responde imediatamente, mas a pauta/grade refletem a
@@ -918,9 +993,11 @@ $("random-path").addEventListener("click",()=>changeAxis("path",Math.floor(Math.
 $("ornament-style").addEventListener("change",e=>changeAxis("ornament",e.target.value));
 $("ornament-target").addEventListener("change",e=>changeAxis("ornamentTarget",e.target.value));
 $("ornament-demo").addEventListener("click",()=>{
- stop();state.id="respiros";state.family="all";state.ornamentTarget="auto";render();
- $("axis-live-status").textContent="Respiros selecionado: aproximação automática antes da segunda nota-alvo.";
- setStatus("Respiros: a aproximação aparece no tempo 2, antes da chegada em 2i₁.");
+ const id=demoPatternForOrnament();
+ if(!id)return;
+ stop();state.id=id;state.family="all";state.ornamentTarget="auto";render();
+ $("axis-live-status").textContent="Célula "+E.pattern(id).title+": espaço disponível para a fraseologia escolhida.";
+ setStatus(E.pattern(id).title+": experimente a nova frase com o Loop ligado.");
 });
 render();renderMetronomeMode();updateTimingCaption();
 })();
