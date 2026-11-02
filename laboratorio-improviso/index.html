@@ -344,6 +344,106 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 .guitar-mark.instrument-sounding circle{fill:#ed745f;stroke:#ffe6a9;stroke-width:3}
 .guitar-mark.instrument-sounding text{fill:#fff}
 @media(max-width:400px){.instrument-svg{min-height:130px}.instrument-meta{gap:6px}.instrument-switch button{padding:8px 11px}}
+
+/* v20 — estação musical: a música primeiro, a edição em abas */
+[hidden]{display:none!important}
+.hero{display:none}
+.studio-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;background:#0e1c28;border:1px solid #435a6c;border-radius:12px;padding:5px;margin:0 0 12px}
+.studio-tabs button{border:0;border-radius:8px;background:transparent;color:#b8cad5;font-weight:800;font-size:13px;min-height:43px;padding:7px 5px}
+.studio-tabs button.active,.studio-tabs button[aria-selected="true"]{background:#efbe90;color:#291e17}
+.studio-tabs button:focus-visible{outline:2px solid #ffcd9b;outline-offset:2px}
+#studio-panel-melody,#studio-panel-rhythms,#studio-panel-ornaments{margin-bottom:18px}
+#studio-panel-melody .axes-intro,#studio-panel-melody .axis-guide-head small{display:none}
+.melodic-axes .card-heading{margin-bottom:12px}
+.melodic-axes .card-heading h2{font-size:18px}
+.melodic-axes .axis-guide{margin-top:10px}
+.melodic-axes .axis-insight{display:none}
+.melodic-axes .axis-live-status{margin:8px 0 0;font-size:11px;padding:8px 10px}
+.metro-details{margin-top:8px;border-top:1px solid #395369}
+.metro-details summary{padding:8px 3px;display:flex;align-items:center;justify-content:space-between;color:#c3d3de;font-size:11px;font-weight:750;cursor:pointer}
+.metro-details[open] summary{color:#f5c79b}
+.metro-details[open] .metro-panel{margin-top:3px}
+.metro-panel .metro-hint{display:none}
+.metro-panel{padding:10px}
+.player{padding:10px 14px;margin:0 0 12px}
+.selected{padding:14px 15px;margin-bottom:10px}
+.selected .card-heading{margin-bottom:7px}
+.selected .card-heading h2{font-size:21px}
+.selected .card-heading #selected-meta{font-size:11px}
+.selected .event-list,.selected .passo-note,.selected .grid-caption,.selected #selected-description,.selected .score-help{display:none!important}
+.selected .notation{margin-top:10px;padding-top:10px}
+.selected .score-head h3{font:800 13px/1.2 system-ui,-apple-system,sans-serif}
+.selected .score-head{gap:8px}
+.selected .score-options{padding:2px;gap:2px}
+.selected .score-options button{padding:5px 9px;font-size:11px}
+.selected .score-view{margin-top:5px}
+.selected .score-view button{min-height:27px;padding:4px 8px;font-size:10px}
+.selected .score-scroll{margin-top:5px}
+.selected .instrument-panel{margin-top:10px;padding-top:10px}
+.selected .instrument-head h3{font:800 13px system-ui,-apple-system,sans-serif}
+.selected .instrument-switch button{min-height:28px;padding:5px 12px;font-size:11px}
+.selected .instrument-meta{min-height:23px;font-size:10px}
+.selected .instrument-meta #instrument-current{font-size:12px}
+.selected .instrument-svg{max-height:175px}
+.ornament-options{margin-top:10px}
+.ornament-group-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;background:#102435;border:1px solid #4e6676;padding:4px;border-radius:10px}
+.ornament-group-tabs button{border:0;background:transparent;color:#bbccd6;font-size:12px;font-weight:800;border-radius:7px;padding:10px 4px;min-height:39px}
+.ornament-group-tabs button.active{background:#efbe90;color:#2b221a}
+.ornament-family{margin-top:10px}
+.ornament-family h3,.ornament-family>p{display:none}
+.ornament-card small{display:none}
+.ornament-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ornament-card{min-height:118px}
+.ornament-preview{margin:5px 0;font-size:13px;gap:2px}
+.ornament-preview span{padding:8px 1px}
+.ornament-preview b{font-size:10px}
+.ornament-detail{padding:9px 11px;margin-top:9px}
+.ornament-detail #ornament-status{font-size:12px;margin:0 0 4px}
+.ornament-rooms{font-size:11px!important}
+.ornament-availability{font-size:10px}
+@media(max-width:740px){
+ .shell{padding-top:8px}
+ header{padding-bottom:7px;margin-bottom:8px;align-items:center}
+ header .eyebrow,header nav{display:none}
+ header .wordmark{font-size:18px}
+ .selected{position:sticky;top:0;z-index:55;padding:9px 10px 10px;margin:0 0 8px;border-color:#557188;border-radius:12px;background:#142433f9;box-shadow:0 8px 22px #050c15b0}
+ .selected .card-heading{margin-bottom:5px;flex-wrap:nowrap}
+ .selected .card-heading h2{font-size:16px}
+ .selected .card-heading #selected-meta{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .selected .ticks{grid-template-rows:22px 46px}
+ .selected .subdiv{font-size:10px}
+ .selected .hit{margin:5px 1px 6px;font-size:9px}
+ .selected .hit.tiny .hit-name{font-size:10px}
+ .selected .notation{margin-top:7px;padding-top:7px}
+ .selected .score-head{flex-wrap:nowrap}
+ .selected .score-head h3{font-size:12px}
+ .selected .score-options button{padding:5px 6px;font-size:10px}
+ .selected .score-view{gap:4px;margin-top:3px}
+ .selected .score-view button{min-height:24px;font-size:10px;padding:2px 8px}
+ .selected .score-scroll{margin-top:4px}
+ .selected .score-svg{height:auto}
+ .selected .instrument-panel{margin-top:7px;padding-top:6px}
+ .selected .instrument-svg{max-height:115px}
+ .selected .instrument-meta{min-height:18px}
+ .selected .instrument-head h3{font-size:12px}
+ .selected .instrument-switch button{padding:3px 10px;min-height:25px}
+ .studio-tabs{margin:7px 0 10px}
+ .studio-tabs button{font-size:clamp(10px,2.9vw,12px);padding:7px 2px}
+ .melodic-axes,.ornament-axis,.choose{padding:13px}
+ .melodic-axes .card-heading span{display:none}
+ .melodic-axes .axis-fields{gap:8px}
+ .melodic-axes .axis-field select{min-height:40px}
+ .melodic-axes .axis-guide{display:none}
+ .melodic-axes .axis-actions{margin:9px 0 5px}
+ .ornament-options{gap:8px}
+ .ornament-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ornament-card{min-height:112px}
+ .ornament-preview b{font-size:9px}
+ .player{padding:4px 10px;margin:0 0 3px}
+ .player .status{display:none}
+ .metro-details{margin-top:0}
+ .player .control-row{z-index:100}
+}
 </style>
 </head>
 <body>
