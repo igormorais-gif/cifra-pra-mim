@@ -92,7 +92,7 @@ test("Registro e ordem mudam no próximo compasso sem interromper Loop ou metrô
  $("axis-inversion").handlers.change({target:{value:"2"}});
  $("axis-path").handlers.change({target:{value:"23"}});
  assert.equal($("play").disabled,true);
- assert.match($("axis-live-status").textContent,/Próxima volta:/);
+ assert.match($("axis-live-status").textContent,/Próxima volta disponível:/);
  assert.equal(ui.notes().length,4);
  ui.advance(3.25);
  const all=ui.notes();
