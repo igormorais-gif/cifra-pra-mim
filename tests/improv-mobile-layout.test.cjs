@@ -57,12 +57,14 @@ test("Semicolcheias exibem nomes reais, não pontos no lugar das notas",()=>{
  assert.match(html,/item\.style\.gridColumn=\(n\.tick\+1\)\+" \/ span "\+n\.length/);
 });
 
-test("Monitor de beat, partitura e instrumento vem antes das abas e fica aderente no celular",()=>{
+test("Monitor vem antes das abas e não tampa os controles no celular",()=>{
  const order=["id=\"monitor\"","id=\"timeline\"","id=\"score\"","id=\"instrument-view\"","class=\"studio-tabs\""];
  const indices=order.map(x=>html.indexOf(x));
  assert.ok(indices.every(x=>x>=0));
  assert.ok(indices.every((x,i)=>i===0||x>indices[i-1]));
- assert.match(html,/@media\(max-width:740px\)\{[\s\S]*?\.selected\{position:sticky;top:0;z-index:55/);
+ assert.match(html,/@media\(max-width:740px\)\{[\s\S]*?\.selected\{position:static;top:auto;z-index:auto/);
+ assert.match(html,/\.studio-tabs\{position:sticky;top:0;z-index:60/);
+ assert.match(html,/@media\(min-width:741px\) and \(max-width:899px\)\{\s*#monitor\{position:static;top:auto;z-index:auto/);
  assert.match(html,/scoreFit:true/);
  assert.match(html,/\.selected \.ticks\{grid-template-rows:22px 46px\}/);
 });
