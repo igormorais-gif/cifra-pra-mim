@@ -492,9 +492,11 @@ function renderAxes(){
   $("axis-scale").append(el);
  }
  const family=M.distinctTetrads().find(group=>group.includes(mode.name));
- $("axis-warning").textContent=family.length>1
-  ?"Atenção: "+family.join(", ")+" têm as mesmas notas 1–3–5–7 em Dó. A diferença modal só fica audível quando entram graus como 2, 4 ou 6."
-  :"Neste eixo tocam apenas os graus 1–3–5–7. As demais notas da coleção aparecem como referência, mas ainda não são tocadas.";
+ $("axis-warning").textContent=state.ornament!=="none"
+  ?"As quatro notas-alvo seguem 1–3–5–7. A aproximação pode introduzir os graus 2, 4 ou 6 (e suas alterações), revelando cores dos modos antes não audíveis nesta tétrade."
+  :family.length>1
+   ?"Atenção: "+family.join(", ")+" têm as mesmas notas 1–3–5–7 em Dó. A diferença modal fica audível quando entram graus como 2, 4 ou 6."
+   :"Neste eixo tocam apenas os graus 1–3–5–7. As demais notas da coleção aparecem como referência, mas ainda não são tocadas.";
  const pitches=$("pitches");pitches.replaceChildren();
  for(const n of M.notes(state)){
   const p=make("div","pitch");
@@ -916,8 +918,9 @@ $("random-path").addEventListener("click",()=>changeAxis("path",Math.floor(Math.
 $("ornament-style").addEventListener("change",e=>changeAxis("ornament",e.target.value));
 $("ornament-target").addEventListener("change",e=>changeAxis("ornamentTarget",e.target.value));
 $("ornament-demo").addEventListener("click",()=>{
- stop();state.id="respiros";state.family="all";render();
- setStatus("Respiros: escolha a aproximação e ouça a nova nota antes da chegada.");
+ stop();state.id="respiros";state.family="all";state.ornamentTarget="auto";render();
+ $("axis-live-status").textContent="Respiros selecionado: aproximação automática antes da segunda nota-alvo.";
+ setStatus("Respiros: a aproximação aparece no tempo 2, antes da chegada em 2i₁.");
 });
 render();renderMetronomeMode();updateTimingCaption();
 })();
