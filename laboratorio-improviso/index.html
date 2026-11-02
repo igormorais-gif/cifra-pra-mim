@@ -281,6 +281,8 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 @media(max-width:370px){
  .hit.tiny .hit-name{font-size:10px}
 }
+
+.axis-live-status{border:1px solid #6a8393;background:#162c3a;color:#cbdce5;border-radius:9px;padding:9px 12px;font-size:12px;line-height:1.45;margin:13px 0 2px}
 </style>
 </head>
 <body>
@@ -315,6 +317,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
       <label class="axis-field" for="axis-inversion"><span>02 · Registro das quatro notas</span><select id="axis-inversion"></select></label>
       <label class="axis-field" for="axis-path"><span>03 · Ordem melódica</span><select id="axis-path"></select></label>
     </div>
+    <p class="axis-live-status" id="axis-live-status" role="status" aria-live="polite">Com Loop ligado, altere o registro ou a ordem enquanto ouve: a nova combinação entra no próximo compasso, sem interromper o áudio.</p>
     <div class="axis-guide" aria-label="Diferença entre registro e ordem">
       <div class="axis-guide-pane">
         <div class="axis-guide-head">
@@ -438,9 +441,9 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 "use strict";
 const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
-let loopTransport=null;
+let loopTransport=null,transportKind=null,axisPending=false;
 const visiblePatterns=()=>patterns.filter(p=>state.family==="all"||p.family===state.family);
 const currentEvents=(id=state.id)=>M.events(id,state);
 function renderAxes(){
@@ -575,6 +578,7 @@ function renderScore(){
 }
 function stop(){
  state.token++;
+ transportKind=null;axisPending=false;
  if(loopTransport){loopTransport.cancel();loopTransport=null;}
  for(const x of document.querySelectorAll(".subdiv,.tick"))x.classList.remove("metro-active");
  $("metro-current").textContent="—";
@@ -644,8 +648,8 @@ function scheduleMetronome(begin,token,offsetSeconds=0){
 function sounding(index,on){
  for(const item of document.querySelectorAll('[data-index="'+index+'"]'))item.classList.toggle("sounding",on);
 }
-function schedulePattern(id,begin,token,offsetSeconds=0){
- const ev=currentEvents(id);
+function schedulePattern(id,begin,token,offsetSeconds=0,axis={mode:state.mode,inversion:state.inversion,path:state.path}){
+ const ev=M.events(id,axis);
  scheduleMetronome(begin,token,offsetSeconds);
  for(const n of ev){
   const dt=E.beatsToSeconds(n.tick,state.bpm);
@@ -687,20 +691,44 @@ async function diagnostic(tick){
 }
 function finishTransport(token,message){
  if(token!==state.token)return;
- loopTransport=null;
+ loopTransport=null;transportKind=null;
+ if(axisPending){axisPending=false;render()}
+ $("axis-live-status").textContent="Seleção pronta. Ative Loop e altere o registro ou a ordem enquanto ouve.";
  $("play").disabled=false;$("compare").disabled=false;$("metro-solo").disabled=false;
  $("metro-current").textContent="—";
  setStatus(message);
+}
+// O áudio é agendado antecipadamente. Alterações de eixo só são
+// aplicadas a uma volta que ainda não foi programada, jamais no meio dela.
+function scheduleAxisBar(id,at,token){
+ const axis={mode:state.mode,inversion:state.inversion,path:state.path};
+ const revision=state.axisRevision;
+ const seconds=Math.max(0,at-state.ctx.currentTime);
+ schedulePattern(id,at,token,seconds,axis);
+ later(seconds,()=>{
+  if(token!==state.token)return;
+  if(revision!==state.axisRevision){
+   $("axis-live-status").textContent="Mudança aguardando a próxima volta disponível, sem interromper o som.";
+   return;
+  }
+  axisPending=false;
+  render();
+  $("axis-live-status").textContent="Em execução: "+M.option(axis).mode.name+" · registro "+M.option(axis).inversion.order+" · ordem "+M.option(axis).path.label+".";
+ },token);
 }
 async function playSelected(){
  stop();const token=state.token,ctx=await audioContext();
  if(!ctx||state.token!==token)return;
  const id=state.id,beat=60/state.bpm;
+ transportKind="selected";
  $("play").disabled=true;$("compare").disabled=true;
  loopTransport=window.SeamlessLoop.create({
   audio:ctx,cycleSeconds:4*beat,shouldRepeat:()=>state.loop,
-  schedule:(at,index)=>{
-   schedulePattern(id,at,token,Math.max(0,at-ctx.currentTime));
+  // Janela curta de agendamento reduz o tempo entre a seleção e a
+  // próxima volta musical, mantendo proteção contra jitter no Safari.
+  horizon:.26,interval:20,
+  schedule:at=>{
+   scheduleAxisBar(id,at,token);
    setStatus("Tocando "+E.pattern(id).title+(state.loop?" · Loop ligado":"")+" · "+state.bpm+" BPM.");
   },
   onFinish:()=>finishTransport(token,"Fim do compasso. Escolha outra célula para comparar.")
@@ -711,19 +739,23 @@ async function compareAll(){
  if(!ctx||state.token!==token)return;
  const compared=[...visiblePatterns()],beat=60/state.bpm;
  if(!compared.length)return;
+ let barsScheduled=0;
+ transportKind="compare";
  $("play").disabled=true;$("compare").disabled=true;
- // Sem espera artificial entre padrões, inclusive na volta do Loop.
  loopTransport=window.SeamlessLoop.create({
-  audio:ctx,cycleSeconds:compared.length*4*beat,shouldRepeat:()=>state.loop,
-  schedule:(at,index)=>{
-   compared.forEach((p,i)=>{
-    const begin=at+i*4*beat;
-    schedulePattern(p.id,begin,token,Math.max(0,begin-ctx.currentTime));
-    later(Math.max(0,begin-ctx.currentTime),()=>{
-     state.id=p.id;render();
-     setStatus("Comparação "+(i+1)+"/"+compared.length+" · "+p.title+(state.loop?" · Loop":"")+".");
-    },token);
-   });
+  audio:ctx,cycleSeconds:4*beat,
+  shouldRepeat:()=>barsScheduled<compared.length||state.loop,
+  horizon:.26,interval:20,
+  schedule:at=>{
+   const index=barsScheduled%compared.length,p=compared[index];
+   barsScheduled++;
+   scheduleAxisBar(p.id,at,token);
+   later(Math.max(0,at-ctx.currentTime),()=>{
+    if(token!==state.token)return;
+    state.id=p.id;
+    if(!axisPending)render();
+    setStatus("Comparação "+(index+1)+"/"+compared.length+" · "+p.title+(state.loop?" · Loop":"")+".");
+   },token);
   },
   onFinish:()=>finishTransport(token,"Comparação concluída.")
  });
@@ -806,10 +838,25 @@ for(const item of M.MODES){const opt=make("option","",item.name);opt.value=item.
 for(const item of M.INVERSIONS){const opt=make("option","",item.order+" · "+item.title);opt.value=String(item.id);$("axis-inversion").append(opt)}
 for(const item of M.PATHS){const opt=make("option","","Ordem "+String(item.id+1).padStart(2,"0")+" · "+item.label);opt.value=String(item.id);$("axis-path").append(opt)}
 function changeAxis(field,value){
- stop();
- state[field]=field==="mode"?value:Number(value);
- M.option(state);render();
- setStatus("Eixo melódico atualizado: "+M.option(state).mode.name+" · "+M.option(state).path.label+".");
+ const proposed={...state,[field]:field==="mode"?value:Number(value)};
+ M.option(proposed); // validar antes de modificar o estado
+ if(state[field]===proposed[field])return;
+ state[field]=proposed[field];
+ state.axisRevision++;
+ const axes=M.option(state);
+ if(loopTransport&&(transportKind==="selected"||transportKind==="compare")){
+  // NÃO chamar stop(): mantém vozes, BPM, metrônomo e o relógio do Loop.
+  // O seletor responde imediatamente, mas a pauta/grade refletem a
+  // mudança apenas no instante em que o novo compasso for ouvido.
+  axisPending=true;
+  $("axis-position").textContent="Ordem "+String(axes.path.id+1).padStart(2,"0")+" de 24 · aguardando";
+  $("axis-live-status").textContent="Próxima volta: "+axes.mode.name+" · registro "+axes.inversion.order+" · ordem "+axes.path.label+". O compasso atual continua.";
+  setStatus("Mudança melódica preparada para a próxima volta, sem interromper a reprodução.");
+ }else{
+  stop();render();
+  $("axis-live-status").textContent="Seleção atualizada. Ative Loop e altere as notas durante a reprodução.";
+  setStatus("Eixo melódico atualizado: "+axes.mode.name+" · "+axes.path.label+".");
+ }
 }
 $("axis-mode").addEventListener("change",e=>changeAxis("mode",e.target.value));
 $("axis-inversion").addEventListener("change",e=>changeAxis("inversion",e.target.value));
