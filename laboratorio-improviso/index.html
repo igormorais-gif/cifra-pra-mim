@@ -444,6 +444,13 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
  .metro-details{margin-top:0}
  .player .control-row{z-index:100}
 }
+
+.ornament-step{font-variant-numeric:tabular-nums}
+.ornament-preview .ornament-step.attack{background:#e5b78b;color:#241f1c;border-color:#e5b78b;font-weight:900}
+.ornament-preview .ornament-step.hold{background:#6b7180;color:#fff;border-color:#6b7180;font-weight:700}
+.ornament-preview .ornament-step.rest{background:#122738;color:#7894a5;border-color:#3e586c}
+.ornament-card.selected .ornament-step.attack{background:#f5cf9b}
+.ornament-card .ornament-availability:empty{display:none}
 </style>
 </head>
 <body>
@@ -724,11 +731,14 @@ function showChoices(){
  }
 }
 function rhythmGlyph(pattern){
- const cells=["·","·","·","·"];
- for(const entry of pattern.notes){
-  const begin=4+entry.off;
-  for(let i=0;i<entry.length;i++)cells[begin+i]=i===0?"●":"━";
- }
+ const cells=Array.from({length:4},()=>({kind:"rest",label:"·"}));
+ pattern.notes.forEach((entry,index)=>{
+  const start=4+entry.off;
+  for(let i=0;i<entry.length;i++)
+   cells[start+i]=i===0
+    ?{kind:"attack",label:String(index+1)}
+    :{kind:"hold",label:"—"};
+ });
  return cells;
 }
 function demoPatternForOrnament(){
@@ -760,11 +770,15 @@ function renderOrnament(){
  }
  $("ornament-style").value=state.ornament;
  $("ornament-target").value=state.ornamentTarget;
- $("ornament-status").textContent=result.status;
+ const selectedStyle=O.STYLES.find(x=>x.id===state.ornament);
+ const abbreviations={"diatonic-below":"D.I.","diatonic-above":"D.S.","chromatic-below":"C.I."};
+ $("ornament-status").textContent=state.ornament==="none"
+  ?"Selecione um desenho"
+  :result.ornaments.length
+    ?abbreviations[state.ornament]+" · "+result.ornaments.length+" "+(result.ornaments.length===1?"nota auxiliar":"notas auxiliares")
+    :"Sem espaço para este desenho";
  const eligible=result.opportunities.filter(x=>x.free);
- $("ornament-room").textContent=state.ornament==="none"
-  ?"Escolha um desenho para ouvir uma aproximação."
-  :eligible.length?"Pronto para ouvir.":"Este desenho não cabe na célula atual.";
+ $("ornament-room").textContent=state.ornament==="none"?"":eligible.length?"": "Escolha outra célula rítmica ou toque abaixo.";
  const sections=$("ornament-rhythm-sections");
  sections.replaceChildren();
  for(const group of O.RHYTHM_GROUPS.filter(g=>g.id===state.ornamentGroup)){
@@ -781,10 +795,10 @@ function renderOrnament(){
    button.append(make("strong","",pattern.title));
    const preview=make("span","ornament-preview");
    preview.setAttribute("aria-hidden","true");
-   for(const syllable of rhythmGlyph(pattern))preview.append(make("span","",syllable));
+   for(const step of rhythmGlyph(pattern))preview.append(make("span","ornament-step "+step.kind,step.label));
    preview.append(make("b","","Alvo"));
    button.append(preview);
-   const footer=make("em","ornament-availability",possible?"✓ Cabe nesta célula":"Requer outra célula");
+   const footer=make("em","ornament-availability",possible?"":"Sem espaço");
    button.append(footer);
    button.addEventListener("click",()=>{
     if(state.ornament==="none")changeAxis("ornament","diatonic-below");
