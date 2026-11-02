@@ -15,8 +15,8 @@
   {id:"none",label:"Sem embelezamento"},
   {id:"diatonic-below",label:"Aproximação diatônica inferior"},
   {id:"diatonic-above",label:"Aproximação diatônica superior"},
-  {id:"chromatic-below",label:"Aproximação cromática inferior"},
-  {id:"chromatic-above",label:"Aproximação cromática superior"}
+  // C.S. excluído por decisão metodológica: estudo específico de baixos, não deste laboratório.
+  {id:"chromatic-below",label:"Aproximação cromática inferior"}
  ]);
  const TARGETS=Object.freeze([
   {id:"auto",label:"Primeiro alvo com espaço"},
