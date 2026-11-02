@@ -357,22 +357,96 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 </header>
 <main>
   <section class="hero">
-    <div><span class="kicker">Laboratório de improvisação / Eixos rítmico e melódico</span><h1>Um ritmo.<br>Muitos caminhos.</h1><p>Isole cada variável: escolha uma célula rítmica, um modo, uma disposição fechada e uma ordem de quatro notas. Escute as combinações com Loop e confira a mesma música na grade e na partitura.</p></div>
+    <div><span class="kicker">Laboratório de improvisação / Eixos rítmico e melódico</span><h1>Laboratório do Improviso</h1><p>Isole cada variável: escolha uma célula rítmica, um modo, uma disposição fechada e uma ordem de quatro notas. Escute as combinações com Loop e confira a mesma música na grade e na partitura.</p></div>
     <div class="hero-side"><strong>Não é um catálogo de licks.</strong>As doze células são originais, sem reprodução de licks dos livros. Ritmos, percursos e agora aproximações às notas-alvo podem ser combinados sem perder a leitura musical.</div>
   </section>
-  <section class="card purpose" aria-label="Material intervalar selecionado">
-    <h2 id="material-title">Material intervalar · C7M · Dó jônico</h2>
-    <div class="fixed">
-      <div class="notes" id="pitches"><div class="pitch"><strong>Dó</strong><small>1</small></div><div class="pitch"><strong>Mi</strong><small>3</small></div><div class="pitch"><strong>Sol</strong><small>5</small></div><div class="pitch"><strong>Si</strong><small>7</small></div></div>
-      <div class="fixed-meta" id="fixed-meta"><b>Ordem:</b> 1–3–5–7. <b>Registro:</b> Dó4–Mi4–Sol4–Si4.<br>O ritmo e a ordem melódica podem ser alterados independentemente.</div>
+  <section class="card selected" id="monitor" aria-labelledby="selected-title">
+    <div class="card-heading"><h2 id="selected-title">Pulso</h2><span id="selected-meta">Quatro semínimas</span></div>
+    <p id="selected-description">Uma nota em cada tempo.</p>
+    
+    <div class="chart-scroll" aria-label="Os quatro tempos do compasso completos, sem rolagem horizontal">
+      <div class="ticks" id="timeline" role="img" aria-label="Grade 4/4 com dezesseis subdivisões alinhadas aos ataques"></div>
     </div>
+    <div class="event-list" id="event-list" aria-label="Notas e subdivisões"></div>
+    
+    <div class="notation" aria-labelledby="score-title">
+      <div class="score-head">
+        <div><h3 id="score-title">Partitura</h3></div>
+        <div class="score-options" role="group" aria-label="Visualização da partitura">
+          <button type="button" data-score-mode="rhythm" aria-pressed="false">Ritmo puro</button>
+          <button type="button" data-score-mode="melodic" class="active" aria-pressed="true">Com alturas</button>
+        </div>
+      </div>
+      <div class="score-view" role="group" aria-label="Tamanho da partitura">
+        
+        <button type="button" id="score-fit" aria-pressed="false">Inteira</button>
+        <button type="button" id="score-zoom" aria-pressed="true">Ampliar</button>
+      </div>
+      <div class="score-scroll" id="score-scroll"><div id="score" aria-live="polite"></div></div>
+      <p class="score-help" id="score-help">Clave de sol · Dó4, Mi4, Sol4 e Si4. A altura e a duração são escritas no mesmo compasso 4/4.</p>
+      
+    </div>
+    <section class="instrument-panel" aria-label="Instrumento visual">
+      <div class="instrument-head">
+        <h3>Instrumento</h3>
+        <div class="instrument-switch" role="group" aria-label="Escolha do instrumento">
+          <button type="button" data-instrument="piano" aria-pressed="true">Piano</button>
+          <button type="button" data-instrument="guitar" aria-pressed="false">Violão</button>
+        </div>
+      </div>
+      <div class="instrument-meta">
+        <span id="instrument-form">1–3–5</span>
+        <span id="instrument-next"></span>
+        <strong id="instrument-current" aria-live="off">—</strong>
+      </div>
+      <div id="instrument-view" class="instrument-view" aria-label="Notas no instrumento"></div>
+    </section>
   </section>
-  <section class="card melodic-axes" aria-labelledby="axes-title">
+  <section class="card player" aria-label="Controles de reprodução">
+    <div class="control-row" id="transport-dock" aria-label="Player sempre acessível durante a rolagem">
+      <span class="transport-caption" id="transport-caption" aria-live="off">Pulso · 80 BPM</span>
+      <button class="action primary" id="play" type="button" aria-label="Ouvir esta célula"><span class="transport-full">▶ Ouvir esta célula</span><span class="transport-compact">▶ Ouvir</span></button>
+      <button class="action" id="compare" type="button" aria-label="Comparar células visíveis"><span class="transport-full">▶ Comparar visíveis</span><span class="transport-compact">▶ Comparar</span></button>
+      <button class="action stop" id="stop" type="button">■ Parar</button>
+      <button class="action loop-toggle" id="loop" type="button" aria-pressed="false" aria-label="Ativar Loop" title="Repetir continuamente até Parar"><span id="loop-label-full">↻ Loop: desligado</span><span id="loop-label-compact" class="transport-compact">↻ Repetir</span></button>
+      <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
+    </div>
+    <details class="metro-details"><summary>Metrônomo <span>▾</span></summary>
+    <div class="metro-panel" aria-label="Metrônomo e subdivisões">
+      <div class="metro-main">
+        <label class="toggle metro-toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
+        <span class="metro-hint">Escolha quais subdivisões serão marcadas pelo clique.</span>
+      </div>
+      <div class="metro-select-row">
+        <label class="metro-select-label" for="metro-mode">
+          <span>Subdivisão do metrônomo</span>
+          <select id="metro-mode" aria-describedby="metro-description">
+            <option value="beats">Tempos — 1 2 3 4</option>
+            <option value="eighths">Colcheias — 1 e 2 e 3 e 4 e</option>
+            <option value="sixteenths">Semicolcheias — 1 i e i</option>
+          </select>
+        </label>
+        <button class="action metro-solo" id="metro-solo" type="button">▶ Ouvir só o metrônomo</button>
+      </div>
+      <div class="metro-feedback">
+        <span id="metro-description">4 cliques por compasso · somente os tempos</span>
+        <span class="metro-current" aria-label="Subdivisão atual">Clique: <strong id="metro-current">—</strong></span>
+      </div>
+    </div>
+    </details>
+    <p class="status" id="status" role="status" aria-live="polite">Selecione uma célula e toque para ouvir.</p>
+  </section>
+  <nav class="studio-tabs" role="tablist" aria-label="Edição da frase">
+    <button type="button" role="tab" id="studio-tab-melody" data-studio-tab="melody" aria-selected="true" aria-controls="studio-panel-melody">Melodia</button>
+    <button type="button" role="tab" id="studio-tab-rhythms" data-studio-tab="rhythms" aria-selected="false" aria-controls="studio-panel-rhythms">Ritmos</button>
+    <button type="button" role="tab" id="studio-tab-ornaments" data-studio-tab="ornaments" aria-selected="false" aria-controls="studio-panel-ornaments">Embelezamentos</button>
+  </nav>
+  <section class="card melodic-axes" id="studio-panel-melody" role="tabpanel" aria-labelledby="studio-tab-melody" aria-labelledby="axes-title">
     <div class="card-heading">
       <h2 id="axes-title">Construa o percurso melódico</h2>
       <span id="axis-total">7 modos × 4 registros × 24 ordens</span>
     </div>
-    <p class="axes-intro">Quatro notas por compasso. São seis ordens que começam no grau 1; suas quatro rotações geram 24 percursos. Cada percurso pode usar quatro registros da tétrade: 96 configurações por modo. O registro define as oitavas disponíveis; a ordem melódica define a sequência tocada. O ritmo continua independente.</p>
+    
     <div class="axis-fields">
       <label class="axis-field" for="axis-mode"><span>01 · Modo (Dó como centro)</span><select id="axis-mode"></select></label>
       <label class="axis-field" for="axis-inversion"><span>02 · Registro das quatro notas</span><select id="axis-inversion"></select></label>
@@ -406,127 +480,46 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
       <p id="axis-warning" class="axis-warning">Neste eixo, somente os graus 1–3–5–7 soam. Outros graus característicos do modo ainda não entram na frase.</p>
     </div>
   </section>
-  <section class="card ornament-axis" aria-labelledby="ornament-title">
-    <div class="card-heading">
-      <h2 id="ornament-title">04 · Laboratório rítmico dos ornamentos</h2>
-      <span class="ornament-tag">11 fraseologias</span>
-    </div>
-    <p class="axes-intro">Escolha uma aproximação e depois <strong>seu desenho rítmico independente</strong>: uma chamada curta, pares de semicolcheias, colcheias, síncopes ou frases com até quatro ataques auxiliares. O espaço vem dos silêncios antes das notas-alvo; os quatro ataques estruturais não se deslocam.</p>
-    <div class="ornament-options">
-      <label class="axis-field" for="ornament-style"><span>Tipo de aproximação</span><select id="ornament-style"></select></label>
-      <label class="axis-field" for="ornament-target"><span>Nota de chegada</span><select id="ornament-target"></select></label>
-    </div>
-    <div class="ornament-rhythms" aria-label="Seções de ritmos exclusivos para notas de embelezamento">
-      <div class="ornament-rhythm-heading">
-        <strong>Fraseologias rítmicas do ornamento</strong>
-        <span id="ornament-rhythm-count">11 desenhos · 3 famílias</span>
-      </div>
-      <p class="ornament-rhythm-explainer">Cada miniatura representa as quatro subdivisões anteriores à nota-alvo: <strong>●</strong> ataque, <strong>━</strong> sustentação, <strong>·</strong> silêncio. A nota-alvo entra logo após a última coluna.</p>
-      <div id="ornament-rhythm-sections"></div>
-    </div>
-    <div class="ornament-detail">
-      <p id="ornament-status" role="status" aria-live="polite">Sem embelezamento. As quatro notas-alvo permanecem iguais.</p>
-      <p id="ornament-room" class="ornament-rooms">Espaços livres de aproximação: —</p>
-      <button type="button" class="action" id="ornament-demo" hidden>Experimentar na célula Respiros</button>
-    </div>
-    <p class="ornament-footnote"><strong>Didática:</strong> D.I., D.S. e C.I. determinam a altura auxiliar; o novo eixo rítmico determina <em>quantos ataques</em> haverá, <em>onde</em> acontecem e <em>quanto</em> duram. Nesta primeira etapa, a mesma altura auxiliar é repetida nos desenhos de várias notas, para isolar a diferença rítmica. Não há Cromático Superior. Os desenhos têm durações medidas na partitura, seguindo o agrupamento por tempos.</p>
-  </section>
-  <section class="card choose" aria-labelledby="choose-title">
+  <section class="card choose" id="studio-panel-rhythms" role="tabpanel" aria-labelledby="studio-tab-rhythms" hidden aria-labelledby="choose-title">
     <div class="card-heading"><h2 id="choose-title">Escolha uma célula rítmica</h2><span id="rhythm-count">12 desenhos · 4 ataques por compasso</span></div>
     <div class="filters" id="rhythm-filters" role="group" aria-label="Famílias de células rítmicas"></div>
     <div class="rhythm-list" id="rhythm-list" role="group" aria-label="Doze células rítmicas"></div>
   </section>
-  <section class="card player" aria-label="Controles de reprodução">
-    <div class="control-row" id="transport-dock" aria-label="Player sempre acessível durante a rolagem">
-      <span class="transport-caption" id="transport-caption" aria-live="off">Pulso · 80 BPM</span>
-      <button class="action primary" id="play" type="button" aria-label="Ouvir esta célula"><span class="transport-full">▶ Ouvir esta célula</span><span class="transport-compact">▶ Ouvir</span></button>
-      <button class="action" id="compare" type="button" aria-label="Comparar células visíveis"><span class="transport-full">▶ Comparar visíveis</span><span class="transport-compact">▶ Comparar</span></button>
-      <button class="action stop" id="stop" type="button">■ Parar</button>
-      <button class="action loop-toggle" id="loop" type="button" aria-pressed="false" aria-label="Ativar Loop" title="Repetir continuamente até Parar"><span id="loop-label-full">↻ Loop: desligado</span><span id="loop-label-compact" class="transport-compact">↻ Repetir</span></button>
-      <label class="tempo" for="bpm">Andamento <input id="bpm" type="range" min="50" max="160" step="5" value="80"><output id="bpm-value">80</output> BPM</label>
+  <section class="card ornament-axis" id="studio-panel-ornaments" role="tabpanel" aria-labelledby="studio-tab-ornaments" hidden aria-labelledby="ornament-title">
+    <div class="card-heading">
+      <h2 id="ornament-title">Embelezamentos</h2>
+      <span class="ornament-tag" id="ornament-context">Célula atual</span>
     </div>
-    <div class="metro-panel" aria-label="Metrônomo e subdivisões">
-      <div class="metro-main">
-        <label class="toggle metro-toggle"><input id="click" type="checkbox" checked> Metrônomo</label>
-        <span class="metro-hint">Escolha quais subdivisões serão marcadas pelo clique.</span>
-      </div>
-      <div class="metro-select-row">
-        <label class="metro-select-label" for="metro-mode">
-          <span>Subdivisão do metrônomo</span>
-          <select id="metro-mode" aria-describedby="metro-description">
-            <option value="beats">Tempos — 1 2 3 4</option>
-            <option value="eighths">Colcheias — 1 e 2 e 3 e 4 e</option>
-            <option value="sixteenths">Semicolcheias — 1 i e i</option>
-          </select>
-        </label>
-        <button class="action metro-solo" id="metro-solo" type="button">▶ Ouvir só o metrônomo</button>
-      </div>
-      <div class="metro-feedback">
-        <span id="metro-description">4 cliques por compasso · somente os tempos</span>
-        <span class="metro-current" aria-label="Subdivisão atual">Clique: <strong id="metro-current">—</strong></span>
-      </div>
+    
+    <div class="ornament-options">
+      <label class="axis-field" for="ornament-style"><span>Tipo de aproximação</span><select id="ornament-style"></select></label>
+      <label class="axis-field" for="ornament-target"><span>Nota de chegada</span><select id="ornament-target"></select></label>
     </div>
-    <div class="timing-check" aria-labelledby="timing-check-title">
-      <div class="timing-check-top">
-        <div><h3 id="timing-check-title">Teste auditivo de subdivisão</h3><p>Escolha acima a divisão do metrônomo. Uma nota isolada toca no <strong>primeiro i do tempo 2</strong> ou no <strong>e do tempo 2</strong>, para conferir se coincide com o clique.</p></div>
-        <div class="timing-actions">
-          <button class="action" id="diag-first-i" type="button">▶ Ouvir 2i₁</button>
-          <button class="action" id="diag-e" type="button">▶ Ouvir 2e</button>
-        </div>
+    <div class="ornament-rhythms" aria-label="Ritmos dos embelezamentos">
+      <div class="ornament-group-tabs" role="group" aria-label="Número de notas auxiliares">
+        <button type="button" data-ornament-group="one" aria-pressed="true">1 nota</button>
+        <button type="button" data-ornament-group="two" aria-pressed="false">2 notas</button>
+        <button type="button" data-ornament-group="phrases" aria-pressed="false">3–4 notas</button>
       </div>
-      <div class="diag-columns" aria-label="Subdivisões do segundo tempo: 2 i e i">
-        <span data-diag-tick="4">2</span><span data-diag-tick="5">i</span><span data-diag-tick="6">e</span><span data-diag-tick="7">i</span>
-      </div>
-      <p class="diag-caption" id="diag-caption" aria-live="polite">A 80 BPM, o primeiro i ocorre 187,5 ms após o 2; o e ocorre 375 ms após o 2.</p>
+      
+      
+      <div id="ornament-rhythm-sections"></div>
     </div>
-    <p class="status" id="status" role="status" aria-live="polite">Selecione uma célula e toque para ouvir.</p>
+    <div class="ornament-detail" aria-live="polite">
+      <p id="ornament-status" role="status" aria-live="polite">Sem embelezamento. As quatro notas-alvo permanecem iguais.</p>
+      <p id="ornament-room" class="ornament-rooms"></p>
+      <button type="button" class="action" id="ornament-demo" hidden>Usar célula compatível</button>
+    </div>
+    
   </section>
-  <section class="card selected" aria-labelledby="selected-title">
-    <div class="card-heading"><h2 id="selected-title">Pulso</h2><span id="selected-meta">Quatro semínimas</span></div>
-    <p id="selected-description">Uma nota em cada tempo.</p>
-    <p class="grid-caption">Cada coluna corresponde exatamente a uma semicolcheia: <strong>1 i e i</strong> em cada tempo, conforme a contagem d’O Passo.</p>
-    <div class="chart-scroll" aria-label="Os quatro tempos do compasso completos, sem rolagem horizontal">
-      <div class="ticks" id="timeline" role="img" aria-label="Grade 4/4 com dezesseis subdivisões alinhadas aos ataques"></div>
+  <section class="card purpose" hidden aria-label="Material intervalar selecionado">
+    <h2 id="material-title">Material intervalar · C7M · Dó jônico</h2>
+    <div class="fixed">
+      <div class="notes" id="pitches"><div class="pitch"><strong>Dó</strong><small>1</small></div><div class="pitch"><strong>Mi</strong><small>3</small></div><div class="pitch"><strong>Sol</strong><small>5</small></div><div class="pitch"><strong>Si</strong><small>7</small></div></div>
+      <div class="fixed-meta" id="fixed-meta"><b>Ordem:</b> 1–3–5–7. <b>Registro:</b> Dó4–Mi4–Sol4–Si4.<br>O ritmo e a ordem melódica podem ser alterados independentemente.</div>
     </div>
-    <div class="event-list" id="event-list" aria-label="Notas e subdivisões"></div>
-    <p class="passo-note"><strong>Contagem d’O Passo:</strong> o <strong>e</strong> é o contratempo (metade do tempo); o primeiro <strong>i</strong> vem antes dele e o segundo <strong>i</strong> vem depois. Nas etiquetas, i₁ e i₂ apenas distinguem essas duas posições — ao falar, ambos são “i”.</p>
-    <div class="notation" aria-labelledby="score-title">
-      <div class="score-head">
-        <div><h3 id="score-title">Partitura · leitura métrica 4/4</h3><p>Os mesmos ataques e durações do áudio, escritos para tornar cada tempo reconhecível.</p></div>
-        <div class="score-options" role="group" aria-label="Visualização da partitura">
-          <button type="button" data-score-mode="rhythm" aria-pressed="false">Ritmo puro</button>
-          <button type="button" data-score-mode="melodic" class="active" aria-pressed="true">Com alturas</button>
-        </div>
-      </div>
-      <div class="score-view" role="group" aria-label="Tamanho da partitura">
-        <span>Leitura no celular</span>
-        <button type="button" id="score-fit" aria-pressed="false">Ver compasso inteiro</button>
-        <button type="button" id="score-zoom" aria-pressed="true">Leitura ampliada</button>
-      </div>
-      <div class="score-scroll" id="score-scroll"><div id="score" aria-live="polite"></div></div>
-      <p class="score-help" id="score-help">Clave de sol · Dó4, Mi4, Sol4 e Si4. A altura e a duração são escritas no mesmo compasso 4/4.</p>
-      <details class="score-principles">
-        <summary>Critérios de escrita · Larry Monroe, págs. 2–7 do material</summary>
-        <p>Barras de colcheias e semicolcheias agrupadas por tempo; limites dos tempos visíveis e separação 2 | 3 respeitada; pausas sem atravessar a pulsação; prolongamentos representados por pontos e ligaduras entre notas da mesma altura. Os tempos 1 e 3 recebem destaque métrico discreto, sem inserir falsas barras de compasso.</p>
-      </details>
-    </div>
-    <section class="instrument-panel" aria-label="Instrumento visual">
-      <div class="instrument-head">
-        <h3>Instrumento</h3>
-        <div class="instrument-switch" role="group" aria-label="Escolha do instrumento">
-          <button type="button" data-instrument="piano" aria-pressed="true">Piano</button>
-          <button type="button" data-instrument="guitar" aria-pressed="false">Violão</button>
-        </div>
-      </div>
-      <div class="instrument-meta">
-        <span id="instrument-form">1–3–5</span>
-        <span id="instrument-next"></span>
-        <strong id="instrument-current" aria-live="off">—</strong>
-      </div>
-      <div id="instrument-view" class="instrument-view" aria-label="Notas no instrumento"></div>
-    </section>
   </section>
-  <section class="details" aria-label="Como estudar">
+  <section class="details" hidden aria-label="Como estudar">
     <div class="card"><h3>O que permanece igual?</h3><p>Quando você troca apenas o <b>ritmo</b>, as alturas permanecem. Quando troca apenas o <b>percurso</b>, os ataques permanecem nas mesmas subdivisões. Assim é possível ouvir uma transformação de cada vez.</p></div>
     <div class="card"><h3>O que observar?</h3><p>A mesma ordem de graus em outra inversão muda os saltos? Os 24 percursos conservam as quatro notas, mas distribuem os intervalos de modo diferente. Modos que compartilham a tétrade exigirão outras notas para revelar cores próprias.</p></div>
   </section>
@@ -544,7 +537,7 @@ h1{font:750 clamp(36px,5.8vw,72px)/1.05 Georgia,serif;letter-spacing:-.04em;marg
 "use strict";
 const E=window.RhythmLabEngine,N=window.RhythmLabNotation,M=window.RhythmLabMelody,O=window.RhythmLabOrnaments,I=window.RhythmLabInstruments;
 const $=id=>document.getElementById(id);
-const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:false,mode:"ionian",inversion:0,path:0,ornament:"none",ornamentTarget:"auto",ornamentRhythm:"one-sixteenth",instrument:"piano",axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
+const state={id:"regular",family:"all",scoreMode:"melodic",bpm:80,click:true,metronomeMode:"beats",loop:false,scoreFit:true,mode:"ionian",inversion:0,path:0,ornament:"none",ornamentTarget:"auto",ornamentRhythm:"one-sixteenth",instrument:"piano",studioTab:"melody",ornamentGroup:"one",axisRevision:0,token:0,ctx:null,voices:[],timers:[]};
 const patterns=E.PATTERNS;
 let loopTransport=null,transportKind=null,axisPending=false;
 let shownInstrumentNotes=null,shownInstrumentAxis=null;
