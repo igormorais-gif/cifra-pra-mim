@@ -748,6 +748,7 @@ function syncInstrumentLights(){
 function renderInstrument(ev=shownInstrumentNotes??currentEvents(),axis=shownInstrumentAxis??state){
  shownInstrumentNotes=ev.map(n=>({...n}));
  shownInstrumentAxis={mode:axis.mode,inversion:axis.inversion,path:axis.path};
+ if(!soundingMidis.size)$("instrument-current").textContent="—";
  for(const btn of document.querySelectorAll("[data-instrument]")){
   const selected=btn.dataset.instrument===state.instrument;
   btn.classList.toggle("active",selected);
