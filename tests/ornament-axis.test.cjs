@@ -5,9 +5,9 @@ const M=require("../src/melodic-axis.js");
 const O=require("../src/ornament-axis.js");
 const N=require("../src/rhythm-notation.js");
 
-test("aproximações: quatro modalidades e modo desligado",()=>{
+test("aproximações: C.I., D.I. e D.S. e modo desligado",()=>{
  assert.deepEqual(O.STYLES.map(s=>s.id),[
-  "none","diatonic-below","diatonic-above","chromatic-below","chromatic-above"
+  "none","diatonic-below","diatonic-above","chromatic-below"
  ]);
  assert.equal(O.analyze("respiros").events.length,4);
  assert.equal(O.TARGETS.length,5);
@@ -76,7 +76,7 @@ test("sem espaço livre, nunca sobrepõe ataques, mesmo que o usuário escolha a
  assert.match(noSpace.status,/não tem semicolcheia livre/);
 });
 test("no caso de aproximação há cinco ataques na pauta, mas quatro continuam estruturais",()=>{
- const a=O.analyze("respiros",{ornament:"chromatic-above"});
+ const a=O.analyze("respiros",{ornament:"chromatic-below"});
  assert.equal(a.events.filter(n=>n.ornament).length,1);
  const svg=N.svg("respiros","melodic",a.events);
  assert.match(svg,/score-approach/);
@@ -87,5 +87,7 @@ test("no caso de aproximação há cinco ataques na pauta, mas quatro continuam 
 });
 test("opções de ornamentação incorretas são rejeitadas",()=>{
  assert.throws(()=>O.settings({ornament:"bordadura"}),RangeError);
+ assert.throws(()=>O.settings({ornament:"chromatic-above"}),RangeError);
+ assert.ok(!O.STYLES.some(x=>x.id==="chromatic-above"));
  assert.throws(()=>O.settings({ornamentTarget:"7"}),RangeError);
 });
