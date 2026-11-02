@@ -6,6 +6,7 @@ const vm=require("node:vm");
 const E=require("../src/rhythm-lab.js");
 const M=require("../src/melodic-axis.js");
 const O=require("../src/ornament-axis.js");
+const I=require("../src/instrument-map.js");
 const N=require("../src/rhythm-notation.js");
 const html=fs.readFileSync(path.join(__dirname,"../laboratorio-improviso/index.html"),"utf8");
 const loopSource=fs.readFileSync(path.join(__dirname,"../src/seamless-loop.js"),"utf8");
@@ -39,6 +40,7 @@ function page(){
  }
  const els=new Map();
  const scoreButtons=["rhythm","melodic"].map(v=>new Element("button",{scoreMode:v}));
+ const instrumentButtons=["piano","guitar"].map(v=>new Element("button",{instrument:v}));
  const diagButtons=[4,5,6,7].map(v=>new Element("span",{diagTick:String(v)}));
  const walk=e=>e.children.flatMap(c=>[c,...walk(c)]);
  const all=()=>[...els.values()].flatMap(e=>[e,...walk(e)]);
@@ -48,6 +50,7 @@ function page(){
   createTextNode(value){const e=new Element("#text");e.textContent=value;return e},
   querySelectorAll(query){
    if(query==="[data-score-mode]")return scoreButtons;
+   if(query==="[data-instrument]")return instrumentButtons;
    if(query==="[data-diag-tick]")return diagButtons;
    if(query===".subdiv,.tick")return all().filter(e=>/^(subdiv|tick)/.test(e.className));
    if(query===".sounding")return all().filter(e=>e.className.split(/\s+/).includes("sounding"));
@@ -66,7 +69,7 @@ function page(){
   createGain(){return{gain:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){}}}
   async resume(){}
  }
- const window={RhythmLabEngine:E,RhythmLabMelody:M,RhythmLabOrnaments:O,RhythmLabNotation:N,
+ const window={RhythmLabEngine:E,RhythmLabMelody:M,RhythmLabOrnaments:O,RhythmLabNotation:N,RhythmLabInstruments:I,
   SeamlessLoop:sandbox.module.exports,AudioContext,addEventListener(){}};
  const script=html.slice(html.lastIndexOf("<script>")+8,html.lastIndexOf("</script>"));
  vm.runInNewContext(script,{window,document,setTimeout:setTimer,clearTimeout:clearTimer});
@@ -81,7 +84,7 @@ function page(){
   now=until;
  }
  const notes=()=>audio.filter(x=>x.type==="triangle").sort((a,b)=>a.at-b.at);
- return {get:id=>document.getElementById(id),window,advance,notes,timers};
+ return {get:id=>document.getElementById(id),window,advance,notes,timers,instrumentButtons};
 }
 test("Registro e ordem mudam no próximo compasso sem interromper Loop ou metrônomo",async()=>{
  const ui=page(),$=ui.get;
@@ -173,4 +176,41 @@ test("Aviso sem espaço e botão de demonstração em Respiros",()=>{
  assert.equal(ui.window.RhythmLabUI.get().rhythm,"respiros");
  assert.equal(ui.window.RhythmLabUI.get().events.length,5);
  assert.equal($("ornament-demo").hidden,true);
+});
+
+test("Piano e Violão alternam enquanto o Loop toca, sem reiniciar áudio",async()=>{
+ const ui=page(),$=ui.get;
+ assert.match($("instrument-view").innerHTML,/piano-svg/);
+ assert.equal($("instrument-current").textContent,"—");
+ $("loop").handlers.click();
+ await $("play").handlers.click();
+ ui.advance(.25);
+ assert.equal($("instrument-current").textContent,"Dó4");
+ ui.instrumentButtons[1].handlers.click();
+ assert.match($("instrument-view").innerHTML,/guitar-svg/);
+ assert.equal(ui.instrumentButtons[1].attrs["aria-pressed"],"true");
+ assert.equal($("play").disabled,true);
+ assert.equal(ui.notes().length,4);
+ ui.advance(3.25);
+ assert.equal(ui.notes().length,8);
+ assert.equal($("play").disabled,true);
+ ui.instrumentButtons[0].handlers.click();
+ assert.match($("instrument-view").innerHTML,/piano-svg/);
+ $("stop").handlers.click();
+ assert.equal($("instrument-current").textContent,"—");
+});
+test("Gráfico permanece na frase que soa até a mudança melódica entrar na volta",async()=>{
+ const ui=page(),$=ui.get;
+ $("loop").handlers.click();await $("play").handlers.click();
+ ui.advance(.5);
+ const before=$("instrument-view").innerHTML;
+ $("axis-path").handlers.change({target:{value:"23"}});
+ ui.instrumentButtons[1].handlers.click();
+ assert.match($("instrument-view").innerHTML,/guitar-svg/);
+ ui.instrumentButtons[0].handlers.click();
+ assert.equal($("instrument-view").innerHTML,before);
+ ui.advance(3.20);
+ assert.match($("instrument-view").innerHTML,/piano-svg/);
+ assert.match($("instrument-view").innerHTML,/data-midi="71"/);
+ assert.equal(ui.notes().length,8);
 });
