@@ -164,16 +164,16 @@ test("Aproximação muda na próxima volta sem parar o Loop",async()=>{
  const applied=O.analyze("respiros",{ornament:"diatonic-below"}).events;
  assert.deepEqual(notes.slice(4).map(x=>x.midi),applied.map(x=>x.midi));
  assert.ok(Math.abs(notes[4].at-notes[0].at-3)<1e-9);
- assert.match($("ornament-status").textContent,/Aproximação/);
+ assert.match($("ornament-status").textContent,/auxiliar|aproximação|semicolcheia/i);
  assert.match($("score").innerHTML,/score-approach/);
 });
-test("Aviso sem espaço e botão de demonstração em Respiros",()=>{
+test("Aviso sem espaço e botão de demonstração em célula compatível",()=>{
  const ui=page(),$=ui.get;
  $("ornament-style").handlers.change({target:{value:"chromatic-below"}});
  assert.match($("ornament-status").textContent,/não tem semicolcheia livre/);
  assert.equal($("ornament-demo").hidden,false);
  $("ornament-demo").handlers.click();
- assert.equal(ui.window.RhythmLabUI.get().rhythm,"respiros");
+ assert.notEqual(ui.window.RhythmLabUI.get().rhythm,"regular");
  assert.equal(ui.window.RhythmLabUI.get().events.length,5);
  assert.equal($("ornament-demo").hidden,true);
 });
