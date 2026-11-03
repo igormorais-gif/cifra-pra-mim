@@ -30,8 +30,16 @@
 .playhead-track{height:3px;background:#37383e;border-radius:3px;margin-top:9px;overflow:hidden}
 .playhead-fill{height:100%;width:0%;background:#f2c453;will-change:width}.sync-adjust{margin-top:9px;color:#bcbcc2;font-size:11px}.sync-adjust summary{cursor:pointer;width:max-content;list-style:none;text-decoration:underline;text-decoration-color:#62636a;text-underline-offset:3px}.sync-adjust summary::-webkit-details-marker{display:none}.sync-controls{display:flex;align-items:center;gap:10px;margin-top:8px}.sync-controls input{flex:1;accent-color:#f2c453;min-width:80px}.sync-controls output{min-width:45px;text-align:right;font-variant-numeric:tabular-nums}
 @media(max-width:450px){.tempo-board{padding:9px 8px 10px}.measure{gap:1px}.step{min-height:40px}.step .stroke{font-size:12px}.step.accent .stroke{font-size:15px}.bpm-box{gap:5px}}
+.pulse-toggle{display:flex;align-items:center;gap:9px;width:max-content;max-width:100%;margin:2px 0 4px;color:#ceced1;font-size:12px;font-weight:650;cursor:pointer;user-select:none}
+.pulse-toggle input{width:18px;height:18px;margin:0;accent-color:#f2c453;cursor:pointer}
+.pulse-toggle .pulse-caption{color:#96969f;font-weight:500}
+.tempo-board.pulse-on .measure{margin-top:23px}
+.beat-number{position:absolute;top:-27px;left:50%;pointer-events:none;opacity:0;transform:translate(-50%,7px) scale(.7);border-radius:9px;min-width:29px;padding:2px 6px;text-align:center;background:#f2c453;color:#171717;font-size:18px;line-height:23px;font-weight:900;box-shadow:0 2px 12px #f2c4536b}
+.beat-number.pop{animation:beat-burst .22s ease-out both}
+@keyframes beat-burst{from{opacity:0;transform:translate(-50%,8px) scale(.64)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.beat-number.pop{animation:none;opacity:1;transform:translate(-50%,0) scale(1)}}
 </style></head><body><main class="shell"><div class="eyebrow">LABORATÓRIO DE CAIXAS · LEVADA DA MOCIDADE</div><h1>Caixa da Mocidade</h1><p class="sub">Pegada tradicional · samples de caixa acústica · 2/4</p><section class="panel">
-<div class="tempo-board"><div class="tempo-head"><span>ACENTOS · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="20" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
+<div class="tempo-board" id="tempoBoard"><div class="tempo-head"><span>ACENTOS · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="20" max="160" step="1" value="103" aria-label="Andamento em BPM"><label class="pulse-toggle" for="pulseToggle"><input id="pulseToggle" type="checkbox"><span>Pulso · 1 2 3 4</span><span class="pulse-caption">clique + contagem</span></label><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
 <svg class="stage" viewBox="0 0 690 620" role="img" aria-label="Caixa vista de cima com duas baquetas tocadas em movimento independente">
 <defs><radialGradient id="skin" cx="48%" cy="41%" r="69%"><stop stop-color="#f8f6ee"/><stop offset=".73" stop-color="#e5e4de"/><stop offset="1" stop-color="#a7a9ad"/></radialGradient><linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9dca5"/><stop offset=".35" stop-color="#e0b973"/><stop offset=".78" stop-color="#bd8649"/><stop offset="1" stop-color="#8b5c30"/></linearGradient><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e5e7e9"/><stop offset=".44" stop-color="#757c85"/><stop offset=".7" stop-color="#c9cdd1"/><stop offset="1" stop-color="#535963"/></linearGradient><filter id="drop" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter><filter id="stickShadow"><feGaussianBlur stdDeviation="3"/></filter></defs>
 <rect width="690" height="620" fill="#111216"/><ellipse cx="345" cy="315" rx="266" ry="263" fill="#050506" opacity=".72" filter="url(#drop)"/>
@@ -96,6 +104,7 @@ const E=id=>document.getElementById(id);
 const play=E('play'), reset=E('reset'), status=E('status');
 const bpmSlider=E('bpm'), bpmValue=E('bpmValue'), syncSlider=E('sync'), syncValue=E('syncValue');
 let bpm=103, syncMs=0, ctx=null, samples=null, running=false, loading=false, raf=0, timer=0;
+let pulseOn=false;
 let origin=0, phaseOnPause=0, nextIndex=0, currentActive=-1;
 let scheduled=[];
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
@@ -106,6 +115,7 @@ E('meter').innerHTML=[0,1].map(bar=>
     const i=bar*8+k;
     return '<div class="step '+(ACCENT[i]?'accent':'ghost')+
       '" id="step'+i+'" aria-label="'+syllable+(ACCENT[i]?' · acento forte':' · toque leve')+'">'+
+      (i%4===0?'<span class="beat-number" id="beat'+(i/4)+'" aria-hidden="true">'+(i/4+1)+'</span>':'')+
       '<span class="stroke">'+syllable+'</span></div>';
   }).join('')+'</div>'
 ).join('');
@@ -178,12 +188,37 @@ function strike(i,when){
   scheduled.push(src);
   src.onended=()=>{const k=scheduled.indexOf(src);if(k!==-1)scheduled.splice(k,1);src.disconnect();gain.disconnect();};
 }
+function pulseClick(index,when){
+  if(!pulseOn||!ctx)return;
+  // O mesmo instante do toque da caixa: sem temporizador visual para o áudio.
+  // A contagem 1,2,3,4 ocupa dois compassos de 2/4.
+  const beat=(Math.floor(index/4)%4+4)%4;
+  const first=beat===0;
+  const osc=ctx.createOscillator(),gain=ctx.createGain();
+  osc.type='sine';
+  osc.frequency.setValueAtTime(first?1320:940,when);
+  osc.frequency.exponentialRampToValueAtTime(first?900:690,when+.028);
+  gain.gain.setValueAtTime(0.0001,when);
+  gain.gain.exponentialRampToValueAtTime(first?.115:.072,when+.002);
+  gain.gain.exponentialRampToValueAtTime(.0001,when+.044);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start(when);osc.stop(when+.048);
+  scheduled.push(osc);
+  osc.onended=()=>{
+    const idx=scheduled.indexOf(osc);
+    if(idx!==-1)scheduled.splice(idx,1);
+    osc.disconnect();gain.disconnect();
+  };
+}
 function schedule(){
   if(!running||!samples)return;
   const horizon=ctx.currentTime+.17;
   while(origin+nextIndex*tick()<horizon){
     const when=origin+nextIndex*tick();
-    if(when>=ctx.currentTime+.004)strike(nextIndex,when);
+    if(when>=ctx.currentTime+.004){
+      strike(nextIndex,when);
+      if(pulseOn&&nextIndex%4===0)pulseClick(nextIndex,when);
+    }
     nextIndex++;
   }
 }
@@ -216,6 +251,32 @@ function setBpm(value){
 bpmSlider.addEventListener('input',()=>setBpm(bpmSlider.value));
 E('bpmDown').addEventListener('click',()=>setBpm(bpm-5));
 E('bpmUp').addEventListener('click',()=>setBpm(bpm+5));
+E('pulseToggle').addEventListener('change',event=>{
+  pulseOn=event.target.checked;
+  E('tempoBoard').classList.toggle('pulse-on',pulseOn);
+  // Ativar o pulso com a música em andamento pede o 1 imediatamente, não
+  // um clique começando no 2/3/4. Mantemos todos os eventos no mesmo relógio.
+  if(pulseOn){
+    phaseOnPause=0;
+    if(running&&ctx){
+      stopVoices();
+      nextIndex=0;
+      origin=ctx.currentTime+.09;
+      schedule();
+    }
+  }else{
+    // Cancela também cliques já agendados sem deslocar os golpes da caixa.
+    // Agenda novamente as próximas notas a partir da fase corrente.
+    if(running&&ctx){
+      const current=phase(false);
+      stopVoices();
+      origin=ctx.currentTime+.07-current*tick();
+      nextIndex=Math.ceil(current+.0001);
+      schedule();
+    }
+  }
+  render();
+});
 syncSlider.addEventListener('input',()=>{
   syncMs=Number(syncSlider.value)||0;
   syncValue.textContent=(syncMs>0?'+':'')+syncMs+' ms';
@@ -261,6 +322,14 @@ function highlight(ph){
 function render(){
   const ph=phase(true);
   highlight(ph);
+  // Os números só brotam nos ataques dos quatro tempos, nunca ficam fixos.
+  // Posição visual usa o mesmo tempo de saída estimado que a animação.
+  const beatStep=Math.floor(ph);
+  const pop=pulseOn&&running&&ctx&&outputClock()-syncMs/1000>=origin
+    &&beatStep%4===0&&(ph-beatStep)<.85;
+  for(let i=0;i<4;i++){
+    E('beat'+i).classList.toggle('pop',!!pop&&beatStep===i*4);
+  }
   drawStick('L',point('L',ph));
   drawStick('R',point('R',ph));
   const k=Math.floor(ph), frac=ph-k;
