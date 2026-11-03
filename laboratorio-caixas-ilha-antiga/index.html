@@ -23,6 +23,10 @@
 .step.accent::before{content:"●";position:absolute;top:1px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--hit-strong)}
 .step.ghost{background:#48a9ff1c;border-bottom-color:#48a9ff77}
 .step.ghost .stroke{color:#93ccff;font-weight:650}
+.step.medium{background:#ba585822;border-bottom-color:#b56d707e}
+.step.medium .stroke{color:#e89b9e;font-weight:750}
+.step.active.medium{background:#c86e73;border-bottom-color:#ffd1d1;box-shadow:0 0 9px #ce71764f}
+.step.active.medium .stroke{color:#fff;text-shadow:none}
 .step.active.accent{background:var(--hit-strong);border-bottom-color:#ffd4d7;box-shadow:0 0 14px #ff485880,inset 0 0 0 1px #ffb9bf}
 .step.active.accent .stroke{color:white;text-shadow:0 0 8px #8c1726}
 .step.active.ghost{background:var(--hit-soft);border-bottom-color:#d0eaff;box-shadow:0 0 11px #48a9ff55}
@@ -180,6 +184,8 @@ const STROKE=['PA','CO','PA','PA','CO','PA','PA','CO','PA','CO','PA','PA','CO','
 const SIDE=STROKE.map(s=>s==='PA'||s==='CRRRR'?'R':s==='CO'?'L':null);
 // Acentos indicados na transcrição original, ainda provisórios.
 const ACCENT=[true,false,false,true,false,false,true,false,true,false,false,true,false,false,false,false];
+// Três intensidades: PA acentuado > PA sem acento > CO.
+const DYNAMIC=STROKE.map((s,i)=>ACCENT[i]?'accent':s==='PA'?'medium':'ghost');
 const HAND_HITS={
   R:STROKE.map((s,i)=>SIDE[i]==='R'?i:-1).filter(i=>i>=0),
   L:STROKE.map((s,i)=>SIDE[i]==='L'?i:-1).filter(i=>i>=0)
@@ -201,7 +207,7 @@ E('meter').innerHTML=[0,1].map(bar=>
     const continuation=i===14;
     const special=i===13?' roll':continuation?' roll-tail':'';
     const spoken=continuation?'continuação da rufada':syllable;
-    return '<div class="step '+(ACCENT[i]?'accent':'ghost')+special+
+    return '<div class="step '+DYNAMIC[i]+special+
       '" id="step'+i+'" aria-label="'+spoken+(ACCENT[i]?' · acento forte':' · toque leve')+'">'+
       (i%4===0?'<span class="beat-number" id="beat'+(i/4)+'" aria-hidden="true">'+(i/4+1)+'</span>':'')+
       '<span class="stroke">'+(continuation?'~':syllable)+'</span></div>';
@@ -268,7 +274,7 @@ function strike(i,when){
   /* Firme x toque próximo à pele; diferença criada pela amostra e ganho,
      nunca por um acento automático de compasso. */
   const gain=ctx.createGain();
-  const volume=isAccent?.86:.34;
+  const volume=isAccent?.86:(DYNAMIC[i%16]==='medium'?.42:.34);
   src.playbackRate.value=1+[0,.008,-.009,.004][i%4];
   gain.gain.setValueAtTime(volume,when);
   gain.gain.setTargetAtTime(.0001,when+(isAccent?.15:.075),isAccent?.068:.045);
@@ -424,7 +430,8 @@ function point(side,ph){
   const u=clamp((ph-prev)/travel,0,1);
   const crest=Math.pow(Math.sin(Math.PI*u),.76);
   const strong=ACCENT[next%16];
-  let lift=crest*(strong?282:48);
+  const medium=DYNAMIC[next%16]==='medium';
+  let lift=crest*(strong?282:medium?62:48);
   // Durante o CRRRR a baqueta direita vibra perto da pele, em vez de
   // executar uma elevação de acento que não consta na fonte.
   if(side==='R'&&ph>=13&&ph<15){
@@ -473,8 +480,8 @@ function render(){
   const k=Math.floor(ph), frac=ph-k;
   for(const side of ['L','R']){
     const active=running&&SIDE[k]===side&&frac<.34&&(!ctx||outputClock()>=origin);
-    const strong=ACCENT[k];
-    const color=strong?'#ff4858':'#48a9ff';
+    const strong=ACCENT[k],medium=DYNAMIC[k]==='medium';
+    const color=strong?'#ff4858':medium?'#d8878c':'#48a9ff';
     const group=E(side==='L'?'impactLeft':'impactRight');
     const ring=E(side==='L'?'impactLeftRing':'impactRightRing');
     const core=E(side==='L'?'impactLeftCore':'impactRightCore');
@@ -483,18 +490,18 @@ function render(){
     // A nota fraca tem marca menor, mais baixa na pele e menos luminosa.
     // O azul da mão esquerda é deslocado para longe da baqueta/sombra,
     // preservando a separação leve (azul) x acentuado (vermelho).
-    const cx=strong?(side==='L'?285:405):(side==='L'?315:375);
-    const cy=strong?326:349;
-    group.setAttribute('opacity',active?String((1-t)*(strong?1:.48)):'0');
+    const cx=strong||medium?(side==='L'?285:405):(side==='L'?315:375);
+    const cy=strong?326:medium?334:349;
+    group.setAttribute('opacity',active?String((1-t)*(strong?1:medium?.65:.48)):'0');
     ring.setAttribute('cx',String(cx));
     ring.setAttribute('cy',String(cy));
     ring.setAttribute('stroke',color);
-    ring.setAttribute('stroke-width',strong?'5':'2.3');
-    ring.setAttribute('r',String((strong?10:5)+(strong?45:18)*t));
+    ring.setAttribute('stroke-width',strong?'5':medium?'3':'2.3');
+    ring.setAttribute('r',String((strong?10:medium?7:5)+(strong?45:medium?23:18)*t));
     core.setAttribute('cx',String(cx));
     core.setAttribute('cy',String(cy));
     core.setAttribute('fill',color);
-    core.setAttribute('r',String((strong?11:4)+(strong?12:4)*t));
+    core.setAttribute('r',String((strong?11:medium?6:4)+(strong?12:medium?6:4)*t));
   }
   if(running)raf=requestAnimationFrame(render);
 }
