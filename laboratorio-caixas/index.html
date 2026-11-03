@@ -97,9 +97,9 @@
   <div class="bpm-compact" role="group" aria-label="Andamento">
     <span class="mini-label">BPM</span>
     <button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button>
-    <output id="bpmValue" for="bpm">103</output>
+    <output id="bpmValue" for="bpm">70</output>
     <button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button>
-    <input id="bpm" type="range" min="20" max="160" step="1" value="103" aria-label="Andamento em BPM">
+    <input id="bpm" type="range" min="20" max="160" step="1" value="70" aria-label="Andamento em BPM">
   </div>
   <label class="pulse-toggle" for="pulseToggle"><input id="pulseToggle" type="checkbox"><span>Pulso</span></label>
   <details class="mix-drawer">
@@ -178,7 +178,7 @@ const E=id=>document.getElementById(id);
 const play=E('play'), reset=E('reset'), status=E('status');
 const bpmSlider=E('bpm'),bpmValue=E('bpmValue');
 const drumSlider=E('mixDrum'),pulseSlider=E('mixPulse');
-let bpm=103,ctx=null,samples=null,running=false,loading=false,raf=0,timer=0;
+let bpm=70,ctx=null,samples=null,running=false,loading=false,raf=0,timer=0;
 let pulseOn=false,drumLevel=1,pulseLevel=1,drumBus=null,pulseBus=null;
 let origin=0, phaseOnPause=0, nextIndex=0, currentActive=-1;
 let scheduled=[];
@@ -306,7 +306,7 @@ function stopClock(){
   stopVoices();
 }
 function setBpm(value){
-  const next=clamp(Math.round(Number(value)||103),20,160);
+  const next=clamp(Math.round(Number(value)||70),20,160);
   if(next===bpm)return;
   bpm=next;
   bpmSlider.value=String(bpm);
