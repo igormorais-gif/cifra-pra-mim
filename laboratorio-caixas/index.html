@@ -64,6 +64,7 @@
 .bpm-compact input{flex:1;min-width:45px;max-width:135px;width:100%;height:22px;margin:0;accent-color:#f2c453;touch-action:pan-x}
 .transport .pulse-toggle{padding:4px 6px;min-height:34px;border-radius:7px;color:#eee;font-size:12px;white-space:nowrap}
 .transport .pulse-toggle input{height:16px;width:16px}
+.mix-drawer[hidden]{display:none!important}
 .mix-drawer{position:relative;margin-left:auto;flex:0 0 auto}
 .mix-drawer>summary{display:flex;align-items:center;justify-content:center;list-style:none;cursor:pointer;border:1px solid #53545b;border-radius:7px;padding:7px 11px;min-height:35px;color:#e5e5e9;font-size:12px;font-weight:750;background:#303139}
 .mix-drawer>summary::-webkit-details-marker{display:none}
@@ -102,7 +103,7 @@
     <input id="bpm" type="range" min="20" max="160" step="1" value="70" aria-label="Andamento em BPM">
   </div>
   <label class="pulse-toggle" for="pulseToggle"><input id="pulseToggle" type="checkbox"><span>Pulso</span></label>
-  <details class="mix-drawer">
+  <details class="mix-drawer" id="mixDrawer" hidden>
     <summary aria-label="Abrir mixer de volumes">Mixer</summary>
     <div class="mixer" role="group" aria-label="Mixer da batucada e do pulso">
       <div class="mixer-title">VOLUMES</div>
@@ -345,6 +346,9 @@ for(const [slider,output,channel] of [
 E('pulseToggle').addEventListener('change',event=>{
   pulseOn=event.target.checked;
   E('tempoBoard').classList.toggle('pulse-on',pulseOn);
+  const mixer=E('mixDrawer');
+  mixer.hidden=!pulseOn;
+  if(!pulseOn)mixer.open=false;
   // Ativar o pulso com a música em andamento pede o 1 imediatamente, não
   // um clique começando no 2/3/4. Mantemos todos os eventos no mesmo relógio.
   if(pulseOn){
