@@ -28,7 +28,7 @@
 .step.active.ghost{background:var(--hit-soft);border-bottom-color:#d0eaff;box-shadow:0 0 11px #48a9ff55}
 .step.active.ghost .stroke{color:#061827;text-shadow:none}
 .playhead-track{height:3px;background:#37383e;border-radius:3px;margin-top:9px;overflow:hidden}
-.playhead-fill{height:100%;width:0%;background:#f2c453;will-change:width}.sync-adjust{margin-top:9px;color:#bcbcc2;font-size:11px}.sync-adjust summary{cursor:pointer;width:max-content;list-style:none;text-decoration:underline;text-decoration-color:#62636a;text-underline-offset:3px}.sync-adjust summary::-webkit-details-marker{display:none}.sync-controls{display:flex;align-items:center;gap:10px;margin-top:8px}.sync-controls input{flex:1;accent-color:#f2c453;min-width:80px}.sync-controls output{min-width:45px;text-align:right;font-variant-numeric:tabular-nums}
+.playhead-fill{height:100%;width:0%;background:#f2c453;will-change:width}
 @media(max-width:450px){.tempo-board{padding:9px 8px 10px}.measure{gap:1px}.step{min-height:40px}.step .stroke{font-size:12px}.step.accent .stroke{font-size:15px}.bpm-box{gap:5px}}
 .option-row{display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center;margin:4px 0 3px}
 .pulse-toggle{display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;margin:0;color:#ceced1;font-size:12px;font-weight:650;cursor:pointer;user-select:none}
@@ -38,9 +38,22 @@
 .beat-number{position:absolute;top:-29px;left:50%;pointer-events:none;visibility:hidden;opacity:0;transform:translate(-50%,0) scale(1);border-radius:7px;min-width:28px;padding:1px 6px;text-align:center;background:#313239;color:#d7d7da;font-size:17px;line-height:23px;font-weight:850;transition:background .08s,color .08s,box-shadow .08s,transform .08s}
 .tempo-board.pulse-on .beat-number{visibility:visible;opacity:1}
 .tempo-board.pulse-on .beat-number.lit{background:#f2c453;color:#111217;box-shadow:0 0 14px #f2c4539c;transform:translate(-50%,0) scale(1.12)}
-.phoneme-label text{font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-weight:900;paint-order:stroke;stroke:#17181de6;stroke-width:4;stroke-linejoin:round;letter-spacing:.03em;}
+.mixer{background:#14151a;border:1px solid #33353a;border-radius:12px;margin:11px 0 7px;padding:10px 12px 12px}
+.mixer-title{font-size:10px;font-weight:800;letter-spacing:.12em;color:#aaaab1;margin-bottom:9px}
+.mixer-channels{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px}
+.mixer-channel{min-width:0;display:flex;flex-direction:column;gap:7px}
+.mixer-label{display:flex;justify-content:space-between;gap:8px;color:#dddde2;font-size:12px;font-weight:700}
+.mixer-channel output{font-variant-numeric:tabular-nums;color:#b8b8c1;font-weight:600}
+.mixer-channel input{display:block;width:100%;height:18px;margin:0;touch-action:pan-x}
+#mixDrum{accent-color:#ff4858}#mixPulse{accent-color:#f2c453}
+@media(max-width:420px){.mixer{padding:9px 10px}.mixer-channels{gap:9px 12px}.mixer-label{font-size:11px}}
 </style></head><body><main class="shell"><div class="eyebrow">LABORATÓRIO DE CAIXAS · LEVADA DA MOCIDADE</div><h1>Caixa da Mocidade</h1><p class="sub">Pegada tradicional · samples de caixa acústica · 2/4</p><section class="panel">
-<div class="tempo-board" id="tempoBoard"><div class="tempo-head"><span>ACENTOS · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="20" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="option-row"><label class="pulse-toggle" for="pulseToggle"><input id="pulseToggle" type="checkbox"><span>Pulso · 1 2 3 4</span><span class="pulse-caption">clique + contagem</span></label><label class="pulse-toggle" for="phonemeToggle"><input id="phonemeToggle" type="checkbox"><span>Sílabas nas mãos</span></label></div><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
+<div class="tempo-board" id="tempoBoard"><div class="tempo-head"><span>ACENTOS · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="20" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="option-row"><label class="pulse-toggle" for="pulseToggle"><input id="pulseToggle" type="checkbox"><span>Pulso · 1 2 3 4</span><span class="pulse-caption">clique + contagem</span></label></div><div class="mixer" role="group" aria-label="Mixer da batucada e do pulso">
+<div class="mixer-title">MIXER</div>
+<div class="mixer-channels">
+<label class="mixer-channel" for="mixDrum"><span class="mixer-label"><span>Batucada</span><output id="mixDrumValue" for="mixDrum">100%</output></span><input id="mixDrum" aria-label="Volume da batucada" type="range" min="0" max="100" step="1" value="100"></label>
+<label class="mixer-channel" for="mixPulse"><span class="mixer-label"><span>Pulso</span><output id="mixPulseValue" for="mixPulse">100%</output></span><input id="mixPulse" aria-label="Volume do pulso" type="range" min="0" max="100" step="1" value="100"></label>
+</div></div><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div></div>
 <svg class="stage" viewBox="0 0 690 620" role="img" aria-label="Caixa vista de cima com duas baquetas tocadas em movimento independente">
 <defs><radialGradient id="skin" cx="48%" cy="41%" r="69%"><stop stop-color="#f8f6ee"/><stop offset=".73" stop-color="#e5e4de"/><stop offset="1" stop-color="#a7a9ad"/></radialGradient><linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9dca5"/><stop offset=".35" stop-color="#e0b973"/><stop offset=".78" stop-color="#bd8649"/><stop offset="1" stop-color="#8b5c30"/></linearGradient><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e5e7e9"/><stop offset=".44" stop-color="#757c85"/><stop offset=".7" stop-color="#c9cdd1"/><stop offset="1" stop-color="#535963"/></linearGradient><filter id="drop" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter><filter id="stickShadow"><feGaussianBlur stdDeviation="3"/></filter></defs>
 <rect width="690" height="620" fill="#111216"/><ellipse cx="345" cy="315" rx="266" ry="263" fill="#050506" opacity=".72" filter="url(#drop)"/>
@@ -87,9 +100,6 @@
 <circle id="impactRightRing" cx="405" cy="326" r="10" fill="none" stroke="#ff4858" stroke-width="5"/>
 <circle id="impactRightCore" cx="405" cy="326" r="9" fill="#ff4858"/>
 </g>
-<!-- Os nomes aparecem perto das mãos, após a camada das baquetas, sem bloqueá-las. -->
-<g id="phoneticLeft" class="phoneme-label" pointer-events="none" opacity="0"><text id="phoneticLeftText" text-anchor="middle" x="0" y="0" fill="#ff4858">CA</text></g>
-<g id="phoneticRight" class="phoneme-label" pointer-events="none" opacity="0"><text id="phoneticRightText" text-anchor="middle" x="0" y="0" fill="#ff4858">TA</text></g>
 </svg><div class="bar"><button id="play" class="btn">▶ Reproduzir</button><button id="reset" class="btn alt" aria-label="Reiniciar">↺</button></div><div id="status" class="status" aria-live="polite">Samples de caixa · cada batida corresponde a um contato da baqueta</div></section><p class="foot">Exercício com samples de caixa acústica: notas fracas e acentos em camadas distintas. Áudio, posições e baquetas seguem os mesmos 16 ataques. Amostras: Virtuosity Drums (CC0).</p></main>
 <script>
 'use strict';
@@ -106,9 +116,10 @@ const SIDE=STROKE.map(s=>(s==='TA'||s==='TI')?'R':'L');
 const ACCENT=STROKE.map(s=>s==='TA'||s==='CA');
 const E=id=>document.getElementById(id);
 const play=E('play'), reset=E('reset'), status=E('status');
-const bpmSlider=E('bpm'), bpmValue=E('bpmValue'), syncSlider=E('sync'), syncValue=E('syncValue');
-let bpm=103, syncMs=0, ctx=null, samples=null, running=false, loading=false, raf=0, timer=0;
-let pulseOn=false,phonemeOn=false;
+const bpmSlider=E('bpm'),bpmValue=E('bpmValue');
+const drumSlider=E('mixDrum'),pulseSlider=E('mixPulse');
+let bpm=103,ctx=null,samples=null,running=false,loading=false,raf=0,timer=0;
+let pulseOn=false,drumLevel=1,pulseLevel=1,drumBus=null,pulseBus=null;
 let origin=0, phaseOnPause=0, nextIndex=0, currentActive=-1;
 let scheduled=[];
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
@@ -142,6 +153,9 @@ function trimOffset(buffer){
 async function ensureAudio(){
   ctx??=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});
   if(ctx.state==='suspended')await ctx.resume();
+  // Canais separados para alterar volume em tempo real sem deslocar o ritmo.
+  if(!drumBus){drumBus=ctx.createGain();drumBus.gain.value=drumLevel;drumBus.connect(ctx.destination);}
+  if(!pulseBus){pulseBus=ctx.createGain();pulseBus.gain.value=pulseLevel;pulseBus.connect(ctx.destination);}
   if(samples)return;
   const [ghost,accent]=await Promise.all([
     ctx.decodeAudioData(bufferFromBase64(SAMPLE_GHOST_B64)),
@@ -165,7 +179,7 @@ function phaseAt(clock){
 }
 function phase(audible=false){
   if(!running||!ctx)return phaseOnPause;
-  const clock=audible?outputClock()-syncMs/1000:ctx.currentTime;
+  const clock=audible?outputClock():ctx.currentTime;
   if(clock<origin)return 0;
   return phaseAt(clock);
 }
@@ -186,7 +200,7 @@ function strike(i,when){
   gain.gain.setValueAtTime(volume,when);
   gain.gain.setTargetAtTime(.0001,when+(isAccent?.15:.075),isAccent?.068:.045);
   src.connect(gain);
-  gain.connect(ctx.destination);
+  gain.connect(drumBus);
   src.start(when,sample.offset);
   src.stop(when+.42);
   scheduled.push(src);
@@ -205,7 +219,7 @@ function pulseClick(index,when){
   gain.gain.setValueAtTime(0.0001,when);
   gain.gain.exponentialRampToValueAtTime(first?.115:.072,when+.002);
   gain.gain.exponentialRampToValueAtTime(.0001,when+.044);
-  osc.connect(gain);gain.connect(ctx.destination);
+  osc.connect(gain);gain.connect(pulseBus);
   osc.start(when);osc.stop(when+.048);
   scheduled.push(osc);
   osc.onended=()=>{
@@ -255,10 +269,19 @@ function setBpm(value){
 bpmSlider.addEventListener('input',()=>setBpm(bpmSlider.value));
 E('bpmDown').addEventListener('click',()=>setBpm(bpm-5));
 E('bpmUp').addEventListener('click',()=>setBpm(bpm+5));
-E('phonemeToggle').addEventListener('change',event=>{
-  phonemeOn=event.target.checked;
-  render();
-});
+for(const [slider,output,channel] of [
+  [drumSlider,E('mixDrumValue'),'drum'],
+  [pulseSlider,E('mixPulseValue'),'pulse']
+]){
+  slider.addEventListener('input',()=>{
+    const percent=clamp(Number(slider.value)||0,0,100);
+    output.value=percent+'%';
+    const level=percent/100;
+    if(channel==='drum')drumLevel=level;else pulseLevel=level;
+    const bus=channel==='drum'?drumBus:pulseBus;
+    if(bus&&ctx)bus.gain.setTargetAtTime(level,ctx.currentTime,.01);
+  });
+}
 E('pulseToggle').addEventListener('change',event=>{
   pulseOn=event.target.checked;
   E('tempoBoard').classList.toggle('pulse-on',pulseOn);
@@ -283,11 +306,6 @@ E('pulseToggle').addEventListener('change',event=>{
       schedule();
     }
   }
-  render();
-});
-syncSlider.addEventListener('input',()=>{
-  syncMs=Number(syncSlider.value)||0;
-  syncValue.textContent=(syncMs>0?'+':'')+syncMs+' ms';
   render();
 });
 function point(side,ph){
@@ -333,14 +351,13 @@ function render(){
   // Com o pulso habilitado, todos os números permanecem na cabeça dos tempos.
   // Apenas o número correspondente recebe iluminação no instante do clique.
   const beatStep=Math.floor(ph);
-  const pulseAudible=pulseOn&&running&&ctx&&outputClock()-syncMs/1000>=origin;
+  const pulseAudible=pulseOn&&running&&ctx&&outputClock()>=origin;
   const lit=pulseAudible&&beatStep%4===0&&(ph-beatStep)<1.1;
   for(let i=0;i<4;i++){
     E('beat'+i).classList.toggle('lit',!!lit&&beatStep===i*4);
   }
-  const leftPose=point('L',ph),rightPose=point('R',ph);
-  drawStick('L',leftPose);
-  drawStick('R',rightPose);
+  drawStick('L',point('L',ph));
+  drawStick('R',point('R',ph));
   const k=Math.floor(ph), frac=ph-k;
   for(const side of ['L','R']){
     const active=running&&SIDE[k]===side&&frac<.34&&(!ctx||outputClock()>=origin);
@@ -366,14 +383,6 @@ function render(){
     core.setAttribute('cy',String(cy));
     core.setAttribute('fill',color);
     core.setAttribute('r',String((strong?11:4)+(strong?12:4)*t));
-    const label=E(side==='L'?'phoneticLeft':'phoneticRight');
-    const labelText=E(side==='L'?'phoneticLeftText':'phoneticRightText');
-    const pose=side==='L'?leftPose:rightPose;
-    labelText.textContent=STROKE[k];
-    labelText.setAttribute('fill',color);
-    labelText.setAttribute('font-size',strong?'25':'17');
-    label.setAttribute('transform','translate('+(pose.gripX+(side==='L'?-85:85)).toFixed(1)+' '+(pose.gripY-18).toFixed(1)+')');
-    label.setAttribute('opacity',phonemeOn&&active?String((1-t)*(strong?.96:.65)):'0');
   }
   if(running)raf=requestAnimationFrame(render);
 }
