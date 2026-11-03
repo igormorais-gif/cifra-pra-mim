@@ -201,7 +201,7 @@ function setBpm(value){
   // Qualquer troca de andamento recomeça a frase no primeiro TA.
   // Não continuar a partir de uma semicolcheia deslocada.
   phaseOnPause=0;
-  currentActive=-1;
+  // Mantém o índice anterior até highlight(0) apagar o destaque antigo.
   if(running&&ctx){
     stopVoices();
     nextIndex=0;
