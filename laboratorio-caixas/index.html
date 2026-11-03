@@ -31,7 +31,7 @@
 .playhead-fill{height:100%;width:0%;background:#f2c453;will-change:width}.sync-adjust{margin-top:9px;color:#bcbcc2;font-size:11px}.sync-adjust summary{cursor:pointer;width:max-content;list-style:none;text-decoration:underline;text-decoration-color:#62636a;text-underline-offset:3px}.sync-adjust summary::-webkit-details-marker{display:none}.sync-controls{display:flex;align-items:center;gap:10px;margin-top:8px}.sync-controls input{flex:1;accent-color:#f2c453;min-width:80px}.sync-controls output{min-width:45px;text-align:right;font-variant-numeric:tabular-nums}
 @media(max-width:450px){.tempo-board{padding:9px 8px 10px}.measure{gap:1px}.step{min-height:40px}.step .stroke{font-size:12px}.step.accent .stroke{font-size:15px}.bpm-box{gap:5px}}
 </style></head><body><main class="shell"><div class="eyebrow">LABORATÓRIO DE CAIXAS · LEVADA DA MOCIDADE</div><h1>Caixa da Mocidade</h1><p class="sub">Pegada tradicional · samples de caixa acústica · 2/4</p><section class="panel">
-<div class="tempo-board"><div class="tempo-head"><span>ACENTOS · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="55" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
+<div class="tempo-board"><div class="tempo-head"><span>ACENTOS · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="20" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
 <svg class="stage" viewBox="0 0 690 620" role="img" aria-label="Caixa vista de cima com duas baquetas tocadas em movimento independente">
 <defs><radialGradient id="skin" cx="48%" cy="41%" r="69%"><stop stop-color="#f8f6ee"/><stop offset=".73" stop-color="#e5e4de"/><stop offset="1" stop-color="#a7a9ad"/></radialGradient><linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9dca5"/><stop offset=".35" stop-color="#e0b973"/><stop offset=".78" stop-color="#bd8649"/><stop offset="1" stop-color="#8b5c30"/></linearGradient><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e5e7e9"/><stop offset=".44" stop-color="#757c85"/><stop offset=".7" stop-color="#c9cdd1"/><stop offset="1" stop-color="#535963"/></linearGradient><filter id="drop" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter><filter id="stickShadow"><feGaussianBlur stdDeviation="3"/></filter></defs>
 <rect width="690" height="620" fill="#111216"/><ellipse cx="345" cy="315" rx="266" ry="263" fill="#050506" opacity=".72" filter="url(#drop)"/>
@@ -193,17 +193,23 @@ function stopClock(){
   stopVoices();
 }
 function setBpm(value){
-  const next=clamp(Math.round(Number(value)||103),55,160);
+  const next=clamp(Math.round(Number(value)||103),20,160);
   if(next===bpm)return;
-  let current=0;
-  if(running&&ctx)current=phase(false);
-  bpm=next;bpmSlider.value=String(bpm);bpmValue.textContent=String(bpm);
+  bpm=next;
+  bpmSlider.value=String(bpm);
+  bpmValue.textContent=String(bpm);
+  // Qualquer troca de andamento recomeça a frase no primeiro TA.
+  // Não continuar a partir de uma semicolcheia deslocada.
+  phaseOnPause=0;
+  currentActive=-1;
   if(running&&ctx){
-    /* Reagenda o grid inteiro em andamento novo, sem playbackRate no sample. */
     stopVoices();
-    origin=ctx.currentTime+.055-current*tick();
-    nextIndex=Math.ceil(current-.0001);
+    nextIndex=0;
+    origin=ctx.currentTime+.09;
     schedule();
+    status.textContent='Andamento alterado · reiniciando a frase no início';
+  }else{
+    status.textContent='Andamento alterado · pronto para começar do início';
   }
   render();
 }
@@ -267,11 +273,19 @@ function render(){
     const core=E(side==='L'?'impactLeftCore':'impactRightCore');
     // O círculo nasce no contato, se expande e desaparece antes da próxima nota.
     const t=Math.min(1,frac/.34);
-    group.setAttribute('opacity',active?String((1-t)*(strong?1:.82)):'0');
+    // A nota fraca tem marca menor, mais baixa na pele e menos luminosa.
+    const cx=side==='L'?285:405;
+    const cy=strong?326:344;
+    group.setAttribute('opacity',active?String((1-t)*(strong?1:.48)):'0');
+    ring.setAttribute('cx',String(cx));
+    ring.setAttribute('cy',String(cy));
     ring.setAttribute('stroke',color);
-    ring.setAttribute('r',String(10+(strong?45:32)*t));
+    ring.setAttribute('stroke-width',strong?'5':'2.3');
+    ring.setAttribute('r',String((strong?10:5)+(strong?45:18)*t));
+    core.setAttribute('cx',String(cx));
+    core.setAttribute('cy',String(cy));
     core.setAttribute('fill',color);
-    core.setAttribute('r',String((strong?11:8)+(strong?12:8)*t));
+    core.setAttribute('r',String((strong?11:4)+(strong?12:4)*t));
   }
   if(running)raf=requestAnimationFrame(render);
 }
