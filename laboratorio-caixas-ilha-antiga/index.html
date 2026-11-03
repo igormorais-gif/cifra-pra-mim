@@ -185,8 +185,9 @@ const STROKE=['PA','CO','PA','PA','CO','PA','PA','CO','PA','CO','PA','PA','CO','
 const SIDE=STROKE.map(s=>s==='PA'||s==='CRRRR'?'R':s==='CO'?'L':null);
 // Acentos indicados na transcrição original, ainda provisórios.
 const ACCENT=[true,false,false,true,false,false,true,false,true,false,false,true,false,false,false,false];
-// Todo PA tem acento: principal ou secundário; CO permanece um toque leve.
-// ACCENT marca só os cinco acentos principais da transcrição.
+// Dinâmica individual medida em duas frases vocais e uma execução no vídeo.
+// Mantemos PA principal > PA secundário > CO; CRRRR dura uma colcheia.
+const VELOCITY=[1.00,.39,.76,.89,.35,.74,.84,.30,.86,.36,.70,.83,.35,.58,0,.31];
 const DYNAMIC=STROKE.map((s,i)=>ACCENT[i]?'accent':s==='PA'?'secondary':'ghost');
 const HAND_HITS={
   R:STROKE.map((s,i)=>SIDE[i]==='R'?i:-1).filter(i=>i>=0),
@@ -278,7 +279,8 @@ function strike(i,when){
   /* Firme x toque próximo à pele; diferença criada pela amostra e ganho,
      nunca por um acento automático de compasso. */
   const gain=ctx.createGain();
-  const volume=isAccent?.86:secondary?.58:.34;
+  // Variação de intensidade a cada golpe, não um valor fixo por sílaba.
+  const volume=.86*VELOCITY[i%16];
   src.playbackRate.value=1+[0,.008,-.009,.004][i%4];
   gain.gain.setValueAtTime(volume,when);
   gain.gain.setTargetAtTime(.0001,when+(isAccent?.15:secondary?.12:.075),isAccent?.068:secondary?.055:.045);
@@ -299,7 +301,7 @@ function buzzRoll(when){
     const at=when+offset;
     const source=ctx.createBufferSource(),gain=ctx.createGain();
     source.buffer=sample.buffer;
-    const strength=.17*(1-.2*offset/duration);
+    const strength=VELOCITY[13]*.29*(1-.2*offset/duration);
     gain.gain.setValueAtTime(.0001,at);
     gain.gain.linearRampToValueAtTime(strength,at+.004);
     gain.gain.exponentialRampToValueAtTime(.0001,at+Math.min(.092,spacing*.92));
@@ -435,7 +437,9 @@ function point(side,ph){
   const crest=Math.pow(Math.sin(Math.PI*u),.76);
   const strong=ACCENT[next%16];
   const secondary=DYNAMIC[next%16]==='secondary';
-  let lift=crest*(strong?282:secondary?160:48);
+  const velocity=VELOCITY[next%16];
+  const height=strong?(245+37*velocity):secondary?(174+48*velocity):(34+36*velocity);
+  let lift=crest*height;
   // Durante o CRRRR a baqueta direita vibra perto da pele, em vez de
   // executar uma elevação de acento que não consta na fonte.
   if(side==='R'&&ph>=13&&ph<15){
@@ -485,6 +489,7 @@ function render(){
   for(const side of ['L','R']){
     const active=running&&SIDE[k]===side&&frac<.34&&(!ctx||outputClock()>=origin);
     const strong=ACCENT[k],secondary=DYNAMIC[k]==='secondary';
+    const velocity=VELOCITY[k];
     const color=strong?'#ff4858':secondary?'#ee6571':'#48a9ff';
     const group=E(side==='L'?'impactLeft':'impactRight');
     const ring=E(side==='L'?'impactLeftRing':'impactRightRing');
@@ -496,7 +501,7 @@ function render(){
     // preservando a separação leve (azul) x acentuado (vermelho).
     const cx=strong||secondary?(side==='L'?285:405):(side==='L'?315:375);
     const cy=strong?326:secondary?330:349;
-    group.setAttribute('opacity',active?String((1-t)*(strong?1:secondary?.84:.48)):'0');
+    group.setAttribute('opacity',active?String((1-t)*(strong?.85+.15*velocity:secondary?.68+.18*velocity:.30+.38*velocity)):'0');
     ring.setAttribute('cx',String(cx));
     ring.setAttribute('cy',String(cy));
     ring.setAttribute('stroke',color);
