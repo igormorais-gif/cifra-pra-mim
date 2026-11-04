@@ -351,7 +351,7 @@ function playSound(t,accent,tick,kind){
  voices.push({o:node,g:gain,t:t});
 }
 function cancelVoices(all){if(!context)return;var t=context.currentTime;voices.forEach(function(v){if(all||v.t>=t-.01){try{v.g.gain.cancelScheduledValues(t);v.g.gain.setValueAtTime(.0001,t);v.o.stop(t+.01)}catch(e){}}});voices=[]}
-function schedule(){if(!running||!context||context.state!=='running')return;var now=context.currentTime,until=now+.18;voices=voices.filter(function(v){return v.t>=now-.1});for(var guard=0;guard<64;guard++){var t=anchorTime+(nextStep-anchorStep)*dur();if(t>=until)break;var s=nextStep%totalSteps();if(t>=now-.01){if(isHit(s)&&!isFromVideo())playSound(Math.max(now,t),beat(s)===4,false,articulation(s));if(pulse&&(beat(s)===0||beat(s)===4))playSound(Math.max(now,t),beat(s)===0,true);if(beat(s)===0)basePulse(Math.max(now,t),'second');if(beat(s)===4)basePulse(Math.max(now,t),'first')}nextStep++}}
+function schedule(){if(!running||!context||context.state!=='running')return;var now=context.currentTime,until=now+.18;voices=voices.filter(function(v){return v.t>=now-.1});for(var guard=0;guard<64;guard++){var t=anchorTime+(nextStep-anchorStep)*dur();if(t>=until)break;var s=nextStep%totalSteps();if(t>=now-.01&&t>=master-.005){if(isHit(s)&&!isFromVideo())playSound(Math.max(now,t),beat(s)===4,false,articulation(s));if(pulse&&(beat(s)===0||beat(s)===4))playSound(Math.max(now,t),beat(s)===0,true);if(beat(s)===0)basePulse(Math.max(now,t),'second');if(beat(s)===4)basePulse(Math.max(now,t),'first')}nextStep++}}
 function audible(){
  if(!context)return 0;
  var now=context.currentTime;
