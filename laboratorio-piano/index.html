@@ -47,28 +47,41 @@
  .play-near-keys .transport{grid-template-columns:repeat(3,minmax(0,1fr))}
  .shell{padding-bottom:calc(169px + env(safe-area-inset-bottom,0px))}
 }
+
+/* Piano único em destaque; controles agrupados por função. */
+.toolbar{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:13px}
+.hands{grid-template-columns:minmax(0,1fr);padding:0 21px 8px}
+.hand{padding:17px 18px 16px}.hand-head{margin-bottom:10px}
+.hand-cards{margin-top:10px}.degree-card{min-width:84px}
+.play-near-keys{margin-top:9px}.quicktip{margin-top:11px}
+.below{grid-template-columns:1fr 1fr}
+@media(max-width:960px){.toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.toolbar{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px}.toolbar .select{font-size:12px;padding:8px;min-height:40px}.toolbar .label{font-size:9px;margin-bottom:5px}.hands{padding:0 10px 6px}.hand{padding:12px 10px}.play-near-keys{margin-top:0}.below{grid-template-columns:1fr}.stage-nav{margin-top:7px}}
 </style></head><body><div class="shell">
-<header class="top"><div class="brand"><span class="mark" aria-hidden="true"></span><div><h1>Cifra <em>pra Mim</em></h1><div class="subtitle">Laboratório de Transições</div><div class="instrument">PIANO · M.E. + M.D.</div><div class="credit">Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer">@igmoraisb</a></div></div></div><div class="topside"><nav class="modetabs" aria-label="Modo do laboratório"><button type="button" data-mode="trans" class="active">↝ Transições</button><button type="button" data-mode="gen">♬ Gerador de tensões</button></nav><div class="toplinks"><a href="../">Início</a><a href="../laboratorio-cavaquinho/">Cavaquinho</a><a href="../laboratorio-violao/">Violão</a></div></div></header>
-<section class="panel toolbar"><div class="field"><label class="label" for="root">Fundamental</label><select class="select" id="root"><option value="C">C · Dó</option></select></div><div class="field"><span class="label">Forma de partida · M.D.</span><div class="segments" id="forms"><button data-form="135" class="active">135</button><button data-form="351">351</button><button data-form="513">513</button></div><div class="hint-under">O primeiro desenho é sempre a forma original escolhida.</div></div><div class="field"><label class="label" for="path">Caminho</label><select class="select" id="path"><option value="full">Maior → Diminuto</option><option value="minor">Maior → Menor</option></select></div><div class="field"><label class="label" for="octave">Registro da M.D.</label><select class="select" id="octave"><option value="0">Região central</option><option value="-12">Uma oitava abaixo</option><option value="12">Uma oitava acima</option></select></div></section>
-<div class="voicebar"><label for="voices">Vozes no total</label><select id="voices" class="select"><option value="4">4 notas (padrão · 1 M.E. + 3 M.D.)</option><option value="3">3 notas (1 M.E. + 2 M.D.)</option></select><span class="note"><strong>1 na M.E.</strong> permanece. Substituições na M.D. não adicionam notas.</span></div>
+<header class="top"><div class="brand"><span class="mark" aria-hidden="true"></span><div><h1>Cifra <em>pra Mim</em></h1><div class="subtitle">Laboratório de Transições</div><div class="instrument">PIANO · VOICINGS</div><div class="credit">Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer">@igmoraisb</a></div></div></div><div class="topside"><div class="toplinks"><a href="../">Início</a><a href="../laboratorio-cavaquinho/">Cavaquinho</a><a href="../laboratorio-violao/">Violão</a></div></div></header>
+<section class="panel toolbar">
+<div class="field"><label class="label" for="root">Fundamental</label><select class="select" id="root"><option value="C">C · Dó</option></select></div>
+<div class="field"><label class="label" for="path">Caminho das transições</label><select class="select" id="path"><option value="full">Maior → Diminuto</option><option value="minor">Maior → Menor</option></select></div>
+<div class="field"><label class="label" for="octave">Registro do piano</label><select class="select" id="octave"><option value="0">Região central</option><option value="-12">Uma oitava abaixo</option><option value="12">Uma oitava acima</option></select></div>
+<div class="field"><label class="label" for="voices">Vozes no voicing</label><select class="select" id="voices"><option value="4">Até 4 notas · automático</option><option value="3">Até 3 notas</option></select></div>
+</section>
 <section class="panel hero"><div class="herohead"><div><h2 class="bigchord" id="symbol">C</h2><div class="chordname" id="fullName">Dó Maior</div></div><div class="badges" id="badges"></div></div><div class="practice-dock" aria-label="Controles rápidos junto ao piano">
-<div class="practice-toolbar"><div class="practice-forms"><span class="label">Forma · M.D.</span><div class="practice-segments" aria-label="Trocar forma sem sair do piano"><button type="button" data-form="135" class="active">135</button><button type="button" data-form="351">351</button><button type="button" data-form="513">513</button></div></div><div class="practice-modes" aria-label="Selecionar módulo"><button type="button" data-mode="trans" class="active">Transições</button><button type="button" data-mode="gen">Tensões</button></div></div>
-<div class="trans-source" id="transSource" role="group" aria-label="Origem da sétima nas transições"><span class="label" style="margin:0">Sétima na M.D.:</span><button data-trans-source="1" class="routeopt active">Substitui 1 <small>7: −1 · ♭7: −2 st</small></button><button data-trans-source="5" class="routeopt">Substitui 5 <small>7: +4 · ♭7: +3 st</small></button></div>
+<div class="practice-toolbar"><div class="practice-forms"><span class="label">Forma</span><div class="practice-segments" aria-label="Trocar forma sem sair do piano"><button type="button" data-form="135" class="active">135</button><button type="button" data-form="351">351</button><button type="button" data-form="513">513</button></div></div><div class="practice-modes" aria-label="Selecionar módulo"><button type="button" data-mode="trans" class="active">Transições</button><button type="button" data-mode="gen">Tensões</button></div></div>
+<div class="trans-source" id="transSource" role="group" aria-label="Origem da sétima nas transições"><span class="label" style="margin:0">Sétima:</span><button data-trans-source="1" class="routeopt active">Substitui 1 <small>7: −1 · ♭7: −2 st</small></button><button data-trans-source="5" class="routeopt">Substitui 5 <small>7: +4 · ♭7: +3 st</small></button></div>
 
 <div class="stage-nav"><span class="label">Trocar acorde</span><div><button type="button" id="prevStage" aria-label="Acorde anterior">‹</button><button type="button" id="nextStage" aria-label="Próximo acorde">›</button></div></div>
 <div id="stagebar" class="stagebar" aria-label="Etapas de transição"><button class="stage active">C</button></div>
 </div>
-<div class="play-near-keys" aria-label="Reprodução do piano">
-<div class="arp-roadmap">Execução: <strong>M.E. toca a fundamental → M.D. toca o voicing inteiro</strong> · sem repetir o baixo</div><div class="transport"><button class="play primary" id="playChord">▶ Ouvir acorde</button><button class="play" id="playArp" title="Primeiro a fundamental na mão esquerda, depois as notas da mão direita juntas">▶ M.E. → M.D.</button><button class="play" id="playSequence">▶ Sequência</button><button class="play danger" id="stop">■ Parar</button><button class="play loop-toggle" id="loop" type="button" aria-pressed="false" title="Repetir a opção escolhida até Parar">↻ Loop: desligado</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="45" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div>
-</div>
 <div class="hands">
-<section class="hand" aria-label="Mão esquerda"><div class="hand-head"><div class="hand-title"><span class="hand-tag">M.E.</span><b>Baixo · fundamental</b></div><small>Localizador harmônico 1</small></div><div class="keyboard-scroll" id="lhScroll"><svg id="leftKeys" class="keyboard" viewBox="0 0 1000 250" role="img" aria-label="Teclas da mão esquerda"></svg></div><div id="leftCards" class="hand-cards"><div class="degree-card"><strong>1</strong><span>Dó</span><small>C3</small></div></div></section>
-<section class="hand" aria-label="Mão direita"><div class="hand-head"><div class="hand-title"><span class="hand-tag rh">M.D.</span><b>Voicing · forma <span id="formLabel">135</span></b></div><small id="mdVoiceCount">3 notas na mão direita</small></div><div class="triad-intervals" role="group" aria-label="Estrutura intervalar da tríade"><span id="majorInterval" class="triad-formula active">Maior <b>4st/3st</b></span><span id="minorInterval" class="triad-formula">Menor <b>3st/4st</b></span></div><div class="keyboard-scroll" id="rhScroll"><svg id="rightKeys" class="keyboard" viewBox="0 0 1000 250" role="img" aria-label="Teclas da mão direita"></svg></div><div id="rightCards" class="hand-cards"><div class="degree-card"><strong>1</strong><span>Dó</span><small>C4</small></div><div class="degree-card"><strong>3</strong><span>Mi</span><small>E4</small></div><div class="degree-card"><strong>5</strong><span>Sol</span><small>G4</small></div></div><div class="voice-counter" id="voiceCount">4 notas no total</div></section>
-</div><section class="panel genpanel" id="generator" hidden><div class="genlayout"><div><span class="label">Terça da M.D.</span><div class="quality"><button data-quality="major" class="active">Maior</button><button data-quality="minor">Menor</button></div><p class="smallprint">Como no cavaquinho e no violão: tensões ocupam posições existentes; não criamos uma quinta voz.</p></div><div><span class="label">Escolha as tensões e alterações</span><div class="tensions" id="tensions"></div><div class="presets"><button data-preset="7,9">7M · 9</button><button data-preset="♭7,13">7 · 13</button><button data-preset="7,♯11">7M · ♯11</button><button data-preset="6">6</button><button data-preset="sus4">sus4</button><button data-preset="">Limpar</button></div><div class="sourcecontrols"><div><label class="label" for="seventhSource">Origem da sétima</label><select class="select" id="seventhSource"><option value="auto">Automática · 1 ou 5</option><option value="1">No lugar do 1 (−1 / −2 st)</option><option value="5">No lugar do 5 (+4 / +3 st)</option></select></div><div><label class="label" for="sixthSource">Origem da sexta</label><select class="select" id="sixthSource"><option value="auto">Automática · 1 ou 5</option><option value="1">No lugar do 1 (−3 st)</option><option value="5">No lugar do 5 (+2 st)</option></select></div></div></div><div><button class="genbtn" id="generate">Gerar voicing</button><p id="genMsg" class="genmsg" role="status" aria-live="polite">Selecione graus e gere o acorde.</p></div></div></section>
-<div class="quicktip" role="status" aria-live="polite"><div class="tiplabel">✧ DICA RÁPIDA</div><div class="tipbody"><strong id="tip">M.D. 135 · M.E. 1</strong><p id="tipDetail">A M.E. mantém a fundamental enquanto a M.D. muda.</p></div></div>
+<section class="hand" aria-label="Voicing no teclado"><div class="hand-head"><div class="hand-title"><span class="hand-tag rh">PIANO</span><b>Voicing · forma <span id="formLabel">135</span></b></div><small id="mdVoiceCount">3 notas</small></div><div class="triad-intervals" role="group" aria-label="Estrutura intervalar da tríade"><span id="majorInterval" class="triad-formula active">Maior <b>4st/3st</b></span><span id="minorInterval" class="triad-formula">Menor <b>3st/4st</b></span></div><div class="keyboard-scroll" id="rhScroll"><svg id="rightKeys" class="keyboard" viewBox="0 0 1000 250" role="img" aria-label="Teclas da mão direita"></svg></div><div id="rightCards" class="hand-cards"><div class="degree-card"><strong>1</strong><span>Dó</span><small>C4</small></div><div class="degree-card"><strong>3</strong><span>Mi</span><small>E4</small></div><div class="degree-card"><strong>5</strong><span>Sol</span><small>G4</small></div></div><div class="voice-counter" id="voiceCount">3 notas no voicing</div></section>
+</div><div class="play-near-keys" aria-label="Reprodução do piano">
+<div class="arp-roadmap">Execução do <strong>voicing exibido no teclado</strong></div><div class="transport"><button class="play primary" id="playChord">▶ Ouvir acorde</button><button class="play" id="playArp" title="Ouvir as notas do voicing uma a uma">▶ Arpejo</button><button class="play" id="playSequence">▶ Sequência</button><button class="play danger" id="stop">■ Parar</button><button class="play loop-toggle" id="loop" type="button" aria-pressed="false" title="Repetir a opção escolhida até Parar">↻ Loop: desligado</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="45" max="160" step="5" value="80"><output id="bpmLabel">80</output><span>BPM</span></div></div>
+</div>
+<section class="panel genpanel" id="generator" hidden><div class="genlayout"><div><span class="label">Qualidade da terça</span><div class="quality"><button data-quality="major" class="active">Maior</button><button data-quality="minor">Menor</button></div><p class="smallprint">Substituições de graus, com até quatro notas no voicing.</p></div><div><span class="label">Escolha as tensões e alterações</span><div class="tensions" id="tensions"></div><div class="presets"><button data-preset="7,9">7M · 9</button><button data-preset="♭7,13">7 · 13</button><button data-preset="7,♯11">7M · ♯11</button><button data-preset="6">6</button><button data-preset="sus4">sus4</button><button data-preset="">Limpar</button></div><div class="sourcecontrols"><div><label class="label" for="sixthSource">Origem da sexta</label><select class="select" id="sixthSource"><option value="auto">Automática</option><option value="1">No lugar do 1 (−3 st)</option><option value="5">No lugar do 5 (+2 st)</option></select></div></div></div><div><button class="genbtn" id="generate">Gerar voicing</button><p id="genMsg" class="genmsg" role="status" aria-live="polite">Selecione graus e gere o acorde.</p></div></div></section>
+<div class="quicktip" role="status" aria-live="polite"><div class="tiplabel">✧ DICA RÁPIDA</div><div class="tipbody"><strong id="tip">Forma original 135</strong><p id="tipDetail">Selecione uma transição ou uma tensão para explorar o voicing.</p></div></div>
 
 </section>
-<div class="below"><section class="panel subpanel"><h3>↝ Formas originais → Adaptando Pontas</h3><p>O ponto de partida é a tríade em 135, 351 ou 513 na M.D. As substituições respeitam as notas que essas formas já contêm; a M.E. sustenta a fundamental. Na redução para três notas, a omissão aparece explicitamente.</p></section><section class="panel subpanel"><h3>✧ Cores e economia de vozes</h3><p>O grau na bolinha e nos quadradinhos tem a mesma cor. Prefira quatro ou três notas totais. Não acrescente quinta nota só para comportar tensões: repense a distribuição dos graus.</p><div class="legend"><span><i style="background:#e58c42"></i>1</span><span><i style="background:#5c95cd"></i>3</span><span><i style="background:#6c78db"></i>5</span><span><i style="background:#ad66d0"></i>7</span><span><i style="background:#64ac99"></i>Tensões</span></div></section></div>
+<div class="below"><section class="panel subpanel"><h3>Formas Originais → Adaptando Pontas</h3><p>Tríades nas formas 135, 351 e 513. As tensões substituem graus conforme o método Arranja pra Mim; quando necessário, o voicing pode chegar a quatro notas.</p></section><section class="panel subpanel"><h3>Legenda dos graus</h3><div class="legend"><span><i style="background:#e58c42"></i>1</span><span><i style="background:#5c95cd"></i>3</span><span><i style="background:#6c78db"></i>5</span><span><i style="background:#ad66d0"></i>7</span><span><i style="background:#64ac99"></i>Tensões</span></div></section></div>
 <footer class="foot"><span>Cifra pra Mim · Laboratório de Piano · Afinação temperada · Som sintetizado</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer></div>
 <script src="../src/seamless-loop.js?v=8"></script>
 <script>
@@ -96,8 +109,8 @@ function qualityName(degrees){const r=root(),minor=degrees.includes('♭3'),sus=
  return {symbol,name};
 }
 const HINT={'1':{'7':'1 st abaixo do 1','♭7':'2 st abaixo do 1','♭♭7':'3 st abaixo do 1','6':'3 st abaixo do 1','♭9':'1 st acima do 1','9':'2 st acima do 1','♯9':'3 st acima do 1'},'3':{'♭3':'1 st abaixo do 3','2':'2 st abaixo do 3','4':'1 st acima do 3'},'5':{'7':'4 st acima do 5','♭7':'3 st acima do 5','♭♭7':'2 st acima do 5','6':'2 st acima do 5','13':'2 st acima do 5','♭5':'1 st abaixo do 5','♯5':'1 st acima do 5','11':'2 st abaixo do 5','♯11':'1 st abaixo do 5','♭13':'1 st acima do 5'}};
-function changeDescription(d){const b=base(),words=[];for(let i=0;i<3;i++)if(d[i]!==b[i])words.push(b[i]+' → '+d[i]+' · '+(HINT[b[i]]?.[d[i]]||Math.abs(offset(b[i],d[i]))+' st'));return words.join(' | ')||'Forma original · M.D. '+state.form+'.'}
-function transition(){let original=base().slice(),stages=[{degrees:original,...qualityName(original),description:'Forma original '+state.form+' · a M.E. sustenta a fundamental.'}];if(state.path==='minor'){let arr=original.map(g=>g==='3'?'♭3':g);stages.push({degrees:arr,...qualityName(arr),description:changeDescription(arr)});return stages}
+function changeDescription(d){const b=base(),words=[];for(let i=0;i<3;i++)if(d[i]!==b[i])words.push(b[i]+' → '+d[i]+' · '+(HINT[b[i]]?.[d[i]]||Math.abs(offset(b[i],d[i]))+' st'));return words.join(' | ')||'Forma original '+state.form+'.'}
+function transition(){let original=base().slice(),stages=[{degrees:original,...qualityName(original),description:'Forma original '+state.form}];if(state.path==='minor'){let arr=original.map(g=>g==='3'?'♭3':g);stages.push({degrees:arr,...qualityName(arr),description:changeDescription(arr)});return stages}
  let src=state.transitionSource,idx=original.indexOf(src),d=original.slice();
  d[idx]='7';stages.push({degrees:d.slice(),...qualityName(d),description:changeDescription(d)});
  d[idx]='♭7';stages.push({degrees:d.slice(),...qualityName(d),description:changeDescription(d)});
@@ -110,40 +123,73 @@ function stages(){if(state.mode==='trans')return transition();const first={degre
 function current(){let list=stages();if(state.stage>=list.length)state.stage=list.length-1;return list[state.stage]}
 function substituteAllowed(from,to){if(['7','♭7'].includes(to))return(from==='1'&&state.seventhSource!=='5')||(from==='5'&&state.seventhSource!=='1');if(to==='6')return(from==='1'&&state.sixthSource!=='5')||(from==='5'&&state.sixthSource!=='1');if(from==='1')return ['♭9','9','♯9'].includes(to);if(from==='5')return ['11','♯11','♭13','13','♭5','♯5'].includes(to);return false}
 function tryGenerate(){
- const wanted=[...state.selected].map(x=>x==='sus2'?'2':x==='sus4'?'4':x),hasSeven=wanted.includes('7')||wanted.includes('♭7');
- if(wanted.includes('7')&&wanted.includes('♭7'))return{error:'Escolha uma sétima de cada vez.'};
- if(wanted.includes('6')&&hasSeven)return{error:'Com sétima, utilize 13 em vez de 6.'};
- if(wanted.includes('13')&&!hasSeven)return{error:'Sem sétima, utilize 6 em vez de 13.'};
- if(wanted.includes('2')&&wanted.includes('4'))return{error:'Escolha apenas uma suspensão.'};
- if(state.quality==='minor'&&(wanted.includes('2')||wanted.includes('4')))return{error:'Suspensões substituem a terça: selecione Maior.'};
- const b=base(),third=wanted.includes('2')?'2':wanted.includes('4')?'4':state.quality==='minor'?'♭3':'3';
- const changed=b.map(x=>x==='3'?third:x),request=wanted.filter(g=>g!=='2'&&g!=='4'),choices=[];
- function walk(k,assign,occupied){if(k===request.length){
-  const degrees=changed.slice();for(let [degree,index] of assign)degrees[index]=degree;
-  let midi=degrees.map((g,i)=>baseMidi()[i]+offset(b[i],g));
-  let sorted=midi.slice().sort((a,b)=>a-b),span=sorted.at(-1)-sorted[0];
-  let collision=degrees.includes('1')&&degrees.includes('7')&&midi.some((x,i)=>degrees[i]==='1'&&midi.some((y,j)=>degrees[j]==='7'&&Math.abs(x-y)===1));
-  let score=span*.25+midi.reduce((sum,x,i)=>sum+Math.abs(x-baseMidi()[i])*.45,0)+(collision?14:0)+(!degrees.includes('3')&&!degrees.includes('♭3')&&!degrees.includes('2')&&!degrees.includes('4')?12:0);
-  if(span<=17)choices.push({degrees,assign:assign.slice(),score});return;
+ const wanted=[...state.selected].map(x=>x==='sus2'?'2':x==='sus4'?'4':x),has=g=>wanted.includes(g);
+ if(has('7')&&has('♭7'))return{error:'Escolha uma sétima de cada vez.'};
+ if(has('6')&&(has('7')||has('♭7')))return{error:'Com sétima, utilize 13 em vez de 6.'};
+ if(has('2')&&has('4'))return{error:'Escolha apenas uma suspensão.'};
+ if(wanted.filter(x=>['♭9','9','♯9'].includes(x)).length>1)return{error:'Escolha uma alteração da nona por vez.'};
+ if(wanted.filter(x=>['♭5','♯5'].includes(x)).length>1)return{error:'Escolha uma alteração da quinta por vez.'};
+ const third=has('2')?'2':has('4')?'4':state.quality==='minor'?'♭3':'3';
+ const rootSubs=wanted.filter(x=>['7','♭7','♭9','9','♯9'].includes(x));
+ const fifthSubs=wanted.filter(x=>['11','♯11','♭13','13','♭5','♯5'].includes(x));
+ const sixthSlot=state.sixthSource==='auto'?(fifthSubs.length?'1':'5'):state.sixthSource;
+ const degrees=[third];
+ if(!rootSubs.length&&!(has('6')&&sixthSlot==='1'))degrees.push('1');
+ if(!fifthSubs.length&&!(has('6')&&sixthSlot==='5'))degrees.push('5');
+ degrees.push(...wanted.filter(x=>!['2','4'].includes(x)));
+ if(degrees.length>4)return{error:'Essas tensões exigem '+degrees.length+' notas. Escolha até quatro graus essenciais.'};
+ if(degrees.length>state.voices)return{error:'Essa combinação precisa de '+degrees.length+' notas. Selecione “Até 4 notas · automático”.'};
+ if(new Set(degrees.map(g=>pc(DEG[g][1]))).size!==degrees.length)return{error:'Há alturas duplicadas na combinação. Revise as tensões.'};
+ const ref=baseMidi(),slots=Object.fromEntries(base().map((g,i)=>[g,ref[i]])),tonic=rootMidi()+state.register;
+ function ideal(g){
+  if(g===third)return slots['3']+offset('3',g);
+  if(g==='1')return slots['1'];
+  if(['5','♭5','♯5','11','♯11','♭13','13'].includes(g))return slots['5']+offset('5',g);
+  if(g==='6')return slots[sixthSlot]+offset(sixthSlot,g);
+  if(['7','♭7'].includes(g)){const center=slots['1']+offset('1',g);
+   return degrees.length===4&&wanted.some(x=>['♭9','9','♯9'].includes(x))&&center<slots['3']?center+12:center;}
+  if(['♭9','9','♯9'].includes(g))return slots['1']+12+DEG[g][1];
+  return tonic+DEG[g][1];
  }
- for(let i=0;i<3;i++)if(!occupied.has(i)&&substituteAllowed(b[i],request[k])){occupied.add(i);assign.push([request[k],i]);walk(k+1,assign,occupied);assign.pop();occupied.delete(i)}
+ const ideals=degrees.map(ideal),options=ideals.map((v,i)=>{
+  const pitchClass=pc(tonic+DEG[degrees[i]][1]),values=[];
+  for(let m=40;m<=91;m++)if(pc(m)===pitchClass&&Math.abs(m-v)<=19)values.push(m);
+  return values;
+ });
+ let best=null;
+ function walk(i,midis){
+  if(i===options.length){
+   const sorted=midis.slice().sort((a,b)=>a-b),span=sorted.at(-1)-sorted[0];
+   if(span>19||span<3||sorted.some((m,j)=>j&&m===sorted[j-1]))return;
+   if(sorted.length>1&&sorted.at(-1)-sorted.at(-2)===1)return;
+   const bass=bassMidi();
+   if(sorted.some(m=>[1,13].includes(m-bass)))return;
+   let score=midis.reduce((sum,m,j)=>sum+Math.abs(m-ideals[j])*1.8,0);
+   score+=Math.abs(sorted[0]-ref[0])*.24+Math.abs(sorted.at(-1)-ref.at(-1))*.22+span*.07;
+   for(let j=1;j<sorted.length;j++)if(sorted[j]-sorted[j-1]===1)score+=4;
+   if(!best||score<best.score)best={midis:sorted,score};
+   return;
+  }
+  for(const midi of options[i])walk(i+1,[...midis,midi]);
  }
- walk(0,[],new Set());if(!choices.length)return{error:'A combinação não cabe nas três posições da M.D. desta forma. Experimente colocar a sétima no lugar do 5 ou reduzir as tensões.'};
- choices.sort((a,b)=>a.score-b.score);
- const best=choices[0],info=qualityName(best.degrees);
- return{...info,degrees:best.degrees,description:changeDescription(best.degrees),assign:best.assign};
+ walk(0,[]);
+ if(!best)return{error:'Não encontrei distribuição sem choque de semitom nas vozes superiores. Mude as tensões ou a forma.'};
+ const byMidi=best.midis.map(m=>degrees.find(g=>pc(tonic+DEG[g][1])===pc(m)));
+ const info=qualityName(byMidi);
+ const changes=byMidi.map(g=>{if(['1','3','5'].includes(g))return null;
+  const from=['♭3','2','4'].includes(g)?'3':['11','♯11','♭13','13','♭5','♯5'].includes(g)?'5':g==='6'?sixthSlot:'1';
+  return from+' → '+g}).filter(Boolean);
+ return{...info,degrees:byMidi,intervals:best.midis.map(m=>m-tonic),description:changes.join(' · ')||'Forma original '+state.form};
 }
-function reduceToTwo(degrees,midis){const selected=new Set([...state.selected].map(x=>x==='sus2'?'2':x==='sus4'?'4':x));const removable=degrees.map((g,i)=>({g,i,rank:g==='1'?0:g==='5'?1: selected.has(g)?999:['3','♭3','2','4'].includes(g)?999:25})).sort((a,b)=>a.rank-b.rank);
- const omit=removable.find(x=>x.rank<999);if(!omit)return {error:'este acorde precisa de 3 notas na M.D. para preservar a terça e as tensões escolhidas.'};
- return{degrees:degrees.filter((g,i)=>i!==omit.i),midis:midis.filter((g,i)=>i!==omit.i),omitted:omit.g};
-}
-function compute(){const c=current(),b=base();let full=c.degrees.slice(),original=baseMidi(),rightMidi=full.map((g,i)=>original[i]+offset(b[i],g));const bass=bassMidi();
- const rootpc=root().pc;let names=full.map(degreeNote),reduced=null;
- if(state.voices===3){reduced=reduceToTwo(full,rightMidi);if(!reduced.error){full=reduced.degrees;names=full.map(degreeNote);rightMidi=reduced.midis}}
- const count=rightMidi.length+1;
- const warnings=[];if(reduced?.error)warnings.push(reduced.error);if(reduced&&!reduced.error)warnings.push('M.D.: '+reduced.omitted+' omitido (a fundamental continua na M.E.).');
- if(full.includes('7')&&full.includes('1')&&rightMidi.some((x,i)=>full[i]==='7'&&rightMidi.some((y,j)=>full[j]==='1'&&Math.abs(x-y)===1)))warnings.push('Atenção: 7M e 1 estão separados por apenas 1 semitom na M.D.');
- return{chord:c,bass,bassDegree:'1',bassName:degreeNote('1'),fullDegrees:c.degrees,rightDegrees:full,rightMidi,rightNames:names,count,omitted:reduced&&!reduced.error?reduced.omitted:null,warnings,error:reduced?.error||'',rootpc};
+function compute(){
+ const c=current(),b=base(),original=baseMidi(),rightDegrees=c.degrees.slice();
+ const rightMidi=c.intervals?c.intervals.map(x=>rootMidi()+state.register+x):rightDegrees.map((g,i)=>original[i]+offset(b[i],g));
+ const rightNames=rightDegrees.map(degreeNote),bass=bassMidi(),warnings=[];
+ const sorted=rightMidi.slice().sort((a,b)=>a-b);
+ if(sorted.length>1&&sorted.at(-1)-sorted.at(-2)===1)warnings.push('Evite a segunda menor nas duas vozes superiores.');
+ if(rightMidi.some(m=>[1,13].includes(m-bass)))warnings.push('Evite choque de 2ª/9ª menor com o baixo de referência.');
+ return{chord:c,bass,bassDegree:'1',bassName:degreeNote('1'),fullDegrees:c.degrees,rightDegrees,rightMidi,rightNames,
+  count:rightMidi.length,omitted:null,warnings,error:'',rootpc:root().pc};
 }
 function svg(type,attr={},parent){const e=document.createElementNS(NS,type);for(const [k,v] of Object.entries(attr))e.setAttribute(k,v);parent.appendChild(e);return e}
 let nodes=[],audio=null;
@@ -164,16 +210,16 @@ function drawKeys(id,played,hand){const board=$(id);board.replaceChildren();let 
  let t=svg('text',{x,y:y+1,class:'keymark'+(onBlack?' light':'')},g);t.textContent=note.degree;
  nodes.push({hand,index,el:g});}
 }
-function renderCards(id,played,hand){let el=$(id);el.replaceChildren();played.forEach((note,i)=>{let b=document.createElement('button');b.type='button';b.className='degree-card';b.style.borderColor=color(note.degree)+'66';b.title='Ouvir '+note.name+' na '+(hand==='lh'?'M.E.':'M.D.');
+function renderCards(id,played,hand){let el=$(id);el.replaceChildren();played.forEach((note,i)=>{let b=document.createElement('button');b.type='button';b.className='degree-card';b.style.borderColor=color(note.degree)+'66';b.title='Ouvir '+note.name+' na '+('teclado');
  let d=document.createElement('strong');d.textContent=note.degree;d.style.color=color(note.degree);
  let n=document.createElement('span');n.textContent=note.name;let m=document.createElement('small');m.textContent=midiName(note.midi);
  b.append(d,n,m);b.onclick=()=>{stop();playNote(note.midi,.55,hand==='lh');markPlaying(hand,i);};el.append(b)});}
 function renderTensions(){const box=$('tensions');box.replaceChildren();for(let t of TENSIONS){let e=document.createElement('button');e.type='button';e.textContent=t;e.className=state.selected.has(t)?'active':'';e.setAttribute('aria-pressed',String(state.selected.has(t)));e.onclick=()=>{stop();if(state.selected.has(t))state.selected.delete(t);else{for(let [a,b] of [['7','♭7'],['6','13'],['sus2','sus4']]){if(t===a)state.selected.delete(b);if(t===b)state.selected.delete(a)}state.selected.add(t)}state.generated=null;state.error='';state.stage=0;render()};box.append(e)}
  document.querySelectorAll('[data-quality]').forEach(e=>e.classList.toggle('active',e.dataset.quality===state.quality));
- $('seventhSource').value=state.seventhSource;$('sixthSource').value=state.sixthSource;
- $('genMsg').textContent=state.error||(state.generated?'M.D. '+state.generated.degrees.join(' · ')+' + M.E. 1':'Escolha os graus e toque em Gerar.');$('genMsg').classList.toggle('error',!!state.error);
+ $('sixthSource').value=state.sixthSource;
+ $('genMsg').textContent=state.error||(state.generated?state.generated.degrees.join(' · ')+' · '+state.generated.degrees.length+' notas':'Escolha os graus e toque em Gerar.');$('genMsg').classList.toggle('error',!!state.error);
 }
-function render(){let c=compute();if(c.error&&state.voices===3){const warning=c.error;state.voices=4;c=compute();c.warnings.unshift('Mantive 4 notas no total: '+warning);} $('generator').hidden=state.mode!=='gen';$('transSource').hidden=state.mode!=='trans'||state.path==='minor';
+function render(){let c=compute();$('generator').hidden=state.mode!=='gen';$('transSource').hidden=state.mode!=='trans'||state.path==='minor';
  $('root').value=state.root;$('path').value=state.path;$('octave').value=String(state.register);$('voices').value=String(state.voices);
  document.querySelectorAll('[data-form]').forEach(x=>x.classList.toggle('active',x.dataset.form===state.form));
  document.querySelectorAll('[data-mode]').forEach(x=>{let yes=x.dataset.mode===state.mode;x.classList.toggle('active',yes);x.setAttribute('aria-pressed',String(yes))});
@@ -181,15 +227,15 @@ function render(){let c=compute();if(c.error&&state.voices===3){const warning=c.
  renderTensions();const stagesEl=$('stagebar');stagesEl.replaceChildren();$('prevStage').disabled=state.stage<=0;$('nextStage').disabled=state.stage>=stages().length-1;stages().forEach((x,i)=>{let b=document.createElement('button');b.className='stage'+(state.stage===i?' active':'');b.textContent=x.symbol;b.setAttribute('aria-pressed',String(state.stage===i));b.onclick=()=>{stop();state.stage=i;render()};stagesEl.append(b)});
  $('symbol').textContent=c.chord.symbol;$('fullName').textContent=c.chord.name;$('formLabel').textContent=state.form;const degreeSet=c.chord.degrees;$('majorInterval').classList.toggle('active',degreeSet.includes('3'));$('minorInterval').classList.toggle('active',degreeSet.includes('♭3'));
  let labels=$('badges');labels.replaceChildren();
- [c.count+' notas · M.E. + M.D.','M.E. 1',state.form+' na M.D.'].concat(c.omitted?['M.D. sem '+c.omitted]:[]).forEach(label=>{let b=document.createElement('span');b.className='badge';b.textContent=label;labels.append(b)});
- const lh=[{degree:'1',name:degreeNote('1'),midi:c.bass}],rh=c.rightDegrees.map((degree,i)=>({degree,name:c.rightNames[i],midi:c.rightMidi[i]}));
- drawKeys('leftKeys',lh,'lh');drawKeys('rightKeys',rh,'rh');renderCards('leftCards',lh,'lh');renderCards('rightCards',rh,'rh');
- $('mdVoiceCount').textContent=rh.length+' notas na mão direita';$('voiceCount').textContent=c.count+' notas no total · '+(c.omitted?'omissão explícita: '+c.omitted:'nenhuma voz adicionada');
+ [c.count+' notas', 'Forma '+state.form].forEach(label=>{let b=document.createElement('span');b.className='badge';b.textContent=label;labels.append(b)});
+  const rh=c.rightDegrees.map((degree,i)=>({degree,name:c.rightNames[i],midi:c.rightMidi[i]}));
+ drawKeys('rightKeys',rh,'rh');renderCards('rightCards',rh,'rh');
+ $('mdVoiceCount').textContent=rh.length+' notas';$('voiceCount').textContent='Graus: '+c.rightDegrees.join(' · ');
  $('tip').textContent=c.chord.description;
- $('tipDetail').textContent='M.E. 1 ('+degreeNote('1')+') · M.D. '+c.rightDegrees.join('–')+' ('+c.rightNames.join(' · ')+'). '+(c.warnings.join(' ')||'A fundamental permanece no baixo.');
+ $('tipDetail').textContent=c.rightDegrees.join('–')+' · '+c.rightNames.join(' · ')+(c.warnings.length?'. '+c.warnings.join(' '):'');
 }
-function markPlaying(hand,index){state.playing={hand,index};nodes.forEach(n=>{n.el.classList.toggle('played',n.hand===hand&&n.index===index)});for(let [id,h] of [['leftCards','lh'],['rightCards','rh']])Array.from($(id).children).forEach((e,i)=>e.classList.toggle('playing',h===hand&&i===index))}
-function markRightHandChord(){state.playing={hand:'rh',index:'all'};nodes.forEach(n=>{n.el.classList.toggle('played',n.hand==='rh')});for(const [id,hand] of [['leftCards','lh'],['rightCards','rh']])Array.from($(id).children).forEach(e=>e.classList.toggle('playing',hand==='rh'))}
+function markPlaying(hand,index){state.playing={hand,index};nodes.forEach(n=>{n.el.classList.toggle('played',n.hand===hand&&n.index===index)});for(let [id,h] of [['rightCards','rh']])Array.from($(id).children).forEach((e,i)=>e.classList.toggle('playing',h===hand&&i===index))}
+function markRightHandChord(){state.playing={hand:'rh',index:'all'};nodes.forEach(n=>{n.el.classList.toggle('played',n.hand==='rh')});for(const [id,hand] of [['rightCards','rh']])Array.from($(id).children).forEach(e=>e.classList.toggle('playing',hand==='rh'))}
 let loopClock=null,loopVoices=[],loopHighlights=[];
 function stop(){
  if(loopClock){loopClock.cancel();loopClock=null}
@@ -197,7 +243,7 @@ function stop(){
  loopHighlights=[];
  for(const osc of loopVoices)try{osc.stop()}catch(e){}
  loopVoices=[];
- state.token++;state.playing=null;nodes.forEach(x=>x.el.classList.remove('played'));['leftCards','rightCards'].forEach(id=>Array.from($(id).children).forEach(e=>e.classList.remove('playing')));['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=false)}
+ state.token++;state.playing=null;nodes.forEach(x=>x.el.classList.remove('played'));['rightCards'].forEach(id=>Array.from($(id).children).forEach(e=>e.classList.remove('playing')));['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=false)}
 function unlock(){
  // iOS/Safari: criar e iniciar o áudio no próprio clique, sem aguardar resume().
  try{
@@ -206,7 +252,7 @@ function unlock(){
   if(!audio)audio=new Ctor();
   if(audio.state==='suspended'&&typeof audio.resume==='function'){
    const pending=audio.resume();
-   if(pending&&typeof pending.catch==='function')pending.catch(()=>{$('tipDetail').textContent='O navegador bloqueou o áudio. Toque de novo em M.E. → M.D.'});
+   if(pending&&typeof pending.catch==='function')pending.catch(()=>{$('tipDetail').textContent='O navegador bloqueou o áudio. Toque novamente em Arpejo.'});
   }
   return true;
  }catch(e){$('tipDetail').textContent='Não foi possível iniciar o áudio. Verifique o volume do iPhone e toque novamente.';return false}
@@ -279,8 +325,8 @@ async function perform(mode){
  // Web Audio deve ser ativado pela ação do usuário no iPhone.
  if(!unlock())return;
  ['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=true);
- const beat=60/state.bpm,stageLength=mode==='chord'?beat*1.95:beat*2.70;
- const count=mode==='all'?stages().length:1;
+ const beat=60/state.bpm,stageLength=mode==='chord'?beat*2.1:beat*3.2;
+  const count=mode==='all'?stages().length:1;
  const startStage=state.stage;
  loopClock=window.SeamlessLoop.create({
   audio,cycleSeconds:stageLength*count,shouldRepeat:()=>state.loop,
@@ -290,16 +336,16 @@ async function perform(mode){
     else state.stage=startStage;
     const c=compute(),at=startAt+j*stageLength;
     if(mode==='chord'){
-     sound(c.bass,beat*1.8,true,at);
-     for(const midi of c.rightMidi)sound(midi,beat*1.8,false,at);
-     visualAt(at,token,()=>markRightHandChord());
-    }else{
-     sound(c.bass,beat*.9,true,at);
-     for(const midi of c.rightMidi)sound(midi,beat*1.7,false,at+beat*.95);
-     visualAt(at,token,()=>markPlaying('lh',0));
-     visualAt(at+beat*.95,token,()=>markRightHandChord());
-    }
-    if(mode==='all')visualAt(at,token,()=>{state.stage=j;render()});
+      for(const midi of c.rightMidi)sound(midi,beat*1.85,false,at);
+      visualAt(at,token,()=>markRightHandChord());
+     }else{
+      const step=beat*.56;
+      c.rightMidi.forEach((midi,i)=>{
+       sound(midi,beat*1.20,false,at+i*step);
+       visualAt(at+i*step,token,()=>markPlaying('rh',i));
+      });
+     }
+     if(mode==='all')visualAt(at,token,()=>{state.stage=j;render()});
    }
   },
   onFinish:()=>{
@@ -315,14 +361,14 @@ function recompute(){if(state.mode==='gen'&&state.generated){const a=tryGenerate
 ROOTS.forEach(r=>{let op=document.createElement('option');op.value=r.symbol;op.textContent=r.symbol+' · '+r.name;$('root').append(op)});
 $('root').onchange=e=>{stop();state.root=e.target.value;recompute()};
 $('path').onchange=e=>{stop();state.path=e.target.value;state.stage=0;render()};
-$('octave').onchange=e=>{stop();state.register=Number(e.target.value);render()};
-$('voices').onchange=e=>{stop();state.voices=Number(e.target.value);render()};
+$('octave').onchange=e=>{stop();state.register=Number(e.target.value);recompute()};
+$('voices').onchange=e=>{stop();state.voices=Number(e.target.value);recompute()};
 document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{stop();state.form=b.dataset.form;recompute()});
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{stop();state.mode=b.dataset.mode;state.stage=state.mode==='trans'?0:(state.generated?1:0);render()});
 document.querySelectorAll('[data-trans-source]').forEach(b=>b.onclick=()=>{stop();state.transitionSource=b.dataset.transSource;render()});
 document.querySelectorAll('[data-quality]').forEach(b=>b.onclick=()=>{stop();state.quality=b.dataset.quality;state.generated=null;state.stage=0;render()});
 document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{state.selected=new Set(b.dataset.preset?b.dataset.preset.split(','):[]);state.mode='gen';generateNow()});
-$('seventhSource').onchange=e=>{state.seventhSource=e.target.value;if(state.generated)generateNow();else render()};
+
 $('sixthSource').onchange=e=>{state.sixthSource=e.target.value;if(state.generated)generateNow();else render()};
 $('prevStage').onclick=()=>{if(state.stage<=0)return;stop();state.stage--;render()};$('nextStage').onclick=()=>{if(state.stage>=stages().length-1)return;stop();state.stage++;render()};
 $('generate').onclick=generateNow;
@@ -331,7 +377,7 @@ $('playChord').onclick=()=>perform('chord');$('playArp').onclick=()=>perform('ar
 $('loop').onclick=()=>{state.loop=!state.loop;$('loop').setAttribute('aria-pressed',String(state.loop));$('loop').textContent=state.loop?'↻ Loop: ligado':'↻ Loop: desligado'};
 window.addEventListener('pagehide',stop);
 window.CifraPraMimPiano={
- get:()=>{const c=compute();return{root:state.root,form:state.form,mode:state.mode,stage:state.stage,chord:c.chord.symbol,left:{degree:'1',midi:c.bass,name:c.bassName},right:c.rightDegrees.map((degree,i)=>({degree,midi:c.rightMidi[i],name:c.rightNames[i]})),total:c.count,omitted:c.omitted,warning:c.warnings.join(' '),error:state.error||c.error}},
+ get:()=>{const c=compute();return{root:state.root,form:state.form,mode:state.mode,stage:state.stage,chord:c.chord.symbol,referenceBass:{degree:'1',midi:c.bass,name:c.bassName},right:c.rightDegrees.map((degree,i)=>({degree,midi:c.rightMidi[i],name:c.rightNames[i]})),total:c.count,omitted:c.omitted,warning:c.warnings.join(' '),error:state.error||c.error}},
  show:(rootValue,formValue,stage=0,voices=4)=>{state.root=rootValue;state.form=formValue;state.mode='trans';state.stage=stage;state.voices=voices;render();return window.CifraPraMimPiano.get()},
  generate:(degrees,quality='major',seventh='auto',sixth='auto',voices=4)=>{state.mode='gen';state.quality=quality;state.selected=new Set(degrees);state.seventhSource=seventh;state.sixthSource=sixth;state.voices=voices;generateNow();return window.CifraPraMimPiano.get()}
 };
