@@ -28,6 +28,25 @@
 .stageTag{font-weight:760}
 @media(max-width:720px){.pulseGroup{gap:6px}.pulseGroup label{width:100%}.pulseGroup select{flex-basis:60%}.step .written{font-size:7px}.step .mark{font-size:9px}.eventReadout strong{font-size:22px}}
 
+
+/* V11: abertura audível do P4. Ataques explícitos, não inferidos da contagem. */
+.openingSequence{margin:12px 0 10px;padding:10px;border:1px solid #726043;border-radius:10px;background:#26241f}
+.openingSequence[hidden]{display:none!important}
+.openingHeader{display:flex;gap:8px;justify-content:space-between;align-items:baseline;margin-bottom:9px;flex-wrap:wrap}
+.openingHeader strong{font-size:10px;letter-spacing:.09em;color:#e7cc9c}
+.openingHeader span{font-size:10px;color:#b7b3ac}
+.openingEvents{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.openingEvent{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #4b4b4b;border-radius:8px;min-height:85px;padding:5px 2px;background:#1b2022;transition:background-color .055s,border-color .055s,transform .055s}
+.openingEvent.qui{background:#1c3436;border-color:#4d777a}
+.openingEvent.tom{background:#362b1f;border-color:#776044}
+.openingEvent strong{font-size:clamp(17px,3.3vw,26px);line-height:1.2;letter-spacing:-.04em;font-weight:850;color:#fff}
+.openingEvent.qui strong{color:#9ce8e9}.openingEvent.tom strong{color:#f8d58d}
+.openingCount{font-size:11px;color:#c9c9c9;margin-bottom:4px}
+.openingEvent small{font-size:9px;color:#bbb;letter-spacing:.045em;margin-top:4px}
+.openingEvent.active{box-shadow:0 0 0 2px #fff8 inset;transform:translateY(-2px);background:#5a584d}
+.openingEvent.active strong{color:white}
+@media(max-width:720px){.openingSequence{padding:8px}.openingEvents{gap:4px}.openingEvent{min-height:72px}.openingEvent strong{font-size:20px}.openingEvent small{font-size:8px}}
+
 /* V8: tempo é uma faixa contínua, golpe é um evento pontual — não confundir. */
 .meterHeader{margin:10px 0 3px;padding:8px 10px;background:#24242a;border:1px solid #45444a;border-radius:9px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .meterPosition{display:flex;flex-direction:column;gap:3px}.meterPosition strong{font-size:11px;color:#f0c986;letter-spacing:.055em}.meterPosition span{font-size:11px;color:#d2d0d0}
@@ -49,7 +68,7 @@
 .step.bassPulse .baseMark{color:white}
 @media(max-width:720px){.baseMark{font-size:7px!important;bottom:1px}}
 </style>
-</head><body><main class="wrap"><div class="eyebrow">ARRANJA PRA MIM · PERCUSSÃO</div><h1>Surdo de Terceira</h1><p class="sub">Batuque Carioca · células e levadas completas · POV</p><section class="panel">
+</head><body><main class="wrap"><div class="eyebrow">ARRANJA PRA MIM · PERCUSSÃO · V11</div><h1>Surdo de Terceira</h1><p class="sub">Batuque Carioca · células e levadas completas · POV</p><section class="panel">
 <div class="toolbar"><select id="pattern" class="selector" aria-label="Selecionar padrão"></select><button class="btn" id="play">▶ Tocar</button><button class="btn alt" id="reset" aria-label="Reiniciar">↺</button></div>
 <div class="tempoRow"><label for="bpm">ANDAMENTO</label><button id="minus" class="smallbtn">−</button><input id="bpm" type="range" min="45" max="160" value="85" step="1"><output class="bpmVal" id="bpmVal">85</output><span class="tiny">BPM</span><button id="plus" class="smallbtn">+</button></div>
 <div class="controls"><button id="integral" class="toggle active" aria-pressed="true">Execução integral</button><button id="celula" class="toggle" aria-pressed="false">Por compasso</button><span class="spacer"></span><button id="click" class="toggle" aria-pressed="false">Clique</button><button id="audioToggle" class="toggle active" aria-pressed="true">Som</button></div>
@@ -97,7 +116,15 @@
 </g>
 <circle id="impact" cx="411" cy="299" r="12" fill="none" stroke="#f1cd63" stroke-width="5" opacity="0"/><circle id="palmImpact" cx="261" cy="398" r="24" fill="none" stroke="#9fd9d8" stroke-width="4" opacity="0"/>
 <g id="rightRig"><path d="M731 613 Q644 549 565 516 L526 486 L510 534 Q603 572 716 666Z" fill="url(#arm)" stroke="#724f40" stroke-width="3"/><path d="M559 546 L410 303" stroke="#0e0d0d" stroke-width="21" opacity=".3" stroke-linecap="round" transform="translate(8 9)"/><path d="M558 542 L411 304" stroke="#c59b62" stroke-width="13" stroke-linecap="round"/><path d="M557 536 L417 306" stroke="#e5c08d" stroke-width="4" stroke-linecap="round" opacity=".85"/><g id="feltHead"><path d="M399 292 Q401 280 413 277 Q431 278 438 294 Q444 310 432 322 Q411 329 399 312 Q393 301 399 292Z" fill="url(#mallet)" stroke="#ac881f" stroke-width="3"/><path d="M410 283 Q425 280 433 298" fill="none" stroke="#fff1ba" stroke-width="5" opacity=".7"/></g><g><path d="M508 493 Q526 481 544 487 Q562 497 572 513 L579 544 Q574 562 555 563 Q534 562 521 551 L500 526 Q493 507 508 493Z" fill="#c18a6b" stroke="#794c3a" stroke-width="3"/><path d="M502 501 Q531 488 547 507" fill="none" stroke="#e5ab88" stroke-width="8" opacity=".6"/><path d="M544 505 Q565 499 576 516 Q581 526 568 532 Q551 531 542 515" fill="#b87c5d" stroke="#714b3d" stroke-width="2.5"/><path d="M545 523 Q570 519 578 534 Q577 546 564 548 Q548 542 541 532" fill="#c68a68" stroke="#70493b" stroke-width="2.5"/></g></g><text x="345" y="113" text-anchor="middle" fill="#808484" font-size="12" font-weight="730" letter-spacing="2">SURDO · 3ª</text></svg><div class="stageLabel"><span>MACETA · DIREITA &nbsp; | &nbsp; PALMA · ESQUERDA</span><span id="handState">Pronto para estudar</span></div></div>
-<div class="score"><div class="scoreTitle"><strong id="scoreTitle">Padrão 10 · Surdo Mó</strong><span id="measureInfo">4 compassos · 2/4</span></div><div class="modeTitle" id="cellTitle" hidden>SELECIONE UM COMPASSO</div><div class="barChooser" id="barChooser" hidden><button data-bar="0" class="on">1</button><button data-bar="1">2</button><button data-bar="2">3</button><button data-bar="3">4</button></div><div class="eventReadout" id="eventReadout" hidden><strong id="eventName">QUI</strong><span id="eventDetails">palma · aguardando</span></div><div class="legendBar" id="eventLegend" hidden><span><b class="QUI">QUI</b> · palma</span><span><b class="TOM">TOM</b> · maceta</span><span>● · escrito no livro</span></div><p class="mapNote" id="eventNote" hidden>QUI = palma · TOM = maceta. A linha acompanha o tempo continuamente; o ataque é destacado quando soa.</p><div class="meterHeader" id="meterHeader"><div class="meterPosition"><strong id="liveMeasure">COMPASSO 1/4</strong><span id="liveSubdivision">1 · tempo 1</span></div><div class="meterBeats"><span id="beat1" class="on">1</span><span id="beat2">2</span></div></div><div class="meterRule">2/4 · 4 semicolcheias por tempo · <b>1 e & a</b> | <b>2 e & a</b></div><div class="staff" id="staff" aria-label="Mapa dos compassos: oito semicolcheias, quatro no primeiro tempo e quatro no segundo"></div><details><summary>Ajuste fino da sincronia visual</summary><input type="range" id="offset" min="-150" max="150" step="5" value="-35"><span class="tiny" id="offsetVal">-35 ms</span></details><p class="mini" id="scoreNote">Os padrões 2 e 4 usam trechos originais de suas gravações. Nesta V10, o início do Padrão 4 foi remapeado e a animação foi antecipada para casar melhor com o áudio.</p></div></div>
+<div class="score"><div class="scoreTitle"><strong id="scoreTitle">Padrão 10 · Surdo Mó</strong><span id="measureInfo">4 compassos · 2/4</span></div><div class="modeTitle" id="cellTitle" hidden>SELECIONE UM COMPASSO</div><div class="barChooser" id="barChooser" hidden><button data-bar="0" class="on">1</button><button data-bar="1">2</button><button data-bar="2">3</button><button data-bar="3">4</button></div><div class="eventReadout" id="eventReadout" hidden><strong id="eventName">QUI</strong><span id="eventDetails">palma · aguardando</span></div><div class="legendBar" id="eventLegend" hidden><span><b class="QUI">QUI</b> · palma</span><span><b class="TOM">TOM</b> · maceta</span><span>● · escrito no livro</span></div><p class="mapNote" id="eventNote" hidden>QUI = palma · TOM = maceta. A linha acompanha o tempo continuamente; o ataque é destacado quando soa.</p><section class="openingSequence" id="p4Opening" hidden aria-label="Quatro primeiros ataques do Padrão 4">
+ <div class="openingHeader"><strong>INÍCIO DO PADRÃO 4</strong><span>quatro primeiros golpes da gravação</span></div>
+ <div class="openingEvents" id="p4CueEvents">
+ <div class="openingEvent qui" data-attack="2"><span class="openingCount">1 &amp;</span><strong>QUI</strong><small>PALMA</small></div>
+ <div class="openingEvent tom" data-attack="3"><span class="openingCount">1 a</span><strong>TOM</strong><small>MACETA</small></div>
+ <div class="openingEvent tom" data-attack="4"><span class="openingCount">2</span><strong>TOM</strong><small>MACETA</small></div>
+ <div class="openingEvent tom" data-attack="6"><span class="openingCount">2 &amp;</span><strong>TOM</strong><small>MACETA</small></div>
+ </div>
+</section><div class="meterHeader" id="meterHeader"><div class="meterPosition"><strong id="liveMeasure">COMPASSO 1/4</strong><span id="liveSubdivision">1 · tempo 1</span></div><div class="meterBeats"><span id="beat1" class="on">1</span><span id="beat2">2</span></div></div><div class="meterRule">2/4 · 4 semicolcheias por tempo · <b>1 e & a</b> | <b>2 e & a</b></div><div class="staff" id="staff" aria-label="Mapa dos compassos: oito semicolcheias, quatro no primeiro tempo e quatro no segundo"></div><details><summary>Ajuste fino da sincronia visual</summary><input type="range" id="offset" min="-150" max="150" step="5" value="-35"><span class="tiny" id="offsetVal">-35 ms</span></details><p class="mini" id="scoreNote">Os padrões 2 e 4 usam trechos originais de suas gravações. Nesta V10, o início do Padrão 4 foi remapeado e a animação foi antecipada para casar melhor com o áudio.</p></div></div>
 <div class="status" id="p2Notice" hidden></div><div class="status" id="status">Experimente QUI, TOM e a frase de referência antes de iniciar.</div><div class="meta"><span class="pill" id="kind">Centrador</span><span class="pill">2/4</span><span class="pill" id="sourcePage">Livro · p.20</span><span class="pill">4 compassos completos</span></div>
 <div class="bodySection"><div class="videoHead"><h2>Execução original da pasta</h2><button id="videoBtn" class="videoBtn" aria-expanded="false">Ver vídeo integral ▾</button></div><p class="note" style="margin:7px 0 0">Nos padrões 2 e 4, o metrônomo reproduz quatro compassos extraídos das respectivas gravações originais. Os demais padrões ainda utilizam timbres experimentais e não foram integralmente conferidos com seus vídeos.</p><div class="videoWrap" id="videoWrap"><iframe id="video" title="Vídeo original da levada" loading="lazy" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe><p class="note"><a id="driveLink" href="#" target="_blank" rel="noopener noreferrer">Abrir gravação integral no Google Drive</a></p></div></div>
 <div class="bodySection"><div class="videoHead"><h2>Fonte e repertório</h2><a class="tiny" href="https://drive.google.com/file/d/1oREiSSd3PEDZeOiZozSSMb18Og4bcEih/view" target="_blank" rel="noopener noreferrer">O Batuque Carioca, pp. 19–21</a></div><p class="note" style="margin:8px 0 0">Esta edição inclui as dez levadas com gravação na pasta; o Padrão 2 agora usa trecho de áudio original, os demais ainda requerem transcrição e articulação conferidas: 2, 4, 5, 6, 7, 8, 9, 10, 11 e 12. O livro inclui também os padrões 1 e 3 e os breques 13–18, que não possuem vídeos correspondentes nesta pasta e ainda não foram sonorizados nesta versão.</p></div></section><footer>Laboratório de Surdo de Terceira · Células de Guilherme Gonçalves e Mestre Odilon Costa. Vídeos do Google Drive do usuário, sujeitos às permissões da conta.</footer></main>
@@ -121,7 +148,7 @@ var DATA=[
    os áudios originais aprovados pelo usuário. */
 var HAND_MAP={
  2:[['Q',null,null,'Q','T',null,null,'T'],['Q',null,null,'Q','T',null,null,'T'],['Q',null,null,'Q','T',null,null,'T'],['Q',null,null,'Q','T',null,null,'T']],
- 4:[[null,null,'Q','T','T',null,null,'T'],[null,null,'Q','Q','T','T',null,'T'],[null,null,'Q','Q','T',null,'Q','T'],[null,null,'Q','Q','T','T','Q','T']]
+ 4:[[null,null,'Q','T','T',null,'T','T'],[null,null,'Q','Q','T','T',null,'T'],[null,null,'Q','Q','T',null,'Q','T'],[null,null,'Q','Q','T','T','Q','T']]
 };
 // Onsets observados no recorte de cada áudio (segundos, da primeira amostra).
 // Marcam ataques audíveis, não significam confirmação de técnica por vídeo.
@@ -129,10 +156,10 @@ var HIT_TIME={
  2:{0:0.008,3:0.376,4:0.552,7:0.921,8:1.073,11:1.457,12:1.649,15:2.009,16:2.177,19:2.529,20:2.714,23:3.082,24:3.234,27:3.578,28:3.754,31:4.114},
  4:{2:0.216,3:0.392,4:0.528,6:0.800,7:0.984,10:1.360,11:1.536,13:1.920,15:2.112,18:2.520,19:2.688,20:2.824,22:3.080,23:3.272,26:3.672,27:3.856,30:4.256,31:4.440}
 };
-try{for(var id of [2,4]){var saved=localStorage.getItem('surdo-three-map-v10-'+id);if(saved){var v=JSON.parse(saved);if(Array.isArray(v)&&v.length===4&&v.every(x=>Array.isArray(x)&&x.length===8&&x.every(q=>q===null||q==='Q'||q==='T')))HAND_MAP[id]=v}}}catch(err){}
+try{for(var id of [2,4]){var saved=localStorage.getItem('surdo-three-map-v11-'+id);if(saved){var v=JSON.parse(saved);if(Array.isArray(v)&&v.length===4&&v.every(x=>Array.isArray(x)&&x.length===8&&x.every(q=>q===null||q==='Q'||q==='T')))HAND_MAP[id]=v}}}catch(err){}
 function mapHand(b,k){return HAND_MAP[current.id]?.[b]?.[k]||null}
 function isEventMapped(){return current.id===2||current.id===4}
-function saveMap(){try{localStorage.setItem('surdo-three-map-v10-'+current.id,JSON.stringify(HAND_MAP[current.id]))}catch(err){}}
+function saveMap(){try{localStorage.setItem('surdo-three-map-v11-'+current.id,JSON.stringify(HAND_MAP[current.id]))}catch(err){}}
 function changeGesture(b,k){if(!isEventMapped())return;var prev=mapHand(b,k);HAND_MAP[current.id][b][k]=prev===null?'Q':prev==='Q'?'T':null;saveMap();writeScore();if(!running)paint(0,false)}
 function eventList(){
  if(!isEventMapped())return [];
@@ -307,14 +334,14 @@ function writeScore(){
  });
 }
 function stop(){stopP2();stopP4();if(!running)return;running=false;if(timer){clearInterval(timer);timer=null}cancelAnimationFrame(raf);cancelVoices(true);play.textContent='▶ Tocar';status.textContent='Pausado.';timeBoard(0,false)}
-function refresh(){stop();writeScore();$('cellTitle').hidden=mode!=='celula';$('barChooser').hidden=mode!=='celula';Array.from($('barChooser').children).forEach(function(b){b.classList.toggle('on',Number(b.dataset.bar)===selectedBar)});$('measureInfo').textContent=mode==='integral'?'4 compassos · 2/4':'Compasso '+(selectedBar+1)+' · loop';paint(0,false);status.textContent=mode==='integral'?'Padrão integral · quatro compassos.':'Compasso '+(selectedBar+1)+' isolado · loop.'}
+function refresh(){stop();writeScore();$('p4Opening').hidden=current.id!==4 || (mode==='celula'&&selectedBar!==0);$('cellTitle').hidden=mode!=='celula';$('barChooser').hidden=mode!=='celula';Array.from($('barChooser').children).forEach(function(b){b.classList.toggle('on',Number(b.dataset.bar)===selectedBar)});$('measureInfo').textContent=mode==='integral'?'4 compassos · 2/4':'Compasso '+(selectedBar+1)+' · loop';paint(0,false);status.textContent=mode==='integral'?'Padrão integral · quatro compassos.':'Compasso '+(selectedBar+1)+' isolado · loop.'}
 function switchMode(x){mode=x;$('integral').classList.toggle('active',x==='integral');$('celula').classList.toggle('active',x==='celula');$('integral').setAttribute('aria-pressed',String(x==='integral'));$('celula').setAttribute('aria-pressed',String(x==='celula'));refresh()}
 $('integral').onclick=function(){switchMode('integral')};$('celula').onclick=function(){switchMode('celula')};Array.from($('barChooser').children).forEach(function(b){b.onclick=function(){selectedBar=Number(b.dataset.bar);refresh()}});
 function choose(){var p=DATA.find(function(x){return String(x.id)===pat.value});if(!p)return;stop();current=p;selectedBar=0;if(p.id===2||p.id===4){bpm=p.id===2?113:104;bpmInput.value=String(bpm);bpmVal.textContent=String(bpm);}$('samplePanel').style.display=isFromVideo()?'none':'block';$('p2Notice').hidden=!isFromVideo();$('p2Notice').textContent=p.id===2?'Padrão 2: som original da gravação (4 compassos, cerca de 113 BPM). Não usa QUI/TOM artificiais.':'Padrão 4: quatro compassos da gravação original (cerca de 104 BPM), sem samples de outros padrões. Movimentos da palma ainda aproximados.';$('scoreNote').textContent=p.id===2?'Maceta: pausa no tempo 1, ataques no tempo 2 e na última semicolcheia. A palma também articula a execução; a visualização corporal é aproximada.':p.id===4?'Cortador: alternância de dois e três ataques por compasso, conforme a p. 20 do livro. O áudio é original; a simulação das duas mãos é provisória.':'QUI = palma abafando; TOM = pele livre. Nos padrões restantes as articulações ainda não foram verificadas.';$('eventLegend').hidden=!isEventMapped();$('eventNote').hidden=!isEventMapped();$('eventReadout').hidden=!isEventMapped();
  if(isEventMapped()){
- $('eventNote').textContent=p.id===2?'Mapa da gravação: QUI na palma, TOM na maceta. Toque uma célula para ajustar o gesto; a gravação original permanece intacta. ● = nota escrita no livro.':'Mapa provisório do vídeo: QUI da palma ainda sujeito à conferência. Toque uma célula para ajustar; ● = nota escrita no livro. O áudio original é preservado.';
+ $('eventNote').textContent=p.id===2?'Mapa da gravação: QUI na palma, TOM na maceta. Toque uma célula para ajustar o gesto; a gravação original permanece intacta. ● = nota escrita no livro.':'A abertura da gravação começa com QUI · TOM · TOM · TOM (nas posições 1&, 1a, 2 e 2&). O golpe seguinte aparece no último a. Gestos ainda sujeitos à conferência visual. Toque nas células para ajustar; ● = escrita do livro.';
  }
- $('scoreTitle').textContent='Padrão '+p.id+' · '+p.name;$('kind').textContent=p.name;$('sourcePage').textContent='Livro · p.'+p.page;$('driveLink').href='https://drive.google.com/file/d/'+p.video+'/view';$('videoWrap').classList.remove('open');$('video').removeAttribute('src');$('videoBtn').textContent='Ver vídeo integral ▾';$('videoBtn').setAttribute('aria-expanded','false');refresh()}
+ $('p4Opening').hidden=p.id!==4 || (mode==='celula'&&selectedBar!==0);$('scoreTitle').textContent='Padrão '+p.id+' · '+p.name;$('kind').textContent=p.name;$('sourcePage').textContent='Livro · p.'+p.page;$('driveLink').href='https://drive.google.com/file/d/'+p.video+'/view';$('videoWrap').classList.remove('open');$('video').removeAttribute('src');$('videoBtn').textContent='Ver vídeo integral ▾';$('videoBtn').setAttribute('aria-expanded','false');refresh()}
 pat.onchange=choose;
 function toggle(x){var el=$(x),v=el.getAttribute('aria-pressed')!=='true';el.setAttribute('aria-pressed',String(v));el.classList.toggle('active',v);return v}
 $('click').onclick=function(){pulse=toggle('click')};$('audioToggle').onclick=function(){sound=toggle('audioToggle');if(p2Gain&&context)p2Gain.gain.setTargetAtTime(sound?.92:0,context.currentTime,.007);if(p4Gain&&context)p4Gain.gain.setTargetAtTime(sound?.92:0,context.currentTime,.007)};
@@ -450,6 +477,13 @@ function paint(phase,on){
   var el=$('s'+b+'_'+k);
   if(el)el.classList.toggle('flash',on&&!!hit&&hit.bar===b&&hit.k===k);
  }
+ // A abertura da levada é acompanhada pelos instantes extraídos do áudio,
+ // não por quatro pulsos inventados nem pela posição contínua da régua.
+ var firstFour=$('p4CueEvents');
+ if(firstFour)Array.from(firstFour.children).forEach(function(tile){
+  var k=Number(tile.dataset.attack);
+  tile.classList.toggle('active',!!on&&current.id===4&&!!hit&&hit.bar===0&&hit.k===k&&g.since<.12);
+ });
  // Punho não abandona o braço, maceta com queda e rebote; sombra sinaliza altura.
  right.setAttribute('transform','rotate('+g.angle.toFixed(2)+' 551 534)');
   if(feltHead)feltHead.setAttribute('transform','translate(418 300) scale('+(1+.11*g.press).toFixed(3)+' '+(1-.25*g.press).toFixed(3)+') translate(-418 -300)');
