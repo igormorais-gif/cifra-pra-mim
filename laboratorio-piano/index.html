@@ -106,7 +106,8 @@ function qualityName(degrees){const r=root(),minor=degrees.includes('♭3'),sus=
  const inherent=symbol.endsWith('º')?new Set(['1','♭3','♭5','♭♭7']):symbol.includes('m7(♭5)')?new Set(['1','♭3','♭5','♭7']):new Set();
  const extras=['♭9','9','♯9','11','♯11','♭13','13','♭5','♯5'].filter(x=>degrees.includes(x)&&!inherent.has(x));
  if(extras.length){symbol+=(a7||b7?'(':'(add')+extras.join(',')+')';name+=' · '+extras.join(' / ')}
- return {symbol,name};
+ if(sus)symbol=symbol.replace(sus+'7M','7M'+sus).replace(sus+'7','7'+sus);
+  return {symbol,name};
 }
 const HINT={'1':{'7':'1 st abaixo do 1','♭7':'2 st abaixo do 1','♭♭7':'3 st abaixo do 1','6':'3 st abaixo do 1','♭9':'1 st acima do 1','9':'2 st acima do 1','♯9':'3 st acima do 1'},'3':{'♭3':'1 st abaixo do 3','2':'2 st abaixo do 3','4':'1 st acima do 3'},'5':{'7':'4 st acima do 5','♭7':'3 st acima do 5','♭♭7':'2 st acima do 5','6':'2 st acima do 5','13':'2 st acima do 5','♭5':'1 st abaixo do 5','♯5':'1 st acima do 5','11':'2 st abaixo do 5','♯11':'1 st abaixo do 5','♭13':'1 st acima do 5'}};
 function changeDescription(d){const b=base(),words=[];for(let i=0;i<3;i++)if(d[i]!==b[i])words.push(b[i]+' → '+d[i]+' · '+(HINT[b[i]]?.[d[i]]||Math.abs(offset(b[i],d[i]))+' st'));return words.join(' | ')||'Forma original '+state.form+'.'}
@@ -147,7 +148,7 @@ function tryGenerate(){
   if(['5','♭5','♯5','11','♯11','♭13','13'].includes(g))return slots['5']+offset('5',g);
   if(g==='6')return slots[sixthSlot]+offset(sixthSlot,g);
   if(['7','♭7'].includes(g)){const center=slots['1']+offset('1',g);
-   return degrees.length===4&&wanted.some(x=>['♭9','9','♯9'].includes(x))&&center<slots['3']?center+12:center;}
+   return state.form==='135'&&center<slots['3']&&(wanted.some(x=>['♭9','9','♯9'].includes(x))||wanted.some(x=>['♯11','11'].includes(x)))?center+12:center;}
   if(['♭9','9','♯9'].includes(g))return slots['1']+12+DEG[g][1];
   return tonic+DEG[g][1];
  }
