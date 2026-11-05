@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#101115" />
+<title>Surdo de Terceira — Igor WhatsApp</title>
+<style>
+  :root{
+    --bg:#101115;--panel:#1a1b20;--panel2:#15161a;--edge:#353841;--text:#f4f1ea;--muted:#a6a7ab;
+    --gold:#dfbf82;--gold2:#a98a53;--blue:#5f7fcb;--pink:#ba8ad4;--ghost:#989ca7;--teal:#5f9ea0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:92px}
+  button,select,input{font:inherit}
+  button{cursor:pointer;touch-action:manipulation}
+  .wrap{max-width:880px;margin:0 auto;padding:12px 10px 22px}
+  .eyebrow{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
+  h1{font-size:30px;line-height:1.05;margin:6px 0 4px}
+  .sub{font-size:13px;color:#d7d0bf;line-height:1.35;margin:0 0 10px}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:16px;padding:12px}
+  .controls{display:grid;grid-template-columns:1fr auto auto auto auto;gap:8px;align-items:center}
+  .controls .play{height:44px;border:0;border-radius:12px;background:var(--gold);color:#19150f;font-size:22px;font-weight:900;padding:0 16px}
+  .controls .mini{height:44px;min-width:42px;border:1px solid #5b5e66;border-radius:12px;background:#23252b;color:var(--text)}
+  .controls .tempo{display:flex;align-items:center;gap:8px;justify-content:flex-end;color:#d9c08c;font-weight:700;white-space:nowrap}
+  .controls select{height:44px;border-radius:12px;background:#23252b;color:var(--text);border:1px solid #5b5e66;padding:0 12px}
+  .study{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .pill{border:1px solid #5a5d65;background:#23252b;color:var(--text);border-radius:999px;padding:8px 12px;font-size:13px}
+  .pill.active{background:#3a3220;color:#f3d69f;border-color:#8d7546}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0 10px;font-size:12px;color:#ced0d3}
+  .dot{width:11px;height:11px;border-radius:999px;display:inline-block;vertical-align:-1px;margin-right:5px}
+  .score{margin-top:10px}
+  .counter{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#d7d8db;font-size:13px}
+  .bars{display:grid;gap:10px}
+  .bar{background:var(--panel2);border:1px solid var(--edge);border-radius:14px;padding:10px 8px;display:grid;grid-template-columns:28px repeat(8,minmax(0,1fr));gap:4px;align-items:stretch}
+  .bar.active{border-color:#8e7749;box-shadow:0 0 0 1px #8e7749 inset}
+  .barNum{display:grid;place-items:center;font-size:18px;color:#b7b8bc;font-weight:800}
+  .cell{position:relative;background:#202229;border:1px solid #2e323a;border-radius:10px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;min-height:92px;padding:7px 2px 9px;overflow:hidden}
+  .cell.beat{background:#23252a}
+  .cell.current{outline:2px solid #f5ddb0;outline-offset:-2px}
+  .cell .count{font-size:10px;color:#92959b;font-weight:800}
+  .cell .mark{font-size:18px;font-weight:900;line-height:1;margin-top:6px}
+  .cell .gate{position:absolute;left:8px;right:8px;bottom:8px;height:7px;background:#111317;border-radius:99px}
+  .cell .fill{position:absolute;left:8px;bottom:8px;height:7px;background:#ead08d;border-radius:99px;max-width:calc(100% - 16px)}
+  .t-1{color:#f1d38d}.t-5{color:#a7d5d8}.t-8{color:#d5a7e4}.t-L{color:#9eb9ff}.t-x{color:#d4d7dc}
+  .fretWrap{margin-top:14px}
+  .fretHead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:8px}
+  .fretHead h2{font-size:18px;margin:0}
+  .fretHead .small{font-size:12px;color:#c9cab0}
+  .fretStage{background:var(--panel2);border:1px solid var(--edge);border-radius:14px;padding:8px;overflow:hidden}
+  .fretGuide{font-size:11px;color:#b7b9be;margin:0 0 6px;display:flex;justify-content:space-between;gap:10px}
+  svg{display:block;width:100%;height:auto}
+  .hint{font-size:12px;color:#c8cbc9;margin-top:10px;line-height:1.35}
+  #dock{position:fixed;left:0;right:0;bottom:0;background:rgba(16,17,21,.97);backdrop-filter:blur(12px);border-top:1px solid #6a5837;box-shadow:0 -8px 20px #0008;padding:8px max(12px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));display:flex;align-items:center;gap:10px;z-index:5}
+  #dockPlay{width:52px;height:48px;border:0;border-radius:12px;background:var(--gold);color:#18140f;font-size:23px;font-weight:900}
+  .dockText{min-width:118px}
+  .dockText strong{display:block;color:#f4d8a4;font-size:15px}
+  .dockText span{display:block;color:#b7b9bd;font-size:11px}
+  .dockPulse{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;flex:1}
+  .dockPulse span{height:33px;background:#22252b;border-radius:7px;display:grid;place-items:center;color:#8f9299;font-weight:800;font-size:11px}
+  .dockPulse span.current{background:var(--gold);color:#17140f}
+  .hiddenCell .mark,.hiddenCell .fill,.hiddenCell .gate{opacity:.32}
+  @media (max-width:640px){
+    h1{font-size:24px}
+    .controls{grid-template-columns:1fr auto auto;grid-auto-rows:auto}
+    .controls .tempo{grid-column:1 / -1;justify-content:flex-start}
+    .controls select{grid-column:1 / -1}
+    .cell{min-height:84px}
+    .dockText{min-width:92px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Laboratório separado</div>
+  <h1>Surdo de Terceira — Igor WhatsApp</h1>
+  <p class="sub">Laboratório exclusivo desta levada, com durações fixadas, braço de cinco cordas e estudo por compasso.</p>
+
+  <section class="panel">
+    <div class="controls">
+      <button id="playBtn" class="play">▶</button>
+      <button id="minus" class="mini">−</button>
+      <button id="plus" class="mini">+</button>
+      <div class="tempo"><span>BPM</span><strong id="bpmVal">90</strong></div>
+      <select id="keySel" aria-label="Tonalidade"></select><select id="registerSel" aria-label="Registro"><option value="0">Registro padrão</option><option value="-12">Registro grave</option></select>
+    </div>
+    <div class="study">
+      <button class="pill active" data-mode="all">4 compassos</button>
+      <button class="pill" data-mode="bar1">Estudar comp. 1</button>
+      <button class="pill" data-mode="bar2">Estudar comp. 2</button>
+      <button class="pill" data-mode="bar3">Estudar comp. 3</button>
+      <button class="pill" data-mode="bar4">Estudar comp. 4</button>
+      <button class="pill" id="slowBtn">65 BPM</button>
+    </div>
+  </section>
+
+  <div class="legend">
+    <span><i class="dot" style="background:#f1d38d"></i>1 · fundamental</span>
+    <span><i class="dot" style="background:#a7d5d8"></i>5 · quinta</span>
+    <span><i class="dot" style="background:#d5a7e4"></i>8 · oitava</span>
+    <span><i class="dot" style="background:#9eb9ff"></i>5↓ · quinta grave</span>
+    <span><i class="dot" style="background:#d4d7dc"></i>x · ghost</span>
+  </div>
+
+  <section class="score">
+    <div class="counter"><strong>Padrão 13 · Igor WhatsApp</strong><span id="readout">Comp. 1 · 1</span></div>
+    <div class="bars" id="bars"></div>
+    <p class="hint">Preferência de registro: quando a quinta grave cabe na extensão, ela é usada. Quando não cabe, o app repete o <b>1 grave</b> com a mesma duração, em vez de deslocar a frase para cima. A oitava não desloca mais o layout: o braço fica imóvel.</p>
+  </section>
+
+  <section class="fretWrap">
+    <div class="fretHead">
+      <div>
+        <h2>Baixo de 5 cordas</h2>
+        <div class="small" id="noteInfo">Aguardando</div>
+      </div>
+      <div class="small">Braço fixo · B–E–A–D–G · 0–18</div>
+    </div>
+    <div class="fretStage">
+      <div class="fretGuide"><span>posição sempre fixa</span><span id="fretLabel">sem nota</span></div>
+      <svg id="fretboard" viewBox="0 0 1000 350" xmlns="http://www.w3.org/2000/svg" aria-label="Braço do baixo">
+        <rect x="18" y="30" width="964" height="285" rx="18" fill="#6b4b2a"/>
+        <rect x="18" y="30" width="964" height="285" rx="18" fill="url(#wood)" opacity=".4"/>
+        <defs>
+          <linearGradient id="wood" x1="0" x2="1">
+            <stop offset="0" stop-color="#5a3d20"/>
+            <stop offset="1" stop-color="#785536"/>
+          </linearGradient>
+        </defs>
+        <g id="frets"></g>
+        <g id="strings"></g>
+        <g id="dots"></g>
+        <circle id="marker" cx="-100" cy="-100" r="18" fill="#f4d18e" stroke="#fff3d9" stroke-width="4"/>
+        <text id="markerText" x="-100" y="-100" text-anchor="middle" dominant-baseline="middle" font-size="18" font-weight="900" fill="#18140f"></text>
+      </svg>
+    </div>
+  </section>
+</div>
+
+<div id="dock">
+  <button id="dockPlay">▶</button>
+  <div class="dockText"><strong id="dockBeat">Comp. 1 · 1</strong><span id="dockMeta">Padrão 13 · 90 BPM</span></div>
+  <div class="dockPulse" id="dockPulse"></div>
+</div>
+
+<script>
+'use strict';
+const COUNT=['1','e','&','a','2','e','&','a'];
+const NOTE_NAMES=['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+const OPEN=[23,28,33,38,43]; // B0 E1 A1 D2 G2
+const STRING_NAMES=['B','E','A','D','G'];
+const DEFAULT_BPM=90;
+const PATTERN=[
+  [ {t:'1',g:75}, null, null, {t:'x',g:18}, {t:'L',g:52}, null, null, null ],
+  [ {t:'1',g:75}, null, null, {t:'x',g:18}, {t:'L',g:34}, {t:'L',g:32}, {t:'x',g:14}, {t:'L',g:36} ],
+  [ {t:'1',g:24}, {t:'8',g:86}, null, {t:'x',g:18}, {t:'L',g:52}, null, null, null ],
+  [ {t:'1',g:24}, null, null, {t:'x',g:18}, {t:'L',g:24}, {t:'L',g:24}, {t:'x',g:14}, {t:'L',g:34} ]
+];
+let bpm=DEFAULT_BPM, key=0, register=0, playing=false, ctx=null, timer=0, nextAt=0, nextStep=0, loopMode='all', loopRange=[0,31];
+let currentAbs=0, currentVoice=[], currentMarker=null;
+const $=id=>document.getElementById(id);
+const barsEl=$('bars');
+const keySel=$('keySel');
+const dockPulse=$('dockPulse');
+
+function fillKeySelect(){
+  keySel.innerHTML=NOTE_NAMES.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+  keySel.value=String(key);
+}
+function tokenLabel(t){return t==='1'?'fundamental':t==='5'?'quinta':t==='8'?'oitava':t==='L'?'quinta grave':'ghost';}
+function disp(t){return t==='L'?'5↓':t;}
+function barFlatIndex(bar,k){return bar*8+k}
+function stepDur(){return 15/bpm}
+function gateMs(g){return stepDur()*1000*g/100}
+function eventAt(abs){return abs<loopRange[0]||abs>loopRange[1]?null:PATTERN[Math.floor(abs/8)][abs%8]}
+function currentRootMidi(bar){
+  // raiz visual/sonora fixa por enquanto; tonalidade muda tudo junto
+  return 36 + key + register; // C2 padrão; modo grave C1
+}
+function lowFifthOrRoot(root){
+  const m=root-5;
+  return m>=OPEN[0]?m:root;
+}
+function eventMidi(bar,ev){
+  if(!ev||ev.t==='x')return null;
+  const root=currentRootMidi(bar);
+  if(ev.t==='1')return root;
+  if(ev.t==='5')return root+7;
+  if(ev.t==='8')return root+12;
+  if(ev.t==='L')return lowFifthOrRoot(root);
+  return root;
+}
+function chooseFret(midi){
+  if(midi==null)return null;
+  let chosen=null;
+  for(let s=0;s<OPEN.length;s++){
+    const fret=midi-OPEN[s];
+    if(fret<0||fret>18)continue;
+    if(!chosen) chosen={string:s,fret};
+    else if(s<chosen.string || (s===chosen.string && fret<chosen.fret)) chosen={string:s,fret};
+  }
+  if(chosen)return chosen;
+  // fallback: nearest legal position, still on fixed board
+  let nearest={string:0,fret:0,dist:1e9};
+  for(let s=0;s<OPEN.length;s++){
+    const fret=Math.max(0,Math.min(18,midi-OPEN[s]));
+    const dist=Math.abs((OPEN[s]+fret)-midi);
+    if(dist<nearest.dist) nearest={string:s,fret,dist};
+  }
+  return nearest;
+}
+function drawBoard(){
+  const frets=$('frets'), strings=$('strings'), dots=$('dots');
+  frets.innerHTML=''; strings.innerHTML=''; dots.innerHTML='';
+  const left=70, right=950, top=62, gap=53;
+  for(let i=0;i<5;i++){
+    const y=top+i*gap;
+    strings.insertAdjacentHTML('beforeend',`<line x1="${left}" y1="${y}" x2="${right}" y2="${y}" stroke="#d4d6db" stroke-width="${4-i*.4}" opacity=".92"/><text x="36" y="${y+6}" fill="#f4efe4" font-size="18" font-weight="800">${STRING_NAMES[i]}</text>`);
+  }
+  for(let f=0;f<=18;f++){
+    const x=left + (right-left)*(f/18);
+    const sw=f===0?10:4;
+    frets.insertAdjacentHTML('beforeend',`<line x1="${x}" y1="42" x2="${x}" y2="258" stroke="#d7c7a7" stroke-width="${sw}" opacity="${f===0?1:.95}"/><text x="${x+(f<12?18:-14)}" y="334" text-anchor="middle" fill="#e2dbc8" font-size="16" font-weight="700">${f}</text>`);
+  }
+  [3,5,7,9,15,17].forEach(f=>{
+    const x=left + (right-left)*((f-.5)/18);
+    dots.insertAdjacentHTML('beforeend',`<circle cx="${x}" cy="163" r="11" fill="#c4b089" opacity=".65"/>`);
+  });
+  const x12=left + (right-left)*((11.5)/18);
+  dots.insertAdjacentHTML('beforeend',`<circle cx="${x12}" cy="128" r="11" fill="#c4b089" opacity=".65"/><circle cx="${x12}" cy="198" r="11" fill="#c4b089" opacity=".65"/>`);
+}
+function positionFor(pos){
+  const left=70, right=950, top=62, gap=53;
+  const x = pos.fret===0 ? left : left + (right-left)*((pos.fret-.5)/18);
+  const y = top + pos.string*gap;
+  return {x,y};
+}
+function updateMarker(abs){
+  const bar=Math.floor(abs/8), k=abs%8, ev=PATTERN[bar][k], midi=eventMidi(bar,ev);
+  currentAbs=abs;
+  const marker=$('marker'), label=$('markerText');
+  document.querySelectorAll('.cell.current').forEach(el=>el.classList.remove('current'));
+  const cell=document.querySelector(`[data-abs=\"${abs}\"]`); if(cell) cell.classList.add('current');
+  if(ev && midi!=null){
+    const pos=chooseFret(midi), pt=positionFor(pos), token=ev.t==='L'&&lowFifthOrRoot(currentRootMidi(bar))===currentRootMidi(bar)?'1':'5↓';
+    marker.setAttribute('cx',pt.x); marker.setAttribute('cy',pt.y);
+    label.setAttribute('x',pt.x); label.setAttribute('y',pt.y+1); label.textContent=ev.t==='L' ? token : ev.t;
+    $('fretLabel').textContent=`${STRING_NAMES[pos.string]} · casa ${pos.fret}`;
+    $('noteInfo').textContent=`Comp. ${bar+1} · ${COUNT[k]} · ${tokenLabel(ev.t)} · ${NOTE_NAMES[midi%12]}${Math.floor(midi/12)-1}`;
+  }else{
+    marker.setAttribute('cx',-100); marker.setAttribute('cy',-100); label.setAttribute('x',-100); label.setAttribute('y',-100);
+    $('fretLabel').textContent=ev && ev.t==='x' ? 'ghost' : 'pausa';
+    $('noteInfo').textContent=`Comp. ${bar+1} · ${COUNT[k]} · ${ev ? tokenLabel(ev.t) : 'pausa'}`;
+  }
+  $('readout').textContent=`Comp. ${bar+1} · ${COUNT[k]}`;
+  $('dockBeat').textContent=`Comp. ${bar+1} · ${COUNT[k]}`;
+  Array.from(dockPulse.children).forEach((el,i)=>el.classList.toggle('current',i===k));
+  document.querySelectorAll('.bar').forEach((el,i)=>el.classList.toggle('active',i===bar));
+}
+function renderGrid(){
+  barsEl.innerHTML='';
+  PATTERN.forEach((bar,bi)=>{
+    const row=document.createElement('div');
+    row.className='bar';
+    row.innerHTML=`<div class="barNum">${bi+1}</div>`;
+    bar.forEach((ev,ki)=>{
+      const d=document.createElement('div');
+      d.className='cell beat'+(!ev?' hiddenCell':'');
+      d.dataset.abs=String(barFlatIndex(bi,ki));
+      const token=ev?disp(ev.t):'·';
+      d.innerHTML=`<span class="count">${COUNT[ki]}</span><span class="mark ${ev?`t-${ev.t}`:''}">${token}</span><div class="gate"></div>${ev?`<div class="fill" style="width:${ev.g}%"></div>`:''}`;
+      d.addEventListener('click',()=>{setLoop('bar'+(bi+1)); stop(); updateMarker(barFlatIndex(bi,ki));});
+      row.appendChild(d);
+    });
+    barsEl.appendChild(row);
+  });
+  updateMarker(currentAbs);
+}
+function setLoop(mode){
+  loopMode=mode;
+  document.querySelectorAll('.pill[data-mode]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mode===mode));
+  if(mode==='all') loopRange=[0,31];
+  else {
+    const b=Number(mode.replace('bar',''))-1;
+    loopRange=[b*8,b*8+7];
+  }
+}
+function initPulse(){
+  dockPulse.innerHTML=COUNT.map(c=>`<span>${c}</span>`).join('');
+}
+function ensureAudio(){
+  if(ctx) return;
+  const AC=window.AudioContext||window.webkitAudioContext;
+  ctx=new AC({latencyHint:'interactive'});
+}
+function stopVoices(){
+  currentVoice.forEach(n=>{try{n.stop(0)}catch(e){}});
+  currentVoice=[];
+}
+function playGhost(at,gate){
+  const dur=Math.max(.03, stepDur()*gate/100);
+  const osc=ctx.createOscillator();
+  const filt=ctx.createBiquadFilter();
+  const gain=ctx.createGain();
+  osc.type='triangle';
+  osc.frequency.setValueAtTime(90,at);
+  filt.type='lowpass'; filt.frequency.setValueAtTime(800,at);
+  gain.gain.setValueAtTime(.0001,at);
+  gain.gain.linearRampToValueAtTime(.09,at+.002);
+  gain.gain.exponentialRampToValueAtTime(.0001,at+dur);
+  osc.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
+  osc.start(at); osc.stop(at+dur+.02);
+  currentVoice.push(osc);
+}
+function playBass(at,midi,gate){
+  const dur=Math.max(.04, stepDur()*gate/100);
+  const freq=440*Math.pow(2,(midi-69)/12);
+  const o1=ctx.createOscillator(), o2=ctx.createOscillator(), g=ctx.createGain(), f=ctx.createBiquadFilter();
+  o1.type='triangle'; o2.type='sine';
+  o1.frequency.setValueAtTime(freq,at); o2.frequency.setValueAtTime(freq*.5,at);
+  f.type='lowpass'; f.frequency.setValueAtTime(700,at); f.Q.setValueAtTime(1.5,at);
+  g.gain.setValueAtTime(.0001,at);
+  g.gain.linearRampToValueAtTime(.48,at+.006);
+  g.gain.exponentialRampToValueAtTime(.15,at+Math.min(.09,dur*.45));
+  g.gain.exponentialRampToValueAtTime(.0001,at+dur);
+  o1.connect(f); o2.connect(f); f.connect(g); g.connect(ctx.destination);
+  o1.start(at); o2.start(at); o1.stop(at+dur+.05); o2.stop(at+dur+.05);
+  currentVoice.push(o1,o2);
+}
+function schedule(){
+  if(!playing) return;
+  const now=ctx.currentTime;
+  while(nextAt < now + .12){
+    const abs = nextStep;
+    const ev = eventAt(abs);
+    const bar=Math.floor(abs/8), k=abs%8;
+    if(ev){
+      const t=nextAt;
+      if(ev.t==='x') playGhost(t,ev.g);
+      else playBass(t,eventMidi(bar,ev),ev.g);
+    }
+    const uiAt = Math.max(0,(nextAt-now)*1000);
+    setTimeout(()=>updateMarker(abs), uiAt);
+    nextAt += stepDur();
+    nextStep++;
+    if(nextStep>loopRange[1]) nextStep=loopRange[0];
+  }
+  timer=requestAnimationFrame(schedule);
+}
+async function start(){
+  ensureAudio();
+  if(ctx.state!=='running') await ctx.resume();
+  stopVoices();
+  playing=true;
+  $('playBtn').textContent='Ⅱ'; $('dockPlay').textContent='Ⅱ';
+  nextStep=loopRange[0];
+  nextAt=ctx.currentTime+.04;
+  $('dockMeta').textContent=`Padrão 13 · ${bpm} BPM`;
+  schedule();
+}
+function stop(){
+  playing=false;
+  cancelAnimationFrame(timer);
+  $('playBtn').textContent='▶'; $('dockPlay').textContent='▶';
+  stopVoices();
+}
+function toggle(){ playing ? stop() : start(); }
+
+$('playBtn').onclick=toggle; $('dockPlay').onclick=toggle;
+$('minus').onclick=()=>setTempo(bpm-1); $('plus').onclick=()=>setTempo(bpm+1);
+$('slowBtn').onclick=()=>setTempo(65);
+keySel.onchange=e=>{ key=Number(e.target.value); updateMarker(currentAbs); };
+$('registerSel').onchange=e=>{ register=Number(e.target.value); updateMarker(currentAbs); };
+function setTempo(n){ bpm=Math.max(45,Math.min(160,Math.round(n))); $('bpmVal').textContent=String(bpm); $('dockMeta').textContent=`Padrão 13 · ${bpm} BPM`; if(playing){ stop(); start(); } }
+document.querySelectorAll('.pill[data-mode]').forEach(btn=>btn.onclick=()=>{setLoop(btn.dataset.mode); if(playing){stop(); start();} else updateMarker(loopRange[0]);});
+
+fillKeySelect(); drawBoard(); initPulse(); renderGrid(); setLoop('all'); updateMarker(0);
+</script>
+</body>
+</html>
