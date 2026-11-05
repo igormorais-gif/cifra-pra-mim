@@ -349,7 +349,7 @@ function basePulse(t,kind){
  voices.push({o:node,g:gain,t:t});
 }
 
-DATA.forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent='Padrão '+p.id+' · '+p.name;pat.appendChild(o)});pat.value='13';
+DATA.forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.id===13?p.name:'Padrão '+p.id+' · '+p.name;pat.appendChild(o)});pat.value='13';
 function totalSteps(){return mode==='integral'?32:8}function dur(){return 15/bpm}var P4_PHASE_SHIFT=0; // gravação do Padrão 4 realinhada ao início do compasso
 function sourcePhaseBias(){return 0}
 function visualLeadSec(){return current.id===4||current.id===5?0.035:0.032}
