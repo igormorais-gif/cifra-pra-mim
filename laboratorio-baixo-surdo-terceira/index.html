@@ -38,10 +38,17 @@
 .cell.gateSelected{outline:2px solid #f2d39f;outline-offset:-2px}
 .cell.gateEditing{cursor:crosshair}
 @media(max-width:480px){.durationPanel{padding:10px}.durationChoices button{font-size:10px;padding:8px 0}.cell .gateBar{height:3px}.cell{gap:3px}}
+
+/* V5: edição imediata, mantendo compatibilidade com os modos antigos */
+.durationModes{display:none!important}
+.oneTapHint{font-size:11px;color:#d4b984;font-weight:700}
+.cell.gateSelected{outline:2px solid #ffe0a2}
+.cell .gateBar{height:5px}
+@media(max-width:800px){.durationPanel{padding:9px;margin-top:7px;gap:6px}}
 </style>
 </head>
 <body><div class="wrap">
-<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V4</div>
+<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V5</div>
 <div class="head"><div><h1>O surdo de terceira no baixo</h1><p class="sub">A frase do terceira com o grave da bateria. Fundamentos, quintas, oitavas, ghost notes e duração de cada ataque.</p></div><a class="toplink" href="../laboratorio-surdo-terceira/?v=16" aria-label="Voltar ao laboratório de surdo">↗ Voltar ao surdo</a></div>
 <div class="panel">
  <div class="toolbar"><select id="pattern" class="select" aria-label="Padrão de surdo"></select><button type="button" id="play" class="primary">▶ Tocar</button><button type="button" id="reset" class="secondary" aria-label="Reiniciar">↺</button></div>
@@ -66,7 +73,7 @@
      </svg></div><div class="figfoot"><span>POSIÇÃO ATIVA</span><b id="nowNote">—</b></div></div>
    <div class="group"><div class="tablerow"><span class="smalllabel">TOCAR JUNTO</span><label class="smallSwitch"><input type="checkbox" id="click"> Marcar 1 e 2</label><label class="smallSwitch">Volume <input class="vol" id="volume" type="range" min="0" max="100" value="70"></label></div><p class="caption">Som de baixo elétrico amostrado, com ataque abafado para as ghost notes. Os padrões seguem a grade do Laboratório de Surdo de Terceira.</p></div>
  </div><div class="scoreSide"><div class="rowtitle"><h2>Fraseologia</h2><span id="meter">2/4 · 8 semicolcheias</span></div><div class="key"><span><i class="dot"></i> 1 · fundamental</span><span><i class="dot fifth"></i> 5 · quinta</span><span><i class="dot oct"></i> 8 · oitava</span><span><i class="dot low5"></i> 5↓ · quinta grave</span><span><i class="dot ghost"></i> × · ghost</span></div><div class="counter"><span class="num" id="barState">COMPASSO 1 DE 4</span><span class="count" id="beatState">Tempo 1 · 1</span></div><div id="barList" class="barlist"></div><div class="barCount"><span>Contagem: <b>1 e & a | 2 e & a</b></span><span>toque na célula para editar</span></div><div class="durationPanel" aria-label="Controle individual do comprimento das notas">
-<div class="durationTop"><strong>Comprimento do som</strong><div class="durationModes"><button type="button" id="noteMode" class="pill active">Notas</button><button type="button" id="gateMode" class="pill">Duração</button></div></div>
+<div class="durationTop"><strong>Comprimento do som</strong><div class="durationModes"><button type="button" id="noteMode" class="pill active">Notas</button><button type="button" id="gateMode" class="pill">Duração</button></div><span class="oneTapHint">1 toque: duração · 2: nota</span></div>
 <div class="durationInfo"><span id="gateSelection">Comp. 1 · 1 · fundamental</span><strong id="gateValue">175% · 252 ms</strong></div>
 <input type="range" id="gateSlider" min="15" max="400" step="5" value="175" aria-label="Duração da nota selecionada">
 <div class="durationChoices"><button type="button" data-gate="45">Seco</button><button type="button" data-gate="100">Justo</button><button type="button" data-gate="260">Ligado</button><button type="button" id="gateRestore">Original</button></div>
@@ -109,7 +116,7 @@ let current=DATA[1], bpm=current.tempo, mode='integral',selectedBar=0,preset='au
 let bassMap={}, chordRoots=[0,0,0,0],register=0, playing=false,ctx=null,bufferMap=null,bassVolume=.7;
 let origin=0, schedStep=0, timer=0,raf=0,soundNodes=[],lastRenderedHit=null;
 let scheduled=[];
-let noteGateMap={},gateMode=false,selectedGate={bar:0,k:0};
+let noteGateMap={},gateMode=true,selectedGate={bar:0,k:0},lastCellTap=null,savedPresets={};
 function pulseNotesFor(id,bar){if(SOURCE_HAND[id])return SOURCE_HAND[id][bar].slice();const src=DATA.find(x=>x.id===id).bars[bar];let r=Array(8).fill(null);for(let k of src)r[k]='T';for(let k of [0,3])if(r[k]===null)r[k]='Q';return r}
 
 // O Padrão 4 conserva EXATAMENTE a condução entregue pelo usuário.
@@ -228,10 +235,32 @@ function showBassNote(value,bar,animate=true){drawDegreeDots(bar);let marker=$('
 function optionsForSelect(el){el.innerHTML=CHORDS.map((ch,i)=>`<option value="${i}">${ch} · ${NOTENAMES[i]}</option>`).join('')}
 function renderChords(){const holder=$('chordBars');holder.innerHTML='';for(let b=0;b<4;b++){let box=document.createElement('label');box.textContent=`COMPASSO ${b+1}`;let sel=document.createElement('select');optionsForSelect(sel);sel.value=chordRoots[b];sel.addEventListener('change',()=>{chordRoots[b]=Number(sel.value);updateLabels()});box.appendChild(sel);holder.appendChild(box)}}
 function updateLabels(){let root=rootMidi(selectedBar),low=eventMidi(selectedBar,'L');$('rootName').innerHTML=`<b>1</b> ${noteFromMidi(root)} · ${CHORDS[chordRoots[selectedBar]]}`;$('fifthName').innerHTML=`<b>5</b> ${noteFromMidi(root+7)}`;$('octaveName').innerHTML=`<b>8</b> ${noteFromMidi(root+12)}`;$('lowFifthName').innerHTML=`<b>5↓</b> ${low===null?'indisponível':noteFromMidi(low)}`;renderChords();drawDegreeDots(selectedBar)}
-function setPreset(name){stop();preset=name;bassMap[current.id]=makeBassMap(current.id,name);for(let btn of document.querySelectorAll('.preset'))btn.classList.toggle('active',btn.dataset.preset===name);drawScore();setStatus('Condução atualizada. Toque nas células para personalizar.')}
+function setPreset(name){stop();preset=name;bassMap[current.id]=makeBassMap(current.id,name);for(let btn of document.querySelectorAll('.preset'))btn.classList.toggle('active',btn.dataset.preset===name);lastCellTap=null;savedPresets[current.id]=name;drawScore();updateGateUI();saveGroove();setStatus('Condução atualizada. Toque nas células para personalizar.')}
 
-function gateDefault(value){return value==='x'?75:175}
-function gateFor(bar,k,value){const stored=noteGateMap[current.id]?.[bar]?.[k];return Number.isFinite(stored)?stored:gateDefault(value)}
+
+const GROOVE_KEY='arranja-baixo-surdo-v5';
+function saveGroove(){
+ try{localStorage.setItem(GROOVE_KEY,JSON.stringify({gates:noteGateMap,maps:bassMap,presets:savedPresets}))}catch(e){}
+}
+function restoreGroove(){
+ try{
+  const state=JSON.parse(localStorage.getItem(GROOVE_KEY)||'null');
+  if(!state||typeof state!=='object')return;
+  if(state.gates&&typeof state.gates==='object')noteGateMap=state.gates;
+  if(state.maps&&typeof state.maps==='object')bassMap=state.maps;
+  if(state.presets&&typeof state.presets==='object')savedPresets=state.presets;
+ }catch(e){}
+}
+function gateDefault(value,bar=0,k=0){
+ if(value==='x')return 65;
+ if(k===0)return [150,125,140,95][bar]??150;
+ if(k===4)return 190;
+ if(k===5)return 120;
+ if(k===6)return 105;
+ if(k===7)return 185;
+ return 155;
+}
+function gateFor(bar,k,value){const stored=noteGateMap[current.id]?.[bar]?.[k];return Number.isFinite(stored)?stored:gateDefault(value,bar,k)}
 function gateMs(percent){return Math.round(15000*percent/(bpm*100))}
 function updateGateUI(){
  const {bar,k}=selectedGate,v=getMap()[bar][k],pct=gateFor(bar,k,v),canEdit=!!v;
@@ -239,7 +268,7 @@ function updateGateUI(){
  $('gateValue').textContent=canEdit?pct+'% · '+gateMs(pct)+' ms':'PAUSA';
  $('gateSlider').value=pct;$('gateSlider').disabled=!canEdit;
  for(const btn of document.querySelectorAll('[data-gate],#gateRestore'))btn.disabled=!canEdit;
- $('gateHelp').textContent=gateMode?'Toque nas notas para escolher. 100% = uma semicolcheia.':'Toque em «Duração» para selecionar e ajustar cada nota.';
+ $('gateHelp').textContent='1 toque: ajuste a duração; 2 toques na mesma célula: mude 1 → 5 → 8 → 5↓ → × → pausa.';
 }
 function selectGate(bar,k){selectedGate={bar,k};drawScore();showBassNote(getMap()[bar][k],bar);updateGateUI()}
 function setGateMode(yes){
@@ -252,10 +281,16 @@ function setGatePercent(percent){
  noteGateMap[current.id][bar][k]=Math.max(15,Math.min(400,Math.round(percent/5)*5));
  const cell=$('cell'+bar+'_'+k);
  if(cell){const fill=cell.querySelector('.gateFill');if(fill)fill.style.width=Math.min(100,noteGateMap[current.id][bar][k]/4)+'%'}
- updateGateUI();
+ updateGateUI();saveGroove();
 }
-function editStep(bar,k){stop();selectedGate={bar,k};let vals=TOKEN_CYCLE,map=getMap();let prev=map[bar][k];map[bar][k]=vals[(vals.indexOf(prev)+1)%vals.length];drawScore();showBassNote(map[bar][k],bar);updateGateUI();previewBass(map[bar][k],bar,k);setStatus(`Compasso ${bar+1}, posição ${COUNTS[k]}: ${tokenLabel(map[bar][k])}.`)}
-function drawScore(){let list=$('barList');list.innerHTML='';let m=getMap();for(let b=0;b<4;b++){let row=document.createElement('div');row.className='bar'+(mode==='celula'&&selectedBar===b?' selected':'');row.id=`bar${b}`;let head=document.createElement('div');head.className='barNum';head.textContent=b+1;row.appendChild(head);for(let k=0;k<8;k++){let v=m[b][k];let e=document.createElement('button');e.type='button';e.id=`cell${b}_${k}`;e.dataset.bar=b;e.dataset.step=k;e.className='cell'+(gateMode?' gateEditing':'')+(selectedGate.bar===b&&selectedGate.k===k&&gateMode?' gateSelected':'')+(k===0||k===4?' beat':'')+(v==='1'?' root':v==='5'?' fifth':v==='8'?' oct':v==='L'?' lowfifth':v==='x'?' ghost':' nothing');e.title=`Compasso ${b+1} · ${COUNTS[k]} · ${tokenLabel(v)} · ${gateMode?'toque para ajustar duração':'toque para mudar nota'}`;e.setAttribute('aria-label',e.title);e.innerHTML=`<span class="count">${COUNTS[k]}</span><span class="mark">${displayToken(v)}</span><span class="gateBar" aria-hidden="true"><span class="gateFill" style="width:${Math.min(100,gateFor(b,k,v)/4)}%"></span></span>`;e.addEventListener('click',()=>gateMode?selectGate(b,k):editStep(b,k));row.appendChild(e)}list.appendChild(row)}paintScore(0,false)}
+function handleCellTap(bar,k){
+ const second=lastCellTap?.bar===bar&&lastCellTap?.k===k;
+ lastCellTap={bar,k};
+ if(second)editStep(bar,k);
+ else{selectGate(bar,k);setStatus('Compasso '+(bar+1)+' · '+COUNTS[k]+': ajuste a duração. Outro toque nesta célula muda a nota.')}
+}
+function editStep(bar,k){stop();selectedGate={bar,k};let vals=TOKEN_CYCLE,map=getMap();let prev=map[bar][k];map[bar][k]=vals[(vals.indexOf(prev)+1)%vals.length];drawScore();showBassNote(map[bar][k],bar);updateGateUI();previewBass(map[bar][k],bar,k);saveGroove();setStatus(`Compasso ${bar+1}, posição ${COUNTS[k]}: ${tokenLabel(map[bar][k])}.`)}
+function drawScore(){let list=$('barList');list.innerHTML='';let m=getMap();for(let b=0;b<4;b++){let row=document.createElement('div');row.className='bar'+(mode==='celula'&&selectedBar===b?' selected':'');row.id=`bar${b}`;let head=document.createElement('div');head.className='barNum';head.textContent=b+1;row.appendChild(head);for(let k=0;k<8;k++){let v=m[b][k];let e=document.createElement('button');e.type='button';e.id=`cell${b}_${k}`;e.dataset.bar=b;e.dataset.step=k;e.className='cell'+(gateMode?' gateEditing':'')+(selectedGate.bar===b&&selectedGate.k===k&&gateMode?' gateSelected':'')+(k===0||k===4?' beat':'')+(v==='1'?' root':v==='5'?' fifth':v==='8'?' oct':v==='L'?' lowfifth':v==='x'?' ghost':' nothing');e.title=`Compasso ${b+1} · ${COUNTS[k]} · ${tokenLabel(v)} · 1º toque: duração; 2º toque: mudar nota`;e.setAttribute('aria-label',e.title);e.innerHTML=`<span class="count">${COUNTS[k]}</span><span class="mark">${displayToken(v)}</span><span class="gateBar" aria-hidden="true"><span class="gateFill" style="width:${Math.min(100,gateFor(b,k,v)/4)}%"></span></span>`;e.addEventListener('click',()=>handleCellTap(b,k));row.appendChild(e)}list.appendChild(row)}paintScore(0,false)}
 function setStatus(s){$('status').textContent=s}
 async function previewBass(value,bar,k){if(!value)return;try{let Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;if(!ctx)ctx=new Audio({latencyHint:'interactive'});await ctx.resume();await loadSounds();playBass(ctx.currentTime+.01,value,bar,k)}catch(e){console.warn('prévia do baixo',e)}}
 function timeForStep(i){const absolute=(mode==='integral'?0:selectedBar*8)+i;return origin+i*15/bpm+humanOffset(current.id,absolute)}
@@ -269,10 +304,10 @@ function playClick(at,isSecond){if(!$('click').checked||!ctx)return;let osc=ctx.
 function schedule(){if(!playing||!ctx||ctx.state!=='running')return;let now=ctx.currentTime,horizon=now+.22,count=mode==='integral'?32:8;let i=0;while(i++<64){let idx=schedStep%count,loop=Math.floor(schedStep/count),cycle=count*15/bpm;let t=timeForStep(idx)+loop*cycle;if(t>=horizon)break;let b=mode==='integral'?Math.floor(idx/8):selectedBar,k=idx%8,val=getMap()[b][k];if(t>=now-.017){if(val){playBass(Math.max(now,t),val,b,k);scheduled.push({t:Math.max(now,t),b,k,v:val});}if(k===0||k===4)playClick(Math.max(now,t),k===4)}schedStep++}soundNodes=soundNodes.filter(s=>s.t>=now-1.2);scheduled=scheduled.filter(ev=>ev.t>=now-.18)}
 function stop(){if(timer)clearInterval(timer);timer=0;cancelAnimationFrame(raf);raf=0;playing=false;let now=ctx?.currentTime||0;for(const s of soundNodes){try{s.gain.gain.cancelScheduledValues(now);s.gain.gain.setTargetAtTime(.00001,now,.005);s.src.stop(now+.035)}catch(e){}}soundNodes=[];scheduled=[];$('play').textContent='▶ Tocar';paintScore(0,false)}
 async function start(){if(playing)return;try{let C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Áudio não compatível');if(!ctx)ctx=new C({latencyHint:'interactive'});await ctx.resume();setStatus('Preparando samples de baixo…');await loadSounds();playing=true;origin=ctx.currentTime+.15;schedStep=0;scheduled=[];$('play').textContent='Ⅱ Pausar';setStatus('Baixo elétrico · frase rítmica do padrão '+current.id+' · '+(mode==='integral'?'4 compassos':'compasso '+(selectedBar+1)));timer=setInterval(schedule,24);schedule();requestAnimationFrame(animate)}catch(e){console.error(e);stop();setStatus('Não foi possível iniciar o áudio. Toque novamente para tentar.')}}
-function selectPattern(id){stop();current=DATA.find(p=>p.id===id)||DATA[1];preset='autoral';for(const btn of document.querySelectorAll('.preset'))btn.classList.toggle('active',btn.dataset.preset==='autoral');bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;selectedBar=0;selectedGate={bar:0,k:0};drawScore();updateGateUI();updateLabels();showBassNote(null,0);setStatus('Padrão '+id+' · mesmo mapa rítmico do laboratório de surdo.')}
-function updateMode(value){stop();mode=value;document.querySelector('#allBars').classList.toggle('active',value==='integral');document.querySelector('#oneBar').classList.toggle('active',value==='celula');$('barChoose').hidden=value==='integral';renderBarChooser();drawScore()}
+function selectPattern(id){stop();current=DATA.find(p=>p.id===id)||DATA[1];lastCellTap=null;preset=savedPresets[current.id]||'autoral';for(const btn of document.querySelectorAll('.preset'))btn.classList.toggle('active',btn.dataset.preset===preset);bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;selectedBar=0;selectedGate={bar:0,k:0};drawScore();updateGateUI();updateLabels();showBassNote(null,0);setStatus('Padrão '+id+' · mesmo mapa rítmico do laboratório de surdo.')}
+function updateMode(value){stop();lastCellTap=null;mode=value;document.querySelector('#allBars').classList.toggle('active',value==='integral');document.querySelector('#oneBar').classList.toggle('active',value==='celula');$('barChoose').hidden=value==='integral';renderBarChooser();drawScore()}
 function renderBarChooser(){for(let btn of document.querySelectorAll('#barChoose button'))btn.classList.toggle('active',Number(btn.dataset.bar)===selectedBar)}
-function init(){drawFretboard();optionsForSelect($('key'));$('key').value='0';$('register').value='0';$('pattern').innerHTML=DATA.map(p=>`<option value="${p.id}">Padrão ${p.id} · ${p.name}</option>`).join('');$('pattern').value='4';bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;drawScore();updateGateUI();updateLabels();renderBarChooser();$('pattern').onchange=e=>selectPattern(Number(e.target.value));$('key').onchange=e=>{stop();chordRoots.fill(Number(e.target.value));updateLabels()};$('register').onchange=e=>{stop();register=Number(e.target.value);updateLabels()};$('bpm').oninput=e=>{let newBpm=Number(e.target.value);if(playing&&ctx){let now=ctx.currentTime,position=(now-origin)/(15/bpm);for(let node of soundNodes){try{node.gain.gain.cancelScheduledValues(now);node.gain.gain.setTargetAtTime(.00001,now,.008);node.src.stop(now+.04)}catch(e){}}soundNodes=[];scheduled=[];origin=now-position*(15/newBpm);schedStep=Math.max(0,Math.ceil(position-.0001));}bpm=newBpm;$('bpmValue').textContent=bpm;if(playing)schedule();updateGateUI()};$('minus').onclick=()=>{$('bpm').value=Math.max(55,bpm-1);$('bpm').oninput({target:$('bpm')})};$('plus').onclick=()=>{$('bpm').value=Math.min(160,bpm+1);$('bpm').oninput({target:$('bpm')})};$('volume').oninput=e=>bassVolume=Number(e.target.value)/100;$('gateMode').onclick=()=>setGateMode(true);$('noteMode').onclick=()=>setGateMode(false);$('gateSlider').oninput=e=>setGatePercent(Number(e.target.value));for(const btn of document.querySelectorAll('[data-gate]'))btn.onclick=()=>setGatePercent(Number(btn.dataset.gate));$('gateRestore').onclick=()=>{const {bar,k}=selectedGate;noteGateMap[current.id]??=Array.from({length:4},()=>Array(8).fill(null));noteGateMap[current.id][bar][k]=null;drawScore();updateGateUI()};$('play').onclick=()=>playing?stop():start();$('reset').onclick=()=>{stop();setStatus('Reiniciado.');showBassNote(null,0)};$('allBars').onclick=()=>updateMode('integral');$('oneBar').onclick=()=>updateMode('celula');for(const btn of document.querySelectorAll('#barChoose button'))btn.onclick=()=>{selectedBar=Number(btn.dataset.bar);stop();renderBarChooser();updateLabels();drawScore()};for(const btn of document.querySelectorAll('.preset'))btn.onclick=()=>setPreset(btn.dataset.preset);document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});const params=new URLSearchParams(location.search);const p=Number(params.get('p'));if(DATA.some(x=>x.id===p)){$('pattern').value=p;selectPattern(p)}}
+function init(){restoreGroove();drawFretboard();optionsForSelect($('key'));$('key').value='0';$('register').value='0';$('pattern').innerHTML=DATA.map(p=>`<option value="${p.id}">Padrão ${p.id} · ${p.name}</option>`).join('');$('pattern').value='4';bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;drawScore();updateGateUI();updateLabels();renderBarChooser();$('pattern').onchange=e=>selectPattern(Number(e.target.value));$('key').onchange=e=>{stop();chordRoots.fill(Number(e.target.value));updateLabels()};$('register').onchange=e=>{stop();register=Number(e.target.value);updateLabels()};$('bpm').oninput=e=>{let newBpm=Number(e.target.value);if(playing&&ctx){let now=ctx.currentTime,position=(now-origin)/(15/bpm);for(let node of soundNodes){try{node.gain.gain.cancelScheduledValues(now);node.gain.gain.setTargetAtTime(.00001,now,.008);node.src.stop(now+.04)}catch(e){}}soundNodes=[];scheduled=[];origin=now-position*(15/newBpm);schedStep=Math.max(0,Math.ceil(position-.0001));}bpm=newBpm;$('bpmValue').textContent=bpm;if(playing)schedule();updateGateUI()};$('minus').onclick=()=>{$('bpm').value=Math.max(55,bpm-1);$('bpm').oninput({target:$('bpm')})};$('plus').onclick=()=>{$('bpm').value=Math.min(160,bpm+1);$('bpm').oninput({target:$('bpm')})};$('volume').oninput=e=>bassVolume=Number(e.target.value)/100;$('gateMode').onclick=()=>setGateMode(true);$('noteMode').onclick=()=>setGateMode(false);$('gateSlider').oninput=e=>setGatePercent(Number(e.target.value));for(const btn of document.querySelectorAll('[data-gate]'))btn.onclick=()=>setGatePercent(Number(btn.dataset.gate));$('gateRestore').onclick=()=>{const {bar,k}=selectedGate;noteGateMap[current.id]??=Array.from({length:4},()=>Array(8).fill(null));noteGateMap[current.id][bar][k]=null;drawScore();updateGateUI();saveGroove()};$('play').onclick=()=>playing?stop():start();$('reset').onclick=()=>{stop();setStatus('Reiniciado.');showBassNote(null,0)};$('allBars').onclick=()=>updateMode('integral');$('oneBar').onclick=()=>updateMode('celula');for(const btn of document.querySelectorAll('#barChoose button'))btn.onclick=()=>{selectedBar=Number(btn.dataset.bar);lastCellTap=null;stop();renderBarChooser();updateLabels();drawScore()};for(const btn of document.querySelectorAll('.preset'))btn.onclick=()=>setPreset(btn.dataset.preset);document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});const params=new URLSearchParams(location.search);const p=Number(params.get('p'));if(DATA.some(x=>x.id===p)){$('pattern').value=p;selectPattern(p)}}
 init();
 </script>
 </body>
