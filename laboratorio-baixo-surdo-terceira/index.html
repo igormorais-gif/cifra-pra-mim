@@ -45,6 +45,83 @@
 .cell.gateSelected{outline:2px solid #ffe0a2}
 .cell .gateBar{height:5px}
 @media(max-width:800px){.durationPanel{padding:9px;margin-top:7px;gap:6px}}
+
+/* V5 — braço focal, pulso visível e transporte sempre ao alcance */
+body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+.wrap{padding-bottom:28px}
+.fretGuide{align-items:center}
+.pulseMonitor{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:7px}
+.pulseMonitor span{border-radius:5px;background:#25262c;border:1px solid #3b3e44;display:grid;place-items:center;height:25px;font-size:11px;color:#a4a4a6;font-weight:800}
+.pulseMonitor span.active{background:#bda06c;color:#121314;border-color:#e5c281}
+.surdoReference{margin:16px 0 12px;background:#17181c;border:1px solid #3c3e43;border-radius:13px;padding:16px}
+.referenceHead{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.referenceHead h2{font-size:17px;line-height:1.2;margin:4px 0 2px}
+.referenceHead a{white-space:nowrap;font-size:11px}
+.referenceKey{display:flex;gap:18px;align-items:center;font-size:10px;color:#b2b6b8;margin:12px 0 8px}
+.referenceDot{display:inline-block;height:9px;width:9px;border-radius:50%;margin-right:3px}
+.referenceDot.q{background:#8ed6db}.referenceDot.t{background:#efc57d}
+.surdoGrid{display:grid;gap:5px}
+.surdoBar{display:grid;grid-template-columns:22px repeat(8,minmax(0,1fr));gap:3px;align-items:stretch}
+.surdoNum{display:grid;place-items:center;font-size:11px;color:#a3a3a3;font-weight:800}
+.surdoEvent{height:41px;border-radius:5px;background:#25262b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px;font-weight:800;font-size:12px;color:#b7b8ba;min-width:0}
+.surdoEvent small{font-size:9px;color:#92949a}
+.surdoEvent.Q{background:#1d3033;color:#8ed6db}
+.surdoEvent.T{background:#362d20;color:#edc47b}
+.surdoEvent.on{outline:2px solid #f6dfad;outline-offset:-2px}
+.referenceOpen{margin-top:12px;width:100%;padding:12px;color:#eed5aa;background:#252425;border:1px solid #625640;border-radius:8px;font-size:12px;font-weight:760}
+.surdoEmbed{margin-top:12px}
+.surdoEmbed iframe{width:100%;border:1px solid #393a40;border-radius:10px;height:700px;background:#111}
+#transportDock{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;align-items:center;gap:10px;padding:8px max(12px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:rgba(18,19,22,.97);border-top:1px solid #6b5b40;box-shadow:0 -9px 26px #0008;backdrop-filter:blur(14px)}
+#dockPlay{min-width:48px;height:46px;border-radius:10px;background:#d8b679;color:#15130f;border:0;font-size:24px;font-weight:800}
+.dockReadout{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:98px}
+.dockReadout strong{font-size:13px;color:#f6d69b;font-variant-numeric:tabular-nums}
+.dockReadout span{font-size:10px;color:#aeb0b1}
+.dockPulse{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;flex:1;max-width:330px;margin-left:auto}
+.dockPulse span{display:grid;place-items:center;min-width:0;height:33px;border-radius:4px;background:#28292d;color:#9b9da0;font-size:10px;font-weight:800}
+.dockPulse span.current{background:#dfbd82;color:#161516}
+@media(max-width:800px){
+ .wrap{padding:9px 8px 20px}
+ .kicker{font-size:9px}
+ .head{margin:5px 0 9px;gap:3px}
+ h1{font-size:23px}
+ .sub{font-size:11px;margin-top:5px}
+ .toplink{padding:6px 8px;font-size:10px}
+ .toolbar{padding:8px}
+ .headcontrols{padding:8px;gap:7px}
+ .tempo{min-width:170px}
+ .body{display:flex;flex-direction:column}
+ .left{display:contents}
+ .left>.group:nth-child(3){order:0;padding:9px}
+ .left>.group:nth-child(4){order:2;padding:9px}
+ .scoreSide{order:1;padding:10px 8px}
+ .left>.group:nth-child(1){order:3;padding:10px}
+ .left>.group:nth-child(2){order:4;padding:10px}
+ .bassStage{overflow:hidden;padding:4px}
+ .bassStage.fullNeck{overflow-x:auto}
+ .bassStage svg{width:100%!important;min-width:0!important;max-width:100%!important}
+ .bassStage.fullNeck svg{width:1160px!important;min-width:1160px!important;max-width:none!important}
+ .fretGuide{padding:2px 0 5px;font-size:9px}
+ .figfoot{margin-top:4px}
+ .group .rowtitle{margin-bottom:6px}
+ .scoreSide .key{margin-bottom:7px}
+ .counter{margin-bottom:7px;padding:7px 9px}
+ .barlist{gap:5px}
+ .bar{min-height:59px;padding:3px 2px}
+ .cell{gap:2px;padding:2px 0}
+ .cell span.count{font-size:10px}
+ .cell .mark{font-size:15px}
+ .barCount{margin:8px 0 0}
+ .durationPanel{margin-top:8px;padding:9px}
+ .surdoReference{margin-top:10px;padding:10px}
+ .surdoEmbed iframe{height:610px}
+}
+@media(max-width:380px){
+ .dockReadout{min-width:84px}
+ .dockReadout span{font-size:9px}
+ .dockPulse span{height:29px;font-size:9px}
+ .referenceHead{align-items:flex-start;flex-direction:column;gap:4px}
+ .oneTapHint{font-size:10px}
+}
 </style>
 </head>
 <body><div class="wrap">
@@ -62,7 +139,7 @@
 <button type="button" class="preset" data-preset="descendente">Descendente</button>
 </div><p class="caption">Toque em uma célula: <b>1 → 5 → 8 → 5↓ → × → pausa</b>. As conduções são sugestões de arranjo, editáveis em todos os compassos. Se 5↓ cair abaixo de Mi1, selecione registro Médio.</p></div>
   <div class="group"><div class="rowtitle"><h2>Baixo de 4 cordas</h2><span id="fretState">Aguardando</span></div>
-    <div class="fretGuide"><span>CASAS 0–20 · 4 CORDAS</span><span>Deslize o braço para o lado <b>↔</b></span></div><div class="bassStage"><svg id="bassSvg" viewBox="0 0 1280 308" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Braço de baixo elétrico de quatro cordas com trastes e posições para fundamental, quinta, oitava e quinta grave">
+    <div class="fretGuide"><span>4 CORDAS · E–A–D–G</span><label class="smallSwitch"><input type="checkbox" id="fullNeck"> Ver braço inteiro</label></div><div class="bassStage"><svg id="bassSvg" viewBox="0 0 1280 308" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Braço de baixo elétrico de quatro cordas com trastes e posições para fundamental, quinta, oitava e quinta grave">
        <defs><linearGradient id="rosewood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4b382b"/><stop offset=".55" stop-color="#291e1b"/><stop offset="1" stop-color="#3d2b22"/></linearGradient><linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#faf8e6"/><stop offset=".5" stop-color="#9a9a8f"/><stop offset="1" stop-color="#686d6d"/></linearGradient></defs>
        <rect x="10" y="23" width="1255" height="242" rx="14" fill="#191a1d" stroke="#58504c" stroke-width="2"/>
        <rect x="92" y="44" width="1112" height="191" rx="6" fill="url(#rosewood)" stroke="#9e754b" stroke-width="2"/><g id="fretShading"></g>
@@ -70,9 +147,9 @@
        <g id="bassMarker" opacity="0"><ellipse cx="0" cy="0" rx="27" ry="24" fill="#e3bd76" opacity=".23"/><circle cx="0" cy="0" r="17" fill="#e6bd77" stroke="#fff1cf" stroke-width="2.6"/><text text-anchor="middle" dy="5" font-size="14" font-weight="850" fill="#231c12">1</text></g>
        <g id="ghostMarker" opacity="0"><circle cx="0" cy="0" r="24" fill="#ddd" opacity=".22"/><text text-anchor="middle" dy="7" font-size="28" font-weight="820" fill="#d0d2d2">×</text></g>
        <text x="18" y="289" fill="#a5a6ab" font-size="12">AFINAÇÃO</text><text x="1248" y="289" fill="#a5a6ab" font-size="12" text-anchor="end">E · A · D · G</text>
-     </svg></div><div class="figfoot"><span>POSIÇÃO ATIVA</span><b id="nowNote">—</b></div></div>
+     </svg></div><div class="pulseMonitor" id="pulseMonitor" aria-label="Subdivisões do pulso"><span>1</span><span>e</span><span>&amp;</span><span>a</span><span>2</span><span>e</span><span>&amp;</span><span>a</span></div><div class="figfoot"><span>POSIÇÃO ATIVA</span><b id="nowNote">—</b></div></div>
    <div class="group"><div class="tablerow"><span class="smalllabel">TOCAR JUNTO</span><label class="smallSwitch"><input type="checkbox" id="click"> Marcar 1 e 2</label><label class="smallSwitch">Volume <input class="vol" id="volume" type="range" min="0" max="100" value="70"></label></div><p class="caption">Som de baixo elétrico amostrado, com ataque abafado para as ghost notes. Os padrões seguem a grade do Laboratório de Surdo de Terceira.</p></div>
- </div><div class="scoreSide"><div class="rowtitle"><h2>Fraseologia</h2><span id="meter">2/4 · 8 semicolcheias</span></div><div class="key"><span><i class="dot"></i> 1 · fundamental</span><span><i class="dot fifth"></i> 5 · quinta</span><span><i class="dot oct"></i> 8 · oitava</span><span><i class="dot low5"></i> 5↓ · quinta grave</span><span><i class="dot ghost"></i> × · ghost</span></div><div class="counter"><span class="num" id="barState">COMPASSO 1 DE 4</span><span class="count" id="beatState">Tempo 1 · 1</span></div><div id="barList" class="barlist"></div><div class="barCount"><span>Contagem: <b>1 e & a | 2 e & a</b></span><span>toque na célula para editar</span></div><div class="durationPanel" aria-label="Controle individual do comprimento das notas">
+ </div><div class="scoreSide"><div class="rowtitle"><h2>Fraseologia</h2><span id="meter">2/4 · 8 semicolcheias</span></div><div class="key"><span><i class="dot"></i> 1 · fundamental</span><span><i class="dot fifth"></i> 5 · quinta</span><span><i class="dot oct"></i> 8 · oitava</span><span><i class="dot low5"></i> 5↓ · quinta grave</span><span><i class="dot ghost"></i> × · ghost</span></div><div class="counter"><span class="num" id="barState">COMPASSO 1 DE 4</span><span class="count" id="beatState">Tempo 1 · 1</span></div><div id="barList" class="barlist"></div><div class="barCount"><span>Contagem: <b>1 e & a | 2 e & a</b></span><span>1 toque: duração · 2: nota</span></div><div class="durationPanel" aria-label="Controle individual do comprimento das notas">
 <div class="durationTop"><strong>Comprimento do som</strong><div class="durationModes"><button type="button" id="noteMode" class="pill active">Notas</button><button type="button" id="gateMode" class="pill">Duração</button></div><span class="oneTapHint">1 toque: duração · 2: nota</span></div>
 <div class="durationInfo"><span id="gateSelection">Comp. 1 · 1 · fundamental</span><strong id="gateValue">175% · 252 ms</strong></div>
 <input type="range" id="gateSlider" min="15" max="400" step="5" value="175" aria-label="Duração da nota selecionada">
@@ -80,7 +157,22 @@
 <p class="caption" id="gateHelp">Toque em «Duração» e escolha uma nota na grade. 100% = uma semicolcheia.</p></div><details class="adv"><summary>Harmonia por compasso</summary><div class="chordBars" id="chordBars"></div><p class="caption">Mude a fundamental de cada compasso para ouvir a mesma frase atravessar uma sequência harmônica.</p></details><div class="chooser" style="margin-top:12px" id="barChoose" hidden><button type="button" class="pill active" data-bar="0">Comp. 1</button><button type="button" class="pill" data-bar="1">Comp. 2</button><button type="button" class="pill" data-bar="2">Comp. 3</button><button type="button" class="pill" data-bar="3">Comp. 4</button></div></div></div>
  <div class="status" id="status">Escolha um padrão e toque para ouvir a frase no baixo.</div>
 </div>
+
+<section class="surdoReference" id="surdoReference">
+ <div class="referenceHead"><div><span class="smalllabel">ORIGEM DA FRASE</span><h2>Surdo de terceira · <span id="surdoPatternName">Padrão 4</span></h2><p class="caption" id="surdoSourceLabel">Levada que originou esta condução de baixo.</p></div>
+ <a id="surdoLink" href="../laboratorio-surdo-terceira/?v=16&p=4" target="_blank" rel="noopener">Abrir original ↗</a></div>
+ <div class="referenceKey"><span><i class="referenceDot q"></i> QUI · abafamento</span><span><i class="referenceDot t"></i> TOM · golpe</span></div>
+ <div class="surdoGrid" id="surdoGrid" aria-label="Mapa de quatro compassos do surdo de terceira"></div>
+ <button type="button" id="showSurdo" class="referenceOpen" aria-expanded="false">▶ Ver movimentos e ouvir o surdo original</button>
+ <div id="surdoEmbed" class="surdoEmbed" hidden><p class="caption">Laboratório de surdo original com seus controles de mãos e áudio. As reproduções do surdo e do baixo são independentes.</p><iframe id="surdoFrame" title="Laboratório original de surdo de terceira" loading="lazy" allow="autoplay" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+</section>
 <footer>Experimento de condução: o Padrão 4 segue a proposta feita pelo usuário; os demais são alternativas geradas a partir da escrita rítmica do surdo, não transcrições de linhas de baixo. Agora com opções de fundamental, quinta, oitava e quinta grave. Nos padrões 6 a 12, as articulações QUI da palma ainda são propostas editáveis. Sample de baixo elétrico de um banco GM, não gravação do instrumentista do vídeo.</footer>
+</div>
+
+<div id="transportDock" role="region" aria-label="Player de baixo sempre acessível">
+ <button type="button" id="dockPlay" aria-label="Tocar ou pausar">▶</button>
+ <div class="dockReadout"><strong id="dockBeat">Comp. 1 · 1</strong><span id="dockInfo">Padrão 4 · 104 BPM</span></div>
+ <div class="dockPulse" id="dockPulse" aria-label="Subdivisões rítmicas"><span>1</span><span>e</span><span>&amp;</span><span>a</span><span>2</span><span>e</span><span>&amp;</span><span>a</span></div>
 </div>
 <script>
 'use strict';
@@ -212,7 +304,7 @@ function drawFretboard(){
   if(fret===12){for(let y of [128,178])dots.appendChild(makeSvg('circle',{cx:x,cy:y,r:7,fill:'#e2d0ae',opacity:.62}))}
   else dots.appendChild(makeSvg('circle',{cx:x,cy:142,r:6,fill:'#e2d0ae',opacity:.55}));
  }
- drawDegreeDots(selectedBar);
+ drawDegreeDots(selectedBar);updateFretViewport(103);
 }
 function drawDegreeDots(bar){
  const group=$('degreeDots');if(!group)return;
@@ -231,7 +323,7 @@ function drawDegreeDots(bar){
 }
 
 function locationFor(midi){let arr=[];STRINGS.forEach((s,i)=>{let fret=midi-s.midi;if(fret>=0&&fret<=20){arr.push({i,fret,price:Math.abs(fret-4)+(.7*i)})}});if(!arr.length)return null;return arr.sort((a,b)=>a.price-b.price)[0]}
-function showBassNote(value,bar,animate=true){drawDegreeDots(bar);let marker=$('bassMarker'),ghost=$('ghostMarker');marker.setAttribute('opacity','0');ghost.setAttribute('opacity','0');if(!value){$('nowNote').textContent='PAUSA';$('fretState').textContent='Silêncio';return}if(value==='x'){ghost.setAttribute('transform','translate(195 141)');ghost.setAttribute('opacity','1');$('nowNote').textContent='GHOST NOTE';$('fretState').textContent='Mão direita / abafamento';return}let midi=eventMidi(bar,value);if(midi===null){$('nowNote').textContent=displayToken(value)+' · FORA DA EXTENSÃO';$('fretState').textContent='Use registro Médio: a quinta grave fica abaixo de Mi1';return}let pos=locationFor(midi);if(pos){let x=fretMid(pos.fret),y=74+pos.i*45;marker.setAttribute('transform',`translate(${x} ${y})`);marker.setAttribute('opacity','1');marker.querySelector('text').textContent=displayToken(value);marker.querySelector('circle').setAttribute('fill',value==='1'?'#e6bd77':value==='5'?'#98c9c9':value==='8'?'#d8a4df':'#8fb0e8')} $('nowNote').textContent=`${displayToken(value)} · ${noteFromMidi(midi)}${Math.floor(midi/12)-1}`;$('fretState').textContent=pos?`${STRINGS[pos.i].note} · casa ${pos.fret}`:'Nota fora do braço'}
+function showBassNote(value,bar,animate=true){drawDegreeDots(bar);let marker=$('bassMarker'),ghost=$('ghostMarker');marker.setAttribute('opacity','0');ghost.setAttribute('opacity','0');if(!value){$('nowNote').textContent='PAUSA';$('fretState').textContent='Silêncio';return}if(value==='x'){ghost.setAttribute('transform','translate(195 141)');ghost.setAttribute('opacity','1');$('nowNote').textContent='GHOST NOTE';$('fretState').textContent='Mão direita / abafamento';return}let midi=eventMidi(bar,value);if(midi===null){$('nowNote').textContent=displayToken(value)+' · FORA DA EXTENSÃO';$('fretState').textContent='Use registro Médio: a quinta grave fica abaixo de Mi1';return}let pos=locationFor(midi);if(pos){let x=fretMid(pos.fret),y=74+pos.i*45;updateFretViewport(x);marker.setAttribute('transform',`translate(${x} ${y})`);marker.setAttribute('opacity','1');marker.querySelector('text').textContent=displayToken(value);marker.querySelector('circle').setAttribute('fill',value==='1'?'#e6bd77':value==='5'?'#98c9c9':value==='8'?'#d8a4df':'#8fb0e8')} $('nowNote').textContent=`${displayToken(value)} · ${noteFromMidi(midi)}${Math.floor(midi/12)-1}`;$('fretState').textContent=pos?`${STRINGS[pos.i].note} · casa ${pos.fret}`:'Nota fora do braço'}
 function optionsForSelect(el){el.innerHTML=CHORDS.map((ch,i)=>`<option value="${i}">${ch} · ${NOTENAMES[i]}</option>`).join('')}
 function renderChords(){const holder=$('chordBars');holder.innerHTML='';for(let b=0;b<4;b++){let box=document.createElement('label');box.textContent=`COMPASSO ${b+1}`;let sel=document.createElement('select');optionsForSelect(sel);sel.value=chordRoots[b];sel.addEventListener('change',()=>{chordRoots[b]=Number(sel.value);updateLabels()});box.appendChild(sel);holder.appendChild(box)}}
 function updateLabels(){let root=rootMidi(selectedBar),low=eventMidi(selectedBar,'L');$('rootName').innerHTML=`<b>1</b> ${noteFromMidi(root)} · ${CHORDS[chordRoots[selectedBar]]}`;$('fifthName').innerHTML=`<b>5</b> ${noteFromMidi(root+7)}`;$('octaveName').innerHTML=`<b>8</b> ${noteFromMidi(root+12)}`;$('lowFifthName').innerHTML=`<b>5↓</b> ${low===null?'indisponível':noteFromMidi(low)}`;renderChords();drawDegreeDots(selectedBar)}
@@ -251,6 +343,36 @@ function restoreGroove(){
   if(state.presets&&typeof state.presets==='object')savedPresets=state.presets;
  }catch(e){}
 }
+
+function updateDock(){$('dockInfo').textContent='Padrão '+current.id+' · '+bpm+' BPM'}
+function updateFretViewport(x=103){
+ const svg=$('bassSvg'),holder=svg?.closest('.bassStage');
+ if(!svg||!holder)return;
+ if(window.matchMedia('(max-width:800px)').matches&&!$('fullNeck').checked){
+  holder.classList.remove('fullNeck');
+  svg.setAttribute('viewBox',Math.max(0,Math.min(760,Math.round(x-225)))+' 16 520 288');
+ }else{svg.setAttribute('viewBox','0 0 1280 308');holder.classList.toggle('fullNeck',!!$('fullNeck').checked)}
+}
+function updateSurdoReference(){
+ $('surdoPatternName').textContent='Padrão '+current.id+' · '+current.name;
+ $('surdoSourceLabel').textContent=SOURCE_HAND[current.id]?'Ataques QUI/TOM mapeados na referência do surdo.':'Ataques escritos na referência; QUI/TOM como proposta didática, não transcrição.';
+ const base='../laboratorio-surdo-terceira/?v=16&p='+current.id;
+ $('surdoLink').href=base;
+ const grid=$('surdoGrid');grid.innerHTML='';
+ for(let b=0;b<4;b++){
+  const row=document.createElement('div');row.className='surdoBar';
+  const num=document.createElement('span');num.className='surdoNum';num.textContent=b+1;row.appendChild(num);
+  const hand=pulseNotesFor(current.id,b);
+  for(let k=0;k<8;k++){
+   const symbol=hand[k],cell=document.createElement('span');cell.className='surdoEvent'+(symbol?' '+symbol:'');
+   cell.innerHTML='<small>'+COUNTS[k]+'</small><span>'+(symbol==='Q'?'QUI':symbol==='T'?'TOM':'·')+'</span>';
+   row.appendChild(cell);
+  }
+  grid.appendChild(row);
+ }
+ if(!$('surdoEmbed').hidden)$('surdoFrame').src=base;
+}
+
 function gateDefault(value,bar=0,k=0){
  if(value==='x')return 65;
  if(k===0)return [150,125,140,95][bar]??150;
@@ -294,7 +416,7 @@ function drawScore(){let list=$('barList');list.innerHTML='';let m=getMap();for(
 function setStatus(s){$('status').textContent=s}
 async function previewBass(value,bar,k){if(!value)return;try{let Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;if(!ctx)ctx=new Audio({latencyHint:'interactive'});await ctx.resume();await loadSounds();playBass(ctx.currentTime+.01,value,bar,k)}catch(e){console.warn('prévia do baixo',e)}}
 function timeForStep(i){const absolute=(mode==='integral'?0:selectedBar*8)+i;return origin+i*15/bpm+humanOffset(current.id,absolute)}
-function paintScore(now,active,cycleStart=origin){let stepDuration=15/bpm,rel=(now-cycleStart)/stepDuration,steps=mode==='integral'?32:8;let index=Math.max(0,Math.min(steps-1,Math.floor(rel))),bar=mode==='integral'?Math.floor(index/8):selectedBar,k=index%8;for(let b=0;b<4;b++){let row=$(`bar${b}`);if(row)row.classList.toggle('playing',active&&b===bar);for(let j=0;j<8;j++){let cell=$(`cell${b}_${j}`);if(cell){cell.classList.toggle('passingCell',active&&b===bar&&j===k);cell.classList.remove('activeCell')}}}$('barState').textContent=`COMPASSO ${bar+1} DE 4`;$('beatState').textContent=`Tempo ${k<4?'1':'2'} · ${COUNTS[k]}`;if(active){let latest=null;for(let ev of scheduled){if(ev.t<=now+.024 && ev.t>=now-.11 && (!latest||ev.t>latest.t)) latest=ev}if(latest){let cell=$(`cell${latest.b}_${latest.k}`);if(cell)cell.classList.add('activeCell');showBassNote(latest.v,latest.b)}}}
+function paintScore(now,active,cycleStart=origin){let stepDuration=15/bpm,rel=(now-cycleStart)/stepDuration,steps=mode==='integral'?32:8;let index=Math.max(0,Math.min(steps-1,Math.floor(rel))),bar=mode==='integral'?Math.floor(index/8):selectedBar,k=index%8;for(let b=0;b<4;b++){let row=$(`bar${b}`);if(row)row.classList.toggle('playing',active&&b===bar);for(let j=0;j<8;j++){let cell=$(`cell${b}_${j}`);if(cell){cell.classList.toggle('passingCell',active&&b===bar&&j===k);cell.classList.remove('activeCell')}}}$('barState').textContent=`COMPASSO ${bar+1} DE 4`;$('beatState').textContent=`Tempo ${k<4?'1':'2'} · ${COUNTS[k]}`;$('dockBeat').textContent=`Comp. ${bar+1} · ${COUNTS[k]}`;document.querySelectorAll('#dockPulse span,#pulseMonitor span').forEach((el,i)=>el.classList.toggle(el.closest('#dockPulse')?'current':'active',active&&(i%8)===k));document.querySelectorAll('#surdoGrid .surdoBar').forEach((row,b)=>{row.querySelectorAll('.surdoEvent').forEach((el,j)=>el.classList.toggle('on',active&&bar===b&&k===j))});if(active){let latest=null;for(let ev of scheduled){if(ev.t<=now+.024 && ev.t>=now-.11 && (!latest||ev.t>latest.t)) latest=ev}if(latest){let cell=$(`cell${latest.b}_${latest.k}`);if(cell)cell.classList.add('activeCell');showBassNote(latest.v,latest.b)}}}
 function nowAudible(){if(!ctx)return 0;try{const stamp=ctx.getOutputTimestamp?.();if(stamp?.contextTime>0 && stamp?.performanceTime>0){const est=stamp.contextTime+(performance.now()-stamp.performanceTime)/1000;if(Math.abs(est-ctx.currentTime)<.1)return est}}catch(e){}return ctx.currentTime-Math.min(.065,ctx.baseLatency||.025)}
 function animate(){if(!playing)return;const now=nowAudible(),stepDuration=15/bpm,count=mode==='integral'?32:8,cycle=count*stepDuration,loops=Math.max(0,Math.floor((now-origin)/cycle)),cycleStart=origin+loops*cycle;paintScore(now,true,cycleStart);raf=requestAnimationFrame(animate)}
 function b64array(s){const bin=atob(s),data=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)data[i]=bin.charCodeAt(i);return data.buffer}
@@ -302,12 +424,12 @@ async function loadSounds(){if(bufferMap)return;let names=Object.keys(SAMPLE_STR
 function playBass(at,value,bar,k){if(!ctx||!bufferMap||!value)return;let src=ctx.createBufferSource(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=2200;let isGhost=value==='x';if(isGhost){src.buffer=bufferMap.ghost;src.playbackRate.value=1}else{let midi=eventMidi(bar,value);if(midi===null)return;let sampleName=Object.keys(SAMPLE_MIDI).sort((a,b)=>Math.abs(SAMPLE_MIDI[a]-midi)-Math.abs(SAMPLE_MIDI[b]-midi))[0];src.buffer=bufferMap[sampleName];src.playbackRate.value=Math.pow(2,(midi-SAMPLE_MIDI[sampleName])/12)}const vol=bassVolume*(isGhost?.47:.74);const pct=Number.isInteger(k)?gateFor(bar,k,value):gateDefault(value);const held=Math.max(.025,15/bpm*pct/100);const attack=Math.min(.007,held*.22),release=Math.min(.016,held*.25);gain.gain.setValueAtTime(.0001,at);gain.gain.linearRampToValueAtTime(vol,at+attack);gain.gain.setValueAtTime(vol,at+Math.max(attack,held-release));gain.gain.exponentialRampToValueAtTime(.00015,at+held);src.connect(filter);filter.connect(gain);gain.connect(ctx.destination);src.start(at);src.stop(at+held+.025);soundNodes.push({src,gain,t:at})}
 function playClick(at,isSecond){if(!$('click').checked||!ctx)return;let osc=ctx.createOscillator(),g=ctx.createGain();osc.type='triangle';osc.frequency.value=isSecond?640:880;g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(isSecond?.07:.035,at+.003);g.gain.exponentialRampToValueAtTime(.0001,at+.048);osc.connect(g);g.connect(ctx.destination);osc.start(at);osc.stop(at+.065);soundNodes.push({src:osc,gain:g,t:at})}
 function schedule(){if(!playing||!ctx||ctx.state!=='running')return;let now=ctx.currentTime,horizon=now+.22,count=mode==='integral'?32:8;let i=0;while(i++<64){let idx=schedStep%count,loop=Math.floor(schedStep/count),cycle=count*15/bpm;let t=timeForStep(idx)+loop*cycle;if(t>=horizon)break;let b=mode==='integral'?Math.floor(idx/8):selectedBar,k=idx%8,val=getMap()[b][k];if(t>=now-.017){if(val){playBass(Math.max(now,t),val,b,k);scheduled.push({t:Math.max(now,t),b,k,v:val});}if(k===0||k===4)playClick(Math.max(now,t),k===4)}schedStep++}soundNodes=soundNodes.filter(s=>s.t>=now-1.2);scheduled=scheduled.filter(ev=>ev.t>=now-.18)}
-function stop(){if(timer)clearInterval(timer);timer=0;cancelAnimationFrame(raf);raf=0;playing=false;let now=ctx?.currentTime||0;for(const s of soundNodes){try{s.gain.gain.cancelScheduledValues(now);s.gain.gain.setTargetAtTime(.00001,now,.005);s.src.stop(now+.035)}catch(e){}}soundNodes=[];scheduled=[];$('play').textContent='▶ Tocar';paintScore(0,false)}
-async function start(){if(playing)return;try{let C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Áudio não compatível');if(!ctx)ctx=new C({latencyHint:'interactive'});await ctx.resume();setStatus('Preparando samples de baixo…');await loadSounds();playing=true;origin=ctx.currentTime+.15;schedStep=0;scheduled=[];$('play').textContent='Ⅱ Pausar';setStatus('Baixo elétrico · frase rítmica do padrão '+current.id+' · '+(mode==='integral'?'4 compassos':'compasso '+(selectedBar+1)));timer=setInterval(schedule,24);schedule();requestAnimationFrame(animate)}catch(e){console.error(e);stop();setStatus('Não foi possível iniciar o áudio. Toque novamente para tentar.')}}
-function selectPattern(id){stop();current=DATA.find(p=>p.id===id)||DATA[1];lastCellTap=null;preset=savedPresets[current.id]||'autoral';for(const btn of document.querySelectorAll('.preset'))btn.classList.toggle('active',btn.dataset.preset===preset);bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;selectedBar=0;selectedGate={bar:0,k:0};drawScore();updateGateUI();updateLabels();showBassNote(null,0);setStatus('Padrão '+id+' · mesmo mapa rítmico do laboratório de surdo.')}
+function stop(){if(timer)clearInterval(timer);timer=0;cancelAnimationFrame(raf);raf=0;playing=false;let now=ctx?.currentTime||0;for(const s of soundNodes){try{s.gain.gain.cancelScheduledValues(now);s.gain.gain.setTargetAtTime(.00001,now,.005);s.src.stop(now+.035)}catch(e){}}soundNodes=[];scheduled=[];$('play').textContent='▶ Tocar';$('dockPlay').textContent='▶';paintScore(0,false)}
+async function start(){if(playing)return;try{let C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Áudio não compatível');if(!ctx)ctx=new C({latencyHint:'interactive'});await ctx.resume();setStatus('Preparando samples de baixo…');await loadSounds();playing=true;origin=ctx.currentTime+.15;schedStep=0;scheduled=[];$('play').textContent='Ⅱ Pausar';$('dockPlay').textContent='Ⅱ';setStatus('Baixo elétrico · frase rítmica do padrão '+current.id+' · '+(mode==='integral'?'4 compassos':'compasso '+(selectedBar+1)));timer=setInterval(schedule,24);schedule();requestAnimationFrame(animate)}catch(e){console.error(e);stop();setStatus('Não foi possível iniciar o áudio. Toque novamente para tentar.')}}
+function selectPattern(id){stop();current=DATA.find(p=>p.id===id)||DATA[1];lastCellTap=null;preset=savedPresets[current.id]||'autoral';for(const btn of document.querySelectorAll('.preset'))btn.classList.toggle('active',btn.dataset.preset===preset);bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;selectedBar=0;selectedGate={bar:0,k:0};drawScore();updateGateUI();updateLabels();showBassNote(null,0);updateSurdoReference();updateDock();setStatus('Padrão '+id+' · mesmo mapa rítmico do laboratório de surdo.')}
 function updateMode(value){stop();lastCellTap=null;mode=value;document.querySelector('#allBars').classList.toggle('active',value==='integral');document.querySelector('#oneBar').classList.toggle('active',value==='celula');$('barChoose').hidden=value==='integral';renderBarChooser();drawScore()}
 function renderBarChooser(){for(let btn of document.querySelectorAll('#barChoose button'))btn.classList.toggle('active',Number(btn.dataset.bar)===selectedBar)}
-function init(){restoreGroove();drawFretboard();optionsForSelect($('key'));$('key').value='0';$('register').value='0';$('pattern').innerHTML=DATA.map(p=>`<option value="${p.id}">Padrão ${p.id} · ${p.name}</option>`).join('');$('pattern').value='4';bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;drawScore();updateGateUI();updateLabels();renderBarChooser();$('pattern').onchange=e=>selectPattern(Number(e.target.value));$('key').onchange=e=>{stop();chordRoots.fill(Number(e.target.value));updateLabels()};$('register').onchange=e=>{stop();register=Number(e.target.value);updateLabels()};$('bpm').oninput=e=>{let newBpm=Number(e.target.value);if(playing&&ctx){let now=ctx.currentTime,position=(now-origin)/(15/bpm);for(let node of soundNodes){try{node.gain.gain.cancelScheduledValues(now);node.gain.gain.setTargetAtTime(.00001,now,.008);node.src.stop(now+.04)}catch(e){}}soundNodes=[];scheduled=[];origin=now-position*(15/newBpm);schedStep=Math.max(0,Math.ceil(position-.0001));}bpm=newBpm;$('bpmValue').textContent=bpm;if(playing)schedule();updateGateUI()};$('minus').onclick=()=>{$('bpm').value=Math.max(55,bpm-1);$('bpm').oninput({target:$('bpm')})};$('plus').onclick=()=>{$('bpm').value=Math.min(160,bpm+1);$('bpm').oninput({target:$('bpm')})};$('volume').oninput=e=>bassVolume=Number(e.target.value)/100;$('gateMode').onclick=()=>setGateMode(true);$('noteMode').onclick=()=>setGateMode(false);$('gateSlider').oninput=e=>setGatePercent(Number(e.target.value));for(const btn of document.querySelectorAll('[data-gate]'))btn.onclick=()=>setGatePercent(Number(btn.dataset.gate));$('gateRestore').onclick=()=>{const {bar,k}=selectedGate;noteGateMap[current.id]??=Array.from({length:4},()=>Array(8).fill(null));noteGateMap[current.id][bar][k]=null;drawScore();updateGateUI();saveGroove()};$('play').onclick=()=>playing?stop():start();$('reset').onclick=()=>{stop();setStatus('Reiniciado.');showBassNote(null,0)};$('allBars').onclick=()=>updateMode('integral');$('oneBar').onclick=()=>updateMode('celula');for(const btn of document.querySelectorAll('#barChoose button'))btn.onclick=()=>{selectedBar=Number(btn.dataset.bar);lastCellTap=null;stop();renderBarChooser();updateLabels();drawScore()};for(const btn of document.querySelectorAll('.preset'))btn.onclick=()=>setPreset(btn.dataset.preset);document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});const params=new URLSearchParams(location.search);const p=Number(params.get('p'));if(DATA.some(x=>x.id===p)){$('pattern').value=p;selectPattern(p)}}
+function init(){restoreGroove();drawFretboard();optionsForSelect($('key'));$('key').value='0';$('register').value='0';$('pattern').innerHTML=DATA.map(p=>`<option value="${p.id}">Padrão ${p.id} · ${p.name}</option>`).join('');$('pattern').value='4';bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;drawScore();updateGateUI();updateLabels();renderBarChooser();updateSurdoReference();updateDock();$('fullNeck').onchange=()=>updateFretViewport(103);$('showSurdo').onclick=()=>{const box=$('surdoEmbed'),open=box.hidden;box.hidden=!open;$('showSurdo').textContent=open?'▾ Ocultar laboratório original':'▶ Ver movimentos e ouvir o surdo original';$('showSurdo').setAttribute('aria-expanded',String(open));if(open)$('surdoFrame').src='../laboratorio-surdo-terceira/?v=16&p='+current.id;else $('surdoFrame').src='about:blank'};window.addEventListener('resize',()=>updateFretViewport(103));$('pattern').onchange=e=>selectPattern(Number(e.target.value));$('key').onchange=e=>{stop();chordRoots.fill(Number(e.target.value));updateLabels()};$('register').onchange=e=>{stop();register=Number(e.target.value);updateLabels()};$('bpm').oninput=e=>{let newBpm=Number(e.target.value);if(playing&&ctx){let now=ctx.currentTime,position=(now-origin)/(15/bpm);for(let node of soundNodes){try{node.gain.gain.cancelScheduledValues(now);node.gain.gain.setTargetAtTime(.00001,now,.008);node.src.stop(now+.04)}catch(e){}}soundNodes=[];scheduled=[];origin=now-position*(15/newBpm);schedStep=Math.max(0,Math.ceil(position-.0001));}bpm=newBpm;$('bpmValue').textContent=bpm;if(playing)schedule();updateGateUI();updateDock()};$('minus').onclick=()=>{$('bpm').value=Math.max(55,bpm-1);$('bpm').oninput({target:$('bpm')})};$('plus').onclick=()=>{$('bpm').value=Math.min(160,bpm+1);$('bpm').oninput({target:$('bpm')})};$('volume').oninput=e=>bassVolume=Number(e.target.value)/100;$('gateMode').onclick=()=>setGateMode(true);$('noteMode').onclick=()=>setGateMode(false);$('gateSlider').oninput=e=>setGatePercent(Number(e.target.value));for(const btn of document.querySelectorAll('[data-gate]'))btn.onclick=()=>setGatePercent(Number(btn.dataset.gate));$('gateRestore').onclick=()=>{const {bar,k}=selectedGate;noteGateMap[current.id]??=Array.from({length:4},()=>Array(8).fill(null));noteGateMap[current.id][bar][k]=null;drawScore();updateGateUI();saveGroove()};$('play').onclick=()=>playing?stop():start();$('dockPlay').onclick=()=>playing?stop():start();$('reset').onclick=()=>{stop();setStatus('Reiniciado.');showBassNote(null,0)};$('allBars').onclick=()=>updateMode('integral');$('oneBar').onclick=()=>updateMode('celula');for(const btn of document.querySelectorAll('#barChoose button'))btn.onclick=()=>{selectedBar=Number(btn.dataset.bar);lastCellTap=null;stop();renderBarChooser();updateLabels();drawScore()};for(const btn of document.querySelectorAll('.preset'))btn.onclick=()=>setPreset(btn.dataset.preset);document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});const params=new URLSearchParams(location.search);const p=Number(params.get('p'));if(DATA.some(x=>x.id===p)){$('pattern').value=p;selectPattern(p)}}
 init();
 </script>
 </body>
