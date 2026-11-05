@@ -135,13 +135,37 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
 .bumboVolume input{accent-color:#dbb778;width:100%;min-width:70px;flex:1}
 .bumboVolume output{font-variant-numeric:tabular-nums;color:#ebd4ad;min-width:33px;text-align:right}
 @media(max-width:600px){.bumboMetronome{min-width:0;width:100%}.bumboBeatPair{font-size:10px}}
+
+/* V15 — apresentação para o aluno: condução, gate e surdo de origem permanecem
+   na lógica sonora, mas seus painéis de edição não ocupam a tela. */
+.left>.group:nth-child(2),
+.left>.group:nth-child(4),
+.durationPanel,
+.surdoReference,
+.scoreSide details.adv {display:none!important}
+.cell{cursor:default}
+.toolbar{grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center}
+.metroToggle{display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;
+ min-height:45px;padding:8px 11px;border:1px solid #59574f;border-radius:9px;
+ background:#24262b;color:#ece1c9;font-size:12px;font-weight:760;cursor:pointer}
+.metroToggle input{accent-color:var(--gold);width:18px;height:18px;margin:0;flex:none}
+.metroToggle:has(input:not(:checked)){color:#a5a4a4;border-color:#414349;background:#202126}
+.metroToggle:focus-within{outline:2px solid var(--gold);outline-offset:2px}
+@media(max-width:650px){
+ .toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:7px}
+ .toolbar #pattern{grid-column:1 / -1;grid-row:1}
+ .toolbar #play{grid-column:1;grid-row:2}
+ .toolbar .metroToggle{grid-column:2;grid-row:2;white-space:normal;text-align:center;min-height:44px;font-size:11px;padding:7px 5px}
+ .toolbar #reset{grid-column:3;grid-row:2}
+ .scoreSide{padding-bottom:8px}
+}
 </style>
 </head>
 <body><div class="wrap">
-<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V14</div>
+<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V15</div>
 <div class="head"><div><h1>O surdo de terceira no baixo</h1><p class="sub">A frase do terceira com o grave da bateria. Fundamentos, quintas, oitavas, ghost notes e duração de cada ataque.</p></div><a class="toplink" href="../laboratorio-surdo-terceira/?v=18" aria-label="Voltar ao laboratório de surdo">↗ Voltar ao surdo</a></div>
 <div class="panel">
- <div class="toolbar"><select id="pattern" class="select" aria-label="Padrão de surdo"></select><button type="button" id="play" class="primary">▶ Tocar</button><button type="button" id="reset" class="secondary" aria-label="Reiniciar">↺</button></div>
+ <div class="toolbar"><select id="pattern" class="select" aria-label="Padrão de surdo"></select><button type="button" id="play" class="primary">▶ Tocar</button><label class="metroToggle" for="click" title="Ligar ou desligar metrônomo-bumbo agudo"><input type="checkbox" id="click" checked><span>Metrônomo-bumbo</span></label><button type="button" id="reset" class="secondary" aria-label="Reiniciar">↺</button></div>
  <div class="headcontrols"><div class="tempo"><span class="smalllabel">BPM</span><button class="miniBtn" id="minus" type="button">−</button><input id="bpm" type="range" min="55" max="160" step="1" value="104"><strong id="bpmValue">104</strong><button class="miniBtn" id="plus" type="button">+</button></div><div class="chooser"><button class="pill active" id="allBars" type="button">4 compassos</button><button class="pill" id="oneBar" type="button">Por compasso</button></div></div>
  <div class="body"><div class="left">
   <div class="group"><div class="rowtitle"><h2>Harmonia</h2><span>1 · 5 · 8 · 5↓ · sem a terça</span></div><div class="controlsGrid"><div class="field"><label for="key">FUNDAMENTAL DO ACORDE</label><select id="key"></select></div><div class="field"><label for="register">REGISTRO</label><select id="register"><option value="0">Grave · E1–D♯2</option><option value="12">Médio · E2–D♯3</option></select></div></div><div class="readout"><span id="rootName" class="noteBadge"><b>1</b> Dó</span><span id="fifthName" class="noteBadge fifth"><b>5</b> Sol</span><span id="octaveName" class="noteBadge oct"><b>8</b> Dó</span><span id="lowFifthName" class="noteBadge low5"><b>5↓</b> Sol</span><span class="noteBadge ghostNote">× ghost</span></div></div>
@@ -170,12 +194,12 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
        <text x="18" y="289" fill="#a5a6ab" font-size="12">AFINAÇÃO</text><text x="1248" y="289" fill="#a5a6ab" font-size="12" text-anchor="end">E · A · D · G</text>
      </svg></div><div class="pulseMonitor" id="pulseMonitor" aria-label="Subdivisões do pulso"><span>1</span><span>e</span><span>&amp;</span><span>a</span><span>2</span><span>e</span><span>&amp;</span><span>a</span></div><div class="figfoot"><span>POSIÇÃO ATIVA</span><b id="nowNote">—</b></div></div>
    <div class="group"><div class="tablerow"><span class="smalllabel">TOCAR JUNTO</span><div class="bumboMetronome">
- <div class="bumboHeader"><label class="smallSwitch"><input type="checkbox" id="click" checked> Metrônomo-bumbo</label><span class="bumboDescription">AGUDO · 2/4</span></div>
+ <div class="bumboHeader"><span>Metrônomo-bumbo</span><span class="bumboDescription">AGUDO · 2/4</span></div>
  <div class="bumboBeatPair"><span><b>1</b> curto e seco</span><span><b>2</b> mais sustentado</span></div>
  <label class="bumboVolume">Volume do metrônomo <input id="bumboVolume" type="range" min="0" max="100" step="1" value="55" aria-label="Volume do metrônomo-bumbo"><output id="bumboVolumeValue">55%</output></label>
  </div>
  <label class="smallSwitch">Baixo <input class="vol" id="volume" type="range" min="0" max="100" value="70" aria-label="Volume do baixo"></label></div><p class="caption">Som de baixo elétrico amostrado, com ataque abafado para as ghost notes. Os padrões seguem a grade do Laboratório de Surdo de Terceira.</p></div>
- </div><div class="scoreSide"><div class="rowtitle"><h2>Fraseologia</h2><span id="meter">2/4 · 8 semicolcheias</span></div><div class="key"><span><i class="dot"></i> 1 · fundamental</span><span><i class="dot fifth"></i> 5 · quinta</span><span><i class="dot oct"></i> 8 · oitava</span><span><i class="dot low5"></i> 5↓ · quinta grave</span><span><i class="dot ghost"></i> × · ghost</span></div><div class="counter"><span class="num" id="barState">COMPASSO 1 DE 4</span><span class="count" id="beatState">Tempo 1 · 1</span></div><div id="barList" class="barlist"></div><div class="barCount"><span>Contagem: <b>1 e & a | 2 e & a</b></span><span>1 toque: duração · 2: nota</span></div><div class="durationPanel" aria-label="Controle individual do comprimento das notas">
+ </div><div class="scoreSide"><div class="rowtitle"><h2>Fraseologia</h2><span id="meter">2/4 · 8 semicolcheias</span></div><div class="key"><span><i class="dot"></i> 1 · fundamental</span><span><i class="dot fifth"></i> 5 · quinta</span><span><i class="dot oct"></i> 8 · oitava</span><span><i class="dot low5"></i> 5↓ · quinta grave</span><span><i class="dot ghost"></i> × · ghost</span></div><div class="counter"><span class="num" id="barState">COMPASSO 1 DE 4</span><span class="count" id="beatState">Tempo 1 · 1</span></div><div id="barList" class="barlist"></div><div class="barCount"><span>Contagem: <b>1 e & a | 2 e & a</b></span></div><div class="durationPanel" aria-label="Controle individual do comprimento das notas">
 <div class="durationTop"><strong>Comprimento do som</strong><div class="durationModes"><button type="button" id="noteMode" class="pill active">Notas</button><button type="button" id="gateMode" class="pill">Duração</button></div><span class="oneTapHint">1 toque: duração · 2: nota</span></div>
 <div class="durationInfo"><span id="gateSelection">Comp. 1 · 1 · fundamental</span><strong id="gateValue">175% · 252 ms</strong></div>
 <input type="range" id="gateSlider" min="15" max="400" step="5" value="175" aria-label="Duração da nota selecionada">
@@ -800,7 +824,7 @@ function editStep(bar,k){stop();selectedGate={bar,k};let vals=TOKEN_CYCLE,map=ge
   noteGateMap[current.id][bar][k]=map[bar][k]==='8'?85:55;
  }
  updateFretViewport();drawScore();showBassNote(map[bar][k],bar);updateGateUI();previewBass(map[bar][k],bar,k);saveGroove();setStatus(`Compasso ${bar+1}, posição ${COUNTS[k]}: ${tokenLabel(map[bar][k])}.`)}
-function drawScore(){let list=$('barList');list.innerHTML='';let m=getMap();for(let b=0;b<4;b++){let row=document.createElement('div');row.className='bar'+(mode==='celula'&&selectedBar===b?' selected':'');row.id=`bar${b}`;let head=document.createElement('div');head.className='barNum';head.textContent=b+1;row.appendChild(head);for(let k=0;k<8;k++){let v=m[b][k];let e=document.createElement('button');e.type='button';e.id=`cell${b}_${k}`;e.dataset.bar=b;e.dataset.step=k;e.className='cell'+(gateMode?' gateEditing':'')+(selectedGate.bar===b&&selectedGate.k===k&&gateMode?' gateSelected':'')+(k===0||k===4?' beat':'')+(v==='1'?' root':v==='5'?' fifth':v==='8'?' oct':v==='L'?' lowfifth':v==='x'?' ghost':' nothing');e.title=`Compasso ${b+1} · ${COUNTS[k]} · ${tokenLabel(v)} · 1º toque: duração; 2º toque: mudar nota`;e.setAttribute('aria-label',e.title);e.innerHTML=`<span class="count">${COUNTS[k]}</span><span class="mark">${displayToken(v)}</span><span class="gateBar" aria-hidden="true"><span class="gateFill" style="width:${Math.min(100,gateFor(b,k,v)/4)}%"></span></span>`;e.addEventListener('click',()=>handleCellTap(b,k));row.appendChild(e)}list.appendChild(row)}paintScore(0,false)}
+function drawScore(){let list=$('barList');list.innerHTML='';let m=getMap();for(let b=0;b<4;b++){let row=document.createElement('div');row.className='bar'+(mode==='celula'&&selectedBar===b?' selected':'');row.id=`bar${b}`;let head=document.createElement('div');head.className='barNum';head.textContent=b+1;row.appendChild(head);for(let k=0;k<8;k++){let v=m[b][k];let e=document.createElement('div');e.id=`cell${b}_${k}`;e.dataset.bar=b;e.dataset.step=k;e.className='cell'+(k===0||k===4?' beat':'')+(v==='1'?' root':v==='5'?' fifth':v==='8'?' oct':v==='L'?' lowfifth':v==='x'?' ghost':' nothing');e.title=`Compasso ${b+1} · ${COUNTS[k]} · ${tokenLabel(v)}`;e.setAttribute('aria-label',e.title);e.innerHTML=`<span class="count">${COUNTS[k]}</span><span class="mark">${displayToken(v)}</span><span class="gateBar" aria-hidden="true"><span class="gateFill" style="width:${Math.min(100,gateFor(b,k,v)/4)}%"></span></span>`;row.appendChild(e)}list.appendChild(row)}paintScore(0,false)}
 function setStatus(s){$('status').textContent=s}
 async function previewBass(value,bar,k){if(!value)return;try{let Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;if(!ctx)ctx=new Audio({latencyHint:'interactive'});await ctx.resume();await loadSounds();playBass(ctx.currentTime+.01,value,bar,k)}catch(e){console.warn('prévia do baixo',e)}}
 function timeForStep(i){const absolute=(mode==='integral'?0:selectedBar*8)+i;return origin+i*15/bpm+humanOffset(current.id,absolute)}
