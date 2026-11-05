@@ -281,7 +281,7 @@ function surdoGrooveMap(id){
   for(let k=1;k<8;k++)if(hands[k]==='Q')bar[k]='x';
   const hits=hands.map((h,k)=>h==='T'?k:-1).filter(k=>k>=0);
   for(const k of hits)if(k>0)bar[k]='L';
-  if(bar[3]===null)bar[3]='x';
+  if(bar[3]===null&&(id!==13||hands[2]===null))bar[3]='x';
   for(let j=0;j<hits.length;j++){
    const k=hits[j],before=k-1;
    if(k>=5&&before>=1&&bar[before]===null)bar[before]=(b+j)%2?'8':'5';
