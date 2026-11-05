@@ -481,6 +481,8 @@ function drawDegreeDots(bar){
  group.innerHTML='';
  const colors={'1':'#f0c77e','5':'#a4d7d7','8':'#deb3e7','L':'#acc7f9'};
  for(const value of ['1','5','8','L']){
+   // Na substituição da quinta grave, o 1 já está indicado em dourado.
+   if(value==='L'&&!lowFifthFits(bar))continue;
    const midi=eventMidi(bar,value);if(midi===null)continue;
    const positions=[];
    STRINGS.forEach((a,i)=>{const fret=midi-a.midi;if(fret>=0&&fret<=20)positions.push({i,fret})});
