@@ -166,7 +166,7 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
 </style>
 </head>
 <body><div class="wrap">
-<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V17</div>
+<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V18</div>
 <div class="head"><div><h1>O surdo de terceira no baixo</h1><p class="sub">A frase do terceira com o grave da bateria. Fundamentos, quintas, oitavas, ghost notes e duração de cada ataque.</p></div><a class="toplink" href="../laboratorio-surdo-terceira/?v=18" aria-label="Voltar ao laboratório de surdo">↗ Voltar ao surdo</a></div>
 <div class="panel">
  <div class="toolbar"><select id="pattern" class="select" aria-label="Padrão de surdo"></select><button type="button" id="play" class="primary">▶ Tocar</button><label class="metroToggle" for="click" title="Ligar ou desligar metrônomo-bumbo agudo"><input type="checkbox" id="click" checked><span>Metrônomo-bumbo</span></label><button type="button" id="reset" class="secondary" aria-label="Reiniciar">↺</button></div>
@@ -500,12 +500,17 @@ function locationFor(midi){let arr=[];STRINGS.forEach((s,i)=>{let fret=midi-s.mi
 function positionForDegree(bar,value){
  const midi=eventMidi(bar,value);
  if(midi===null)return null;
- // Uma geometria fixa: 1 na corda Lá, 5↓ na corda Mi.
- if(value==='1'||value==='L'){
-  const stringIndex=value==='1'?2:3;
-  const fret=midi-STRINGS[stringIndex].midi;
-  return fret>=0&&fret<=20?{i:stringIndex,fret}:null;
- }
+ // Mesma forma visual em todas as tonalidades e levadas:
+ // 1 e 5↓ na casa da fundamental; 5 e 8 duas casas à frente.
+ // STRINGS: G=0, D=1, A=2, E=3.
+ const rootFret=rootMidi(bar)-STRINGS[2].midi;
+ const position={
+  '1':{i:2,fret:rootFret},    // 1 na corda Lá
+  'L':{i:3,fret:rootFret},    // 5↓ na corda Mi
+  '5':{i:1,fret:rootFret+2},  // 5 na corda Ré
+  '8':{i:0,fret:rootFret+2}   // 8 na corda Sol
+ }[value];
+ if(position&&position.fret>=0&&position.fret<=20)return position;
  return locationFor(midi);
 }
 
