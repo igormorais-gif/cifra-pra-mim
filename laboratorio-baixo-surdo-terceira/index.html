@@ -125,7 +125,7 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
 </style>
 </head>
 <body><div class="wrap">
-<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V9</div>
+<div class="kicker">ARRANJA PRA MIM · LABORATÓRIO DO BAIXO · V10</div>
 <div class="head"><div><h1>O surdo de terceira no baixo</h1><p class="sub">A frase do terceira com o grave da bateria. Fundamentos, quintas, oitavas, ghost notes e duração de cada ataque.</p></div><a class="toplink" href="../laboratorio-surdo-terceira/?v=16" aria-label="Voltar ao laboratório de surdo">↗ Voltar ao surdo</a></div>
 <div class="panel">
  <div class="toolbar"><select id="pattern" class="select" aria-label="Padrão de surdo"></select><button type="button" id="play" class="primary">▶ Tocar</button><button type="button" id="reset" class="secondary" aria-label="Reiniciar">↺</button></div>
@@ -140,6 +140,8 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
 <button type="button" class="preset" data-preset="descendente">Descendente</button>
 <button type="button" class="preset" data-preset="ginga-grave" id="gingaGrave" hidden>Ginga grave · estalos</button>
 <button type="button" class="preset restoreP5" id="restoreP5" hidden>Voltar à minha frase anterior</button>
+<button type="button" class="preset" id="p4Foto" data-preset="leitura4" hidden>Minha leitura · Cortador 4</button>
+<button type="button" class="preset" id="p4Restaurar" hidden>Recuperar Cortador 4 anterior</button>
 <button type="button" class="preset" id="p13Foto" data-preset="foto" hidden>Frase da foto · padrão</button>
 <button type="button" class="preset" id="p13AntesFoto" hidden>Recuperar minha frase anterior</button>
 <button type="button" class="preset" id="restoreLegacy" hidden>Recuperar minha versão antiga</button>
@@ -185,7 +187,7 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
 const $=id=>document.getElementById(id);
 const DATA=[
 {id:2,name:'Centrador',bars:[[4,7],[4,7],[4,7],[4,7]],tempo:113},
-{id:4,name:'Cortador',bars:[[4,7],[4,5,7],[4,7],[4,5,7]],tempo:104},
+{id:4,name:'Cortador',bars:[[4,7],[4,5,7],[4,7],[4,5,7]],tempo:83},
 {id:5,name:'Cortador',bars:[[4,6],[4,7],[4,6],[4,7]],tempo:91},
 {id:6,name:'Cortador',bars:[[4,6],[4,5,7],[4,6],[4,5,7]],tempo:100},
 {id:7,name:'Cortador',bars:[[4,6],[4,7],[4,6],[2,5,7]],tempo:100},
@@ -240,6 +242,23 @@ const P5_GINGA_GATES=[
 // Padrão 13 — frase e barrinhas reproduzidas a partir da foto fornecida.
 // As durações, exceto o ghost de 45% explicitamente visível,
 // foram estimadas pelas proporções das barrinhas da imagem.
+
+const P4_FOTO_MAP=[
+ ['1',null,null,'x','L',null,'8','L'],
+ ['1',null,null,'x','L','5','L','L'],
+ ['1','8',null,'x','L',null,'5','L'],
+ ['1',null,null,'x','L','L','L','L']
+];
+// Durações estimadas visualmente pelas barras; 4º compasso, 2e = 45% confirmado.
+const P4_FOTO_GATES=[
+ [95,null,null,65,110,null,25,95],
+ [95,null,null,65,55,25,85,85],
+ [95,25,null,65,130,null,40,90],
+ [90,null,null,65,45,45,100,95]
+];
+const P4_FOTO_VERSION_KEY='arranja-p4-cortador-foto-v10';
+const P4_FOTO_BACKUP_KEY='arranja-p4-cortador-anterior-v10';
+
 const P13_FOTO_MAP=[
  ['1',null,null,'x','L',null,null,null],
  ['1',null,null,'x','L','L','x','L'],
@@ -256,12 +275,7 @@ const P13_FOTO_KEY='arranja-surdo-igor-foto-v8-aplicada';
 const P13_FOTO_BACKUP='arranja-surdo-igor-antes-foto-v8';
 const P13_GATE_V9_KEY='arranja-surdo-igor-gates-v9-aplicados';
 
-const AUTORAL_P4=[
- ['1',null,null,'x','L',null,null,'L'],
- ['1',null,null,'x','1','8',null,'L'],
- ['1',null,null,'x','L',null,null,'1'],
- ['1',null,null,'x','5','1',null,'L']
-];
+const AUTORAL_P4=P4_FOTO_MAP.map(bar=>bar.slice());
 const AUTHOR_PLANS={
  2:[['L','1'],['1','8'],['5','L'],['5','1']],
  5:[['L','5'],['1','L'],['5','8'],['5','L']],
@@ -314,6 +328,7 @@ function surdoGrooveMap(id){
  });
 }
 function makeBassMap(id,style){
+ if(id===4&&style==='leitura4')return P4_FOTO_MAP.map(bar=>bar.slice());
  if(id===13&&style==='foto')return P13_FOTO_MAP.map(bar=>bar.slice());
  const bars=authorialBassMap(id);
  if(style==='ginga')return surdoGrooveMap(id);
@@ -388,10 +403,10 @@ function drawDegreeDots(bar){
 }
 
 function locationFor(midi){let arr=[];STRINGS.forEach((s,i)=>{let fret=midi-s.midi;if(fret>=0&&fret<=20){arr.push({i,fret,price:Math.abs(fret-4)+(.7*i)})}});if(!arr.length)return null;return arr.sort((a,b)=>a.price-b.price)[0]}
-function showBassNote(value,bar,animate=true){drawDegreeDots(bar);let marker=$('bassMarker'),ghost=$('ghostMarker');marker.setAttribute('opacity','0');ghost.setAttribute('opacity','0');if(!value){$('nowNote').textContent='PAUSA';$('fretState').textContent='Silêncio';return}if(value==='x'){ghost.setAttribute('transform','translate(195 141)');ghost.setAttribute('opacity','1');$('nowNote').textContent='GHOST NOTE';$('fretState').textContent='Mão direita / abafamento';return}let midi=eventMidi(bar,value);if(midi===null){$('nowNote').textContent=displayToken(value)+' · FORA DA EXTENSÃO';$('fretState').textContent='Use registro Médio: a quinta grave fica abaixo de Mi1';return}let pos=locationFor(midi);if(pos){let x=fretMid(pos.fret),y=74+pos.i*45;updateFretViewport(x);marker.setAttribute('transform',`translate(${x} ${y})`);marker.setAttribute('opacity','1');marker.querySelector('text').textContent=displayToken(value);marker.querySelector('circle').setAttribute('fill',value==='1'?'#e6bd77':value==='5'?'#98c9c9':value==='8'?'#d8a4df':'#8fb0e8')} $('nowNote').textContent=`${displayToken(value)} · ${noteFromMidi(midi)}${Math.floor(midi/12)-1}`;$('fretState').textContent=pos?`${STRINGS[pos.i].note} · casa ${pos.fret}`:'Nota fora do braço'}
+function showBassNote(value,bar,animate=true){drawDegreeDots(bar);let marker=$('bassMarker'),ghost=$('ghostMarker');marker.setAttribute('opacity','0');ghost.setAttribute('opacity','0');if(!value){$('nowNote').textContent='PAUSA';$('fretState').textContent='Silêncio';return}if(value==='x'){ghost.setAttribute('transform','translate(195 141)');ghost.setAttribute('opacity','1');$('nowNote').textContent='GHOST NOTE';$('fretState').textContent='Mão direita / abafamento';return}let midi=eventMidi(bar,value);if(midi===null){$('nowNote').textContent=displayToken(value)+' · FORA DA EXTENSÃO';$('fretState').textContent='Use registro Médio: a quinta grave fica abaixo de Mi1';return}let pos=locationFor(midi);if(pos){let x=fretMid(pos.fret),y=74+pos.i*45;marker.setAttribute('transform',`translate(${x} ${y})`);marker.setAttribute('opacity','1');marker.querySelector('text').textContent=displayToken(value);marker.querySelector('circle').setAttribute('fill',value==='1'?'#e6bd77':value==='5'?'#98c9c9':value==='8'?'#d8a4df':'#8fb0e8')} $('nowNote').textContent=`${displayToken(value)} · ${noteFromMidi(midi)}${Math.floor(midi/12)-1}`;$('fretState').textContent=pos?`${STRINGS[pos.i].note} · casa ${pos.fret}`:'Nota fora do braço'}
 function optionsForSelect(el){el.innerHTML=CHORDS.map((ch,i)=>`<option value="${i}">${ch} · ${NOTENAMES[i]}</option>`).join('')}
 function renderChords(){const holder=$('chordBars');holder.innerHTML='';for(let b=0;b<4;b++){let box=document.createElement('label');box.textContent=`COMPASSO ${b+1}`;let sel=document.createElement('select');optionsForSelect(sel);sel.value=chordRoots[b];sel.addEventListener('change',()=>{chordRoots[b]=Number(sel.value);updateLabels()});box.appendChild(sel);holder.appendChild(box)}}
-function updateLabels(){let root=rootMidi(selectedBar),low=eventMidi(selectedBar,'L');$('rootName').innerHTML=`<b>1</b> ${noteFromMidi(root)} · ${CHORDS[chordRoots[selectedBar]]}`;$('fifthName').innerHTML=`<b>5</b> ${noteFromMidi(root+7)}`;$('octaveName').innerHTML=`<b>8</b> ${noteFromMidi(root+12)}`;$('lowFifthName').innerHTML=`<b>5↓</b> ${low===null?'indisponível':noteFromMidi(low)}`;renderChords();drawDegreeDots(selectedBar)}
+function updateLabels(){updateFretViewport();let root=rootMidi(selectedBar),low=eventMidi(selectedBar,'L');$('rootName').innerHTML=`<b>1</b> ${noteFromMidi(root)} · ${CHORDS[chordRoots[selectedBar]]}`;$('fifthName').innerHTML=`<b>5</b> ${noteFromMidi(root+7)}`;$('octaveName').innerHTML=`<b>8</b> ${noteFromMidi(root+12)}`;$('lowFifthName').innerHTML=`<b>5↓</b> ${low===null?'indisponível':noteFromMidi(low)}`;renderChords();drawDegreeDots(selectedBar)}
 function applyP5Ginga(){
  if(current.id!==5)return;
  if(preset==='ginga-grave'&&bassMap[5]){refreshP5Controls();return}
@@ -419,6 +434,10 @@ function restoreP5Ginga(){
  setStatus('Sua frase anterior do Cortador 5 foi restaurada.');
 }
 function refreshP5Controls(){
+ $('p4Foto').hidden=current.id!==4;
+ let hasP4Backup=false;
+ try{hasP4Backup=!!localStorage.getItem(P4_FOTO_BACKUP_KEY)}catch(e){}
+ $('p4Restaurar').hidden=current.id!==4||!hasP4Backup;
  $('p13Foto').hidden=current.id!==13;
  let p13Old=false;
  try{p13Old=!!localStorage.getItem(P13_FOTO_BACKUP)}catch(e){}
@@ -459,6 +478,49 @@ function applyP13Foto(redraw=true){
  }
  saveGroove();
 }
+
+function applyP4Foto(redraw=true){
+ if(redraw)stop();
+ bassMap[4]=P4_FOTO_MAP.map(row=>row.slice());
+ noteGateMap[4]=P4_FOTO_GATES.map(row=>row.slice());
+ savedPresets[4]='leitura4';
+ if(current.id===4){
+  preset='leitura4';
+  if(redraw){
+   bpm=83;$('bpm').value=bpm;$('bpmValue').textContent=bpm;
+   lastCellTap=null;refreshP5Controls();drawScore();updateGateUI();updateDock();
+   setStatus('Cortador 4: leitura da foto, com agudos curtinhos como ghost.');
+  }
+ }
+ saveGroove();
+}
+function applyP4FotoOnce(){
+ let applied=false;
+ try{applied=localStorage.getItem(P4_FOTO_VERSION_KEY)==='1'}catch(e){}
+ if(applied)return;
+ if(Array.isArray(bassMap[4])){
+  const old={map:bassMap[4].map(row=>row.slice()),
+   gates:Array.isArray(noteGateMap[4])?noteGateMap[4].map(row=>row.slice()):null,
+   preset:savedPresets[4]||'ginga'};
+  try{if(!localStorage.getItem(P4_FOTO_BACKUP_KEY)){
+    localStorage.setItem(P4_FOTO_BACKUP_KEY,JSON.stringify(old))
+  }}catch(e){}
+ }
+ applyP4Foto(false);
+ try{localStorage.setItem(P4_FOTO_VERSION_KEY,'1')}catch(e){}
+}
+function restoreP4BeforeFoto(){
+ if(current.id!==4)return;
+ let old=null;
+ try{old=JSON.parse(localStorage.getItem(P4_FOTO_BACKUP_KEY)||'null')}catch(e){}
+ if(!old||!Array.isArray(old.map))return;
+ stop();bassMap[4]=old.map.map(row=>row.slice());
+ noteGateMap[4]=Array.isArray(old.gates)?old.gates.map(row=>row.slice()):Array.from({length:4},()=>Array(8).fill(null));
+ preset=old.preset||'ginga';savedPresets[4]=preset;
+ lastCellTap=null;refreshP5Controls();drawScore();updateGateUI();saveGroove();
+ setStatus('Sua versão anterior do Cortador 4 foi recuperada.');
+}
+
 function applyP13GateLengthsV9Once(){
  // Atualização única e cirúrgica: estende apenas as fundamentais do início
  // dos compassos 3 e 4, preservando o restante da edição salva no aparelho.
@@ -500,6 +562,7 @@ function restoreP13BeforeFoto(){
  setStatus('Frase anterior à foto restaurada.');
 }
 function setPreset(name){
+ if(name==='leitura4'){applyP4Foto();return}
  if(name==='foto'){applyP13Foto();return}
  if(name==='ginga-grave'){applyP5Ginga();return}
  stop();
@@ -541,13 +604,23 @@ function restoreGroove(){
 }
 
 function updateDock(){$('dockInfo').textContent='Padrão '+current.id+' · '+bpm+' BPM'}
-function updateFretViewport(x=103){
+function updateFretViewport(){
  const svg=$('bassSvg'),holder=svg?.closest('.bassStage');
  if(!svg||!holder)return;
+ let view='0 0 1280 308';
  if(window.matchMedia('(max-width:800px)').matches&&!$('fullNeck').checked){
   holder.classList.remove('fullNeck');
-  svg.setAttribute('viewBox',Math.max(0,Math.min(760,Math.round(x-225)))+' 16 520 288');
- }else{svg.setAttribute('viewBox','0 0 1280 308');holder.classList.toggle('fullNeck',!!$('fullNeck').checked)}
+  let rightmost=320;
+  const map=getMap();
+  for(let b=0;b<4;b++)for(const token of map[b]||[]){
+   if(!token||token==='x')continue;
+   const midi=eventMidi(b,token),pos=midi===null?null:locationFor(midi);
+   if(pos)rightmost=Math.max(rightmost,fretMid(pos.fret));
+  }
+  const width=Math.max(640,Math.min(1280,Math.ceil(rightmost+80)));
+  view='0 16 '+width+' 288';
+ }else{holder.classList.toggle('fullNeck',!!$('fullNeck').checked)}
+ if(svg.getAttribute('viewBox')!==view)svg.setAttribute('viewBox',view);
 }
 function updateSurdoReference(){
  $('surdoPatternName').textContent=current.id===13?'Surdo de 3a Igor Whatsapp':'Padrão '+current.id+' · '+current.name;$('studySlow').hidden=current.id!==13;
@@ -580,6 +653,7 @@ function gateDefault(value,bar=0,k=0){
 }
 function gateFor(bar,k,value){
  const stored=noteGateMap[current.id]?.[bar]?.[k];if(Number.isFinite(stored))return stored;
+ if(current.id===4&&preset==='leitura4'&&Number.isFinite(P4_FOTO_GATES[bar]?.[k]))return P4_FOTO_GATES[bar][k];
  if(current.id===13&&preset==='foto'&&Number.isFinite(P13_FOTO_GATES[bar]?.[k]))return P13_FOTO_GATES[bar][k];
  if(current.id===5&&preset==='ginga-grave'&&Number.isFinite(P5_GINGA_GATES[bar]?.[k]))return P5_GINGA_GATES[bar][k];
  if(preset==='ginga'){
@@ -636,10 +710,10 @@ function playClick(at,isSecond){if(!$('click').checked||!ctx)return;let osc=ctx.
 function schedule(){if(!playing||!ctx||ctx.state!=='running')return;let now=ctx.currentTime,horizon=now+.22,count=mode==='integral'?32:8;let i=0;while(i++<64){let idx=schedStep%count,loop=Math.floor(schedStep/count),cycle=count*15/bpm;let t=timeForStep(idx)+loop*cycle;if(t>=horizon)break;let b=mode==='integral'?Math.floor(idx/8):selectedBar,k=idx%8,val=getMap()[b][k];if(t>=now-.017){if(val){playBass(Math.max(now,t),val,b,k);scheduled.push({t:Math.max(now,t),b,k,v:val});}if(k===0||k===4)playClick(Math.max(now,t),k===4)}schedStep++}soundNodes=soundNodes.filter(s=>s.t>=now-1.2);scheduled=scheduled.filter(ev=>ev.t>=now-.18)}
 function stop(){if(timer)clearInterval(timer);timer=0;cancelAnimationFrame(raf);raf=0;playing=false;let now=ctx?.currentTime||0;for(const s of soundNodes){try{s.gain.gain.cancelScheduledValues(now);s.gain.gain.setTargetAtTime(.00001,now,.005);s.src.stop(now+.035)}catch(e){}}soundNodes=[];scheduled=[];$('play').textContent='▶ Tocar';$('dockPlay').textContent='▶';paintScore(0,false)}
 async function start(){if(playing)return;try{let C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Áudio não compatível');if(!ctx)ctx=new C({latencyHint:'interactive'});await ctx.resume();setStatus('Preparando samples de baixo…');await loadSounds();playing=true;origin=ctx.currentTime+.15;schedStep=0;scheduled=[];$('play').textContent='Ⅱ Pausar';$('dockPlay').textContent='Ⅱ';setStatus('Baixo elétrico · frase rítmica do padrão '+current.id+' · '+(mode==='integral'?'4 compassos':'compasso '+(selectedBar+1)));timer=setInterval(schedule,24);schedule();requestAnimationFrame(animate)}catch(e){console.error(e);stop();setStatus('Não foi possível iniciar o áudio. Toque novamente para tentar.')}}
-function selectPattern(id){stop();current=DATA.find(p=>p.id===id)||DATA[1];lastCellTap=null;preset=savedPresets[current.id]||(current.id===13?'foto':'ginga');refreshP5Controls();bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;selectedBar=0;selectedGate={bar:0,k:0};drawScore();updateGateUI();updateLabels();showBassNote(null,0);updateSurdoReference();updateDock();setStatus('Padrão '+id+' · mesmo mapa rítmico do laboratório de surdo.')}
+function selectPattern(id){stop();current=DATA.find(p=>p.id===id)||DATA[1];lastCellTap=null;preset=savedPresets[current.id]||(current.id===13?'foto':current.id===4?'leitura4':'ginga');refreshP5Controls();bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;selectedBar=0;selectedGate={bar:0,k:0};drawScore();updateGateUI();updateLabels();showBassNote(null,0);updateSurdoReference();updateDock();setStatus('Padrão '+id+' · mesmo mapa rítmico do laboratório de surdo.')}
 function updateMode(value){stop();lastCellTap=null;mode=value;document.querySelector('#allBars').classList.toggle('active',value==='integral');document.querySelector('#oneBar').classList.toggle('active',value==='celula');$('barChoose').hidden=value==='integral';renderBarChooser();drawScore()}
 function renderBarChooser(){for(let btn of document.querySelectorAll('#barChoose button'))btn.classList.toggle('active',Number(btn.dataset.bar)===selectedBar)}
-function init(){restoreGroove();applyP13FotoOnce();applyP13GateLengthsV9Once();preset=savedPresets[current.id]||'ginga';drawFretboard();optionsForSelect($('key'));$('key').value='0';$('register').value='0';$('pattern').innerHTML=DATA.map(p=>`<option value="${p.id}">Padrão ${p.id} · ${p.name}</option>`).join('');$('pattern').value='4';bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;drawScore();updateGateUI();updateLabels();renderBarChooser();refreshP5Controls();updateSurdoReference();updateDock();$('studySlow').onclick=()=>{stop();$('bpm').value=65;$('bpm').oninput({target:$('bpm')});updateMode('celula');selectedBar=0;renderBarChooser();drawScore();updateGateUI();setStatus('Estudo Surdo de 3a Igor Whatsapp: compasso 1 em loop, 65 BPM. Selecione os outros compassos na barra.')};$('fullNeck').onchange=()=>updateFretViewport(103);$('showSurdo').onclick=()=>{const box=$('surdoEmbed'),open=box.hidden;box.hidden=!open;$('showSurdo').textContent=open?'▾ Ocultar laboratório original':'▶ Ver movimentos e ouvir o surdo original';$('showSurdo').setAttribute('aria-expanded',String(open));if(open)$('surdoFrame').src='../laboratorio-surdo-terceira/?v=17&p='+current.id;else $('surdoFrame').src='about:blank'};window.addEventListener('resize',()=>updateFretViewport(103));$('pattern').onchange=e=>selectPattern(Number(e.target.value));$('key').onchange=e=>{stop();chordRoots.fill(Number(e.target.value));updateLabels()};$('register').onchange=e=>{stop();register=Number(e.target.value);updateLabels()};$('bpm').oninput=e=>{let newBpm=Number(e.target.value);if(playing&&ctx){let now=ctx.currentTime,position=(now-origin)/(15/bpm);for(let node of soundNodes){try{node.gain.gain.cancelScheduledValues(now);node.gain.gain.setTargetAtTime(.00001,now,.008);node.src.stop(now+.04)}catch(e){}}soundNodes=[];scheduled=[];origin=now-position*(15/newBpm);schedStep=Math.max(0,Math.ceil(position-.0001));}bpm=newBpm;$('bpmValue').textContent=bpm;if(playing)schedule();updateGateUI();updateDock()};$('minus').onclick=()=>{$('bpm').value=Math.max(55,bpm-1);$('bpm').oninput({target:$('bpm')})};$('plus').onclick=()=>{$('bpm').value=Math.min(160,bpm+1);$('bpm').oninput({target:$('bpm')})};$('volume').oninput=e=>bassVolume=Number(e.target.value)/100;$('gateMode').onclick=()=>setGateMode(true);$('noteMode').onclick=()=>setGateMode(false);$('gateSlider').oninput=e=>setGatePercent(Number(e.target.value));for(const btn of document.querySelectorAll('[data-gate]'))btn.onclick=()=>setGatePercent(Number(btn.dataset.gate));$('gateRestore').onclick=()=>{const {bar,k}=selectedGate;noteGateMap[current.id]??=Array.from({length:4},()=>Array(8).fill(null));noteGateMap[current.id][bar][k]=null;drawScore();updateGateUI();saveGroove()};$('play').onclick=()=>playing?stop():start();$('dockPlay').onclick=()=>playing?stop():start();$('reset').onclick=()=>{stop();setStatus('Reiniciado.');showBassNote(null,0)};$('allBars').onclick=()=>updateMode('integral');$('oneBar').onclick=()=>updateMode('celula');for(const btn of document.querySelectorAll('#barChoose button'))btn.onclick=()=>{selectedBar=Number(btn.dataset.bar);lastCellTap=null;stop();renderBarChooser();updateLabels();drawScore()};for(const btn of document.querySelectorAll('[data-preset]'))btn.onclick=()=>setPreset(btn.dataset.preset);$('restoreP5').onclick=restoreP5Ginga;$('restoreLegacy').onclick=restoreLegacyMap;$('p13AntesFoto').onclick=restoreP13BeforeFoto;document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});const params=new URLSearchParams(location.search);const p=Number(params.get('p'));if(DATA.some(x=>x.id===p)){$('pattern').value=p;selectPattern(p)}if(current.id===5&&params.get('ginga')==='1')applyP5Ginga();refreshP5Controls()}
+function init(){restoreGroove();applyP13FotoOnce();applyP13GateLengthsV9Once();applyP4FotoOnce();preset=savedPresets[current.id]||'ginga';drawFretboard();optionsForSelect($('key'));$('key').value='0';$('register').value='0';$('pattern').innerHTML=DATA.map(p=>`<option value="${p.id}">Padrão ${p.id} · ${p.name}</option>`).join('');$('pattern').value='4';bpm=current.tempo;$('bpm').value=bpm;$('bpmValue').textContent=bpm;drawScore();updateGateUI();updateLabels();renderBarChooser();refreshP5Controls();updateSurdoReference();updateDock();$('studySlow').onclick=()=>{stop();$('bpm').value=65;$('bpm').oninput({target:$('bpm')});updateMode('celula');selectedBar=0;renderBarChooser();drawScore();updateGateUI();setStatus('Estudo Surdo de 3a Igor Whatsapp: compasso 1 em loop, 65 BPM. Selecione os outros compassos na barra.')};$('fullNeck').onchange=()=>updateFretViewport(103);$('showSurdo').onclick=()=>{const box=$('surdoEmbed'),open=box.hidden;box.hidden=!open;$('showSurdo').textContent=open?'▾ Ocultar laboratório original':'▶ Ver movimentos e ouvir o surdo original';$('showSurdo').setAttribute('aria-expanded',String(open));if(open)$('surdoFrame').src='../laboratorio-surdo-terceira/?v=17&p='+current.id;else $('surdoFrame').src='about:blank'};window.addEventListener('resize',()=>updateFretViewport(103));$('pattern').onchange=e=>selectPattern(Number(e.target.value));$('key').onchange=e=>{stop();chordRoots.fill(Number(e.target.value));updateLabels()};$('register').onchange=e=>{stop();register=Number(e.target.value);updateLabels()};$('bpm').oninput=e=>{let newBpm=Number(e.target.value);if(playing&&ctx){let now=ctx.currentTime,position=(now-origin)/(15/bpm);for(let node of soundNodes){try{node.gain.gain.cancelScheduledValues(now);node.gain.gain.setTargetAtTime(.00001,now,.008);node.src.stop(now+.04)}catch(e){}}soundNodes=[];scheduled=[];origin=now-position*(15/newBpm);schedStep=Math.max(0,Math.ceil(position-.0001));}bpm=newBpm;$('bpmValue').textContent=bpm;if(playing)schedule();updateGateUI();updateDock()};$('minus').onclick=()=>{$('bpm').value=Math.max(55,bpm-1);$('bpm').oninput({target:$('bpm')})};$('plus').onclick=()=>{$('bpm').value=Math.min(160,bpm+1);$('bpm').oninput({target:$('bpm')})};$('volume').oninput=e=>bassVolume=Number(e.target.value)/100;$('gateMode').onclick=()=>setGateMode(true);$('noteMode').onclick=()=>setGateMode(false);$('gateSlider').oninput=e=>setGatePercent(Number(e.target.value));for(const btn of document.querySelectorAll('[data-gate]'))btn.onclick=()=>setGatePercent(Number(btn.dataset.gate));$('gateRestore').onclick=()=>{const {bar,k}=selectedGate;noteGateMap[current.id]??=Array.from({length:4},()=>Array(8).fill(null));noteGateMap[current.id][bar][k]=null;drawScore();updateGateUI();saveGroove()};$('play').onclick=()=>playing?stop():start();$('dockPlay').onclick=()=>playing?stop():start();$('reset').onclick=()=>{stop();setStatus('Reiniciado.');showBassNote(null,0)};$('allBars').onclick=()=>updateMode('integral');$('oneBar').onclick=()=>updateMode('celula');for(const btn of document.querySelectorAll('#barChoose button'))btn.onclick=()=>{selectedBar=Number(btn.dataset.bar);lastCellTap=null;stop();renderBarChooser();updateLabels();drawScore()};for(const btn of document.querySelectorAll('[data-preset]'))btn.onclick=()=>setPreset(btn.dataset.preset);$('restoreP5').onclick=restoreP5Ginga;$('restoreLegacy').onclick=restoreLegacyMap;$('p13AntesFoto').onclick=restoreP13BeforeFoto;$('p4Restaurar').onclick=restoreP4BeforeFoto;document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});const params=new URLSearchParams(location.search);const p=Number(params.get('p'));if(DATA.some(x=>x.id===p)){$('pattern').value=p;selectPattern(p)}if(current.id===5&&params.get('ginga')==='1')applyP5Ginga();refreshP5Controls()}
 init();
 </script>
 </body>
