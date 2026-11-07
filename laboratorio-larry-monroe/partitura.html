@@ -59,7 +59,7 @@ label{font-size:12px}.switches{display:flex;gap:14px;align-items:center;flex-wra
 "use strict";
 const $=id=>document.getElementById(id);
 const q=new URLSearchParams(location.search);
-const vol=Number(q.get("volume")||1),exercise=Number(q.get("exercicio")||1);
+const vol=Number(q.get("volume")||1),exercise=Number(q.get("exercicio")||1),section=q.get("secao")||"ritmicos";
 const AudioClass=window.AudioContext||window.webkitAudioContext;
 let ctx=null,playing=false,startTime=0,events=[],bars=[],barDuration=4,totalQ=0,frameId=null,osmd=null,cyclesScheduled=0,bpm=80;
 function children(parent,name){return [...parent.children].filter(e=>e.localName===name)}
@@ -160,7 +160,7 @@ async function play(){
 }
 async function load(){
  const index=await fetch("./partituras/index.json").then(r=>{if(!r.ok)throw Error("Índice musical não encontrado");return r.json()});
- const entry=index.entries.find(e=>e.volume===vol&&e.exerciseNumber===exercise);
+ const entry=index.entries.find(e=>e.volume===vol&&e.exerciseNumber===exercise&&(e.sectionKey||"ritmicos")===section);
  if(!entry)throw Error("Este exercício ainda não foi transcrito em MusicXML.");
  const xml=await fetch("./"+entry.musicXml).then(r=>{if(!r.ok)throw Error("Partitura indisponível");return r.text()});
  const parsed=parseMusicXml(xml);events=parsed.events;bars=parsed.measures;totalQ=parsed.total;
