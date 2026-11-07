@@ -112,7 +112,7 @@ function drawMusic(svg,bars,startBar,clef,key,entry){
     else if(n.duration>=2)node("rect",{x:x-9,y:n.duration===4?39:45,width:18,height:5,fill:"#34342e"},g);
     else node("text",{x:x,y:58,"font-size":24},g,"𝄽");
    }else{
-    const y=pitchY(n,clef),whole=n.duration===4,filled=n.duration<=1;
+    const y=pitchY(n,clef),whole=n.duration===4,filled=["quarter","eighth","16th","32nd"].includes(n.type);
     if(y>79){for(let v=79;v<=y;v+=10)node("line",{x1:x-12,x2:x+12,y1:v,y2:v,stroke:"#34342e","stroke-width":1},g)}
     if(y<19){for(let v=19;v>=y;v-=10)node("line",{x1:x-12,x2:x+12,y1:v,y2:v,stroke:"#34342e","stroke-width":1},g)}
     node("ellipse",{cx:x,cy:y,rx:whole?10:8,ry:5.5,transform:"rotate(-18 "+x+" "+y+")",fill:filled?"#31332f":"#fffefa",stroke:"#31332f","stroke-width":1.5},g);
