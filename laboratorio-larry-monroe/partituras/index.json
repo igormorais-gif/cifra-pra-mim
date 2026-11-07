@@ -808,6 +808,26 @@
         "layout": false
       },
       "notes": "Transcrição musical preliminar do PDF. Revisão independente de cada pauta pendente."
+    },
+    {
+      "id": "v1-l2-m001",
+      "sectionKey": "licao2-melodicos",
+      "volume": 1,
+      "printedPage": 19,
+      "pdfSheet": 11,
+      "exerciseNumber": 1,
+      "section": "Lição 2 — Estudos melódicos · Clave de fá",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-m001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Escala de Dó maior em clave de Fá, 8 compassos. Conferência independente pendente."
     }
   ]
 }
