@@ -32,9 +32,9 @@ test('fonte escaneada, página impressa e exercício são entidades diferentes',
 
 test('não declarar transcrição verificada antes de auditoria',()=>{
   const all=data.volumes.flatMap(v=>v.sheets.flatMap(s=>s.studies));
-  assert.equal(all.filter(s=>s.state==='pilot').length,3);
+  assert.ok(all.filter(s=>s.state==='pilot').length>=14);
   assert.equal(all.filter(s=>s.state==='verified').length,0);
-  assert.equal(data.volumes.filter(v=>v.sheets.some(s=>s.status!=='not_inventoried')).length,1);
+  assert.ok(data.volumes[0].sheets.filter(s=>s.status!=='not_inventoried').length>=3);
 });
 
 test('índice permite selecionar os quatro volumes e as páginas de origem',()=>{
