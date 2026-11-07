@@ -828,6 +828,306 @@
         "layout": false
       },
       "notes": "Escala de Dó maior em clave de Fá, 8 compassos. Conferência independente pendente."
+    },
+    {
+      "id": "v1-l3-r001",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 24,
+      "pdfSheet": 14,
+      "exerciseNumber": 1,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r002",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 24,
+      "pdfSheet": 14,
+      "exerciseNumber": 2,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r002.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r003",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 24,
+      "pdfSheet": 14,
+      "exerciseNumber": 3,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r003.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r004",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 24,
+      "pdfSheet": 14,
+      "exerciseNumber": 4,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r004.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r005",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 24,
+      "pdfSheet": 14,
+      "exerciseNumber": 5,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r005.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r006",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 25,
+      "pdfSheet": 14,
+      "exerciseNumber": 6,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r006.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r007",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 25,
+      "pdfSheet": 14,
+      "exerciseNumber": 7,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r007.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r008",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 25,
+      "pdfSheet": 14,
+      "exerciseNumber": 8,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r008.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r009",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 25,
+      "pdfSheet": 14,
+      "exerciseNumber": 9,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r009.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r010",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 25,
+      "pdfSheet": 14,
+      "exerciseNumber": 10,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r010.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r011",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 25,
+      "pdfSheet": 14,
+      "exerciseNumber": 11,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r011.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r012",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 26,
+      "pdfSheet": 15,
+      "exerciseNumber": 12,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r012.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r013",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 26,
+      "pdfSheet": 15,
+      "exerciseNumber": 13,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r013.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r014",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 26,
+      "pdfSheet": 15,
+      "exerciseNumber": 14,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r014.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-r015",
+      "volume": 1,
+      "sectionKey": "licao3-ritmicos",
+      "section": "Lição 3 — Estudos rítmicos",
+      "printedPage": 26,
+      "pdfSheet": 15,
+      "exerciseNumber": 15,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l3-r015.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
     }
   ]
 }
