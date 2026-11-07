@@ -1192,6 +1192,78 @@
               "location": "right",
               "onlineHref": "./livro.html?pagina=61",
               "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 60,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=60",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 60,
+              "exercise": 2,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=60",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 60,
+              "exercise": 3,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=60",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 60,
+              "exercise": 4,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=60",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 60,
+              "exercise": 5,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=60",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 61,
+              "exercise": 6,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=61",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 61,
+              "exercise": 7,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=61",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 61,
+              "exercise": 8,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=61",
+              "note": "MusicXML executável, com ligaduras de duração; revisão final pendente"
             }
           ]
         },
