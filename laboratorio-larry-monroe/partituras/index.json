@@ -348,6 +348,46 @@
         "layout": false
       },
       "notes": "Notas e durações transcritas do scan. Precisa segunda conferência independente."
+    },
+    {
+      "id": "v1-mel006",
+      "sectionKey": "melodicos",
+      "volume": 1,
+      "printedPage": 12,
+      "pdfSheet": 8,
+      "exerciseNumber": 6,
+      "section": "Estudos melódicos",
+      "time": "C (4/4)",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-mel006.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Primeira leitura completa do scan; alturas, divisão rítmica e organização ainda aguardam verificação independente"
+    },
+    {
+      "id": "v1-mel007",
+      "sectionKey": "melodicos",
+      "volume": 1,
+      "printedPage": 12,
+      "pdfSheet": 8,
+      "exerciseNumber": 7,
+      "section": "Estudos melódicos",
+      "time": "C (4/4)",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-mel007.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Primeira leitura completa do scan; alturas, divisão rítmica e organização ainda aguardam verificação independente"
     }
   ]
 }
