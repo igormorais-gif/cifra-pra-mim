@@ -1468,6 +1468,366 @@
         "layout": false
       },
       "notes": "Escala de Fá maior em clave de fá; revisão independente pendente"
+    },
+    {
+      "id": "v1-l5-m001",
+      "volume": 1,
+      "sectionKey": "licao5-melodicos",
+      "section": "Lição 5 — Estudos melódicos · Sol maior",
+      "printedPage": 45,
+      "pdfSheet": 24,
+      "exerciseNumber": 1,
+      "time": "4/4",
+      "keyFifths": 1,
+      "musicXml": "partituras/v1-l5-m001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r001",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 51,
+      "pdfSheet": 27,
+      "exerciseNumber": 1,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r002",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 51,
+      "pdfSheet": 27,
+      "exerciseNumber": 2,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r002.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r003",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 51,
+      "pdfSheet": 27,
+      "exerciseNumber": 3,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r003.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r004",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 51,
+      "pdfSheet": 27,
+      "exerciseNumber": 4,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r004.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r005",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 51,
+      "pdfSheet": 27,
+      "exerciseNumber": 5,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r005.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r006",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 51,
+      "pdfSheet": 27,
+      "exerciseNumber": 6,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r006.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r007",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 52,
+      "pdfSheet": 28,
+      "exerciseNumber": 7,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r007.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r008",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 52,
+      "pdfSheet": 28,
+      "exerciseNumber": 8,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r008.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r009",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 52,
+      "pdfSheet": 28,
+      "exerciseNumber": 9,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r009.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r011",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 53,
+      "pdfSheet": 28,
+      "exerciseNumber": 11,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r011.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r012",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 53,
+      "pdfSheet": 28,
+      "exerciseNumber": 12,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r012.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r013",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 53,
+      "pdfSheet": 28,
+      "exerciseNumber": 13,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r013.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r014",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 53,
+      "pdfSheet": 28,
+      "exerciseNumber": 14,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r014.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r016",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 54,
+      "pdfSheet": 29,
+      "exerciseNumber": 16,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r016.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r017",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 54,
+      "pdfSheet": 29,
+      "exerciseNumber": 17,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r017.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-r018",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 54,
+      "pdfSheet": 29,
+      "exerciseNumber": 18,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r018.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l6-m001",
+      "volume": 1,
+      "sectionKey": "licao6-melodicos",
+      "section": "Lição 6 — Estudos melódicos · Sol maior em clave de fá",
+      "printedPage": 55,
+      "pdfSheet": 29,
+      "exerciseNumber": 1,
+      "time": "4/4",
+      "keyFifths": 1,
+      "musicXml": "partituras/v1-l6-m001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
     }
   ]
 }
