@@ -1,0 +1,27 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const base=path.join(__dirname,'..','laboratorio-larry-monroe');
+test('Lição 2 abre estudos melódicos em clave de fá no mesmo motor MusicXML',()=>{
+ const registry=JSON.parse(fs.readFileSync(path.join(base,'partituras/index.json'),'utf8'));
+ const mel=registry.entries.find(x=>x.id==='v1-l2-m001');
+ assert.ok(mel);
+ assert.equal(mel.sectionKey,'licao2-melodicos');
+ assert.equal(mel.printedPage,19);
+ assert.equal(mel.pdfSheet,11);
+ assert.equal(mel.status,'pilot');
+ assert.equal(mel.musicXml,'partituras/v1-l2-m001.musicxml');
+ const source=fs.readFileSync(path.join(base,mel.musicXml),'utf8');
+ assert.match(source,/<clef><sign>F<\/sign><line>4<\/line><\/clef>/);
+ const notes=[...source.matchAll(/<note>([\s\S]*?)<\/note>/g)].map(x=>x[1]);
+ assert.equal(notes.length,16);
+ const pitches=notes.map(x=>{const found=x.match(/<step>([A-G])<\/step><octave>(\d)<\/octave>/);return found[1]+found[2]});
+ assert.deepEqual(pitches,['C3','D3','E3','F3','G3','A3','B3','C4','C4','B3','A3','G3','F3','E3','D3','C3']);
+ assert.ok(notes.every(x=>x.includes('<duration>8</duration><type>half</type>')));
+ const catalog=JSON.parse(fs.readFileSync(path.join(base,'catalogo.json'),'utf8'));
+ const p19=catalog.volumes[0].sheets[10].studies.filter(x=>x.sectionKey==='licao2-melodicos');
+ assert.deepEqual(p19.map(x=>x.state),['pilot','pending','pending']);
+ const reader=fs.readFileSync(path.join(base,'licao2-ritmicos-p15-18.html'),'utf8');
+ assert.match(reader,/secao=licao2-melodicos/);
+});
