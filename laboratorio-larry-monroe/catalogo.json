@@ -721,8 +721,54 @@
           "sourcePage": 18,
           "printedLeft": 32,
           "printedRight": 33,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 32,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=32",
+              "note": "Lição 4: colcheias e tempos pontuados, revisão pendente"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 32,
+              "exercise": 2,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=32",
+              "note": "Lição 4: colcheias e tempos pontuados, revisão pendente"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 32,
+              "exercise": 3,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=32",
+              "note": "Lição 4: colcheias e tempos pontuados, revisão pendente"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 32,
+              "exercise": 4,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=32",
+              "note": "Lição 4: colcheias e tempos pontuados, revisão pendente"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 32,
+              "exercise": 5,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=32",
+              "note": "Lição 4: colcheias e tempos pontuados, revisão pendente"
+            }
+          ]
         },
         {
           "sheet": 19,
