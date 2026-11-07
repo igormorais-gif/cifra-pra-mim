@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f0e9"><title>Monroe Digital — Volume 1, páginas 12–13</title>
+<style>
+:root{--paper:#fffefa;--bg:#f4f0e9;--ink:#272521;--muted:#77726b;--accent:#b74839;--line:#e0d9cd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}button,input{font:inherit}button{cursor:pointer}header{max-width:1200px;margin:auto;padding:17px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px}
+header a{text-decoration:none}header b{letter-spacing:.17em}
+main{max-width:1200px;margin:auto;padding:15px 13px 150px}.eyebrow{font-size:10px;font-weight:750;letter-spacing:.16em;text-transform:uppercase;color:#817870}
+h1{font:500 clamp(31px,5vw,46px)/1.1 Georgia,serif;letter-spacing:-.04em;margin:6px 0}
+.lead{font-size:12px;color:var(--muted);margin:0 0 19px}
+.spread{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch}.page{min-height:870px;background:var(--paper);border:1px solid var(--line);border-radius:5px;box-shadow:0 6px 19px #0000000a;position:relative;padding:29px 20px 53px}
+.page h2{font:500 20px Georgia,serif;text-decoration:underline;text-underline-offset:4px;margin:0 0 25px}.page-num{font:13px Georgia,serif;position:absolute;bottom:16px;left:0;right:0;text-align:center}
+.study{border-radius:6px;margin-bottom:26px}.study.active{background:#f8f5ee}.study-head{display:flex;align-items:center;gap:6px;font:15px Georgia,serif;margin:0 0 8px}
+.study-head button{font:16px Georgia,serif;border:none;background:transparent;color:var(--ink);padding:5px 7px 5px 0}.study-head button[aria-current=true]{color:var(--accent);font-weight:700}
+.score{overflow-x:auto}.score svg{min-width:430px;display:block;width:100%;height:auto}.note.active ellipse{fill:#eeafa4;stroke:var(--accent)}
+.pending{padding:12px 0;border-top:1px solid #eee9e1;display:flex;justify-content:space-between;gap:9px;font:14px Georgia,serif}.pending small{font:11px sans-serif;color:var(--muted)}.source-note{color:var(--muted);font-size:12px}
+.toolbar{position:fixed;z-index:5;left:0;right:0;bottom:0;background:#f9f8f5f0;backdrop-filter:blur(15px);padding:11px max(13px,calc((100vw - 1030px)/2));border-top:1px solid var(--line)}
+.controls{display:flex;align-items:center;flex-wrap:wrap;gap:13px}.play{border:none;border-radius:8px;background:#252723;color:white;padding:12px 16px;min-width:140px;font-weight:650}.play:disabled{opacity:.5}
+.tempo{display:flex;align-items:center;gap:10px;flex:1;min-width:180px}.tempo input{flex:1;accent-color:#3b3e39;min-width:65px}.tempo output{font-weight:700;font-variant-numeric:tabular-nums}.opt{font-size:12px;display:flex;gap:12px}.opt input{accent-color:#32362f}
+.meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:10px;margin-top:6px;flex-wrap:wrap}
+.pagernav{display:none}.error{color:#a03424}
+@media(max-width:860px){.spread{display:block}.page{display:none;max-width:650px;min-height:760px;margin:auto}.page.current{display:block}.pagernav{display:flex;gap:7px;justify-content:center;margin:15px}.pagernav button{border:1px solid var(--line);background:var(--paper);padding:8px 12px;border-radius:7px}.pagernav button.active{background:#252723;color:white}}
+@media(max-width:550px){main{padding:5px 9px 155px}.page{padding:21px 10px 45px}.score svg{min-width:480px}.toolbar{padding:9px 11px}.controls{gap:8px}.tempo{min-width:135px}.opt{width:100%}}
+</style></head>
+<body>
+<header><a href="./estudos-melodicos-p10-11.html">← Páginas 10–11</a><b>MONROE DIGITAL</b><a href="./catalogo.html">Índice ↗</a></header>
+<main><div class="eyebrow">Volume 1 · Caderno de percepção</div><h1>Estudos melódicos</h1>
+<p class="lead">Páginas impressas 12 e 13 · os estudos 4 e 5 já podem ser executados em sua disposição de dois sistemas; os demais estão em conferência.</p>
+<div class="pagernav"><button id="go12" type="button" class="active" aria-pressed="true">Página 12</button><button id="go13" type="button" aria-pressed="false">Página 13</button></div>
+<div class="spread">
+<article class="page current" id="page12" aria-label="Página 12">
+ <h2>Estudos melódicos · Dó maior</h2>
+ <div class="study active" id="ex-mel4"><p class="study-head"><button type="button" data-study="4" aria-current="true">4.</button> Estudo 4</p><div class="score" id="score4"></div></div>
+ <div class="study" id="ex-mel5"><p class="study-head"><button type="button" data-study="5" aria-current="false">5.</button> Estudo 5</p><div class="score" id="score5"></div></div>
+ <div class="pending"><span>6. Estudo melódico</span><small>Conferência pendente</small></div>
+ <div class="pending"><span>7. Estudo melódico</span><small>Conferência pendente</small></div>
+ <div class="page-num">12</div>
+</article>
+<article class="page" id="page13" aria-label="Página 13"><h2>Estudos melódicos · continuação</h2>
+ <div class="pending">8. <small>Transcrição em conferência</small></div>
+ <div class="pending">9. <small>Transcrição em conferência</small></div>
+ <div class="pending">10. <small>Transcrição em conferência</small></div>
+ <div class="pending">11. <small>Transcrição em conferência</small></div>
+ <p class="source-note">A numeração e a sequência visual da página foram preservadas. As pautas não foram substituídas por conteúdo fictício.</p>
+ <div class="page-num">13</div>
+</article></div>
+<p class="source-note"><a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener">Conferir o PDF original no Drive</a> · <a href="./catalogo.html?volume=1&folha=8">Índice da folha 8</a></p>
+</main>
+<div class="toolbar">
+ <div class="controls"><button id="play" class="play" type="button" disabled>▶ Carregando</button>
+ <div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="40" max="160" value="80"><output id="bpmText">80 BPM</output></div>
+ <div class="opt"><label><input id="metro" type="checkbox" checked> Metrônomo</label><label><input id="loop" type="checkbox"> Loop</label></div></div>
+ <div class="meta"><span id="measure">Compasso —/8</span><span id="status">Carregando MusicXML…</span></div>
+</div>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id),ns="http://www.w3.org/2000/svg",AC=window.AudioContext||window.webkitAudioContext;
+const diatonic={C:0,D:1,E:2,F:3,G:4,A:5,B:6},semitone={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+let studies={},selected=4,ctx=null,playing=false,bpm=80,beatTime=0,startAt=0,raf=0,cyclesScheduled=0;
+function child(node,name){return [...node.children].filter(e=>e.localName===name)}
+function val(node,name){return child(node,name)[0]?.textContent||""}
+function draw(tag,attrs,parent,text){const e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!==undefined)e.textContent=text;parent.appendChild(e);return e}
+function readXml(raw){
+ const d=new DOMParser().parseFromString(raw,"application/xml");if(d.querySelector("parsererror"))throw Error("MusicXML inválido");
+ const part=d.querySelector("part");if(!part)throw Error("Partitura sem voz");
+ let divisions=1;
+ const bars=child(part,"measure").map((m,index)=>{
+  for(const a of child(m,"attributes")){const x=Number(val(a,"divisions"));if(x>0)divisions=x}
+  let beat=0;
+  const notes=child(m,"note").map(note=>{
+   const p=child(note,"pitch")[0],len=Number(val(note,"duration"))/divisions;
+   if(!p||!(val(p,"step") in diatonic)||!Number.isFinite(len)||len<=0)throw Error("Nota ilegível no compasso "+(index+1));
+   const step=val(p,"step"),oct=Number(val(p,"octave")),alter=Number(val(p,"alter")||0);
+   const n={step,oct,len,at:beat,midi:(oct+1)*12+semitone[step]+alter};
+   beat+=len;return n
+  });
+  if(Math.abs(beat-4)>1e-7)throw Error("Compasso incompleto");
+  return notes
+ });
+ if(bars.length!==8)throw Error("Estudo com número inesperado de compassos");
+ return {bars,heads:[],events:bars.flatMap((b,i)=>b.map(n=>({...n,time:i*4+n.at})))}
+}
+function render(id){
+ const target=$("score"+id),st=studies[id];
+ for(let line=0;line<2;line++){
+  const svg=draw("svg",{viewBox:"0 0 820 118",role:"img","aria-label":"Estudo melódico "+id+", compassos "+(line*4+1)+" a "+(line*4+4)},target);
+  for(let k=0;k<5;k++)draw("line",{x1:9,x2:809,y1:30+k*10,y2:30+k*10,stroke:"#30312e","stroke-width":1},svg);
+  draw("text",{x:10,y:68,"font-size":46,"font-family":"serif"},svg,"𝄞");
+  if(line===0)draw("text",{x:58,y:48,"font-size":24,"font-family":"Georgia"},svg,"C");
+  const bounds=[85,269,453,637,810];
+  bounds.forEach((x,j)=>draw("line",{x1:x,x2:x,y1:30,y2:70,stroke:"#34342f","stroke-width":j===4?2:1},svg));
+  for(let m=0;m<4;m++){
+   const notes=st.bars[line*4+m],width=bounds[m+1]-bounds[m];
+   for(const n of notes){
+    const x=bounds[m]+18+(n.at+n.len/2)/4*(width-36);
+    const y=70-(diatonic[n.step]+(n.oct-4)*7-2)*5;
+    const g=draw("g",{class:"note"},svg);
+    if(y>=80)for(let yy=80;yy<=y;yy+=10)draw("line",{x1:x-13,x2:x+13,y1:yy,y2:yy,stroke:"#33332f","stroke-width":1},g);
+    const filled=n.len<=1;
+    const head=draw("ellipse",{cx:x,cy:y,rx:n.len===4?10:8,ry:5.5,transform:"rotate(-18 "+x+" "+y+")",fill:filled?"#30312c":"#fffefa",stroke:"#33332f","stroke-width":1.7},g);
+    if(n.len!==4){
+     const high=y<45;
+     draw("line",high?{x1:x-7,x2:x-7,y1:y,y2:y+34,stroke:"#33332f","stroke-width":1.7}:{x1:x+7,x2:x+7,y1:y,y2:y-34,stroke:"#33332f","stroke-width":1.7},g)
+    }
+    st.heads.push(g)
+   }
+  }
+ }
+}
+function display(n){for(let p of [12,13]){$("page"+p).classList.toggle("current",p===n);$("go"+p).classList.toggle("active",p===n);$("go"+p).setAttribute("aria-pressed",String(p===n))}}
+$("go12").addEventListener("click",()=>display(12));$("go13").addEventListener("click",()=>display(13));
+function stop(){
+ playing=false;cancelAnimationFrame(raf);if(ctx){ctx.close().catch(()=>{});ctx=null}
+ $("play").textContent="▶ Estudo "+selected;$("status").textContent="Transcrição piloto";
+ Object.values(studies).forEach(s=>s.heads.forEach(x=>x.classList.remove("active")))
+}
+function select(id){if(playing)stop();selected=id;
+ document.querySelectorAll(".study").forEach(e=>e.classList.toggle("active",e.id==="ex-mel"+id));
+ document.querySelectorAll("[data-study]").forEach(e=>e.setAttribute("aria-current",String(Number(e.dataset.study)===id)));
+ $("play").textContent="▶ Estudo "+id;$("measure").textContent="Melódico "+id+" · compasso 1/8";
+ if(window.innerWidth<=860)display(12)
+}
+function tone(t,len,midi){
+ const o=ctx.createOscillator(),g=ctx.createGain(),duration=Math.max(.07,len-.03);
+ o.type="sine";o.frequency.value=440*Math.pow(2,(midi-69)/12);
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.10,t+.024);g.gain.setValueAtTime(.10,t+Math.max(.03,duration-.05));g.gain.exponentialRampToValueAtTime(.0001,t+duration);
+ o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+duration+.02)
+}
+function click(t,beat){
+ if(!$("metro").checked)return;
+ const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=beat===0?1270:940;
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(beat===0?.075:.035,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.066);
+ o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.07)
+}
+function schedule(cycle){
+ const base=startAt+cycle*32*beatTime;
+ studies[selected].events.forEach(n=>tone(base+n.time*beatTime,n.len*beatTime,n.midi));
+ for(let b=0;b<32;b++)click(base+b*beatTime,b%4)
+}
+function animate(){
+ if(!playing||!ctx)return;
+ const time=(ctx.currentTime-startAt)/beatTime;
+ if(time>=32&&!$("loop").checked){stop();return}
+ const cyc=Math.max(0,Math.floor(time/32)),pos=(time%32+32)%32;
+ if($("loop").checked&&cyc+1>=cyclesScheduled&&pos>=24){schedule(cyc+1);cyclesScheduled=cyc+2}
+ studies[selected].events.forEach((n,i)=>studies[selected].heads[i].classList.toggle("active",pos>=n.time&&pos<n.time+n.len));
+ $("measure").textContent="Melódico "+selected+" · compasso "+(Math.floor(pos/4)+1)+"/8";
+ raf=requestAnimationFrame(animate)
+}
+async function play(){if(playing){stop();return}if(!AC){$("status").textContent="Áudio indisponível";return}
+ try{ctx=new AC;await ctx.resume();bpm=Number($("bpm").value);beatTime=60/bpm;startAt=ctx.currentTime+.14;
+ playing=true;cyclesScheduled=1;schedule(0);$("play").textContent="■ Parar";$("status").textContent="Executando";animate()}
+ catch(err){stop();$("status").textContent="Não foi possível iniciar áudio"}
+}
+async function load(){
+ for(let id of [4,5]){
+  const r=await fetch("./partituras/v1-mel"+String(id).padStart(3,"0")+".musicxml");
+  if(!r.ok)throw Error("Partitura do estudo "+id+" indisponível");
+  studies[id]=readXml(await r.text());render(id)
+ }
+ $("play").disabled=false;
+ const hash=Number((location.hash.match(/^#ex-mel([45])$/)||[])[1]);
+ select(studies[hash]?hash:4);
+}
+$("play").addEventListener("click",play);
+document.querySelectorAll("[data-study]").forEach(b=>b.addEventListener("click",()=>{select(Number(b.dataset.study));play()}));
+$("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
+window.addEventListener("pagehide",stop);
+load().catch(e=>{$("status").textContent=e.message;$("status").classList.add("error")});
+})();
+</script></body></html>
