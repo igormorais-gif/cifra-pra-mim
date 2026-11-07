@@ -248,6 +248,26 @@
         "layout": false
       },
       "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-mel001",
+      "sectionKey": "melodicos",
+      "volume": 1,
+      "printedPage": 11,
+      "pdfSheet": 7,
+      "exerciseNumber": 1,
+      "section": "Estudos melódicos",
+      "time": "C (4/4)",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-mel001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Solfejo da escala de Dó maior, 8 compassos; revisão independente pendente"
     }
   ]
 }
