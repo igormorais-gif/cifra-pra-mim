@@ -68,12 +68,13 @@ function parseMusicXML(raw){
  if(xml.querySelector("parsererror"))throw Error("MusicXML inválido");
  const part=xml.querySelector("part");if(!part)throw Error("MusicXML sem voz");
  const measures=[...part.children].filter(n=>n.localName==="measure"),bars=[];
- let divisions=4,clef="G",key=0;
+ let divisions=4,clef="G",key=0,beatsPerBar=4,beatType=4;
  for(const bar of measures){
   for(const a of [...bar.children].filter(n=>n.localName==="attributes")){
    const d=Number(xmlText(a,"divisions"));if(d>0)divisions=d;
    const c=xmlFirst(a,"clef");if(c)clef=xmlText(c,"sign")||"G";
    const k=xmlFirst(a,"key");if(k)key=Number(xmlText(k,"fifths"))||0;
+   const t=xmlFirst(a,"time");if(t){beatsPerBar=Number(xmlText(t,"beats"))||4;beatType=Number(xmlText(t,"beat-type"))||4;beatsPerBar=beatsPerBar*4/beatType}
   }
   let elapsed=0;const notes=[];
   for(const e of [...bar.children].filter(n=>n.localName==="note")){
@@ -87,26 +88,29 @@ function parseMusicXML(raw){
    notes.push({at:elapsed,duration,rest,step,oct,alter,index,midi,type,beam:eighth,dotted:!!xmlFirst(e,"dot")});
    elapsed+=duration;
   }
-  if(Math.abs(elapsed-4)>.001)throw Error("Compassos diferentes de 4/4 ainda não suportados neste leitor");
+  if(Math.abs(elapsed-beatsPerBar)>.001)throw Error("Compasso inconsistente: esperado "+beatsPerBar+" tempos, encontrado "+elapsed);
   bars.push(notes);
  }
- return {bars,clef,key}
+ return {bars,clef,key,beatsPerBar,beatType}
 }
 function pitchY(n,clef){const bottom=clef==="F"?2*7+letters.G:4*7+letters.E;return 69-(n.index-bottom)*5}
-function drawMusic(svg,bars,startBar,clef,key,entry){
+function drawMusic(svg,bars,startBar,clef,key,entry,beatsPerBar,beatType){
  const bounds=[82,266,449,633,817];
  for(let line=0;line<5;line++)node("line",{x1:10,x2:817,y1:29+line*10,y2:29+line*10,stroke:"#333430","stroke-width":.85},svg);
  node("text",{x:12,y:69,"font-size":46,"font-family":"Georgia,serif"},svg,clef==="F"?"𝄢":"𝄞");
  if(key===-1)node("text",{x:55,y:clef==="F"?44:55,"font-size":25,"font-family":"serif"},svg,"♭");
- if(startBar===0){node("text",{x:62,y:52,"font-size":26,"font-family":"Georgia,serif"},svg,"C")}
+ if(startBar===0){
+  if(beatsPerBar===4&&beatType===4)node("text",{x:62,y:52,"font-size":26,"font-family":"Georgia,serif"},svg,"C");
+  else{node("text",{x:62,y:46,"font-size":18,"font-family":"Georgia,serif"},svg,String(beatsPerBar));node("text",{x:62,y:65,"font-size":18,"font-family":"Georgia,serif"},svg,String(beatType))}
+ }
  bounds.forEach((x,i)=>node("line",{x1:x,x2:x,y1:29,y2:69,stroke:"#32332d","stroke-width":i===4?1.9:.8},svg));
  for(let bi=0;bi<4;bi++){
   const bar=bars[startBar+bi];if(!bar)continue;
   const startX=bounds[bi],width=bounds[bi+1]-startX;
   let beams=[],beamRunning=[];
   bar.forEach((n,ni)=>{
-   const x=startX+18+(n.at+n.duration/2)/4*(width-36);
-   const g=node("g",{"class":"score-note","data-entry":entry.id,"data-time":(startBar+bi)*4+n.at,"data-duration":n.duration},svg);
+   const x=startX+18+(n.at+n.duration/2)/beatsPerBar*(width-36);
+   const g=node("g",{"class":"score-note","data-entry":entry.id,"data-time":(startBar+bi)*beatsPerBar+n.at,"data-duration":n.duration},svg);
    if(n.rest){
     if(n.duration===1)node("path",{d:"M"+(x-4)+" 33 l7 8 -6 9 6 4 -9 12",stroke:"#34342e","stroke-width":2.8,fill:"none","stroke-linecap":"round"},g);
     else if(n.duration>=2)node("rect",{x:x-9,y:n.duration===4?39:45,width:18,height:5,fill:"#34342e"},g);
@@ -141,7 +145,7 @@ function renderStudy(entry,music,parent){
  const scroll=document.createElement("div");scroll.className="score-scroll";
  music.bars.forEach((bar,i)=>{if(i%4!==0)return;
   const svg=node("svg",{viewBox:"0 0 832 112",role:"img","aria-label":"Exercício "+entry.exerciseNumber+", compassos "+(i+1)+"–"+Math.min(i+4,music.bars.length)},scroll);
-  drawMusic(svg,music.bars,i,music.clef,music.key,entry)
+  drawMusic(svg,music.bars,i,music.clef,music.key,entry,music.beatsPerBar,music.beatType)
  });
  body.appendChild(scroll);row.appendChild(body);parent.appendChild(row)
 }
@@ -183,7 +187,8 @@ async function openSpread(page){
  $("status").textContent="Transcrições ainda sujeitas à revisão musical";
 }
 function select(entry,music){
- stop();active={entry,music};count=music.bars.length*4;scoreNotes=[...document.querySelectorAll('.score-note[data-entry="'+entry.id+'"]')];
+ stop();active={entry,music};count=music.bars.length*music.beatsPerBar;
+ $("beats").replaceChildren(...Array.from({length:music.beatsPerBar},(_,i)=>{const x=document.createElement("span");x.textContent=String(i+1);return x}));scoreNotes=[...document.querySelectorAll('.score-note[data-entry="'+entry.id+'"]')];
  document.querySelectorAll(".exercise").forEach(e=>e.classList.toggle("selected",e.id==="ex-"+entry.id));
  $("play").disabled=false;$("play").textContent="▶ Estudo "+entry.exerciseNumber;
  $("track").textContent=entry.section+" · exercício "+entry.exerciseNumber+" · "+music.bars.length+" compassos";
@@ -196,8 +201,8 @@ function tick(t,b){if(!$("click").checked)return;const o=ctx.createOscillator(),
 function schedule(cycle){
  const base=startAt+cycle*count*beatSeconds;
  active.music.bars.forEach((bar,i)=>{
-  for(let b=0;b<4;b++)tick(base+(i*4+b)*beatSeconds,b);
-  bar.forEach(note=>{if(!note.rest)tone(base+(i*4+note.at)*beatSeconds,note.duration*beatSeconds,note.midi)});
+  for(let b=0;b<active.music.beatsPerBar;b++)tick(base+(i*active.music.beatsPerBar+b)*beatSeconds,b);
+  bar.forEach(note=>{if(!note.rest)tone(base+(i*active.music.beatsPerBar+note.at)*beatSeconds,note.duration*beatSeconds,note.midi)});
  })
 }
 function stop(){
@@ -212,10 +217,10 @@ function frame(){
  if(at>=count&&!$("loop").checked){stop();return}
  const cycle=Math.max(0,Math.floor(at/count)),where=(at%count+count)%count;
  if($("loop").checked&&cycle+1>=scheduled&&where>=count-8){schedule(cycle+1);scheduled=cycle+2}
- const currentBeat=Math.floor(where)%4;
+ const currentBeat=Math.floor(where)%active.music.beatsPerBar;
  [...$("beats").children].forEach((e,i)=>e.classList.toggle("on",i===currentBeat));
  scoreNotes.forEach(el=>{const when=Number(el.dataset.time),duration=Number(el.dataset.duration);el.classList.toggle("active",where>=when&&where<when+duration)});
- $("track").textContent=active.entry.section+" · exercício "+active.entry.exerciseNumber+" · compasso "+(Math.floor(where/4)+1)+"/"+active.music.bars.length;
+ $("track").textContent=active.entry.section+" · exercício "+active.entry.exerciseNumber+" · compasso "+(Math.floor(where/active.music.beatsPerBar)+1)+"/"+active.music.bars.length;
  raf=requestAnimationFrame(frame)
 }
 async function start(){
