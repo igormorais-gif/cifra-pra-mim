@@ -201,10 +201,38 @@
         {
           "sheet": 7,
           "sourcePage": 7,
-          "printedLeft": null,
-          "printedRight": null,
-          "status": "not_inventoried",
-          "studies": []
+          "printedLeft": 10,
+          "printedRight": 11,
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "melodicos",
+              "printedPage": 11,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=melodicos&exercicio=1",
+              "note": "Estudo melódico 1 em Dó maior; solfejo e execução disponíveis"
+            },
+            {
+              "sectionKey": "melodicos",
+              "printedPage": 11,
+              "exercise": 2,
+              "state": "pending",
+              "location": "right",
+              "onlineHref": null,
+              "note": "Em conferência"
+            },
+            {
+              "sectionKey": "melodicos",
+              "printedPage": 11,
+              "exercise": 3,
+              "state": "pending",
+              "location": "right",
+              "onlineHref": null,
+              "note": "Em conferência"
+            }
+          ]
         },
         {
           "sheet": 8,
