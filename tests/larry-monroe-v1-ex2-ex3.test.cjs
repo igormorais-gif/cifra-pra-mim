@@ -51,3 +51,9 @@ test("Partituras 2 e 3 mantêm pautas independentes, layout original contínuo e
  assert.match(source,/function selectStudy\(n\)/);
  assert.match(source,/Transcrição musical em conferência/);
 });
+
+test("A edição não acrescenta pautas vazias e aceita links do catálogo para os exercícios",()=>{
+ assert.doesNotMatch(source,/y1:149\+j\*10/);
+ assert.match(source,/window\.location\.hash\.match/);
+ assert.match(source,/showPage\(7\);selectStudy\(sourceExercise\)/);
+});
