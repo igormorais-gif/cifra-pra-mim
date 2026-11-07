@@ -35,7 +35,7 @@ test('o livro da página 12 apresenta dois estudos executáveis com cabeçalhos 
  assert.doesNotThrow(()=>new Function(s[1]));
  const cat=JSON.parse(fs.readFileSync(path.join(base,'catalogo.json'),'utf8'));
  assert.deepEqual(cat.volumes[0].sheets[7].studies.map(s=>s.exercise),[4,5,6,7]);
- assert.deepEqual(cat.volumes[0].sheets[7].studies.map(s=>s.state),['pilot','pilot','pending','pending']);
+ assert.deepEqual(cat.volumes[0].sheets[7].studies.map(s=>s.state),['pilot','pilot','pilot','pilot']);
  const index=JSON.parse(fs.readFileSync(path.join(base,'partituras/index.json'),'utf8')).entries;
  assert.ok(index.some(x=>x.id==='v1-mel004'));
  assert.ok(index.some(x=>x.id==='v1-mel005'));
