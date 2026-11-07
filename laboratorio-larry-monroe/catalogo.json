@@ -237,10 +237,47 @@
         {
           "sheet": 8,
           "sourcePage": 8,
-          "printedLeft": null,
-          "printedRight": null,
-          "status": "not_inventoried",
-          "studies": []
+          "printedLeft": 12,
+          "printedRight": 13,
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "melodicos",
+              "printedPage": 12,
+              "exercise": 4,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./estudos-melodicos-p12.html",
+              "note": "Executável em versão piloto; revisão independente pendente"
+            },
+            {
+              "sectionKey": "melodicos",
+              "printedPage": 12,
+              "exercise": 5,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./estudos-melodicos-p12.html",
+              "note": "Executável em versão piloto; revisão independente pendente"
+            },
+            {
+              "sectionKey": "melodicos",
+              "printedPage": 12,
+              "exercise": 6,
+              "state": "pending",
+              "location": "left",
+              "onlineHref": null,
+              "note": "Ainda não transcrito"
+            },
+            {
+              "sectionKey": "melodicos",
+              "printedPage": 12,
+              "exercise": 7,
+              "state": "pending",
+              "location": "left",
+              "onlineHref": null,
+              "note": "Ainda não transcrito"
+            }
+          ]
         },
         {
           "sheet": 9,
