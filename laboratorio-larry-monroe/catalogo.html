@@ -151,7 +151,7 @@ function render(){
   if(item.onlineHref){
    let links=document.createElement("div");links.className="study-links";
    let a=document.createElement("a");a.href=item.onlineHref+"#ex"+item.exercise;a.textContent=item.sectionKey==="melodicos"?"Partitura ↗":"No livro ↗";links.appendChild(a);
-   if(item.state==="pilot"){let b=document.createElement("a");b.href="./partitura.html?volume="+vol+(item.sectionKey==="melodicos"?"&secao=melodicos":"")+"&exercicio="+item.exercise;b.textContent="MusicXML ↗";links.appendChild(b)}
+   if(item.state==="pilot"){let b=document.createElement("a");b.href="./partitura.html?volume="+vol+(item.sectionKey?"&secao="+encodeURIComponent(item.sectionKey):"")+"&exercicio="+item.exercise;b.textContent="MusicXML ↗";links.appendChild(b)}
    div.appendChild(links)
   }else{let text=document.createElement("small");text.textContent="Em conferência";div.appendChild(text)}
   $("studies").appendChild(div)
