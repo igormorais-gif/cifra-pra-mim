@@ -43,3 +43,14 @@ test('afinação de Fá4 e fonte documental permanecem identificadas', () => {
   assert.match(html,/Revisão provisória/);
   assert.match(html,/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/);
 });
+test('o livro digital mantém duas páginas originais e exercício 1 em uma pauta contínua', () => {
+  assert.match(html, /class="spread"/);
+  assert.match(html, /id="page6"/);
+  assert.match(html, /id="page7"/);
+  assert.match(html, /No compasso simples de 4\/4/);
+  assert.match(html, /Cante os estudos a seguir em diferentes andamentos/);
+  assert.match(html, /id="score"/);
+  assert.match(html, /for\(let j=0;j<5;j\+\+\)/);
+  assert.doesNotMatch(html, /for\(var m=0;m<4;m\+\+\)/);
+  assert.match(html, /Transcrição musical em conferência/);
+});
