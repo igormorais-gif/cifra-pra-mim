@@ -308,6 +308,46 @@
         "layout": false
       },
       "notes": "Estudo transcrito da digitalização; alturas e espaçamento em revisão independente"
+    },
+    {
+      "id": "v1-mel004",
+      "sectionKey": "melodicos",
+      "volume": 1,
+      "printedPage": 12,
+      "pdfSheet": 8,
+      "exerciseNumber": 4,
+      "section": "Estudos melódicos",
+      "time": "C (4/4)",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-mel004.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas e durações transcritas do scan. Precisa segunda conferência independente."
+    },
+    {
+      "id": "v1-mel005",
+      "sectionKey": "melodicos",
+      "volume": 1,
+      "printedPage": 12,
+      "pdfSheet": 8,
+      "exerciseNumber": 5,
+      "section": "Estudos melódicos",
+      "time": "C (4/4)",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-mel005.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas e durações transcritas do scan. Precisa segunda conferência independente."
     }
   ]
 }
