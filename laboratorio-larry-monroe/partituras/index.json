@@ -728,6 +728,86 @@
         "layout": false
       },
       "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r018",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 18,
+      "pdfSheet": 11,
+      "exerciseNumber": 18,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r018.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição musical preliminar do PDF. Revisão independente de cada pauta pendente."
+    },
+    {
+      "id": "v1-l2-r019",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 18,
+      "pdfSheet": 11,
+      "exerciseNumber": 19,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r019.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição musical preliminar do PDF. Revisão independente de cada pauta pendente."
+    },
+    {
+      "id": "v1-l2-r020",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 18,
+      "pdfSheet": 11,
+      "exerciseNumber": 20,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r020.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição musical preliminar do PDF. Revisão independente de cada pauta pendente."
+    },
+    {
+      "id": "v1-l2-r021",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 18,
+      "pdfSheet": 11,
+      "exerciseNumber": 21,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r021.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição musical preliminar do PDF. Revisão independente de cada pauta pendente."
     }
   ]
 }
