@@ -26,15 +26,15 @@ h1{font:500 clamp(31px,5vw,46px)/1.1 Georgia,serif;letter-spacing:-.04em;margin:
 <body>
 <header><a href="./estudos-melodicos-p10-11.html">← Páginas 10–11</a><b>MONROE DIGITAL</b><a href="./catalogo.html">Índice ↗</a></header>
 <main><div class="eyebrow">Volume 1 · Caderno de percepção</div><h1>Estudos melódicos</h1>
-<p class="lead">Páginas impressas 12 e 13 · os estudos 4 e 5 já podem ser executados em sua disposição de dois sistemas; os demais estão em conferência.</p>
+<p class="lead">Páginas impressas 12 e 13 · os estudos 4 a 7 estão executáveis em sua disposição de dois sistemas; os demais estão em conferência.</p>
 <div class="pagernav"><button id="go12" type="button" class="active" aria-pressed="true">Página 12</button><button id="go13" type="button" aria-pressed="false">Página 13</button></div>
 <div class="spread">
 <article class="page current" id="page12" aria-label="Página 12">
  <h2>Estudos melódicos · Dó maior</h2>
  <div class="study active" id="ex-mel4"><p class="study-head"><button type="button" data-study="4" aria-current="true">4.</button> Estudo 4</p><div class="score" id="score4"></div></div>
  <div class="study" id="ex-mel5"><p class="study-head"><button type="button" data-study="5" aria-current="false">5.</button> Estudo 5</p><div class="score" id="score5"></div></div>
- <div class="pending"><span>6. Estudo melódico</span><small>Conferência pendente</small></div>
- <div class="pending"><span>7. Estudo melódico</span><small>Conferência pendente</small></div>
+ <div class="study" id="ex-mel6"><p class="study-head"><button type="button" data-study="6" aria-current="false">6.</button> Estudo 6</p><div class="score" id="score6"></div></div>
+ <div class="study" id="ex-mel7"><p class="study-head"><button type="button" data-study="7" aria-current="false">7.</button> Estudo 7</p><div class="score" id="score7"></div></div>
  <div class="page-num">12</div>
 </article>
 <article class="page" id="page13" aria-label="Página 13"><h2>Estudos melódicos · continuação</h2>
@@ -155,13 +155,13 @@ async function play(){if(playing){stop();return}if(!AC){$("status").textContent=
  catch(err){stop();$("status").textContent="Não foi possível iniciar áudio"}
 }
 async function load(){
- for(let id of [4,5]){
+ for(let id of [4,5,6,7]){
   const r=await fetch("./partituras/v1-mel"+String(id).padStart(3,"0")+".musicxml");
   if(!r.ok)throw Error("Partitura do estudo "+id+" indisponível");
   studies[id]=readXml(await r.text());render(id)
  }
  $("play").disabled=false;
- const hash=Number((location.hash.match(/^#ex-mel([45])$/)||[])[1]);
+ const hash=Number((location.hash.match(/^#ex-mel([4567])$/)||[])[1]);
  select(studies[hash]?hash:4);
 }
 $("play").addEventListener("click",play);
