@@ -1248,6 +1248,206 @@
         "layout": false
       },
       "notes": "Colcheias e figuras pontuadas transcritas em formato preliminar; revisão independente pendente"
+    },
+    {
+      "id": "v1-l4-r006",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 33,
+      "pdfSheet": 18,
+      "exerciseNumber": 6,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r006.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r007",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 33,
+      "pdfSheet": 18,
+      "exerciseNumber": 7,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r007.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r008",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 33,
+      "pdfSheet": 18,
+      "exerciseNumber": 8,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r008.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r009",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 33,
+      "pdfSheet": 18,
+      "exerciseNumber": 9,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r009.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r010",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 33,
+      "pdfSheet": 18,
+      "exerciseNumber": 10,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r010.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r011",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 33,
+      "pdfSheet": 18,
+      "exerciseNumber": 11,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r011.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r012",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 34,
+      "pdfSheet": 19,
+      "exerciseNumber": 12,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r012.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r013",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 34,
+      "pdfSheet": 19,
+      "exerciseNumber": 13,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r013.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r014",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 34,
+      "pdfSheet": 19,
+      "exerciseNumber": 14,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r014.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-r015",
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "volume": 1,
+      "printedPage": 34,
+      "pdfSheet": 19,
+      "exerciseNumber": 15,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r015.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
     }
   ]
 }
