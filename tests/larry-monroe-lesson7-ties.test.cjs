@@ -70,3 +70,20 @@ test('Lição 6 fecha os dois estudos que estavam ausentes, números 10 e 15',()
   assert.equal(parsed.rows.length,8);
  }
 });
+
+test('A lição 7 inclui o primeiro estudo melódico em Si bemol maior, dois bemóis e 16 mínimas',()=>{
+ const item=idx.entries.find(e=>e.id==='v1-l7-m001');
+ assert.ok(item);
+ assert.equal(item.sectionKey,'licao7-melodicos');
+ assert.equal(item.printedPage,64);
+ assert.equal(item.keyFifths,-2);
+ const s=fs.readFileSync(path.join(base,item.musicXml),'utf8');
+ assert.match(s,/<fifths>-2<\/fifths>/);
+ assert.equal((s.match(/<duration>8<\/duration><type>half<\/type>/g)||[]).length,16);
+ assert.equal((s.match(/<alter>-1<\/alter>/g)||[]).length,6);
+ assert.equal((s.match(/<lyric>/g)||[]).length,16);
+ const html=fs.readFileSync(path.join(base,'livro.html'),'utf8');
+ assert.match(html,/const flatY=/);
+ assert.match(html,/const sharpY=/);
+ assert.match(html,/Math\.min\(7,Math\.abs\(key\)\)/);
+});
