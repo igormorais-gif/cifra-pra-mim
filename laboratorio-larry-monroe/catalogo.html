@@ -57,7 +57,7 @@ h2{font:500 25px Georgia,serif;margin:34px 0 14px}
 <div class="summary" id="summary" aria-label="Progresso editorial">
  <div class="metric"><strong>4</strong><span>Volumes de referência</span></div>
  <div class="metric"><strong>186</strong><span>Folhas digitalizadas do PDF</span></div>
- <div class="metric"><strong>3</strong><span>Exercícios em versão piloto</span></div>
+ <div class="metric"><strong id="pilotCount">0</strong><span>Exercícios em versão piloto</span></div>
  <div class="metric"><strong>0</strong><span>Transcrições certificadas</span></div>
 </div>
 <h2>Coleção</h2>
@@ -115,6 +115,7 @@ function chooseVolume(next){
 function chooseSheet(next){sheet=Math.max(1,Math.min(source().sheets.length,next));render()}
 function render(){
  const s=source();sheet=Math.min(Math.max(1,sheet),s.sheets.length);
+ $("pilotCount").textContent=data.volumes.flatMap(v=>v.sheets.flatMap(s=>s.studies)).filter(e=>e.state==="pilot").length;
  route();
  $("volumeHeading").textContent="Volume "+vol;
  $("volumeCount").textContent=s.source.pdfSheets+" folhas digitalizadas";
@@ -149,8 +150,8 @@ function render(){
   lbl.append(title,meta);div.appendChild(lbl);
   if(item.onlineHref){
    let links=document.createElement("div");links.className="study-links";
-   let a=document.createElement("a");a.href=item.onlineHref+"#ex"+item.exercise;a.textContent="No livro ↗";links.appendChild(a);
-   if(item.state==="pilot"){let b=document.createElement("a");b.href="./partitura.html?volume="+vol+"&exercicio="+item.exercise;b.textContent="MusicXML ↗";links.appendChild(b)}
+   let a=document.createElement("a");a.href=item.onlineHref+"#ex"+item.exercise;a.textContent=item.sectionKey==="melodicos"?"Partitura ↗":"No livro ↗";links.appendChild(a);
+   if(item.state==="pilot"){let b=document.createElement("a");b.href="./partitura.html?volume="+vol+(item.sectionKey==="melodicos"?"&secao=melodicos":"")+"&exercicio="+item.exercise;b.textContent="MusicXML ↗";links.appendChild(b)}
    div.appendChild(links)
   }else{let text=document.createElement("small");text.textContent="Em conferência";div.appendChild(text)}
   $("studies").appendChild(div)
