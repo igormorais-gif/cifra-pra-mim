@@ -282,18 +282,173 @@
         {
           "sheet": 9,
           "sourcePage": 9,
-          "printedLeft": null,
-          "printedRight": null,
-          "status": "not_inventoried",
-          "studies": []
+          "printedLeft": 14,
+          "printedRight": 15,
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 15,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 15,
+              "exercise": 2,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 15,
+              "exercise": 3,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 15,
+              "exercise": 4,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 15,
+              "exercise": 5,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            }
+          ]
         },
         {
           "sheet": 10,
           "sourcePage": 10,
-          "printedLeft": null,
-          "printedRight": null,
-          "status": "not_inventoried",
-          "studies": []
+          "printedLeft": 16,
+          "printedRight": 17,
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 16,
+              "exercise": 6,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 16,
+              "exercise": 7,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 16,
+              "exercise": 8,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 16,
+              "exercise": 9,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 16,
+              "exercise": 10,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 16,
+              "exercise": 11,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 17,
+              "exercise": 12,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 17,
+              "exercise": 13,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 17,
+              "exercise": 14,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 17,
+              "exercise": 15,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 17,
+              "exercise": 16,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            },
+            {
+              "sectionKey": "licao2-ritmicos",
+              "printedPage": 17,
+              "exercise": 17,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./licao2-ritmicos-p15-17.html",
+              "note": "Lição 2, reconstrução musical executável; transcrição pendente de auditoria independente"
+            }
+          ]
         },
         {
           "sheet": 11,
