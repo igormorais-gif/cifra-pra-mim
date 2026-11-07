@@ -916,8 +916,18 @@
           "sourcePage": 24,
           "printedLeft": 44,
           "printedRight": 45,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao5-melodicos",
+              "printedPage": 45,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=45",
+              "note": "MusicXML executável; conferência editorial pendente"
+            }
+          ]
         },
         {
           "sheet": 25,
@@ -940,24 +950,180 @@
           "sourcePage": 27,
           "printedLeft": 50,
           "printedRight": 51,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 51,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=51",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 51,
+              "exercise": 2,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=51",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 51,
+              "exercise": 3,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=51",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 51,
+              "exercise": 4,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=51",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 51,
+              "exercise": 5,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=51",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 51,
+              "exercise": 6,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=51",
+              "note": "MusicXML executável; conferência editorial pendente"
+            }
+          ]
         },
         {
           "sheet": 28,
           "sourcePage": 28,
           "printedLeft": 52,
           "printedRight": 53,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 52,
+              "exercise": 7,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=52",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 52,
+              "exercise": 8,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=52",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 52,
+              "exercise": 9,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=52",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 53,
+              "exercise": 11,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=53",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 53,
+              "exercise": 12,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=53",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 53,
+              "exercise": 13,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=53",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 53,
+              "exercise": 14,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=53",
+              "note": "MusicXML executável; conferência editorial pendente"
+            }
+          ]
         },
         {
           "sheet": 29,
           "sourcePage": 29,
           "printedLeft": 54,
           "printedRight": 55,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 54,
+              "exercise": 16,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=54",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 54,
+              "exercise": 17,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=54",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 54,
+              "exercise": 18,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=54",
+              "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-melodicos",
+              "printedPage": 55,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=55",
+              "note": "MusicXML executável; conferência editorial pendente"
+            }
+          ]
         },
         {
           "sheet": 30,
