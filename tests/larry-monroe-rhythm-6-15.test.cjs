@@ -83,3 +83,20 @@ test('primeiro estudo melódico possui 16 mínimas e solfejo completo de dó mai
  const player=fs.readFileSync(path.join(base,'partitura.html'),'utf8');
  assert.match(player,/secao/);
 });
+
+test('as páginas melódicas 10 e 11 incluem a instrução traduzida e 16 notas executáveis',()=>{
+ const html=fs.readFileSync(path.join(base,'estudos-melodicos-p10-11.html'),'utf8');
+ assert.match(html,/id="page10"/);
+ assert.match(html,/id="page11"/);
+ assert.match(html,/Todos os estudos melódicos serão cantados utilizando sílabas de solfejo/);
+ assert.match(html,/independentemente do registro/);
+ assert.match(html,/Tonalidade de Dó maior/);
+ assert.match(html,/id="melScore"/);
+ assert.match(html,/const melodic=\[/);
+ assert.match(html,/function schedule\(cycle\)/);
+ const script=html.match(/<script>([\s\S]*?)<\/script>/);
+ assert.ok(script);
+ assert.doesNotThrow(()=>new Function(script[1]));
+ const cat=JSON.parse(fs.readFileSync(path.join(base,'catalogo.json'),'utf8'));
+ assert.equal(cat.volumes[0].sheets[6].studies[0].onlineHref,'./estudos-melodicos-p10-11.html');
+});
