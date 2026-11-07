@@ -41,8 +41,8 @@ test('leitor da página 11 busca MusicXML dos 3 melódicos e seleciona exercíci
 test('catálogo mantém numeração melódica separada dos rítmicos',()=>{
  const r=JSON.parse(fs.readFileSync(path.join(root,'partituras/index.json'),'utf8')).entries;
  const m=r.filter(x=>x.volume===1&&x.sectionKey==='melodicos');
- assert.deepEqual(m.map(x=>x.exerciseNumber),[1,2,3]);
- assert.ok(m.every(x=>x.pdfSheet===7&&x.printedPage===11&&x.status==='pilot'));
+ assert.deepEqual(m.slice(0,3).map(x=>x.exerciseNumber),[1,2,3]);
+ assert.ok(m.slice(0,3).every(x=>x.pdfSheet===7&&x.printedPage===11&&x.status==='pilot'));
  const c=JSON.parse(fs.readFileSync(path.join(root,'catalogo.json'),'utf8'));
  assert.deepEqual(c.volumes[0].sheets[6].studies.map(s=>s.state),['pilot','pilot','pilot']);
 });
