@@ -96,13 +96,19 @@ function parseMusicXML(raw){
 }
 function pitchY(n,clef){const bottom=clef==="F"?2*7+letters.G:4*7+letters.E;return 69-(n.index-bottom)*5}
 function drawMusic(svg,bars,startBar,clef,key,entry,beatsPerBar,beatType){
- const bounds=[82,266,449,633,817];const notePositions=[];
+ const firstBar=82+Math.max(0,Math.abs(key)-1)*15;
+ const bounds=[firstBar,266,449,633,817];const notePositions=[];
  for(let line=0;line<5;line++)node("line",{x1:10,x2:817,y1:29+line*10,y2:29+line*10,stroke:"#333430","stroke-width":.85},svg);
  node("text",{x:12,y:69,"font-size":46,"font-family":"Georgia,serif"},svg,clef==="F"?"𝄢":"𝄞");
- if(key===-1)node("text",{x:55,y:clef==="F"?44:55,"font-size":25,"font-family":"serif"},svg,"♭");
+ if(key!==0){
+  const flatY=clef==="F"?[59,44,64,49,69,54,74]:[49,34,54,39,59,44,64];
+  const sharpY=clef==="F"?[39,54,34,49,29,44,59]:[29,44,24,39,54,34,49];
+  const ys=key<0?flatY:sharpY,symbol=key<0?"♭":"♯";
+  for(let i=0;i<Math.min(7,Math.abs(key));i++)node("text",{x:51+i*15,y:ys[i]+7,"font-size":23,"font-family":"serif",fill:"#30312d"},svg,symbol);
+ }
  if(startBar===0){
-  if(beatsPerBar===4&&beatType===4)node("text",{x:62,y:52,"font-size":26,"font-family":"Georgia,serif"},svg,"C");
-  else{node("text",{x:62,y:46,"font-size":18,"font-family":"Georgia,serif"},svg,String(beatsPerBar));node("text",{x:62,y:65,"font-size":18,"font-family":"Georgia,serif"},svg,String(beatType))}
+  if(beatsPerBar===4&&beatType===4)node("text",{x:firstBar-18,y:52,"font-size":26,"font-family":"Georgia,serif"},svg,"C");
+  else{node("text",{x:firstBar-18,y:46,"font-size":18,"font-family":"Georgia,serif"},svg,String(beatsPerBar));node("text",{x:firstBar-18,y:65,"font-size":18,"font-family":"Georgia,serif"},svg,String(beatType))}
  }
  bounds.forEach((x,i)=>node("line",{x1:x,x2:x,y1:29,y2:69,stroke:"#32332d","stroke-width":i===4?1.9:.8},svg));
  for(let bi=0;bi<4;bi++){
