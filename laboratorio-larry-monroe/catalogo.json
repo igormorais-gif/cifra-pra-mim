@@ -1077,6 +1077,15 @@
               "location": "right",
               "onlineHref": "./livro.html?pagina=53",
               "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 52,
+              "exercise": 10,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=52",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
             }
           ]
         },
@@ -1122,6 +1131,15 @@
               "location": "right",
               "onlineHref": "./livro.html?pagina=55",
               "note": "MusicXML executável; conferência editorial pendente"
+            },
+            {
+              "sectionKey": "licao6-ritmicos",
+              "printedPage": 54,
+              "exercise": 15,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=54",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
             }
           ]
         },
@@ -1146,16 +1164,81 @@
           "sourcePage": 32,
           "printedLeft": 60,
           "printedRight": 61,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 61,
+              "exercise": 9,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=61",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 61,
+              "exercise": 10,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=61",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 61,
+              "exercise": 11,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=61",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            }
+          ]
         },
         {
           "sheet": 33,
           "sourcePage": 33,
           "printedLeft": 62,
           "printedRight": 63,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 62,
+              "exercise": 12,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=62",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 62,
+              "exercise": 13,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=62",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 62,
+              "exercise": 14,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=62",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            },
+            {
+              "sectionKey": "licao7-ritmicos",
+              "printedPage": 62,
+              "exercise": 15,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=62",
+              "note": "MusicXML em 3/4, com ligaduras quando presentes; revisão independente pendente"
+            }
+          ]
         },
         {
           "sheet": 34,
