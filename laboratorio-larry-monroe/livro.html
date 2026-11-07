@@ -95,6 +95,35 @@ function parseMusicXML(raw){
  return {bars,clef,key,beatsPerBar,beatType}
 }
 function pitchY(n,clef){const bottom=clef==="F"?2*7+letters.G:4*7+letters.E;return 69-(n.index-bottom)*5}
+
+// Agrupamento de colcheias: respeita barras explícitas do MusicXML;
+// quando faltam, agrupa apenas colcheias contíguas no mesmo pulso.
+function beamGroupsForBar(bar){
+ const groups=[],assigned=new Set();let explicit=[];
+ function finish(){if(explicit.length>=2){groups.push(explicit);explicit.forEach(i=>assigned.add(i))}explicit=[]}
+ for(let i=0;i<bar.length;i++){
+  const n=bar[i];
+  if(n.rest||n.type!=="eighth"){finish();continue}
+  if(n.beam==="begin"){finish();explicit=[i]}
+  else if(n.beam==="continue"){if(explicit.length)explicit.push(i)}
+  else if(n.beam==="end"){if(explicit.length){explicit.push(i);finish()}}
+  else finish();
+ }
+ finish();
+ for(let i=0;i<bar.length;i++){
+  const n=bar[i];if(assigned.has(i)||n.rest||n.type!=="eighth")continue;
+  const group=[i],beat=Math.floor(n.at+1e-6);let previous=n;
+  for(let j=i+1;j<bar.length;j++){
+   const other=bar[j];
+   if(assigned.has(j)||other.rest||other.type!=="eighth"||
+     Math.floor(other.at+1e-6)!==beat||
+     Math.abs(other.at-previous.at-previous.duration)>1e-5)break;
+   group.push(j);previous=other;
+  }
+  if(group.length>=2){groups.push(group);group.forEach(j=>assigned.add(j));i=group[group.length-1]}
+ }
+ return {groups,assigned};
+}
 function drawMusic(svg,bars,startBar,clef,key,entry,beatsPerBar,beatType){
  const firstBar=82+Math.max(0,Math.abs(key)-1)*15;
  const bounds=[firstBar,266,449,633,817];const notePositions=[];
@@ -114,7 +143,8 @@ function drawMusic(svg,bars,startBar,clef,key,entry,beatsPerBar,beatType){
  for(let bi=0;bi<4;bi++){
   const bar=bars[startBar+bi];if(!bar)continue;
   const startX=bounds[bi],width=bounds[bi+1]-startX;
-  let beams=[],beamRunning=[];
+  const {groups:beamGroups,assigned:beamedNotes}=beamGroupsForBar(bar);
+  const beamPoints=new Map();
   bar.forEach((n,ni)=>{
    const x=startX+18+(n.at+n.duration/2)/beatsPerBar*(width-36);
    const g=node("g",{"class":"score-note","data-entry":entry.id,"data-time":(startBar+bi)*beatsPerBar+n.at,"data-duration":n.duration},svg);
@@ -130,13 +160,12 @@ function drawMusic(svg,bars,startBar,clef,key,entry,beatsPerBar,beatType){
     node("ellipse",{cx:x,cy:y,rx:whole?10:8,ry:5.5,transform:"rotate(-18 "+x+" "+y+")",fill:filled?"#31332f":"#fffefa",stroke:"#31332f","stroke-width":1.5},g);
     if(!whole)node("line",{x1:x+7,x2:x+7,y1:y,y2:y-32,stroke:"#30312d","stroke-width":1.6},g);
     if(n.dotted)node("circle",{cx:x+17,cy:y-3,r:2.2,fill:"#333"},g);
-    if(n.duration===.5&&n.beam==="")node("path",{d:"M"+(x+7)+" "+(y-32)+" q16 1 11 19",fill:"none",stroke:"#333","stroke-width":3},g);
-    if(n.beam==="begin"){beamRunning=[{x:x+7,y:y-32}]}
-    else if(n.beam==="continue"){beamRunning.push({x:x+7,y:y-32})}
-    else if(n.beam==="end"){beamRunning.push({x:x+7,y:y-32});beams.push(beamRunning);beamRunning=[]}
+    if(n.type==="eighth"&&!beamedNotes.has(ni))node("path",{d:"M"+(x+7)+" "+(y-32)+" q16 1 11 19",fill:"none",stroke:"#333","stroke-width":3},g);
+    if(beamedNotes.has(ni))beamPoints.set(ni,{x:x+7,y:y-32});
    }
   });
-  beams.forEach(group=>{
+  beamGroups.forEach(indices=>{
+   const group=indices.map(i=>beamPoints.get(i)).filter(Boolean);
    if(group.length<2)return;const y=Math.min(...group.map(g=>g.y))-2;
    group.forEach(g=>node("line",{x1:g.x,x2:g.x,y1:g.y,y2:y,stroke:"#34342e","stroke-width":1.6},svg));
    node("line",{x1:group[0].x,x2:group[group.length-1].x,y1:y,y2:y,stroke:"#34342e","stroke-width":4},svg);
