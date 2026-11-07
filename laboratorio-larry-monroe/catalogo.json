@@ -767,6 +767,60 @@
               "location": "left",
               "onlineHref": "./livro.html?pagina=32",
               "note": "Lição 4: colcheias e tempos pontuados, revisão pendente"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 33,
+              "exercise": 6,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=33",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 33,
+              "exercise": 7,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=33",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 33,
+              "exercise": 8,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=33",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 33,
+              "exercise": 9,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=33",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 33,
+              "exercise": 10,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=33",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 33,
+              "exercise": 11,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=33",
+              "note": "Lição 4, exercício MusicXML provisório"
             }
           ]
         },
@@ -775,8 +829,45 @@
           "sourcePage": 19,
           "printedLeft": 34,
           "printedRight": 35,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 34,
+              "exercise": 12,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=34",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 34,
+              "exercise": 13,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=34",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 34,
+              "exercise": 14,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=34",
+              "note": "Lição 4, exercício MusicXML provisório"
+            },
+            {
+              "sectionKey": "licao4-ritmicos",
+              "printedPage": 34,
+              "exercise": 15,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=34",
+              "note": "Lição 4, exercício MusicXML provisório"
+            }
+          ]
         },
         {
           "sheet": 20,
