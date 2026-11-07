@@ -2168,6 +2168,26 @@
         "layout": false
       },
       "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
+      "id": "v1-l7-m001",
+      "volume": 1,
+      "sectionKey": "licao7-melodicos",
+      "section": "Lição 7 — Estudos melódicos · Si♭ maior",
+      "printedPage": 64,
+      "pdfSheet": 34,
+      "exerciseNumber": 1,
+      "time": "4/4",
+      "keyFifths": -2,
+      "musicXml": "partituras/v1-l7-m001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Escala de Si bemol maior em clave de sol com dois bemóis e solfejo, revisão independente pendente"
     }
   ]
 }
