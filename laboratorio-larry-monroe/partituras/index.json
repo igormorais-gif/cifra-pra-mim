@@ -388,6 +388,346 @@
         "layout": false
       },
       "notes": "Primeira leitura completa do scan; alturas, divisão rítmica e organização ainda aguardam verificação independente"
+    },
+    {
+      "id": "v1-l2-r001",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 15,
+      "pdfSheet": 9,
+      "exerciseNumber": 1,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r002",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 15,
+      "pdfSheet": 9,
+      "exerciseNumber": 2,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r002.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r003",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 15,
+      "pdfSheet": 9,
+      "exerciseNumber": 3,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r003.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r004",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 15,
+      "pdfSheet": 9,
+      "exerciseNumber": 4,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r004.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r005",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 15,
+      "pdfSheet": 9,
+      "exerciseNumber": 5,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r005.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r006",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 16,
+      "pdfSheet": 10,
+      "exerciseNumber": 6,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r006.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r007",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 16,
+      "pdfSheet": 10,
+      "exerciseNumber": 7,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r007.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r008",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 16,
+      "pdfSheet": 10,
+      "exerciseNumber": 8,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r008.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r009",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 16,
+      "pdfSheet": 10,
+      "exerciseNumber": 9,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r009.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r010",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 16,
+      "pdfSheet": 10,
+      "exerciseNumber": 10,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r010.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r011",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 16,
+      "pdfSheet": 10,
+      "exerciseNumber": 11,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r011.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r012",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 17,
+      "pdfSheet": 10,
+      "exerciseNumber": 12,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r012.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r013",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 17,
+      "pdfSheet": 10,
+      "exerciseNumber": 13,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r013.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r014",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 17,
+      "pdfSheet": 10,
+      "exerciseNumber": 14,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r014.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r015",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 17,
+      "pdfSheet": 10,
+      "exerciseNumber": 15,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r015.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r016",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 17,
+      "pdfSheet": 10,
+      "exerciseNumber": 16,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r016.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
+    },
+    {
+      "id": "v1-l2-r017",
+      "sectionKey": "licao2-ritmicos",
+      "volume": 1,
+      "printedPage": 17,
+      "pdfSheet": 10,
+      "exerciseNumber": 17,
+      "section": "Lição 2 — Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l2-r017.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituído em lote da digitalização. A revisão independente de cada pauta está pendente."
     }
   ]
 }
