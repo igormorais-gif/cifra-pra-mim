@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f3f0e9"><title>Monroe Digital — Estudos melódicos, páginas 10–11</title>
+<style>
+:root{--ink:#24231f;--paper:#fffefa;--bg:#f3f0e9;--line:#ddd8d1;--muted:#78736c;--active:#b7483a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.54 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+a{color:inherit}button,input{font:inherit}button{cursor:pointer}
+header{max-width:1200px;margin:auto;padding:18px 15px;display:flex;justify-content:space-between;gap:14px;align-items:center;font-size:12px}header a{text-decoration:none}header strong{letter-spacing:.16em}
+main{max-width:1200px;margin:auto;padding:15px 13px 150px}h1{font:500 clamp(31px,5vw,44px) Georgia,serif;letter-spacing:-.04em;margin:4px 0}.lead{font-size:12px;color:var(--muted);margin:0 0 23px}
+.spread{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.page{background:var(--paper);border:1px solid var(--line);min-height:780px;padding:42px 30px 54px;position:relative;border-radius:5px;box-shadow:0 5px 17px #00000009}
+.page h2{font:500 20px Georgia,serif;text-decoration:underline;text-underline-offset:4px;margin:0 0 25px}
+.page .booktext{font:15px/1.6 Georgia,serif;margin:14px 0 23px}.page .booktext.small{font-size:14px}
+.page .page-num{position:absolute;bottom:17px;text-align:center;left:0;right:0;font:13px Georgia,serif}
+.scale{margin:16px 0 25px}.scale-label{font:13px Georgia,serif;margin-bottom:7px;text-align:center}
+.score svg{display:block;width:100%;height:auto;min-width:410px}
+.score{overflow-x:auto}.exercise{margin:22px 0}.exercise button{border:0;background:none;font:15px Georgia,serif;vertical-align:top;padding:6px 8px 6px 0;color:var(--ink)}.exercise .lines{flex:1;min-width:0}.exercise.selected{background:#f8f5ef;border-radius:5px}
+.exercise .title{font:15px Georgia,serif;margin:0 0 10px}
+.note-head.active{stroke:var(--active)!important;fill:#f2b7ae!important}
+.incomplete{border-top:1px solid #ebe8e2;padding:16px 0;font:13px Georgia,serif;color:var(--muted)}
+.page-switch{display:none}.small-note{font-size:11px;color:var(--muted)}.small-note a{text-decoration:underline}
+.player{position:fixed;bottom:0;left:0;right:0;background:#faf9f7ed;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:12px max(12px,calc((100vw - 1060px)/2));box-shadow:0 -5px 21px #0000000b}
+.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.play{background:#272823;color:white;border:0;border-radius:8px;min-width:145px;padding:12px 17px;font-weight:700}.tempo{display:flex;gap:9px;align-items:center;flex:1;min-width:200px}.tempo input{accent-color:#282924;flex:1}.tempo output{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}.opts{display:flex;gap:13px;align-items:center;font-size:12px}.opts input{accent-color:#272823}.status{font-size:11px;color:var(--muted);margin-top:7px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+@media(max-width:900px){.spread{display:block}.page{display:none;max-width:650px;margin:auto}.page.current{display:block}.page-switch{display:flex;gap:8px;justify-content:center;margin:15px 0}.page-switch button{border:1px solid var(--line);background:white;border-radius:6px;padding:9px 12px}.page-switch button.active{background:#282924;color:white}.page{padding:28px 20px 48px;min-height:770px}}
+@media(max-width:540px){main{padding:5px 9px 160px}.page{padding:24px 12px 47px}.player{padding:10px 12px}.controls{gap:8px}.play{min-width:130px}.tempo{min-width:145px}.opts{width:100%}}
+</style></head>
+<body>
+<header><a href="./estudos-ritmicos-p8-9.html">← Páginas 8–9</a><strong>MONROE DIGITAL</strong><a href="./catalogo.html">Índice ↗</a></header>
+<main><div class="small-note">LARRY MONROE · VOLUME 1 · CADERNO DE PERCEPÇÃO</div>
+<h1>Estudos melódicos</h1><p class="lead">Páginas 10–11 · tradução didática da introdução e transcrição musical em andamento.</p>
+<div class="page-switch"><button id="go10" class="active" aria-pressed="true">Página 10</button><button id="go11" aria-pressed="false">Página 11</button></div>
+<div class="spread">
+<article class="page current" id="page10" aria-label="Página 10">
+<h2>Estudos melódicos</h2>
+<p class="booktext">Todos os estudos melódicos serão cantados utilizando sílabas de solfejo. A escala maior é representada pelas seguintes sílabas:</p>
+<div id="scales" aria-label="Exemplos da escala maior em três tonalidades"></div>
+<p class="booktext small">Observe que, independentemente do registro, <b>dó</b> é sempre a fundamental da escala, <b>ré</b> é seu segundo grau, <b>mi</b> é o terceiro e assim por diante. A sílaba, portanto, indica a função tonal. Cantar com sílabas ajuda o estudante a desenvolver não apenas a percepção das alturas, mas também a compreender como determinada altura pode funcionar melódica ou harmonicamente.</p>
+<div class="page-num">10</div>
+</article>
+<article class="page" id="page11" aria-label="Página 11">
+<h2>Estudos melódicos</h2><p style="text-align:center;font:15px Georgia,serif;margin-top:-12px;margin-bottom:20px">Tonalidade de Dó maior · Clave de sol</p>
+<div class="exercise selected" id="ex-mel1"><p class="title"><button id="exerciseBtn" type="button" aria-label="Tocar exercício melódico 1">1.</button> Escala ascendente e descendente</p><div id="melScore" class="score" aria-label="Duas linhas com quatro compassos cada"></div></div>
+<div class="incomplete">2. — Transcrição do exercício seguinte em conferência</div>
+<div class="incomplete">3. — Transcrição do exercício seguinte em conferência</div>
+<p class="small-note">Apenas o estudo 1 está executável nesta página. Os outros continuam identificados, sem serem substituídos por notas inventadas.</p>
+<div class="page-num">11</div>
+</article>
+</div>
+<p class="small-note" style="margin-top:15px"><a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener">Conferir páginas originais no Drive ↗</a> · <a href="./partitura.html?volume=1&secao=melodicos&exercicio=1">Abrir MusicXML do estudo 1 ↗</a></p>
+</main>
+<div class="player">
+<div class="controls"><button id="play" class="play" type="button">▶ Melódico 1</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="40" max="160" value="76"><output id="bpmText">76 BPM</output></div><div class="opts"><label><input id="click" type="checkbox" checked> Metrônomo</label><label><input id="loop" type="checkbox"> Loop</label></div></div>
+<div class="status"><span id="bar">Exercício 1 · compasso 1/8</span><span id="status">Transcrição piloto · revisão independente pendente</span></div>
+</div>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id),ns="http://www.w3.org/2000/svg";
+const patterns=[
+{key:"Dó maior",accidental:"",notes:[["C",4],["D",4],["E",4],["F",4],["G",4],["A",4],["B",4],["C",5]]},
+{key:"Fá maior",accidental:"flat",notes:[["F",4],["G",4],["A",4],["B",4],["C",5],["D",5],["E",5],["F",5]]},
+{key:"Sol maior",accidental:"sharp",notes:[["G",4],["A",4],["B",4],["C",5],["D",5],["E",5],["F",5],["G",5]]}
+];
+const melodic=[["C",4],["D",4],["E",4],["F",4],["G",4],["A",4],["B",4],["C",5],["C",5],["B",4],["A",4],["G",4],["F",4],["E",4],["D",4],["C",4]];
+const syllables=["do","re","mi","fa","sol","la","ti","do","do","ti","la","sol","fa","mi","re","do"];
+const semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11},diatonic={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+const drawn=[];
+let ctx=null,playing=false,raf=0,startTime=0,secondsPerBeat=0,scheduled=0;
+const AC=window.AudioContext||window.webkitAudioContext;
+function el(tag,atts,parent,text){let x=document.createElementNS(ns,tag);Object.entries(atts||{}).forEach(([k,v])=>x.setAttribute(k,String(v)));if(text!==undefined)x.textContent=text;parent.appendChild(x);return x}
+function pos(p){return 70-(diatonic[p[0]]+(p[1]-4)*7-2)*5}
+function staff(svg,x1=8,x2=808){for(let j=0;j<5;j++)el("line",{x1,x2,y1:30+j*10,y2:30+j*10,stroke:"#30312e","stroke-width":1},svg);el("text",{x:10,y:70,"font-size":47,fill:"#30312e"},svg,"𝄞")}
+function note(svg,x,p,opts={}){
+ const y=pos(p),whole=Boolean(opts.whole),hollow=true,lyric=opts.lyric;
+ const g=el("g",{class:"note-mark"},svg);
+ if(y>=80||y<=20){const yy=y>=80?80:20;el("line",{x1:x-13,x2:x+13,y1:yy,y2:yy,stroke:"#30312e","stroke-width":1},g)}
+ const head=el("ellipse",{cx:x,cy:y,rx:whole?10.5:8,ry:5.6,transform:"rotate(-16 "+x+" "+y+")",fill:"#fffefa",stroke:"#353531","stroke-width":1.6,"class":"note-head"},g);
+ if(!whole){let down=y<=48;el("line",down?{x1:x-8,x2:x-8,y1:y,y2:y+34,stroke:"#353531","stroke-width":1.7}:{x1:x+8,x2:x+8,y1:y,y2:y-34,stroke:"#353531","stroke-width":1.7},g)}
+ if(lyric)el("text",{x,y:14,"text-anchor":"middle","font-size":15,"font-family":"Georgia",fill:"#585750"},svg,lyric);
+ return head
+}
+patterns.forEach(p=>{
+ const row=document.createElement("div");row.className="scale";const name=document.createElement("div");name.className="scale-label";name.textContent=p.key;row.appendChild(name);
+ const svg=el("svg",{viewBox:"0 0 820 115",role:"img","aria-label":"Escala de "+p.key},row);
+ staff(svg);
+ if(p.accidental)el("text",{x:54,y:p.accidental==="flat"?52:35,"font-size":28,"font-family":"serif"},svg,p.accidental==="flat"?"♭":"♯");
+ p.notes.forEach((n,i)=>note(svg,108+i*94,n,{whole:true,lyric:["do","re","mi","fa","sol","la","ti","do"][i]}));
+ el("line",{x1:799,x2:799,y1:30,y2:70,stroke:"#292a26","stroke-width":2},svg);
+ $("scales").appendChild(row);
+});
+for(let line=0;line<2;line++){
+ const svg=el("svg",{viewBox:"0 0 820 115",role:"img","aria-label":"Exercício 1: compassos "+(line*4+1)+" a "+(line*4+4)},$("melScore"));
+ staff(svg);
+ el("text",{x:58,y:48,"font-size":25,"font-family":"serif",fill:"#353531"},svg,"C");
+ [85,269,453,637,809].forEach((x,i)=>el("line",{x1:x,x2:x,y1:30,y2:70,stroke:"#353531","stroke-width":i===4?2:1},svg));
+ for(let bar=0;bar<4;bar++){
+  for(let i=0;i<2;i++){
+   const index=(line*4+bar)*2+i,x=85+bar*184+(i===0?52:133);
+   drawn[index]=note(svg,x,melodic[index],{lyric:syllables[index]});
+  }
+ }
+}
+function display(p){[10,11].forEach(i=>{$("page"+i).classList.toggle("current",i===p);$("go"+i).classList.toggle("active",i===p);$("go"+i).setAttribute("aria-pressed",String(i===p))})}
+$("go10").addEventListener("click",()=>display(10));$("go11").addEventListener("click",()=>display(11));
+if(location.hash==="#ex-mel1")display(11);
+function midi(n){return (n[1]+1)*12+semis[n[0]]}
+function tone(t,dur,freq){let o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=freq;
+ const len=Math.max(.08,dur-.025);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.1,t+.024);g.gain.setValueAtTime(.1,t+Math.max(.025,len-.06));g.gain.exponentialRampToValueAtTime(.0001,t+len);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+len+.03)}
+function tick(t,b){if(!$("click").checked)return;let o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=b===0?1270:950;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(b===0?.085:.04,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.07)}
+function schedule(cycle){
+ const base=startTime+cycle*32*secondsPerBeat;
+ melodic.forEach((pitch,i)=>tone(base+i*2*secondsPerBeat,2*secondsPerBeat,440*Math.pow(2,(midi(pitch)-69)/12)));
+ for(let i=0;i<32;i++)tick(base+i*secondsPerBeat,i%4)
+}
+function stop(){playing=false;cancelAnimationFrame(raf);if(ctx){ctx.close().catch(()=>{});ctx=null}$("play").textContent="▶ Melódico 1";$("status").textContent="Transcrição piloto";drawn.forEach(h=>h.classList.remove("active"))}
+function frame(){
+ if(!playing||!ctx)return;
+ let progress=(ctx.currentTime-startTime)/secondsPerBeat;
+ if(progress>=32&&!$("loop").checked){stop();return}
+ const loop=Math.max(0,Math.floor(progress/32)),at=(progress%32+32)%32;
+ if($("loop").checked&&loop+1>=scheduled&&at>=24){schedule(loop+1);scheduled=loop+2}
+ const noteNumber=Math.floor(at/2);
+ drawn.forEach((h,i)=>h.classList.toggle("active",i===noteNumber));
+ $("bar").textContent="Exercício melódico 1 · compasso "+(Math.floor(at/4)+1)+"/8";
+ raf=requestAnimationFrame(frame)
+}
+async function play(){if(playing){stop();return}if(!AC){$("status").textContent="Áudio indisponível";return}
+ try{ctx=new AC;await ctx.resume();secondsPerBeat=60/Number($("bpm").value);startTime=ctx.currentTime+.12;playing=true;scheduled=1;schedule(0);$("play").textContent="■ Parar";$("status").textContent="Executando";if(window.innerWidth<901)display(11);frame()}
+ catch(err){stop();$("status").textContent="Não foi possível iniciar o áudio"}
+}
+$("play").addEventListener("click",play);$("exerciseBtn").addEventListener("click",play);$("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});window.addEventListener("pagehide",stop);
+})();
+</script>
+</body></html>
