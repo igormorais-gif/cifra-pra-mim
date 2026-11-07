@@ -492,6 +492,33 @@
               "location": "left",
               "onlineHref": "./licao2-ritmicos-p15-18.html",
               "note": "MusicXML executável; revisão visual independente pendente"
+            },
+            {
+              "sectionKey": "licao2-melodicos",
+              "printedPage": 19,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=licao2-melodicos&exercicio=1",
+              "note": "Estudo de Dó maior em clave de fá, MusicXML executável"
+            },
+            {
+              "sectionKey": "licao2-melodicos",
+              "printedPage": 19,
+              "exercise": 2,
+              "state": "pending",
+              "location": "right",
+              "onlineHref": null,
+              "note": "Transcrição da partitura pendente"
+            },
+            {
+              "sectionKey": "licao2-melodicos",
+              "printedPage": 19,
+              "exercise": 3,
+              "state": "pending",
+              "location": "right",
+              "onlineHref": null,
+              "note": "Transcrição da partitura pendente"
             }
           ]
         },
