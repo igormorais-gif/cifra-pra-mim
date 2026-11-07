@@ -30,7 +30,7 @@ h1{font:500 clamp(30px,4vw,47px)/1.05 Georgia,serif;letter-spacing:-.04em;margin
 .exercise-line{display:flex;align-items:start;gap:8px;margin:23px 0 18px;position:relative}
 .exercise-num{font:15px Georgia,serif;flex:0 0 21px;margin-top:5px}
 .score-scroll{width:100%;overflow-x:auto;overflow-y:hidden;touch-action:pan-x;overscroll-behavior-x:contain;padding-bottom:2px}
-#score{width:100%;min-width:445px;display:block;height:auto}.score-note .head{stroke:#32342e;stroke-width:1.6;fill:var(--paper)}.score-note.active .head{stroke:var(--accent);fill:#e8a397}.score-note.active .stem{stroke:var(--accent)}.score-note .stem{stroke:#32342e;stroke-width:1.5}.score-note.active .syllable{fill:var(--accent)}.score-note .syllable{fill:#393934;font:italic 15px Georgia,serif}.beat-number{font:12px Georgia,serif;fill:#55544d}.beat-number.active{fill:var(--accent);font-weight:bold}
+.score-scroll svg{width:100%;min-width:445px;display:block;height:auto}.exercise-num{border:0;background:transparent;color:inherit;text-align:left;padding:3px 0;cursor:pointer}.exercise-num[aria-current=true]{color:var(--accent);font-weight:700}.exercise-num:hover{color:var(--accent)}.exercise-line.current-study{background:#f7f5ef;border-radius:6px}.score-note .head.filled{fill:#31332e}.score-note .head{stroke:#32342e;stroke-width:1.6;fill:var(--paper)}.score-note.active .head{stroke:var(--accent);fill:#e8a397}.score-note.active .stem{stroke:var(--accent)}.score-note .stem{stroke:#32342e;stroke-width:1.5}.score-note.active .syllable{fill:var(--accent)}.score-note .syllable{fill:#393934;font:italic 15px Georgia,serif}.beat-number{font:12px Georgia,serif;fill:#55544d}.beat-number.active{fill:var(--accent);font-weight:bold}
 .pending{padding:9px 7px 9px 0;min-height:94px;border-top:1px solid #eae7e1;display:flex;align-items:center;gap:15px}.pending span{font:15px Georgia,serif;color:#777}.pending small{font:12px Georgia,serif;color:#9c9b96}.source-status{font-size:11px;color:#7e756b;margin-top:12px;border-top:1px solid #e8e3db;padding-top:10px}
 .toolbar{position:fixed;bottom:0;left:0;right:0;background:#f9f8f5ee;border-top:1px solid #d8d3c9;backdrop-filter:blur(14px);z-index:5;padding:11px max(14px,calc((100vw - 1130px)/2));box-shadow:0 -5px 20px #0000000a}
 .toolbar-main{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.play{background:#252723;color:#fff;border:0;border-radius:8px;padding:12px 19px;min-width:120px;font-weight:650}
@@ -86,12 +86,13 @@ h1{font:500 clamp(30px,4vw,47px)/1.05 Georgia,serif;letter-spacing:-.04em;margin
     </article>
     <article class="page" id="page7" aria-label="Página 7">
       <p class="booktext hint">Cante os estudos a seguir em diferentes andamentos. Lembre-se: cante sempre no tempo, independentemente de quão lento ou rápido seja o andamento.</p>
-      <div class="exercise-line" id="ex1"><span class="exercise-num">1.</span><div class="score-scroll" title="Deslize horizontalmente no celular para acompanhar toda a pauta"><svg id="score" viewBox="0 0 790 145" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 1 em uma única pauta horizontal, quatro compassos de 4/4, cinco notas Fá4: semibreve, duas mínimas, semibreve e semibreve."></svg></div></div>
-      <div class="pending"><span>2.</span><small>Transcrição musical em conferência</small></div>
-      <div class="pending"><span>3.</span><small>Transcrição musical em conferência</small></div>
+      <div class="exercise-line current-study" id="ex1"><button type="button" class="exercise-num" data-exercise="1" aria-label="Selecionar exercício 1" aria-current="true">1.</button><div class="score-scroll" title="Deslize horizontalmente no celular para acompanhar toda a pauta"><svg id="score" viewBox="0 0 790 199" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 1 em uma única pauta horizontal, quatro compassos de 4/4, cinco notas Fá4: semibreve, duas mínimas, semibreve e semibreve."></svg></div></div>
+
+      <div class="exercise-line" id="ex2"><button type="button" class="exercise-num" data-exercise="2" aria-label="Selecionar exercício 2" aria-current="false">2.</button><div class="score-scroll" title="Pauta contínua do exercício 2"><svg id="score2" viewBox="0 0 790 199" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 2 em quatro compassos: duas mínimas; uma semibreve; quatro semínimas; duas mínimas."></svg></div></div>
+      <div class="exercise-line" id="ex3"><button type="button" class="exercise-num" data-exercise="3" aria-label="Selecionar exercício 3" aria-current="false">3.</button><div class="score-scroll" title="Pauta contínua do exercício 3"><svg id="score3" viewBox="0 0 790 199" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 3 em quatro compassos: quatro semínimas; uma semibreve; uma mínima e duas semínimas; uma semibreve."></svg></div></div>
       <div class="pending"><span>4.</span><small>Transcrição musical em conferência</small></div>
       <div class="pending"><span>5.</span><small>Transcrição musical em conferência</small></div>
-      <p class="source-status">A página original contém cinco exercícios. Nesta edição, somente o exercício 1 está reconstruído e executável até agora. Os demais não foram inventados nem omitidos do inventário.</p>
+      <p class="source-status">A página original contém cinco exercícios. Os exercícios 1, 2 e 3 estão reconstruídos para estudo; 4 e 5 permanecem em conferência com o original. Nenhuma transcrição está certificada como definitiva.</p>
       <div class="footpage">7</div>
     </article>
   </section>
@@ -110,8 +111,8 @@ h1{font:500 clamp(30px,4vw,47px)/1.05 Georgia,serif;letter-spacing:-.04em;margin
 (()=>{
 "use strict";
 const $=id=>document.getElementById(id);
-const svg=$("score"),ns="http://www.w3.org/2000/svg";
-function add(tag,attrs,parent,text){let e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!=null)e.textContent=text;(parent||svg).appendChild(e);return e}
+const ns="http://www.w3.org/2000/svg";
+function add(tag,attrs,parent,text){let e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!=null)e.textContent=text;parent.appendChild(e);return e}
 var events=[
  {measure:1,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
  {measure:2,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
@@ -119,23 +120,73 @@ var events=[
  {measure:3,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
  {measure:4,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"}
 ];
-let xs=[112,300,397,500,680],scoreNotes=[];
-for(let j=0;j<5;j++)add("line",{x1:12,x2:777,y1:54+j*10,y2:54+j*10,stroke:"#343630","stroke-width":1});
-[85,269,461,650,777].forEach((x,i)=>add("line",{x1:x,x2:x,y1:54,y2:94,stroke:"#343630","stroke-width":i===4?2:1}));
-add("text",{x:17,y:95,"font-size":56,"font-family":"Georgia,serif",fill:"#282b26"},svg,"𝄞");
-add("text",{x:65,y:73,"font-size":18,"font-family":"Georgia,serif"},svg,"4");
-add("text",{x:65,y:91,"font-size":18,"font-family":"Georgia,serif"},svg,"4");
-events.forEach((note,i)=>{
- const x=xs[i], y=89;
- const g=add("g",{"class":"score-note","data-index":i,"data-measure":note.measure},svg);
- add("text",{x:x-2,y:36,"text-anchor":"middle","class":"syllable"},g,note.type==="whole"?"la ─────":"la ───");
- add("ellipse",{cx:x,cy:y,rx:note.type==="whole"?10:8.5,ry:5.8,transform:"rotate(-17 "+x+" "+y+")","class":"head"},g);
- if(note.type==="half")add("line",{x1:x+8,x2:x+8,y1:y,y2:51,"class":"stem"},g);
- scoreNotes.push(g);
-});
-for(let m=0;m<4;m++){let start=[85,269,461,650][m],end=[269,461,650,777][m];for(let b=0;b<4;b++){add("text",{x:start+(end-start)*(b+.5)/4,y:120,"text-anchor":"middle","class":"beat-number","data-time":m*4+b},svg,String(b+1))}}
-add("line",{x1:773,x2:773,y1:54,y2:94,stroke:"#343630","stroke-width":1.5});
-let beats=[...document.querySelectorAll("#beats span")],nums=[...document.querySelectorAll(".beat-number")];
+const studies={
+ 1:events,
+ 2:[
+  {measure:1,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:1,beat:2,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:2,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+  {measure:3,beat:0,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:1,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:2,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:3,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:4,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:4,beat:2,duration:2,pitch:"F4",frequency:349.228231,type:"half"}
+ ],
+ 3:[
+  {measure:1,beat:0,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:1,beat:1,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:1,beat:2,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:1,beat:3,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:2,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+  {measure:3,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:3,beat:2,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:3,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:4,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"}
+ ]
+};
+let activeStudy=1, scoreNotes=[],nums=[];
+const scoreBounds=[85,269,461,650,777];
+function drawStudy(id){
+ const svg=$(id===1?"score":"score"+id);
+ const notes=studies[id],y=89,staff=[54,64,74,84,94];
+ for(let j=0;j<5;j++)add("line",{x1:12,x2:777,y1:54+j*10,y2:54+j*10,stroke:"#343630","stroke-width":1},svg);
+ for(let j=0;j<5;j++)add("line",{x1:12,x2:777,y1:149+j*10,y2:149+j*10,stroke:"#a9a69e","stroke-width":.8},svg);
+ scoreBounds.forEach((x,i)=>add("line",{x1:x,x2:x,y1:54,y2:94,stroke:"#343630","stroke-width":i===4?2:1},svg));
+ add("text",{x:17,y:95,"font-size":56,"font-family":"Georgia,serif",fill:"#282b26"},svg,"𝄞");
+ add("text",{x:65,y:73,"font-size":18,"font-family":"Georgia,serif"},svg,"4");
+ add("text",{x:65,y:91,"font-size":18,"font-family":"Georgia,serif"},svg,"4");
+ notes.forEach((n,i)=>{
+   let lo=scoreBounds[n.measure-1],hi=scoreBounds[n.measure];
+   let x=lo+24+n.beat/4*(hi-lo-37);
+   const g=add("g",{"class":"score-note","data-index":i,"data-exercise":id},svg);
+   let lyric=id===3?(i===0||i===1?"la":i===2?"etc. . . . .":""):"la";
+   if(lyric){add("text",{x:x,y:37,"text-anchor":"middle","class":"syllable"},g,lyric);}
+   if(n.type!=="quarter")add("ellipse",{cx:x,cy:y,rx:n.type==="whole"?10:8,ry:5.5,transform:"rotate(-17 "+x+" "+y+")","class":"head"},g);
+   else add("ellipse",{cx:x,cy:y,rx:7,ry:5.5,transform:"rotate(-17 "+x+" "+y+")","class":"head filled"},g);
+   if(n.type!=="whole")add("line",{x1:x+7,x2:x+7,y1:y,y2:51,"class":"stem"},g);
+ });
+ for(let m=0;m<4;m++){
+   if(id===3&&m>0)continue;
+   let lo=scoreBounds[m],hi=scoreBounds[m+1];
+   for(let b=0;b<4;b++)add("text",{x:lo+(hi-lo)*(b+.5)/4,y:121,"text-anchor":"middle","class":"beat-number","data-exercise":id,"data-time":m*4+b},svg,String(b+1));
+ }
+ add("line",{x1:773,x2:773,y1:54,y2:94,stroke:"#343630","stroke-width":1.5},svg);
+}
+[1,2,3].forEach(drawStudy);
+let beats=[...document.querySelectorAll("#beats span")];
+function selectStudy(n){
+ if(!studies[n])return;
+ if(playing)stop();
+ activeStudy=n;events=studies[n];
+ scoreNotes=[...document.querySelectorAll('.score-note[data-exercise="'+n+'"]')];
+ nums=[...document.querySelectorAll('.beat-number[data-exercise="'+n+'"]')];
+ document.querySelectorAll(".exercise-num").forEach(e=>e.setAttribute("aria-current",String(Number(e.dataset.exercise)===n)));
+ document.querySelectorAll(".exercise-line").forEach(e=>e.classList.toggle("current-study",e.id==="ex"+n));
+ $("play").textContent="▶ Exercício "+n;
+ $("measure").textContent="Exercício "+n+" · compasso 1/4";
+ $("status").textContent="Revisão provisória";
+}
 let page=window.innerWidth<=840?6:0;
 function showPage(n){page=n;[6,7].forEach(i=>{$("page"+i).classList.toggle("current",i===n);$("go"+i).classList.toggle("active",i===n);$("go"+i).setAttribute("aria-pressed",String(i===n))})}
 $("go6").addEventListener("click",()=>showPage(6));$("go7").addEventListener("click",()=>showPage(7));showPage(6);
@@ -143,10 +194,12 @@ const AC=window.AudioContext||window.webkitAudioContext;let ctx=null,secondsPerB
 function tone(at,dur,freq){if(!ctx)return;let o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=freq;g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.095,at+.025);g.gain.setValueAtTime(.095,at+Math.max(.04,dur-.085));g.gain.exponentialRampToValueAtTime(.0001,at+dur);o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+dur+.02)}
 function tick(at,b){if(!$("click").checked||!ctx)return;let o=ctx.createOscillator(),g=ctx.createGain(),freq=b===0?1260:880,vol=b===0?.10:.045;o.type="sine";o.frequency.setValueAtTime(freq,at);o.frequency.exponentialRampToValueAtTime(freq*.8,at+.05);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(vol,at+.004);g.gain.exponentialRampToValueAtTime(.0001,at+.07);o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+.08)}
 function schedule(cycle){let at=startAt+cycle*16*secondsPerBeat;events.forEach(e=>tone(at+((e.measure-1)*4+e.beat)*secondsPerBeat,e.duration*secondsPerBeat-.015,e.frequency));for(let j=0;j<16;j++)tick(at+j*secondsPerBeat,j%4)}
-function stop(){playing=false;cancelAnimationFrame(raf);if(ctx){ctx.close().catch(()=>{});ctx=null}$("play").textContent="▶ Exercício 1";$("status").textContent="Revisão provisória";scoreNotes.forEach(n=>n.classList.remove("active"));nums.forEach(n=>n.classList.remove("active"));beats.forEach(n=>n.classList.remove("active"))}
-function frame(){if(!playing||!ctx)return;let pos=(ctx.currentTime-startAt)/secondsPerBeat;if(pos>=16&&!$("loop").checked){stop();return}let cyc=Math.max(0,Math.floor(pos/16));if($("loop").checked&&cyc+1>=scheduled){schedule(cyc+1);scheduled=cyc+2}let local=((pos%16)+16)%16;let measure=Math.min(4,Math.floor(local/4)+1),beat=Math.floor(local)%4;$("measure").textContent="Exercício 1 · compasso "+measure+"/4";beats.forEach((e,i)=>e.classList.toggle("active",i===beat));nums.forEach(e=>e.classList.toggle("active",$("count").checked&&Number(e.dataset.time)===Math.floor(local)));scoreNotes.forEach((e,i)=>{let n=events[i],from=(n.measure-1)*4+n.beat;e.classList.toggle("active",local>=from&&local<from+n.duration)});raf=requestAnimationFrame(frame)}
+function stop(){playing=false;cancelAnimationFrame(raf);if(ctx){ctx.close().catch(()=>{});ctx=null}$("play").textContent="▶ Exercício "+activeStudy;$("status").textContent="Revisão provisória";document.querySelectorAll(".score-note,.beat-number").forEach(n=>n.classList.remove("active"));beats.forEach(n=>n.classList.remove("active"))}
+function frame(){if(!playing||!ctx)return;let pos=(ctx.currentTime-startAt)/secondsPerBeat;if(pos>=16&&!$("loop").checked){stop();return}let cyc=Math.max(0,Math.floor(pos/16));if($("loop").checked&&cyc+1>=scheduled){schedule(cyc+1);scheduled=cyc+2}let local=((pos%16)+16)%16;let measure=Math.min(4,Math.floor(local/4)+1),beat=Math.floor(local)%4;$("measure").textContent="Exercício "+activeStudy+" · compasso "+measure+"/4";beats.forEach((e,i)=>e.classList.toggle("active",i===beat));nums.forEach(e=>e.classList.toggle("active",$("count").checked&&Number(e.dataset.time)===Math.floor(local)));scoreNotes.forEach((e,i)=>{let n=studies[activeStudy][i],from=(n.measure-1)*4+n.beat;e.classList.toggle("active",local>=from&&local<from+n.duration)});raf=requestAnimationFrame(frame)}
 async function start(){stop();if(!AC){$("status").textContent="Áudio não disponível";return}try{ctx=new AC;await ctx.resume();secondsPerBeat=60/Number($("bpm").value);startAt=ctx.currentTime+.10;playing=true;scheduled=1;schedule(0);$("play").textContent="■ Parar";$("status").textContent="Execução sonora em andamento";if(window.innerWidth<=840)showPage(7);raf=requestAnimationFrame(frame)}catch(err){stop();$("status").textContent="Não foi possível iniciar o áudio"}}
 $("play").addEventListener("click",()=>playing?stop():start());
+document.querySelectorAll(".exercise-num[data-exercise]").forEach(btn=>btn.addEventListener("click",()=>{selectStudy(Number(btn.dataset.exercise));start()}));
+selectStudy(1);
 $("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
 $("count").addEventListener("change",()=>{nums.forEach(n=>n.style.display=$("count").checked?"":"none")});
 window.addEventListener("pagehide",stop);
