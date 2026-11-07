@@ -1,0 +1,56 @@
+name: Monroe Volume I - Full Optical Music Recognition
+on:
+  push:
+    paths:
+      - ".github/workflows/monroe-omr.yml"
+  workflow_dispatch:
+    inputs:
+      page_range:
+        description: "Printed pages, e.g. 4-95"
+        required: false
+        default: "4-95"
+
+permissions:
+  contents: read
+
+jobs:
+  recognize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install PDF tools
+        run: python -m pip install --disable-pip-version-check "gdown>=5,<6" "pymupdf>=1.24,<2" "Pillow>=10"
+      - name: Fetch user's source scan without committing it
+        run: |
+          mkdir -p /tmp/monroe-src
+          gdown --id "1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r" -O /tmp/monroe-src/vol1.pdf
+          test "$(stat -c%s /tmp/monroe-src/vol1.pdf)" -gt 1000000
+          python - <<'PY'
+          import fitz
+          src=fitz.open("/tmp/monroe-src/vol1.pdf")
+          assert len(src)==49, f"Expected 49 scanned two-page leaves, got {len(src)}"
+          print("PDF leaves:",len(src))
+          PY
+      - name: Install official Audiveris 5.11.0
+        run: |
+          curl -fL --retry 3 --retry-delay 3 -o /tmp/audiveris.deb "https://github.com/Audiveris/audiveris/releases/download/5.11.0/Audiveris-5.11.0-ubuntu24.04-x86_64.deb"
+          echo "f20113aaa33b3149ec8d6a09b2a7963360e65fafd92d69389987a85bbc3ec7a3  /tmp/audiveris.deb" | sha256sum -c -
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq /tmp/audiveris.deb
+          find /opt -type f \( -name "Audiveris" -o -name "audiveris" \) | head
+      - name: Run optical music recognition with per-page audit report
+        run: |
+          TOOL="$(find /opt -type f \( -name "Audiveris" -o -name "audiveris" \) | head -1)"
+          test -n "$TOOL"
+          python scripts/monroe_batch_omr.py --source /tmp/monroe-src/vol1.pdf --range '${{ github.event.inputs.page_range || '4-95' }}' --audiveris "$TOOL" --output /tmp/monroe-omr
+      - name: Preserve candidate MusicXML and reports without publishing inaccurate notes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monroe-volume1-omr-candidates
+          path: /tmp/monroe-omr/
+          retention-days: 7
