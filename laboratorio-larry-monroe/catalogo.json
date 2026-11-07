@@ -263,19 +263,19 @@
               "sectionKey": "melodicos",
               "printedPage": 12,
               "exercise": 6,
-              "state": "pending",
+              "state": "pilot",
               "location": "left",
-              "onlineHref": null,
-              "note": "Ainda não transcrito"
+              "onlineHref": "./estudos-melodicos-p12.html",
+              "note": "MusicXML executável, conferência pendente"
             },
             {
               "sectionKey": "melodicos",
               "printedPage": 12,
               "exercise": 7,
-              "state": "pending",
+              "state": "pilot",
               "location": "left",
-              "onlineHref": null,
-              "note": "Ainda não transcrito"
+              "onlineHref": "./estudos-melodicos-p12.html",
+              "note": "MusicXML executável, conferência pendente"
             }
           ]
         },
