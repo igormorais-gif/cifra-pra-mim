@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f3f0e9"><title>Monroe Digital · Livro interativo · Volume I</title>
+<style>
+:root{--bg:#f1eee8;--paper:#fffefa;--ink:#242621;--mute:#6e6b65;--line:#ded9d0;--sel:#9c453a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.48 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink)}
+a{color:inherit;text-underline-offset:3px}button,select,input{font:inherit}button{cursor:pointer}
+a,button{touch-action:manipulation}.top{max-width:1300px;margin:auto;padding:15px;display:flex;align-items:center;gap:15px;justify-content:space-between;font-size:12px}.top a{text-decoration:none}.brand{font-weight:800;letter-spacing:.17em;text-align:center}
+main{max-width:1300px;margin:auto;padding:8px 12px 160px}
+.kicker{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--mute)}
+h1{font:500 clamp(29px,5vw,43px)/1.1 Georgia,serif;letter-spacing:-.03em;margin:6px 0 12px}
+.lead{font-size:12px;color:var(--mute);max-width:850px;margin:0 0 16px}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+.toolbar button,.toolbar select{background:var(--paper);color:var(--ink);border:1px solid var(--line);padding:10px 13px;border-radius:7px}
+.toolbar button:disabled{opacity:.3;cursor:default}.toolbar select{min-width:130px}
+.footnote{color:var(--mute);font-size:11px}
+.spread{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start}
+.page{position:relative;min-height:790px;background:var(--paper);border:1px solid #dfd9d0;box-shadow:0 6px 19px #25221a0a;padding:31px 22px 58px;border-radius:5px}
+.page h2{font:500 21px Georgia,serif;margin:0 0 17px;text-decoration:underline;text-underline-offset:4px}
+.number{position:absolute;bottom:17px;left:0;right:0;text-align:center;font:14px Georgia,serif}
+.exercise{display:flex;gap:6px;margin:9px 0 20px;padding:2px 5px 2px 0;border-radius:6px}
+.exercise.selected{background:#f9f4ee}.exnumber{background:transparent;border:0;align-self:flex-start;flex:0 0 27px;text-align:left;font:15px Georgia,serif;padding:7px 0;color:var(--ink)}
+.exercise.selected .exnumber{font-weight:700;color:var(--sel)}
+.exbody{min-width:0;flex:1}.subheading{font:12px Georgia,serif;text-align:center;margin:3px 0 10px}
+.score-scroll{overflow-x:auto;width:100%;touch-action:pan-x}.score-scroll svg{display:block;width:100%;min-width:435px}
+.score-note.active ellipse{stroke:var(--sel)!important;fill:#f2b4a9!important}.score-note.active line{stroke:var(--sel)!important}
+.empty{font:14px/1.65 Georgia,serif;padding:12px 0;color:#67645c}.source{margin:14px 0;font-size:11px;color:var(--mute)}
+.mobile-pages{display:none;gap:9px;justify-content:center;margin:10px 0}
+.mobile-pages button{border:1px solid var(--line);background:var(--paper);padding:10px 16px;border-radius:6px}.mobile-pages button[aria-pressed=true]{background:#272824;color:white}
+.player{position:fixed;bottom:0;left:0;right:0;background:#f9f8f5ed;backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:11px max(13px,calc((100vw - 1160px)/2));box-shadow:0 -4px 18px #0000000b;z-index:20}
+.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.play{background:#272924;color:#fff;border:0;border-radius:7px;padding:12px 17px;font-weight:700;min-width:140px}.play:disabled{opacity:.5}
+.tempo{flex:1;min-width:160px;display:flex;gap:8px;align-items:center}.tempo input{flex:1;accent-color:#333}.tempo output{font-variant-numeric:tabular-nums;min-width:62px;font-weight:650}
+.opts{display:flex;gap:9px;align-items:center;font-size:12px}.opts input{accent-color:#333}
+.beats{display:flex;gap:4px}.beats span{font-size:11px;border-radius:5px;width:26px;height:26px;display:grid;place-items:center;background:#eeeae4;color:#86817a}.beats span.on{background:#292b27;color:#fff}
+.status{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--mute);font-size:11px;margin-top:7px}
+@media(max-width:960px){.spread{display:block}.page{display:none;max-width:660px;margin:auto;min-height:760px}.page.current{display:block}.mobile-pages{display:flex}}
+@media(max-width:570px){.top{padding:14px 10px;gap:6px}.brand{font-size:10px}main{padding:7px 9px 163px}.page{padding:25px 10px 56px}.toolbar{gap:6px}.toolbar button,.toolbar select{padding:9px 8px}.player{padding:9px 10px}.controls{gap:8px}.opts{width:100%}.tempo{min-width:140px}.score-scroll svg{min-width:460px}}
+</style></head><body>
+<header class="top"><a href="../">← Hub</a><a class="brand" href="./catalogo.html">MONROE DIGITAL</a><a href="./catalogo.html">Índice documental ↗</a></header>
+<main><div class="kicker">Larry Monroe · Workbook for Ear Training · Volume I</div><h1>Livro interativo</h1>
+<p class="lead">Leitura sequencial do volume original. Exercícios reconstruídos em MusicXML com áudio, metrônomo, andamento e indicação da nota ativa. Páginas sem transcrição aparecem identificadas; não são substituídas por exercícios inventados.</p>
+<div class="toolbar"><button id="prev" type="button">← Anterior</button><label for="pagePick">Páginas</label><select id="pagePick" aria-label="Selecionar dupla de páginas"></select><button id="next" type="button">Próxima →</button><button id="nextMusic" type="button">Próximos exercícios <span aria-hidden="true">↗</span></button></div>
+<div class="mobile-pages"><button type="button" id="leftButton" aria-pressed="true">Página esquerda</button><button type="button" id="rightButton" aria-pressed="false">Página direita</button></div>
+<section id="spread" class="spread" aria-label="Duas páginas originais do livro"></section>
+<p class="source"><a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener noreferrer">Consultar o PDF de origem no Google Drive ↗</a>. As partituras são transcrições de estudo e exigem verificação editorial antes de uso definitivo.</p>
+</main>
+<div class="player" role="region" aria-label="Player do livro">
+ <div class="controls"><button class="play" id="play" disabled>▶ Selecionar exercício</button>
+ <div class="tempo"><label for="bpm">Andamento</label><input type="range" min="40" max="160" step="1" value="80" id="bpm"><output id="bpmText">80 BPM</output></div>
+ <div class="opts"><label><input id="click" type="checkbox" checked> Metrônomo</label><label><input id="loop" type="checkbox"> Loop</label></div>
+ <div class="beats" id="beats" aria-label="Tempos do compasso"><span>1</span><span>2</span><span>3</span><span>4</span></div></div>
+ <div class="status"><span id="track">Selecione um número na partitura</span><span id="status">Carregando índice musical…</span></div>
+</div>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id),ns="http://www.w3.org/2000/svg",AudioClass=window.AudioContext||window.webkitAudioContext;
+const letters={C:0,D:1,E:2,F:3,G:4,A:5,B:6},semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const qs=new URLSearchParams(location.search);
+const cache=new Map();let entries=[],pages=[],spread=24,shown=0,active=null,ctx=null,playing=false,startAt=0,beatSeconds=0,scheduled=0,raf=0,scoreNotes=[],count=4;
+function xmlFirst(el,tag){return [...el.children].find(e=>e.localName===tag)||null}
+function xmlText(el,tag){return xmlFirst(el,tag)?.textContent||""}
+function node(tag,atts,parent,txt){const e=document.createElementNS(ns,tag);Object.entries(atts||{}).forEach(([k,v])=>e.setAttribute(k,String(v)));if(txt!==undefined)e.textContent=txt;parent.appendChild(e);return e}
+function parseMusicXML(raw){
+ const xml=new DOMParser().parseFromString(raw,"application/xml");
+ if(xml.querySelector("parsererror"))throw Error("MusicXML inválido");
+ const part=xml.querySelector("part");if(!part)throw Error("MusicXML sem voz");
+ const measures=[...part.children].filter(n=>n.localName==="measure"),bars=[];
+ let divisions=4,clef="G",key=0;
+ for(const bar of measures){
+  for(const a of [...bar.children].filter(n=>n.localName==="attributes")){
+   const d=Number(xmlText(a,"divisions"));if(d>0)divisions=d;
+   const c=xmlFirst(a,"clef");if(c)clef=xmlText(c,"sign")||"G";
+   const k=xmlFirst(a,"key");if(k)key=Number(xmlText(k,"fifths"))||0;
+  }
+  let elapsed=0;const notes=[];
+  for(const e of [...bar.children].filter(n=>n.localName==="note")){
+   const duration=Number(xmlText(e,"duration"))/divisions;if(!(duration>0))throw Error("Duração musical inválida");
+   const rest=!!xmlFirst(e,"rest"),p=xmlFirst(e,"pitch"),type=xmlText(e,"type");
+   const step=p?xmlText(p,"step"):"",oct=p?Number(xmlText(p,"octave")):0;
+   const alter=p?Number(xmlText(p,"alter")||0):0;
+   const eighth=xmlFirst(e,"beam")?.textContent||"";
+   const index=p?oct*7+letters[step]:null;
+   const midi=p?(oct+1)*12+semis[step]+alter:null;
+   notes.push({at:elapsed,duration,rest,step,oct,alter,index,midi,type,beam:eighth,dotted:!!xmlFirst(e,"dot")});
+   elapsed+=duration;
+  }
+  if(Math.abs(elapsed-4)>.001)throw Error("Compassos diferentes de 4/4 ainda não suportados neste leitor");
+  bars.push(notes);
+ }
+ return {bars,clef,key}
+}
+function pitchY(n,clef){const bottom=clef==="F"?2*7+letters.G:4*7+letters.E;return 69-(n.index-bottom)*5}
+function drawMusic(svg,bars,startBar,clef,key,entry){
+ const bounds=[82,266,449,633,817];
+ for(let line=0;line<5;line++)node("line",{x1:10,x2:817,y1:29+line*10,y2:29+line*10,stroke:"#333430","stroke-width":.85},svg);
+ node("text",{x:12,y:69,"font-size":46,"font-family":"Georgia,serif"},svg,clef==="F"?"𝄢":"𝄞");
+ if(key===-1)node("text",{x:55,y:clef==="F"?44:55,"font-size":25,"font-family":"serif"},svg,"♭");
+ if(startBar===0){node("text",{x:62,y:52,"font-size":26,"font-family":"Georgia,serif"},svg,"C")}
+ bounds.forEach((x,i)=>node("line",{x1:x,x2:x,y1:29,y2:69,stroke:"#32332d","stroke-width":i===4?1.9:.8},svg));
+ for(let bi=0;bi<4;bi++){
+  const bar=bars[startBar+bi];if(!bar)continue;
+  const startX=bounds[bi],width=bounds[bi+1]-startX;
+  let beams=[],beamRunning=[];
+  bar.forEach((n,ni)=>{
+   const x=startX+18+(n.at+n.duration/2)/4*(width-36);
+   const g=node("g",{"class":"score-note","data-entry":entry.id,"data-time":(startBar+bi)*4+n.at,"data-duration":n.duration},svg);
+   if(n.rest){
+    if(n.duration===1)node("path",{d:"M"+(x-4)+" 33 l7 8 -6 9 6 4 -9 12",stroke:"#34342e","stroke-width":2.8,fill:"none","stroke-linecap":"round"},g);
+    else if(n.duration>=2)node("rect",{x:x-9,y:n.duration===4?39:45,width:18,height:5,fill:"#34342e"},g);
+    else node("text",{x:x,y:58,"font-size":24},g,"𝄽");
+   }else{
+    const y=pitchY(n,clef),whole=n.duration===4,filled=n.duration<=1;
+    if(y>79){for(let v=79;v<=y;v+=10)node("line",{x1:x-12,x2:x+12,y1:v,y2:v,stroke:"#34342e","stroke-width":1},g)}
+    if(y<19){for(let v=19;v>=y;v-=10)node("line",{x1:x-12,x2:x+12,y1:v,y2:v,stroke:"#34342e","stroke-width":1},g)}
+    node("ellipse",{cx:x,cy:y,rx:whole?10:8,ry:5.5,transform:"rotate(-18 "+x+" "+y+")",fill:filled?"#31332f":"#fffefa",stroke:"#31332f","stroke-width":1.5},g);
+    if(!whole)node("line",{x1:x+7,x2:x+7,y1:y,y2:y-32,stroke:"#30312d","stroke-width":1.6},g);
+    if(n.dotted)node("circle",{cx:x+17,cy:y-3,r:2.2,fill:"#333"},g);
+    if(n.duration===.5&&n.beam==="")node("path",{d:"M"+(x+7)+" "+(y-32)+" q16 1 11 19",fill:"none",stroke:"#333","stroke-width":3},g);
+    if(n.beam==="begin"){beamRunning=[{x:x+7,y:y-32}]}
+    else if(n.beam==="continue"){beamRunning.push({x:x+7,y:y-32})}
+    else if(n.beam==="end"){beamRunning.push({x:x+7,y:y-32});beams.push(beamRunning);beamRunning=[]}
+   }
+  });
+  beams.forEach(group=>{
+   if(group.length<2)return;const y=Math.min(...group.map(g=>g.y))-2;
+   group.forEach(g=>node("line",{x1:g.x,x2:g.x,y1:g.y,y2:y,stroke:"#34342e","stroke-width":1.6},svg));
+   node("line",{x1:group[0].x,x2:group[group.length-1].x,y1:y,y2:y,stroke:"#34342e","stroke-width":4},svg);
+  })
+ }
+}
+function renderStudy(entry,music,parent){
+ const row=document.createElement("div");row.className="exercise";row.id="ex-"+entry.id;
+ const number=document.createElement("button");number.type="button";number.className="exnumber";
+ number.textContent=entry.exerciseNumber+".";number.setAttribute("aria-label","Executar exercício "+entry.exerciseNumber+" de "+entry.section);
+ number.addEventListener("click",()=>{select(entry,music);start()});row.appendChild(number);
+ const body=document.createElement("div");body.className="exbody";
+ const title=document.createElement("div");title.className="subheading";title.textContent=entry.section;body.appendChild(title);
+ const scroll=document.createElement("div");scroll.className="score-scroll";
+ music.bars.forEach((bar,i)=>{if(i%4!==0)return;
+  const svg=node("svg",{viewBox:"0 0 832 112",role:"img","aria-label":"Exercício "+entry.exerciseNumber+", compassos "+(i+1)+"–"+Math.min(i+4,music.bars.length)},scroll);
+  drawMusic(svg,music.bars,i,music.clef,music.key,entry)
+ });
+ body.appendChild(scroll);row.appendChild(body);parent.appendChild(row)
+}
+async function fetchMusic(entry){
+ if(cache.has(entry.id))return cache.get(entry.id);
+ const promise=fetch("./"+entry.musicXml).then(r=>{if(!r.ok)throw Error("Partitura indisponível: "+entry.id);return r.text()}).then(parseMusicXML);
+ cache.set(entry.id,promise);return promise
+}
+function putText(parent,tag,txt,cls){const e=document.createElement(tag);e.textContent=txt;if(cls)e.className=cls;parent.appendChild(e);return e}
+async function renderPage(number){
+ const article=document.createElement("article");article.className="page";article.id="page"+number;
+ putText(article,"h2","Volume I — "+number);
+ const found=entries.filter(x=>x.printedPage===number);
+ if(!found.length){putText(article,"p","Esta página está no PDF original, mas sua transcrição musical ainda não foi incorporada ao leitor.", "empty")}
+ else {
+  for(const item of found){
+   try{const music=await fetchMusic(item);renderStudy(item,music,article)}
+   catch(e){putText(article,"p","Não foi possível carregar o exercício "+item.exerciseNumber+": "+e.message,"empty")}
+  }
+ }
+ const num=putText(article,"div",String(number),"number");
+ return article
+}
+function mobilePage(page){
+ shown=page;
+ [spread,spread+1].forEach(i=>{$("page"+i)?.classList.toggle("current",i===page)});
+ $("leftButton").setAttribute("aria-pressed",String(page===spread));
+ $("rightButton").setAttribute("aria-pressed",String(page===spread+1))
+}
+async function openSpread(page){
+ stop();const even=Math.max(4,Math.min(94,page%2===0?page:page-1));spread=even;
+ const p=new URLSearchParams(location.search);p.set("pagina",String(page));history.replaceState(null,"","?"+p.toString());
+ $("pagePick").value=String(even);$("prev").disabled=even<=4;$("next").disabled=even>=94;
+ $("spread").replaceChildren();
+ const [left,right]=await Promise.all([renderPage(even),renderPage(even+1)]);
+ $("spread").append(left,right);
+ mobilePage(page===even+1?even+1:even);
+ $("track").textContent="Páginas "+even+"–"+(even+1)+" · escolha um exercício";
+ $("status").textContent="Transcrições ainda sujeitas à revisão musical";
+}
+function select(entry,music){
+ stop();active={entry,music};count=music.bars.length*4;scoreNotes=[...document.querySelectorAll('.score-note[data-entry="'+entry.id+'"]')];
+ document.querySelectorAll(".exercise").forEach(e=>e.classList.toggle("selected",e.id==="ex-"+entry.id));
+ $("play").disabled=false;$("play").textContent="▶ Estudo "+entry.exerciseNumber;
+ $("track").textContent=entry.section+" · exercício "+entry.exerciseNumber+" · "+music.bars.length+" compassos";
+ const num=document.getElementById("ex-"+entry.id)?.closest(".page");
+ if(num&&innerWidth<=960)mobilePage(Number(num.id.replace("page","")))
+}
+function tone(t,dur,midi){const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=440*Math.pow(2,(midi-69)/12);
+ const v=Math.max(.065,dur-.025);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.10,t+.02);g.gain.setValueAtTime(.10,t+Math.max(.023,v-.045));g.gain.exponentialRampToValueAtTime(.0001,t+v);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+v+.025)}
+function tick(t,b){if(!$("click").checked)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=b===0?1290:960;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(b===0?.08:.035,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.058);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.07)}
+function schedule(cycle){
+ const base=startAt+cycle*count*beatSeconds;
+ active.music.bars.forEach((bar,i)=>{
+  for(let b=0;b<4;b++)tick(base+(i*4+b)*beatSeconds,b);
+  bar.forEach(note=>{if(!note.rest)tone(base+(i*4+note.at)*beatSeconds,note.duration*beatSeconds,note.midi)});
+ })
+}
+function stop(){
+ playing=false;cancelAnimationFrame(raf);if(ctx){ctx.close().catch(()=>{});ctx=null}
+ if(active)$("play").textContent="▶ Estudo "+active.entry.exerciseNumber;
+ scoreNotes.forEach(e=>e.classList.remove("active"));
+ [...$("beats").children].forEach(e=>e.classList.remove("on"))
+}
+function frame(){
+ if(!playing||!ctx)return;
+ const at=(ctx.currentTime-startAt)/beatSeconds;
+ if(at>=count&&!$("loop").checked){stop();return}
+ const cycle=Math.max(0,Math.floor(at/count)),where=(at%count+count)%count;
+ if($("loop").checked&&cycle+1>=scheduled&&where>=count-8){schedule(cycle+1);scheduled=cycle+2}
+ const currentBeat=Math.floor(where)%4;
+ [...$("beats").children].forEach((e,i)=>e.classList.toggle("on",i===currentBeat));
+ scoreNotes.forEach(el=>{const when=Number(el.dataset.time),duration=Number(el.dataset.duration);el.classList.toggle("active",where>=when&&where<when+duration)});
+ $("track").textContent=active.entry.section+" · exercício "+active.entry.exerciseNumber+" · compasso "+(Math.floor(where/4)+1)+"/"+active.music.bars.length;
+ raf=requestAnimationFrame(frame)
+}
+async function start(){
+ if(playing){stop();return}
+ if(!active||!AudioClass)return;
+ try{ctx=new AudioClass;await ctx.resume();beatSeconds=60/Number($("bpm").value);startAt=ctx.currentTime+.14;playing=true;scheduled=1;schedule(0);$("play").textContent="■ Parar";$("status").textContent="Reprodução em andamento";frame()}
+ catch(e){stop();$("status").textContent="Não foi possível iniciar áudio"}
+}
+$("play").addEventListener("click",start);
+$("prev").addEventListener("click",()=>openSpread(spread-2));$("next").addEventListener("click",()=>openSpread(spread+2));
+$("pagePick").addEventListener("change",e=>openSpread(Number(e.target.value)));
+$("leftButton").addEventListener("click",()=>mobilePage(spread));$("rightButton").addEventListener("click",()=>mobilePage(spread+1));
+$("nextMusic").addEventListener("click",()=>{const next=pages.find(p=>p>=spread+2&&entries.some(e=>e.printedPage===p));if(next)openSpread(next);else $("status").textContent="Nenhuma página posterior transcrita nesta edição"});
+$("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
+window.addEventListener("pagehide",stop);
+Promise.all([fetch("./partituras/index.json").then(r=>r.json())]).then(([index])=>{
+ entries=index.entries.filter(x=>x.volume===1&&x.status==="pilot");
+ pages=Array.from(new Set(entries.map(e=>e.printedPage))).sort((a,b)=>a-b);
+ for(let p=4;p<=94;p+=2){const opt=document.createElement("option");opt.value=String(p);opt.textContent=p+"–"+(p+1)+(entries.some(e=>e.printedPage===p||e.printedPage===p+1)?" · ♪":"");$("pagePick").append(opt)}
+ const asked=Number(qs.get("pagina"));const first=Number.isInteger(asked)&&asked>=4&&asked<=95?asked:24;
+ return openSpread(first);
+}).catch(e=>{$("status").textContent="Erro ao abrir o livro: "+e.message});
+})();
+</script>
+</body></html>
