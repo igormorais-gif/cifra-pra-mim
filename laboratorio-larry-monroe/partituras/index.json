@@ -1128,6 +1128,26 @@
         "layout": false
       },
       "notes": "Transcrição em lote de colcheias, pausas e durações; auditoria visual individual pendente"
+    },
+    {
+      "id": "v1-l3-m001",
+      "sectionKey": "licao3-melodicos",
+      "volume": 1,
+      "printedPage": 27,
+      "pdfSheet": 15,
+      "exerciseNumber": 1,
+      "section": "Lição 3 — Estudos melódicos · Fá maior",
+      "time": "4/4",
+      "keyFifths": -1,
+      "musicXml": "partituras/v1-l3-m001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Escala de Fá maior (Sib na armadura), 16 mínimas e solfejo; revisão final pendente"
     }
   ]
 }
