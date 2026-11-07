@@ -1,0 +1,21 @@
+name: Package Audiveris OMR for private local processing
+on:
+  push:
+    paths:
+      - ".github/workflows/audiveris-bundle.yml"
+permissions:
+  contents: read
+jobs:
+  fetch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Download official Audiveris release with hash verification
+        run: |
+          curl -fL --retry 3 --retry-delay 2 -o /tmp/audiveris.deb "https://github.com/Audiveris/audiveris/releases/download/5.11.0/Audiveris-5.11.0-ubuntu24.04-x86_64.deb"
+          echo "f20113aaa33b3149ec8d6a09b2a7963360e65fafd92d69389987a85bbc3ec7a3  /tmp/audiveris.deb" | sha256sum -c -
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audiveris-5-11-binary
+          path: /tmp/audiveris.deb
+          retention-days: 1
