@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f2efe9"><title>Monroe Digital — Lição 2, páginas 15–17</title>
+<style>
+:root{color-scheme:light;--bg:#f2efe9;--paper:#fffefa;--ink:#272724;--muted:#726e69;--line:#ddd8cf;--red:#b7493d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink)}
+a{color:inherit}button,input{font:inherit}button{cursor:pointer}
+header{max-width:1260px;margin:auto;padding:18px 15px;display:flex;justify-content:space-between;gap:16px;align-items:center;font-size:12px}
+header a{text-decoration:none}header strong{letter-spacing:.17em;font-size:12px}
+main{max-width:1260px;margin:auto;padding:12px 15px 150px}
+h1{font:500 clamp(30px,4.5vw,46px)/1.1 Georgia,serif;letter-spacing:-.04em;margin:4px 0 8px}
+.kicker{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#746e68}
+.lead{font-size:12px;color:var(--muted);margin:0 0 20px}
+.spread{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch}.page:nth-child(3){grid-column:1/-1;max-width:620px;width:100%;margin:auto}
+.page{background:var(--paper);border:1px solid #e1ddd6;min-height:850px;padding:35px 26px 57px;position:relative;box-shadow:0 8px 24px #211d1210}
+.page:first-child{border-radius:5px 0 0 5px}.page:last-child{border-radius:0 5px 5px 0}
+.page h2{font:400 20px Georgia,serif;text-decoration:underline;text-underline-offset:4px;margin:0 0 25px}
+.page-number{position:absolute;bottom:18px;left:0;right:0;text-align:center;font:14px Georgia,serif}
+.study{display:flex;align-items:start;gap:8px;margin:13px 0 22px;border-radius:5px}
+.study.selected{background:#f8f5f0}.number{background:none;border:0;font:16px Georgia,serif;color:var(--ink);padding:6px 0;flex:0 0 29px;text-align:left}.number.selected{color:var(--red);font-weight:700}.number:hover{color:var(--red)}
+.staff-lines{display:block;width:100%;overflow-x:auto}.staff-lines svg{width:100%;min-width:420px;display:block;height:auto}.score-note.active .head{stroke:var(--red)!important;fill:#efb5ad!important}.score-note.active .stem{stroke:var(--red)!important}
+.source-link{font-size:11px;color:#6b6660;margin-top:20px}.source-link a{text-decoration:underline;text-underline-offset:3px}
+.page-switch{display:none}
+.player{background:#faf9f6ec;backdrop-filter:blur(16px);position:fixed;left:0;right:0;bottom:0;padding:13px max(13px,calc((100vw - 1100px)/2));border-top:1px solid var(--line);box-shadow:0 -2px 18px #00000009}
+.player-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.play{background:#232622;border:0;color:white;padding:11px 17px;border-radius:8px;min-width:132px;font-weight:700}
+.tempo{flex:1;min-width:180px;display:flex;align-items:center;gap:10px}.tempo input{flex:1;accent-color:#454541;min-width:65px}.tempo output{font-variant-numeric:tabular-nums;min-width:57px;font-weight:700}
+.options{display:flex;gap:11px;align-items:center;flex-wrap:wrap;font-size:12px}.options input{accent-color:#373834}
+.beats{display:flex;gap:4px}.beats span{display:grid;place-items:center;width:26px;height:27px;border-radius:5px;background:#eeeae4;color:#8a8580;font-size:12px}.beats span.on{background:#333530;color:white}
+.player-footer{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#76716d;margin-top:7px;flex-wrap:wrap}
+.note{color:var(--muted);font-size:12px;line-height:1.6;margin:19px 0}.error{color:#b33}
+@media(max-width:900px){.spread{display:block}.page{display:none;max-width:660px;min-height:760px;margin:auto;border-radius:4px!important}.page.current{display:block}.page-switch{display:flex;gap:9px;justify-content:center;margin:12px 0 15px}.page-switch button{padding:9px 12px;border:1px solid var(--line);border-radius:7px;background:#fffefa;color:#666}.page-switch button.active{background:#282823;color:white}.page{padding:28px 22px 54px}}
+@media(max-width:600px){main{padding:8px 9px 155px}.page{padding:25px 12px 52px}.study{gap:4px}.staff-lines svg{min-width:520px}.player-row{gap:9px}.tempo{min-width:150px}.options{width:100%}.player{padding:10px 12px}}
+</style></head>
+<body>
+<header><a href="./catalogo.html">← Coleção completa</a><strong>MONROE DIGITAL</strong><a href="./estudos-melodicos-p12.html">Página 12 ↗</a></header>
+<main>
+<div class="kicker">Volume 1 · Lição 2 · Estudos rítmicos</div><h1>Páginas 15–17</h1>
+<p class="lead">Lote de 17 exercícios transcritos em ordem do livro. Selecione cada número para ouvir a partitura, ajustar andamento ou utilizar o metrônomo. Transcrições em revisão.</p>
+<div class="page-switch" role="group" aria-label="Escolher página">
+  <button id="go15" class="active" type="button" aria-pressed="true">Página 15</button>
+  <button id="go16" type="button" aria-pressed="false">Página 16</button>
+  <button id="go17" type="button" aria-pressed="false">Página 17</button>
+</div>
+<section class="spread" aria-label="Livro digital, Lição 2, páginas 15 a 17">
+ <article id="page15" class="page current"><h2>Lição 2 · Estudos rítmicos</h2><div id="studies15"></div><div class="page-number">15</div></article>
+ <article id="page16" class="page"><h2>Estudos rítmicos · continuação</h2><div id="studies16"></div><div class="page-number">16</div></article>
+ <article id="page17" class="page"><h2>Estudos rítmicos · continuação</h2><div id="studies17"></div><div class="page-number">17</div></article>
+</section>
+<p class="source-link"><a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener">Conferir as páginas no PDF original ↗</a> · <a href="./catalogo.html?volume=1&folha=6">Voltar ao catálogo ↗</a></p>
+<p class="note">Páginas originais 15–17. Cinco exercícios na primeira página, seis na segunda e seis na terceira. Todos têm quatro compassos em 4/4; a reprodução respeita os silêncios e as mínimas pontuadas. Revisão editorial e musical pendentes.</p>
+</main>
+<div class="player" role="region" aria-label="Reprodutor dos estudos">
+ <div class="player-row"><button id="play" class="play" type="button" disabled>▶ Carregando</button>
+ <div class="tempo"><label for="bpm">Andamento</label><input type="range" id="bpm" min="40" max="160" value="80"><output id="bpmText">80 BPM</output></div>
+ <div class="options"><label><input type="checkbox" id="metro" checked> Metrônomo</label><label><input type="checkbox" id="loop"> Loop</label></div>
+ <div id="beats" class="beats" aria-label="Contagem em 4/4"><span>1</span><span>2</span><span>3</span><span>4</span></div></div>
+ <div class="player-footer"><span id="track">Exercício — · compasso —</span><span id="status" role="status">Carregando MusicXML…</span></div>
+</div>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
+const AudioClass=window.AudioContext||window.webkitAudioContext;
+const exercises={},staffUI={},first=[1,2,3,4,5],second=[6,7,8,9,10,11],third=[12,13,14,15,16,17];
+let active=1,playing=false,ctx=null,startAt=0,bpm=80,raf=0,cyclesScheduled=0;
+function e(tag,props,parent,text){const el=document.createElementNS(NS,tag);Object.entries(props||{}).forEach(([k,v])=>el.setAttribute(k,String(v)));if(text!==undefined)el.textContent=text;parent.appendChild(el);return el}
+function n(el,key){return [...el.children].filter(e=>e.localName===key)}
+function txt(el,key){return n(el,key)[0]?.textContent||""}
+function parse(xml){
+ const d=new DOMParser().parseFromString(xml,"application/xml");
+ if(d.querySelector("parsererror"))throw Error("MusicXML inválido");
+ const part=d.querySelector("part");if(!part)throw Error("Partitura sem voz");
+ const measures=n(part,"measure"),bars=[];
+ let divisions=1;
+ for(const m of measures){
+  for(const a of n(m,"attributes")){const d=Number(txt(a,"divisions"));if(d>0)divisions=d}
+  const notes=[];let beat=0;
+  for(const elem of [...m.children].filter(x=>x.localName==="note")){
+   const duration=Number(txt(elem,"duration"))/divisions;
+   if(!Number.isFinite(duration)||duration<=0)throw Error("Duração inválida");
+   const rest=n(elem,"rest").length>0;
+   let midi=null;
+   if(!rest){const p=n(elem,"pitch")[0];let step=txt(p,"step"),oct=Number(txt(p,"octave")),alter=Number(txt(p,"alter")||0);const keys={C:0,D:2,E:4,F:5,G:7,A:9,B:11};midi=(oct+1)*12+keys[step]+alter}
+   notes.push({at:beat,duration,rest,midi,kind:txt(elem,"type")});
+   beat+=duration;
+  }
+  if(Math.abs(beat-4)>1e-6)throw Error("Compasso "+m.getAttribute("number")+" não tem quatro tempos");
+  bars.push(notes);
+ }
+ return bars
+}
+function render(id){
+ const bars=exercises[id];const page=id<=5?15:id<=11?16:17;
+ const article=document.createElement("div");article.className="study";article.id="ex"+id;
+ const btn=document.createElement("button");btn.type="button";btn.className="number";btn.dataset.exercise=String(id);btn.textContent=id+".";btn.setAttribute("aria-label","Tocar exercício "+id);
+ btn.addEventListener("click",()=>{select(id);start()});article.appendChild(btn);
+ const wrap=document.createElement("div");wrap.className="staff-lines";article.appendChild(wrap);
+ for(let line=0;line<Math.ceil(bars.length/4);line++){
+  const svg=e("svg",{viewBox:"0 0 840 112","aria-label":"Exercício "+id+", compassos "+(line*4+1)+" a "+Math.min(line*4+4,bars.length),role:"img"},wrap);
+  for(let j=0;j<5;j++)e("line",{x1:10,x2:827,y1:26+j*10,y2:26+j*10,stroke:"#34342e","stroke-width":1},svg);
+  e("text",{x:13,y:66,"font-size":49,"font-family":"serif",fill:"#35332e"},svg,"𝄞");
+  if(line===0){e("text",{x:60,y:45,"font-size":18,"font-family":"Georgia",fill:"#35332e"},svg,"4");e("text",{x:60,y:64,"font-size":18,"font-family":"Georgia",fill:"#35332e"},svg,"4")}
+  const bounds=[84,268,450,635,827];
+  bounds.forEach((x,i)=>e("line",{x1:x,x2:x,y1:26,y2:66,stroke:"#31312c","stroke-width":i===4?2:1},svg));
+  for(let measureInLine=0;measureInLine<4;measureInLine++){
+   const globalBar=line*4+measureInLine;
+   const notes=bars[globalBar];if(!notes)continue;
+   const x0=bounds[measureInLine],w=bounds[measureInLine+1]-x0;
+   for(let j=0;j<notes.length;j++){
+    const note=notes[j];
+    const x=x0+16+(note.at+note.duration/2)/4*(w-32);
+    const group=e("g",{"class":"score-note","data-exercise":id,"data-bar":globalBar,"data-onset":note.at,"data-duration":note.duration},svg);
+    if(note.rest){
+      if(note.duration===1){e("path",{d:"M "+(x-1)+" 30 L "+(x+5)+" 39 L "+(x-2)+" 48 L "+(x+5)+" 53 L "+(x-5)+" 65",fill:"none",stroke:"#32312d","stroke-width":3,"stroke-linejoin":"round","stroke-linecap":"round"},group)}
+      else {e("rect",{x:x-9,y:note.duration===4?42:47,width:18,height:5,fill:"#32312d"},group)}
+    }else{
+      const y=61,whole=note.duration===4,filled=note.duration===1;
+      e("ellipse",{cx:x,cy:y,rx:whole?11:8,ry:5.3,transform:"rotate(-17 "+x+" "+y+")",fill:filled?"#31312c":"#fffefa",stroke:"#31312c","stroke-width":1.7,"class":"head"},group);
+      if(!whole)e("line",{x1:x+7.3,x2:x+7.3,y1:y,y2:28,stroke:"#31312c","stroke-width":1.6,"class":"stem"},group);
+      if(note.duration===3)e("circle",{cx:x+19,cy:58,r:2.4,fill:"#31312c"},group);
+    }
+   }
+  }
+ }
+ $("studies"+page).appendChild(article);
+ staffUI[id]=[...article.querySelectorAll(".score-note")];
+}
+function showPage(page){
+ for(const i of [15,16,17]){$("page"+i).classList.toggle("current",i===page);$("go"+i).classList.toggle("active",i===page);$("go"+i).setAttribute("aria-pressed",String(i===page))}
+}
+[15,16,17].forEach(p=>{$("go"+p).addEventListener("click",()=>showPage(p))});
+function select(id){if(playing)stop();active=id;
+ document.querySelectorAll(".study").forEach(el=>el.classList.toggle("selected",el.id==="ex"+id));
+ document.querySelectorAll(".number").forEach(el=>el.classList.toggle("selected",Number(el.dataset.exercise)===id));
+ $("play").textContent="▶ Exercício "+id;$("track").textContent="Exercício "+id+" · compasso 1/"+exercises[id].length;
+ $("status").textContent="Transcrição piloto · revisão independente pendente";
+ if(window.innerWidth<901)showPage(id<=5?15:id<=11?16:17)
+}
+function note(t,dur,midi){
+ const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=440*Math.pow(2,(midi-69)/12);
+ const len=Math.max(.065,dur-.025);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.11,t+.018);
+ g.gain.setValueAtTime(.11,t+Math.max(.020,len-.055));g.gain.exponentialRampToValueAtTime(.0001,t+len);
+ o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+len+.02)
+}
+function tick(t,beat){if(!$("metro").checked)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=beat===0?1320:900;
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(beat===0?.09:.042,t+.005);
+ g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.07)}
+function schedule(cycle){
+ const length=exercises[active].length*4,base=startAt+cycle*length*60/bpm;
+ exercises[active].forEach((bar,i)=>{
+  for(let b=0;b<4;b++)tick(base+(i*4+b)*60/bpm,b);
+  bar.forEach(n=>{if(!n.rest)note(base+(i*4+n.at)*60/bpm,n.duration*60/bpm,n.midi)})
+ })
+}
+function stop(){
+ playing=false;cancelAnimationFrame(raf);if(ctx){ctx.close().catch(()=>{});ctx=null}
+ if(exercises[active])$("play").textContent="▶ Exercício "+active;
+ $("status").textContent="Transcrição piloto";
+ Object.values(staffUI).flat().forEach(el=>el.classList.remove("active"));
+ [...$("beats").children].forEach(el=>el.classList.remove("on"))
+}
+function animate(){
+ if(!playing||!ctx)return;
+ const total=exercises[active].length*4;
+ const progress=(ctx.currentTime-startAt)*bpm/60;
+ if(progress>=total&&!$("loop").checked){stop();return}
+ const loop=Math.max(0,Math.floor(progress/total));
+ const position=(progress%total+total)%total;
+ const nowBar=Math.min(exercises[active].length-1,Math.floor(position/4));
+ const nowBeat=Math.floor(position)%4;
+ if($("loop").checked && loop+1>=cyclesScheduled && position>=total-8){schedule(loop+1);cyclesScheduled=loop+2}
+ $("track").textContent="Exercício "+active+" · compasso "+(nowBar+1)+"/"+exercises[active].length;
+ [...$("beats").children].forEach((e,i)=>e.classList.toggle("on",i===nowBeat));
+ staffUI[active].forEach(el=>{let start=Number(el.dataset.bar)*4+Number(el.dataset.onset),dur=Number(el.dataset.duration);
+  el.classList.toggle("active",position>=start&&position<start+dur)
+ });
+ raf=requestAnimationFrame(animate)
+}
+async function start(){if(playing){stop();return}if(!AudioClass){$("status").textContent="Áudio não disponível";return}
+ try{ctx=new AudioClass();await ctx.resume();bpm=Number($("bpm").value);
+ startAt=ctx.currentTime+.14;playing=true;cyclesScheduled=1;schedule(0);
+ $("play").textContent="■ Parar";$("status").textContent="Executando";animate()}
+ catch(err){stop();$("status").textContent="Falha ao iniciar áudio"}
+}
+$("play").addEventListener("click",()=>playing?stop():start());
+$("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
+async function load(){
+ const ids=[...first,...second,...third];
+ for(const id of ids){
+  const name="v1-l2-r"+String(id).padStart(3,"0")+".musicxml";
+  const r=await fetch("./partituras/"+name);if(!r.ok)throw Error("MusicXML do exercício "+id+" indisponível");
+  exercises[id]=parse(await r.text());render(id)
+ }
+ $("play").disabled=false;
+ const hash=Number((location.hash.match(/^#ex(\d+)$/)||[])[1]);select(exercises[hash]?hash:1)
+}
+load().catch(err=>{$("status").textContent=err.message;$("status").classList.add("error")});
+window.addEventListener("pagehide",stop);
+})();
+</script>
+</body></html>
