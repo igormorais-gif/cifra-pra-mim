@@ -1448,6 +1448,26 @@
         "layout": false
       },
       "notes": "Notas pontuadas e colcheias, MusicXML em revisão independente"
+    },
+    {
+      "id": "v1-l4-m001",
+      "volume": 1,
+      "sectionKey": "licao4-melodicos",
+      "section": "Lição 4 — Estudos melódicos em clave de fá",
+      "printedPage": 36,
+      "pdfSheet": 20,
+      "exerciseNumber": 1,
+      "time": "4/4",
+      "keyFifths": -1,
+      "musicXml": "partituras/v1-l4-m001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Escala de Fá maior em clave de fá; revisão independente pendente"
     }
   ]
 }
