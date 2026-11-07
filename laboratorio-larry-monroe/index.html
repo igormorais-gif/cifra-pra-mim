@@ -151,7 +151,7 @@ function drawStudy(id){
  const svg=$(id===1?"score":"score"+id);
  const notes=studies[id],y=89,staff=[54,64,74,84,94];
  for(let j=0;j<5;j++)add("line",{x1:12,x2:777,y1:54+j*10,y2:54+j*10,stroke:"#343630","stroke-width":1},svg);
- for(let j=0;j<5;j++)add("line",{x1:12,x2:777,y1:149+j*10,y2:149+j*10,stroke:"#a9a69e","stroke-width":.8},svg);
+ // Uma única pauta por exercício, como no livro original.
  scoreBounds.forEach((x,i)=>add("line",{x1:x,x2:x,y1:54,y2:94,stroke:"#343630","stroke-width":i===4?2:1},svg));
  add("text",{x:17,y:95,"font-size":56,"font-family":"Georgia,serif",fill:"#282b26"},svg,"𝄞");
  add("text",{x:65,y:73,"font-size":18,"font-family":"Georgia,serif"},svg,"4");
@@ -199,7 +199,8 @@ function frame(){if(!playing||!ctx)return;let pos=(ctx.currentTime-startAt)/seco
 async function start(){stop();if(!AC){$("status").textContent="Áudio não disponível";return}try{ctx=new AC;await ctx.resume();secondsPerBeat=60/Number($("bpm").value);startAt=ctx.currentTime+.10;playing=true;scheduled=1;schedule(0);$("play").textContent="■ Parar";$("status").textContent="Execução sonora em andamento";if(window.innerWidth<=840)showPage(7);raf=requestAnimationFrame(frame)}catch(err){stop();$("status").textContent="Não foi possível iniciar o áudio"}}
 $("play").addEventListener("click",()=>playing?stop():start());
 document.querySelectorAll(".exercise-num[data-exercise]").forEach(btn=>btn.addEventListener("click",()=>{selectStudy(Number(btn.dataset.exercise));start()}));
-selectStudy(1);
+const sourceExercise=Number((window.location.hash.match(/^#ex([1-5])$/)||[])[1]);
+if(studies[sourceExercise]){showPage(7);selectStudy(sourceExercise)}else selectStudy(1);
 $("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
 $("count").addEventListener("change",()=>{nums.forEach(n=>n.style.display=$("count").checked?"":"none")});
 window.addEventListener("pagehide",stop);
