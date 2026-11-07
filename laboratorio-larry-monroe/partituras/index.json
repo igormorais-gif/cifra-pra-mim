@@ -1148,6 +1148,106 @@
         "layout": false
       },
       "notes": "Escala de Fá maior (Sib na armadura), 16 mínimas e solfejo; revisão final pendente"
+    },
+    {
+      "id": "v1-l4-r001",
+      "volume": 1,
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "printedPage": 32,
+      "pdfSheet": 18,
+      "exerciseNumber": 1,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Colcheias e figuras pontuadas transcritas em formato preliminar; revisão independente pendente"
+    },
+    {
+      "id": "v1-l4-r002",
+      "volume": 1,
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "printedPage": 32,
+      "pdfSheet": 18,
+      "exerciseNumber": 2,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r002.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Colcheias e figuras pontuadas transcritas em formato preliminar; revisão independente pendente"
+    },
+    {
+      "id": "v1-l4-r003",
+      "volume": 1,
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "printedPage": 32,
+      "pdfSheet": 18,
+      "exerciseNumber": 3,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r003.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Colcheias e figuras pontuadas transcritas em formato preliminar; revisão independente pendente"
+    },
+    {
+      "id": "v1-l4-r004",
+      "volume": 1,
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "printedPage": 32,
+      "pdfSheet": 18,
+      "exerciseNumber": 4,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r004.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Colcheias e figuras pontuadas transcritas em formato preliminar; revisão independente pendente"
+    },
+    {
+      "id": "v1-l4-r005",
+      "volume": 1,
+      "sectionKey": "licao4-ritmicos",
+      "section": "Lição 4 — Estudos rítmicos",
+      "printedPage": 32,
+      "pdfSheet": 18,
+      "exerciseNumber": 5,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l4-r005.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Colcheias e figuras pontuadas transcritas em formato preliminar; revisão independente pendente"
     }
   ]
 }
