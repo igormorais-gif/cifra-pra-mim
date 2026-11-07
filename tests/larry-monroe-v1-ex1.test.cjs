@@ -11,7 +11,7 @@ const events = [...raw[1].matchAll(/\{measure:(\d+),beat:(\d+),duration:(\d+),pi
 
 test('o laboratório está ligado à navegação principal', () => {
   const hub=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
-  assert.match(hub,/href="laboratorio-larry-monroe\/(?:catalogo\.html)?"/);
+  assert.match(hub,/href="laboratorio-larry-monroe\/livro\.html\?pagina=24"/);
   assert.match(html,/id="play"/);
   assert.match(html,/id="bpm"/);
   assert.match(html,/id="click"/);
