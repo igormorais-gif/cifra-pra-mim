@@ -1,0 +1,1602 @@
+{
+  "schemaVersion": 1,
+  "project": "Monroe Digital",
+  "dateIndexed": "2026-11-06",
+  "principles": [
+    "Respeitar a sequência dos quatro volumes e a organização editorial da página impressa.",
+    "Registrar a localização no volume, folha do PDF e página impressa antes de transcrever.",
+    "Separar exercício digitalizado de exercício conferido; jamais declarar conclusão sem revisão.",
+    "Conservar simultaneamente a partitura estruturada e o comportamento de reprodução.",
+    "Não hospedar imagens integrais dos livros em repositório público sem autorização."
+  ],
+  "statusDefinitions": {
+    "not_inventoried": "Folha fonte localizada, conteúdo ainda não inventariado",
+    "partial_review": "Folha parcialmente inventariada e com transcrições provisórias",
+    "pilot": "Exercício transcrito para teste; ainda não certificado",
+    "pending": "Exercício observado, transcrição pendente",
+    "verified": "Transcrição, pauta e execução auditadas contra a fonte original"
+  },
+  "volumes": [
+    {
+      "volume": 1,
+      "title": "Workbook for Ear Training 1",
+      "source": {
+        "kind": "scan_pdf",
+        "fileName": "WORKBOOK FOR EAR TRAINING 1.pdf",
+        "driveUrl": "https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view",
+        "previewUrl": "https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/preview",
+        "pdfSheets": 49
+      },
+      "sheets": [
+        {
+          "sheet": 1,
+          "sourcePage": 1,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 2,
+          "sourcePage": 2,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 3,
+          "sourcePage": 3,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 4,
+          "sourcePage": 4,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 5,
+          "sourcePage": 5,
+          "printedLeft": 6,
+          "printedRight": 7,
+          "status": "partial_review",
+          "studies": [
+            {
+              "printedPage": 7,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./",
+              "note": "Digitado e executável; revisão editorial pendente"
+            },
+            {
+              "printedPage": 7,
+              "exercise": 2,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./",
+              "note": "Digitado e executável; revisão editorial pendente"
+            },
+            {
+              "printedPage": 7,
+              "exercise": 3,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./",
+              "note": "Digitado e executável; revisão editorial pendente"
+            },
+            {
+              "printedPage": 7,
+              "exercise": 4,
+              "state": "pending",
+              "location": "right",
+              "onlineHref": null,
+              "note": "Conferência visual necessária"
+            },
+            {
+              "printedPage": 7,
+              "exercise": 5,
+              "state": "pending",
+              "location": "right",
+              "onlineHref": null,
+              "note": "Conferência visual necessária"
+            }
+          ]
+        },
+        {
+          "sheet": 6,
+          "sourcePage": 6,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 7,
+          "sourcePage": 7,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 8,
+          "sourcePage": 8,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 9,
+          "sourcePage": 9,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 10,
+          "sourcePage": 10,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 11,
+          "sourcePage": 11,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 12,
+          "sourcePage": 12,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 13,
+          "sourcePage": 13,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 14,
+          "sourcePage": 14,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 15,
+          "sourcePage": 15,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 16,
+          "sourcePage": 16,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 17,
+          "sourcePage": 17,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 18,
+          "sourcePage": 18,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 19,
+          "sourcePage": 19,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 20,
+          "sourcePage": 20,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 21,
+          "sourcePage": 21,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 22,
+          "sourcePage": 22,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 23,
+          "sourcePage": 23,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 24,
+          "sourcePage": 24,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 25,
+          "sourcePage": 25,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 26,
+          "sourcePage": 26,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 27,
+          "sourcePage": 27,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 28,
+          "sourcePage": 28,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 29,
+          "sourcePage": 29,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 30,
+          "sourcePage": 30,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 31,
+          "sourcePage": 31,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 32,
+          "sourcePage": 32,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 33,
+          "sourcePage": 33,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 34,
+          "sourcePage": 34,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 35,
+          "sourcePage": 35,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 36,
+          "sourcePage": 36,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 37,
+          "sourcePage": 37,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 38,
+          "sourcePage": 38,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 39,
+          "sourcePage": 39,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 40,
+          "sourcePage": 40,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 41,
+          "sourcePage": 41,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 42,
+          "sourcePage": 42,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 43,
+          "sourcePage": 43,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 44,
+          "sourcePage": 44,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 45,
+          "sourcePage": 45,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 46,
+          "sourcePage": 46,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 47,
+          "sourcePage": 47,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 48,
+          "sourcePage": 48,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 49,
+          "sourcePage": 49,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        }
+      ]
+    },
+    {
+      "volume": 2,
+      "title": "Workbook for Ear Training 2",
+      "source": {
+        "kind": "scan_pdf",
+        "fileName": "WORKBOOK FOR EAR TRAINING 2.pdf",
+        "driveUrl": "https://drive.google.com/file/d/1BH44B35tgzV7_yNkK5J4ZMN6ORr2qAE0/view",
+        "previewUrl": "https://drive.google.com/file/d/1BH44B35tgzV7_yNkK5J4ZMN6ORr2qAE0/preview",
+        "pdfSheets": 52
+      },
+      "sheets": [
+        {
+          "sheet": 1,
+          "sourcePage": 1,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 2,
+          "sourcePage": 2,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 3,
+          "sourcePage": 3,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 4,
+          "sourcePage": 4,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 5,
+          "sourcePage": 5,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 6,
+          "sourcePage": 6,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 7,
+          "sourcePage": 7,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 8,
+          "sourcePage": 8,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 9,
+          "sourcePage": 9,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 10,
+          "sourcePage": 10,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 11,
+          "sourcePage": 11,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 12,
+          "sourcePage": 12,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 13,
+          "sourcePage": 13,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 14,
+          "sourcePage": 14,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 15,
+          "sourcePage": 15,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 16,
+          "sourcePage": 16,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 17,
+          "sourcePage": 17,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 18,
+          "sourcePage": 18,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 19,
+          "sourcePage": 19,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 20,
+          "sourcePage": 20,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 21,
+          "sourcePage": 21,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 22,
+          "sourcePage": 22,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 23,
+          "sourcePage": 23,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 24,
+          "sourcePage": 24,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 25,
+          "sourcePage": 25,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 26,
+          "sourcePage": 26,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 27,
+          "sourcePage": 27,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 28,
+          "sourcePage": 28,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 29,
+          "sourcePage": 29,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 30,
+          "sourcePage": 30,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 31,
+          "sourcePage": 31,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 32,
+          "sourcePage": 32,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 33,
+          "sourcePage": 33,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 34,
+          "sourcePage": 34,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 35,
+          "sourcePage": 35,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 36,
+          "sourcePage": 36,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 37,
+          "sourcePage": 37,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 38,
+          "sourcePage": 38,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 39,
+          "sourcePage": 39,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 40,
+          "sourcePage": 40,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 41,
+          "sourcePage": 41,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 42,
+          "sourcePage": 42,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 43,
+          "sourcePage": 43,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 44,
+          "sourcePage": 44,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 45,
+          "sourcePage": 45,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 46,
+          "sourcePage": 46,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 47,
+          "sourcePage": 47,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 48,
+          "sourcePage": 48,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 49,
+          "sourcePage": 49,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 50,
+          "sourcePage": 50,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 51,
+          "sourcePage": 51,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 52,
+          "sourcePage": 52,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        }
+      ]
+    },
+    {
+      "volume": 3,
+      "title": "Workbook for Ear Training 3",
+      "source": {
+        "kind": "scan_pdf",
+        "fileName": "WORKBOOK FOR EAR TRAINING 3.pdf",
+        "driveUrl": "https://drive.google.com/file/d/198GY5GCEhxG77zE-daAkXucwJc05fbZD/view",
+        "previewUrl": "https://drive.google.com/file/d/198GY5GCEhxG77zE-daAkXucwJc05fbZD/preview",
+        "pdfSheets": 46
+      },
+      "sheets": [
+        {
+          "sheet": 1,
+          "sourcePage": 1,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 2,
+          "sourcePage": 2,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 3,
+          "sourcePage": 3,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 4,
+          "sourcePage": 4,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 5,
+          "sourcePage": 5,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 6,
+          "sourcePage": 6,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 7,
+          "sourcePage": 7,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 8,
+          "sourcePage": 8,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 9,
+          "sourcePage": 9,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 10,
+          "sourcePage": 10,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 11,
+          "sourcePage": 11,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 12,
+          "sourcePage": 12,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 13,
+          "sourcePage": 13,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 14,
+          "sourcePage": 14,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 15,
+          "sourcePage": 15,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 16,
+          "sourcePage": 16,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 17,
+          "sourcePage": 17,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 18,
+          "sourcePage": 18,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 19,
+          "sourcePage": 19,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 20,
+          "sourcePage": 20,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 21,
+          "sourcePage": 21,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 22,
+          "sourcePage": 22,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 23,
+          "sourcePage": 23,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 24,
+          "sourcePage": 24,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 25,
+          "sourcePage": 25,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 26,
+          "sourcePage": 26,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 27,
+          "sourcePage": 27,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 28,
+          "sourcePage": 28,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 29,
+          "sourcePage": 29,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 30,
+          "sourcePage": 30,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 31,
+          "sourcePage": 31,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 32,
+          "sourcePage": 32,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 33,
+          "sourcePage": 33,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 34,
+          "sourcePage": 34,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 35,
+          "sourcePage": 35,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 36,
+          "sourcePage": 36,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 37,
+          "sourcePage": 37,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 38,
+          "sourcePage": 38,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 39,
+          "sourcePage": 39,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 40,
+          "sourcePage": 40,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 41,
+          "sourcePage": 41,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 42,
+          "sourcePage": 42,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 43,
+          "sourcePage": 43,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 44,
+          "sourcePage": 44,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 45,
+          "sourcePage": 45,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 46,
+          "sourcePage": 46,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        }
+      ]
+    },
+    {
+      "volume": 4,
+      "title": "Workbook for Ear Training 4",
+      "source": {
+        "kind": "scan_pdf",
+        "fileName": "WORKBOOK FOR EAR TRAINING 4.pdf",
+        "driveUrl": "https://drive.google.com/file/d/1C704kw9ittifrKkPJpHlLR84ugk-SFcy/view",
+        "previewUrl": "https://drive.google.com/file/d/1C704kw9ittifrKkPJpHlLR84ugk-SFcy/preview",
+        "pdfSheets": 39
+      },
+      "sheets": [
+        {
+          "sheet": 1,
+          "sourcePage": 1,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 2,
+          "sourcePage": 2,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 3,
+          "sourcePage": 3,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 4,
+          "sourcePage": 4,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 5,
+          "sourcePage": 5,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 6,
+          "sourcePage": 6,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 7,
+          "sourcePage": 7,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 8,
+          "sourcePage": 8,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 9,
+          "sourcePage": 9,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 10,
+          "sourcePage": 10,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 11,
+          "sourcePage": 11,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 12,
+          "sourcePage": 12,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 13,
+          "sourcePage": 13,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 14,
+          "sourcePage": 14,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 15,
+          "sourcePage": 15,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 16,
+          "sourcePage": 16,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 17,
+          "sourcePage": 17,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 18,
+          "sourcePage": 18,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 19,
+          "sourcePage": 19,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 20,
+          "sourcePage": 20,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 21,
+          "sourcePage": 21,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 22,
+          "sourcePage": 22,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 23,
+          "sourcePage": 23,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 24,
+          "sourcePage": 24,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 25,
+          "sourcePage": 25,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 26,
+          "sourcePage": 26,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 27,
+          "sourcePage": 27,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 28,
+          "sourcePage": 28,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 29,
+          "sourcePage": 29,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 30,
+          "sourcePage": 30,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 31,
+          "sourcePage": 31,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 32,
+          "sourcePage": 32,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 33,
+          "sourcePage": 33,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 34,
+          "sourcePage": 34,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 35,
+          "sourcePage": 35,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 36,
+          "sourcePage": 36,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 37,
+          "sourcePage": 37,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 38,
+          "sourcePage": 38,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        },
+        {
+          "sheet": 39,
+          "sourcePage": 39,
+          "printedLeft": null,
+          "printedRight": null,
+          "status": "not_inventoried",
+          "studies": []
+        }
+      ]
+    }
+  ]
+}
