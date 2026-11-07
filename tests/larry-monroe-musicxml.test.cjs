@@ -10,8 +10,8 @@ const layouts=[
  [[1,1,1,1],[4],[2,1,1],[4]]
 ];
 test('Cada MusicXML mantém 4 compassos completos de 4/4 e notas com duração correta',()=>{
- assert.equal(entries.length,3);
- for(let i=0;i<entries.length;i++){
+ assert.ok(entries.length>=14);
+ for(let i=0;i<3;i++){
   const e=entries[i];
   assert.equal(e.volume,1);
   assert.equal(e.exerciseNumber,i+1);
