@@ -1,0 +1,19 @@
+name: Export Monroe music scores for combined offline workbook
+on:
+  push:
+    paths:
+      - ".github/workflows/monroe-export-scores.yml"
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package score source without original PDF
+        run: tar -czf /tmp/monroe-scores.tar.gz laboratorio-larry-monroe/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: monroe-digital-existing-musicxml
+          path: /tmp/monroe-scores.tar.gz
+          retention-days: 1
