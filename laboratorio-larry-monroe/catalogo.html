@@ -37,7 +37,7 @@ h2{font:500 25px Georgia,serif;margin:34px 0 14px}
 .btn.dark{background:#272724;border-color:#272724;color:white}.btn:disabled{opacity:.35;cursor:not-allowed}
 .study{border-top:1px solid var(--line);padding:9px 0;display:flex;gap:8px;justify-content:space-between;align-items:center;font-size:12px}
 .study a{text-decoration:underline;text-underline-offset:3px}
-.study small{font-size:11px;color:var(--soft)}
+.study small{font-size:11px;color:var(--soft)}.study-links{display:flex;flex-wrap:wrap;gap:9px}.study-links a{font-size:11px;white-space:nowrap}
 #noStudies{color:var(--soft);font-size:12px;line-height:1.6}
 .preview{margin-top:15px}.preview iframe{display:block;width:100%;height:min(70vh,650px);border:1px solid var(--line);background:#f6f5f1;border-radius:5px}
 .preview[hidden]{display:none}
@@ -147,8 +147,12 @@ function render(){
   let lbl=document.createElement("div");let title=document.createElement("strong");title.textContent="Exercício "+item.exercise;
   let meta=document.createElement("small");meta.textContent=" · página "+item.printedPage+" · "+(item.state==="pilot"?"versão piloto":"pendente de transcrição");
   lbl.append(title,meta);div.appendChild(lbl);
-  if(item.onlineHref){let a=document.createElement("a");a.href=item.onlineHref+"#ex"+item.exercise;a.textContent="Abrir partitura ↗";div.appendChild(a)}
-  else {let text=document.createElement("small");text.textContent="Em conferência";div.appendChild(text)}
+  if(item.onlineHref){
+   let links=document.createElement("div");links.className="study-links";
+   let a=document.createElement("a");a.href=item.onlineHref+"#ex"+item.exercise;a.textContent="No livro ↗";links.appendChild(a);
+   if(item.state==="pilot"){let b=document.createElement("a");b.href="./partitura.html?volume="+vol+"&exercicio="+item.exercise;b.textContent="MusicXML ↗";links.appendChild(b)}
+   div.appendChild(links)
+  }else{let text=document.createElement("small");text.textContent="Em conferência";div.appendChild(text)}
   $("studies").appendChild(div)
  });
  if(previewOpen)$("drivePreview").src=s.source.previewUrl;
