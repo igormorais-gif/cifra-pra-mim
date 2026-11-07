@@ -1670,6 +1670,26 @@
       "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
     },
     {
+      "id": "v1-l6-r010",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 52,
+      "pdfSheet": 28,
+      "exerciseNumber": 10,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r010.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
       "id": "v1-l6-r011",
       "volume": 1,
       "sectionKey": "licao6-ritmicos",
@@ -1750,6 +1770,26 @@
       "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
     },
     {
+      "id": "v1-l6-r015",
+      "volume": 1,
+      "sectionKey": "licao6-ritmicos",
+      "section": "Lição 6 — Estudos rítmicos · 3/4",
+      "printedPage": 54,
+      "pdfSheet": 29,
+      "exerciseNumber": 15,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l6-r015.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
       "id": "v1-l6-r016",
       "volume": 1,
       "sectionKey": "licao6-ritmicos",
@@ -1828,6 +1868,146 @@
         "layout": false
       },
       "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
+    },
+    {
+      "id": "v1-l7-r009",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 3/4",
+      "printedPage": 61,
+      "pdfSheet": 32,
+      "exerciseNumber": 9,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r009.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
+      "id": "v1-l7-r010",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 3/4",
+      "printedPage": 61,
+      "pdfSheet": 32,
+      "exerciseNumber": 10,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r010.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
+      "id": "v1-l7-r011",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 3/4",
+      "printedPage": 61,
+      "pdfSheet": 32,
+      "exerciseNumber": 11,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r011.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
+      "id": "v1-l7-r012",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 3/4",
+      "printedPage": 62,
+      "pdfSheet": 33,
+      "exerciseNumber": 12,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r012.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
+      "id": "v1-l7-r013",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 3/4",
+      "printedPage": 62,
+      "pdfSheet": 33,
+      "exerciseNumber": 13,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r013.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
+      "id": "v1-l7-r014",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 3/4",
+      "printedPage": 62,
+      "pdfSheet": 33,
+      "exerciseNumber": 14,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r014.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
+    },
+    {
+      "id": "v1-l7-r015",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 3/4",
+      "printedPage": 62,
+      "pdfSheet": 33,
+      "exerciseNumber": 15,
+      "time": "3/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r015.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Reconstituição a partir de digitalização, com validação de compassos; conferência musical individual pendente"
     }
   ]
 }
