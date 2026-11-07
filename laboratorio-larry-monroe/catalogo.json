@@ -218,19 +218,19 @@
               "sectionKey": "melodicos",
               "printedPage": 11,
               "exercise": 2,
-              "state": "pending",
+              "state": "pilot",
               "location": "right",
-              "onlineHref": null,
-              "note": "Em conferência"
+              "onlineHref": "./estudos-melodicos-p10-11.html",
+              "note": "MusicXML interativo, revisão independente pendente"
             },
             {
               "sectionKey": "melodicos",
               "printedPage": 11,
               "exercise": 3,
-              "state": "pending",
+              "state": "pilot",
               "location": "right",
-              "onlineHref": null,
-              "note": "Em conferência"
+              "onlineHref": "./estudos-melodicos-p10-11.html",
+              "note": "MusicXML interativo, revisão independente pendente"
             }
           ]
         },
