@@ -58,6 +58,196 @@
         "layout": false
       },
       "notes": "Transcrição piloto; não aprovada após dupla conferência"
+    },
+    {
+      "id": "v1-ex006",
+      "volume": 1,
+      "printedPage": 8,
+      "pdfSheet": 6,
+      "exerciseNumber": 6,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex006.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex007",
+      "volume": 1,
+      "printedPage": 8,
+      "pdfSheet": 6,
+      "exerciseNumber": 7,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex007.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex008",
+      "volume": 1,
+      "printedPage": 8,
+      "pdfSheet": 6,
+      "exerciseNumber": 8,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex008.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex009",
+      "volume": 1,
+      "printedPage": 8,
+      "pdfSheet": 6,
+      "exerciseNumber": 9,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex009.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex010",
+      "volume": 1,
+      "printedPage": 8,
+      "pdfSheet": 6,
+      "exerciseNumber": 10,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex010.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex011",
+      "volume": 1,
+      "printedPage": 8,
+      "pdfSheet": 6,
+      "exerciseNumber": 11,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex011.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex012",
+      "volume": 1,
+      "printedPage": 9,
+      "pdfSheet": 6,
+      "exerciseNumber": 12,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex012.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex013",
+      "volume": 1,
+      "printedPage": 9,
+      "pdfSheet": 6,
+      "exerciseNumber": 13,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex013.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex014",
+      "volume": 1,
+      "printedPage": 9,
+      "pdfSheet": 6,
+      "exerciseNumber": 14,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex014.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
+    },
+    {
+      "id": "v1-ex015",
+      "volume": 1,
+      "printedPage": 9,
+      "pdfSheet": 6,
+      "exerciseNumber": 15,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex015.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Leitura inicial do PDF escaneado; verificação independente ainda pendente"
     }
   ]
 }
