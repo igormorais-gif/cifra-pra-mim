@@ -688,6 +688,15 @@
               "location": "left",
               "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=15",
               "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-melodicos",
+              "printedPage": 27,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./livro.html?pagina=27",
+              "note": "Escala ascendente e descendente de Fá maior · 8 compassos"
             }
           ]
         },
