@@ -46,7 +46,7 @@ test('índice permite selecionar os quatro volumes e as páginas de origem',()=>
  assert.match(html,/function chooseVolume\(next\)/);
  assert.match(html,/function chooseSheet\(next\)/);
  assert.match(html,/aria-label="Folhas digitalizadas"/);
- assert.match(home,/href="laboratorio-larry-monroe\/catalogo\.html"/);
+ assert.match(home,/href="laboratorio-larry-monroe\/livro\.html\?pagina=24"/);
  assert.match(book,/href="\.\/catalogo\.html"/);
 });
 
