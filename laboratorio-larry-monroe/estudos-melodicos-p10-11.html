@@ -15,7 +15,7 @@ main{max-width:1200px;margin:auto;padding:15px 13px 150px}h1{font:500 clamp(31px
 .scale{margin:16px 0 25px}.scale-label{font:13px Georgia,serif;margin-bottom:7px;text-align:center}
 .score svg{display:block;width:100%;height:auto;min-width:410px}
 .score{overflow-x:auto}.exercise{margin:22px 0}.exercise button{border:0;background:none;font:15px Georgia,serif;vertical-align:top;padding:6px 8px 6px 0;color:var(--ink)}.exercise .lines{flex:1;min-width:0}.exercise.selected{background:#f8f5ef;border-radius:5px}
-.exercise .title{font:15px Georgia,serif;margin:0 0 10px}
+.exercise .title{font:15px Georgia,serif;margin:0 0 10px}.exerciseSelect{cursor:pointer}.exerciseSelect:focus-visible{outline:2px solid #b7483a;border-radius:4px}.exercise.selected .title button{color:var(--active);font-weight:700}
 .note-head.active{stroke:var(--active)!important;fill:#f2b7ae!important}
 .incomplete{border-top:1px solid #ebe8e2;padding:16px 0;font:13px Georgia,serif;color:var(--muted)}
 .page-switch{display:none}.small-note{font-size:11px;color:var(--muted)}.small-note a{text-decoration:underline}
@@ -40,96 +40,175 @@ main{max-width:1200px;margin:auto;padding:15px 13px 150px}h1{font:500 clamp(31px
 </article>
 <article class="page" id="page11" aria-label="Página 11">
 <h2>Estudos melódicos</h2><p style="text-align:center;font:15px Georgia,serif;margin-top:-12px;margin-bottom:20px">Tonalidade de Dó maior · Clave de sol</p>
-<div class="exercise selected" id="ex-mel1"><p class="title"><button id="exerciseBtn" type="button" aria-label="Tocar exercício melódico 1">1.</button> Escala ascendente e descendente</p><div id="melScore" class="score" aria-label="Duas linhas com quatro compassos cada"></div></div>
-<div class="incomplete">2. — Transcrição do exercício seguinte em conferência</div>
-<div class="incomplete">3. — Transcrição do exercício seguinte em conferência</div>
-<p class="small-note">Apenas o estudo 1 está executável nesta página. Os outros continuam identificados, sem serem substituídos por notas inventadas.</p>
+<div class="exercise selected" id="ex-mel1"><p class="title"><button class="exerciseSelect" data-mel="1" type="button" aria-label="Executar estudo melódico 1">1.</button> Escala ascendente e descendente</p><div id="melScore1" class="score" aria-label="Partitura do estudo 1, oito compassos"></div></div>
+<div class="exercise" id="ex-mel2"><p class="title"><button class="exerciseSelect" data-mel="2" type="button" aria-label="Executar estudo melódico 2">2.</button> Estudo 2</p><div id="melScore2" class="score" aria-label="Partitura do estudo 2, oito compassos"></div></div>
+<div class="exercise" id="ex-mel3"><p class="title"><button class="exerciseSelect" data-mel="3" type="button" aria-label="Executar estudo melódico 3">3.</button> Estudo 3</p><div id="melScore3" class="score" aria-label="Partitura do estudo 3, oito compassos"></div></div>
+<p class="small-note">Três estudos executáveis em versão piloto. As alturas e os ritmos serão conferidos novamente contra a digitalização.</p>
 <div class="page-num">11</div>
 </article>
 </div>
 <p class="small-note" style="margin-top:15px"><a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener">Conferir páginas originais no Drive ↗</a> · <a href="./partitura.html?volume=1&secao=melodicos&exercicio=1">Abrir MusicXML do estudo 1 ↗</a></p>
 </main>
 <div class="player">
-<div class="controls"><button id="play" class="play" type="button">▶ Melódico 1</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="40" max="160" value="76"><output id="bpmText">76 BPM</output></div><div class="opts"><label><input id="click" type="checkbox" checked> Metrônomo</label><label><input id="loop" type="checkbox"> Loop</label></div></div>
+<div class="controls"><button id="play" class="play" type="button" disabled>▶ Carregando…</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="40" max="160" value="76"><output id="bpmText">76 BPM</output></div><div class="opts"><label><input id="click" type="checkbox" checked> Metrônomo</label><label><input id="loop" type="checkbox"> Loop</label></div></div>
 <div class="status"><span id="bar">Exercício 1 · compasso 1/8</span><span id="status">Transcrição piloto · revisão independente pendente</span></div>
 </div>
 <script>
 (()=>{
 "use strict";
-const $=id=>document.getElementById(id),ns="http://www.w3.org/2000/svg";
+const $=id=>document.getElementById(id), ns="http://www.w3.org/2000/svg";
+const AC=window.AudioContext||window.webkitAudioContext;
 const patterns=[
-{key:"Dó maior",accidental:"",notes:[["C",4],["D",4],["E",4],["F",4],["G",4],["A",4],["B",4],["C",5]]},
-{key:"Fá maior",accidental:"flat",notes:[["F",4],["G",4],["A",4],["B",4],["C",5],["D",5],["E",5],["F",5]]},
-{key:"Sol maior",accidental:"sharp",notes:[["G",4],["A",4],["B",4],["C",5],["D",5],["E",5],["F",5],["G",5]]}
+ {key:"Dó maior",accidental:"",notes:[["C",4],["D",4],["E",4],["F",4],["G",4],["A",4],["B",4],["C",5]]},
+ {key:"Fá maior",accidental:"flat",notes:[["F",4],["G",4],["A",4],["B",4],["C",5],["D",5],["E",5],["F",5]]},
+ {key:"Sol maior",accidental:"sharp",notes:[["G",4],["A",4],["B",4],["C",5],["D",5],["E",5],["F",5],["G",5]]}
 ];
 const melodic=[["C",4],["D",4],["E",4],["F",4],["G",4],["A",4],["B",4],["C",5],["C",5],["B",4],["A",4],["G",4],["F",4],["E",4],["D",4],["C",4]];
 const syllables=["do","re","mi","fa","sol","la","ti","do","do","ti","la","sol","fa","mi","re","do"];
-const semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11},diatonic={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
-const drawn=[];
-let ctx=null,playing=false,raf=0,startTime=0,secondsPerBeat=0,scheduled=0;
-const AC=window.AudioContext||window.webkitAudioContext;
-function el(tag,atts,parent,text){let x=document.createElementNS(ns,tag);Object.entries(atts||{}).forEach(([k,v])=>x.setAttribute(k,String(v)));if(text!==undefined)x.textContent=text;parent.appendChild(x);return x}
-function pos(p){return 70-(diatonic[p[0]]+(p[1]-4)*7-2)*5}
-function staff(svg,x1=8,x2=808){for(let j=0;j<5;j++)el("line",{x1,x2,y1:30+j*10,y2:30+j*10,stroke:"#30312e","stroke-width":1},svg);el("text",{x:10,y:70,"font-size":47,fill:"#30312e"},svg,"𝄞")}
-function note(svg,x,p,opts={}){
- const y=pos(p),whole=Boolean(opts.whole),hollow=true,lyric=opts.lyric;
- const g=el("g",{class:"note-mark"},svg);
- if(y>=80||y<=20){const yy=y>=80?80:20;el("line",{x1:x-13,x2:x+13,y1:yy,y2:yy,stroke:"#30312e","stroke-width":1},g)}
- const head=el("ellipse",{cx:x,cy:y,rx:whole?10.5:8,ry:5.6,transform:"rotate(-16 "+x+" "+y+")",fill:"#fffefa",stroke:"#353531","stroke-width":1.6,"class":"note-head"},g);
- if(!whole){let down=y<=48;el("line",down?{x1:x-8,x2:x-8,y1:y,y2:y+34,stroke:"#353531","stroke-width":1.7}:{x1:x+8,x2:x+8,y1:y,y2:y-34,stroke:"#353531","stroke-width":1.7},g)}
- if(lyric)el("text",{x,y:14,"text-anchor":"middle","font-size":15,"font-family":"Georgia",fill:"#585750"},svg,lyric);
- return head
+const diatonic={C:0,D:1,E:2,F:3,G:4,A:5,B:6},semitone={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+let studies={},active=1,playing=false,ctx=null,startTime=0,secondsPerBeat=0,raf=0,cyclesScheduled=0;
+function el(tag,attrs,parent,text){const e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!==undefined)e.textContent=text;parent.appendChild(e);return e}
+function direct(parent,name){return [...parent.children].filter(e=>e.localName===name)}
+function read(parent,name){return direct(parent,name)[0]?.textContent||""}
+function pitchY(step,oct){return 70-(diatonic[step]+(oct-4)*7-2)*5}
+function drawStaff(svg){
+ for(let j=0;j<5;j++)el("line",{x1:8,x2:809,y1:30+j*10,y2:30+j*10,stroke:"#30312e","stroke-width":1},svg);
+ el("text",{x:9,y:70,"font-size":47,"font-family":"serif",fill:"#30312e"},svg,"𝄞")
 }
+function drawNote(svg,x,step,oct,duration,lyrics,tracker){
+ const y=pitchY(step,oct),whole=duration>=4;
+ const g=el("g",{class:"note-mark"},svg);
+ for(let yy=80;yy<=y;yy+=10){if(y>=80)el("line",{x1:x-14,x2:x+14,y1:yy,y2:yy,stroke:"#30312e","stroke-width":1},g)}
+ const head=el("ellipse",{cx:x,cy:y,rx:whole?10:8,ry:5.7,transform:"rotate(-17 "+x+" "+y+")",fill:"#fffefa",stroke:"#34342e","stroke-width":1.7,"class":"note-head"},g);
+ if(!whole){
+  if(y<45)el("line",{x1:x-8,x2:x-8,y1:y,y2:y+34,stroke:"#34342e","stroke-width":1.7},g);
+  else el("line",{x1:x+8,x2:x+8,y1:y,y2:y-34,stroke:"#34342e","stroke-width":1.7},g)
+ }
+ if(lyrics)el("text",{x,y:14,"text-anchor":"middle","font-size":15,"font-family":"Georgia,serif",fill:"#585750"},svg,lyrics);
+ if(tracker)tracker.push(head)
+}
+function showPage(n){for(let p of [10,11]){$("page"+p).classList.toggle("current",p===n);$("go"+p).classList.toggle("active",p===n);$("go"+p).setAttribute("aria-pressed",String(p===n))}}
+$("go10").addEventListener("click",()=>showPage(10));$("go11").addEventListener("click",()=>showPage(11));
 patterns.forEach(p=>{
- const row=document.createElement("div");row.className="scale";const name=document.createElement("div");name.className="scale-label";name.textContent=p.key;row.appendChild(name);
- const svg=el("svg",{viewBox:"0 0 820 115",role:"img","aria-label":"Escala de "+p.key},row);
- staff(svg);
- if(p.accidental)el("text",{x:54,y:p.accidental==="flat"?52:35,"font-size":28,"font-family":"serif"},svg,p.accidental==="flat"?"♭":"♯");
- p.notes.forEach((n,i)=>note(svg,108+i*94,n,{whole:true,lyric:["do","re","mi","fa","sol","la","ti","do"][i]}));
- el("line",{x1:799,x2:799,y1:30,y2:70,stroke:"#292a26","stroke-width":2},svg);
- $("scales").appendChild(row);
+ let row=document.createElement("div");row.className="scale";
+ let title=document.createElement("div");title.className="scale-label";title.textContent=p.key;row.appendChild(title);
+ let svg=el("svg",{viewBox:"0 0 820 115",role:"img","aria-label":"Escala de "+p.key},row);drawStaff(svg);
+ if(p.accidental)el("text",{x:50,y:p.accidental==="flat"?52:35,"font-size":28,"font-family":"serif"},svg,p.accidental==="flat"?"♭":"♯");
+ p.notes.forEach((p,i)=>drawNote(svg,105+i*94,p[0],p[1],4,syllables[i]));
+ el("line",{x1:809,x2:809,y1:30,y2:70,stroke:"#34342e","stroke-width":2},svg);
+ $("scales").appendChild(row)
 });
-for(let line=0;line<2;line++){
- const svg=el("svg",{viewBox:"0 0 820 115",role:"img","aria-label":"Exercício 1: compassos "+(line*4+1)+" a "+(line*4+4)},$("melScore"));
- staff(svg);
- el("text",{x:58,y:48,"font-size":25,"font-family":"serif",fill:"#353531"},svg,"C");
- [85,269,453,637,809].forEach((x,i)=>el("line",{x1:x,x2:x,y1:30,y2:70,stroke:"#353531","stroke-width":i===4?2:1},svg));
- for(let bar=0;bar<4;bar++){
-  for(let i=0;i<2;i++){
-   const index=(line*4+bar)*2+i,x=85+bar*184+(i===0?52:133);
-   drawn[index]=note(svg,x,melodic[index],{lyric:syllables[index]});
+function parse(xml){
+ const doc=new DOMParser().parseFromString(xml,"application/xml");
+ if(doc.querySelector("parsererror"))throw Error("MusicXML malformado");
+ const part=doc.querySelector("part");if(!part)throw Error("Partitura sem voz");
+ let divs=1;
+ const bars=direct(part,"measure").map((bar,index)=>{
+  for(let a of direct(bar,"attributes")){const d=Number(read(a,"divisions"));if(d>0)divs=d}
+  let beat=0,notes=[];
+  for(let n of direct(bar,"note")){
+   const duration=Number(read(n,"duration"))/divs;
+   const pt=direct(n,"pitch")[0];
+   if(!pt||!Number.isFinite(duration)||duration<=0)throw Error("Nota inválida no compasso "+(index+1));
+   const step=read(pt,"step"),oct=Number(read(pt,"octave"));
+   if(!(step in diatonic)||!Number.isFinite(oct))throw Error("Altura inválida");
+   notes.push({step,oct,duration,onset:beat,lyric:direct(n,"lyric").map(l=>read(l,"text")).join(""),midi:(oct+1)*12+semitone[step]+Number(read(pt,"alter")||0)});
+   beat+=duration;
+  }
+  if(Math.abs(beat-4)>1e-6)throw Error("Compasso "+(index+1)+" incompleto");
+  return notes
+ });
+ if(bars.length!==8)throw Error("Esperados oito compassos");
+ return {bars,heads:[],events:bars.flatMap((notes,i)=>notes.map(n=>({...n,start:i*4+n.onset})))}
+}
+function renderExercise(id){
+ const study=studies[id],target=$("melScore"+id);
+ for(let line=0;line<2;line++){
+  let svg=el("svg",{viewBox:"0 0 820 120",role:"img","aria-label":"Exercício "+id+", compassos "+(line*4+1)+" a "+(line*4+4)},target);
+  drawStaff(svg);
+  el("text",{x:58,y:47,"font-size":23,"font-family":"Georgia,serif",fill:"#34342e"},svg,"C");
+  let bounds=[85,269,453,637,810];
+  bounds.forEach((x,i)=>el("line",{x1:x,x2:x,y1:30,y2:70,stroke:"#30312e","stroke-width":i===4?2:1},svg));
+  for(let b=0;b<4;b++){
+   const notes=study.bars[line*4+b],width=bounds[b+1]-bounds[b];
+   for(let n of notes){
+    const x=bounds[b]+18+(n.onset+n.duration/2)/4*(width-36);
+    drawNote(svg,x,n.step,n.oct,n.duration,n.lyric,study.heads)
+   }
   }
  }
 }
-function display(p){[10,11].forEach(i=>{$("page"+i).classList.toggle("current",i===p);$("go"+i).classList.toggle("active",i===p);$("go"+i).setAttribute("aria-pressed",String(i===p))})}
-$("go10").addEventListener("click",()=>display(10));$("go11").addEventListener("click",()=>display(11));
-if(location.hash==="#ex-mel1")display(11);
-function midi(n){return (n[1]+1)*12+semis[n[0]]}
-function tone(t,dur,freq){let o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=freq;
- const len=Math.max(.08,dur-.025);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.1,t+.024);g.gain.setValueAtTime(.1,t+Math.max(.025,len-.06));g.gain.exponentialRampToValueAtTime(.0001,t+len);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+len+.03)}
-function tick(t,b){if(!$("click").checked)return;let o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=b===0?1270:950;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(b===0?.085:.04,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.07)}
+function select(id){
+ if(playing)stop();
+ if(!studies[id])return;
+ active=id;
+ document.querySelectorAll(".exercise").forEach(e=>e.classList.toggle("selected",e.id==="ex-mel"+id));
+ $("play").textContent="▶ Melódico "+id;$("bar").textContent="Exercício melódico "+id+" · compasso 1/8";
+ $("status").textContent="Transcrição piloto · conferir com o original"
+}
+function tone(t,dur,midi){
+ const o=ctx.createOscillator(),g=ctx.createGain(),len=Math.max(.08,dur-.028);
+ o.type="sine";o.frequency.value=440*Math.pow(2,(midi-69)/12);
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.1,t+.025);
+ g.gain.setValueAtTime(.1,t+Math.max(.027,len-.055));g.gain.exponentialRampToValueAtTime(.0001,t+len);
+ o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+len+.02)
+}
+function tick(t,beat){
+ if(!$("click").checked)return;
+ const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=beat===0?1260:960;
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(beat===0?.075:.038,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.065);
+ o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.07)
+}
 function schedule(cycle){
  const base=startTime+cycle*32*secondsPerBeat;
- melodic.forEach((pitch,i)=>tone(base+i*2*secondsPerBeat,2*secondsPerBeat,440*Math.pow(2,(midi(pitch)-69)/12)));
+ studies[active].events.forEach(n=>tone(base+n.start*secondsPerBeat,n.duration*secondsPerBeat,n.midi));
  for(let i=0;i<32;i++)tick(base+i*secondsPerBeat,i%4)
 }
-function stop(){playing=false;cancelAnimationFrame(raf);if(ctx){ctx.close().catch(()=>{});ctx=null}$("play").textContent="▶ Melódico 1";$("status").textContent="Transcrição piloto";drawn.forEach(h=>h.classList.remove("active"))}
+function stop(){
+ playing=false;cancelAnimationFrame(raf);
+ if(ctx){ctx.close().catch(()=>{});ctx=null}
+ $("play").textContent="▶ Melódico "+active;$("status").textContent="Transcrição piloto";
+ Object.values(studies).forEach(s=>s.heads.forEach(h=>h.classList.remove("active")))
+}
 function frame(){
  if(!playing||!ctx)return;
  let progress=(ctx.currentTime-startTime)/secondsPerBeat;
  if(progress>=32&&!$("loop").checked){stop();return}
- const loop=Math.max(0,Math.floor(progress/32)),at=(progress%32+32)%32;
- if($("loop").checked&&loop+1>=scheduled&&at>=24){schedule(loop+1);scheduled=loop+2}
- const noteNumber=Math.floor(at/2);
- drawn.forEach((h,i)=>h.classList.toggle("active",i===noteNumber));
- $("bar").textContent="Exercício melódico 1 · compasso "+(Math.floor(at/4)+1)+"/8";
+ const cycle=Math.max(0,Math.floor(progress/32)),at=(progress%32+32)%32;
+ if($("loop").checked&&cycle+1>=cyclesScheduled&&at>=24){schedule(cycle+1);cyclesScheduled=cycle+2}
+ studies[active].events.forEach((n,i)=>studies[active].heads[i].classList.toggle("active",at>=n.start&&at<n.start+n.duration));
+ $("bar").textContent="Exercício melódico "+active+" · compasso "+(Math.floor(at/4)+1)+"/8";
  raf=requestAnimationFrame(frame)
 }
-async function play(){if(playing){stop();return}if(!AC){$("status").textContent="Áudio indisponível";return}
- try{ctx=new AC;await ctx.resume();secondsPerBeat=60/Number($("bpm").value);startTime=ctx.currentTime+.12;playing=true;scheduled=1;schedule(0);$("play").textContent="■ Parar";$("status").textContent="Executando";if(window.innerWidth<901)display(11);frame()}
- catch(err){stop();$("status").textContent="Não foi possível iniciar o áudio"}
+async function start(){
+ if(playing){stop();return}
+ if(!AC){$("status").textContent="Áudio indisponível";return}
+ try{
+  ctx=new AC;await ctx.resume();secondsPerBeat=60/Number($("bpm").value);
+  startTime=ctx.currentTime+.14;playing=true;cyclesScheduled=1;schedule(0);
+  $("play").textContent="■ Parar";$("status").textContent="Executando";
+  if(window.innerWidth<=900)showPage(11);
+  frame()
+ }catch(err){stop();$("status").textContent="Não foi possível iniciar o áudio"}
 }
-$("play").addEventListener("click",play);$("exerciseBtn").addEventListener("click",play);$("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});window.addEventListener("pagehide",stop);
+async function load(){
+ const files=[1,2,3];
+ for(let id of files){
+  const file="./partituras/v1-mel"+String(id).padStart(3,"0")+".musicxml";
+  const response=await fetch(file);if(!response.ok)throw Error("Partitura "+id+" indisponível");
+  studies[id]=parse(await response.text());
+  renderExercise(id)
+ }
+ $("play").disabled=false;
+ const hash=Number((location.hash.match(/^#ex-mel([123])$/)||[])[1]);
+ select(studies[hash]?hash:1);
+ if(hash)showPage(11)
+}
+$("play").addEventListener("click",start);
+document.querySelectorAll(".exerciseSelect").forEach(btn=>btn.addEventListener("click",()=>{select(Number(btn.dataset.mel));start()}));
+$("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
+window.addEventListener("pagehide",stop);
+load().catch(err=>{$("status").textContent=err.message;$("status").style.color="#a33"});
 })();
 </script>
 </body></html>
