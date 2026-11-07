@@ -35,6 +35,18 @@ h1{font:500 clamp(29px,5vw,43px)/1.1 Georgia,serif;letter-spacing:-.03em;margin:
 .opts{display:flex;gap:9px;align-items:center;font-size:12px}.opts input{accent-color:#333}
 .beats{display:flex;gap:4px}.beats span{font-size:11px;border-radius:5px;width:26px;height:26px;display:grid;place-items:center;background:#eeeae4;color:#86817a}.beats span.on{background:#292b27;color:#fff}
 .status{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--mute);font-size:11px;margin-top:7px}
+.source-reader{margin:23px 0;background:#fffefa;border:1px solid var(--line);border-radius:9px;padding:15px}
+.source-reader summary{font-weight:750;cursor:pointer;font-size:14px}
+.source-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:15px 0}
+.source-actions label{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.source-actions input[type=file]{max-width:280px;font-size:12px}
+.source-actions select{background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit}
+.source-actions input[type=range]{width:100px;accent-color:#30322e}
+.source-frame{overflow:auto;max-height:76vh;border:1px solid var(--line);border-radius:6px;background:#eeeae2;padding:8px}
+.source-frame canvas{display:block;max-width:none;margin:auto;background:#fff}
+.scan-page{display:block;width:100%;height:auto;margin:13px auto 3px;box-shadow:0 2px 12px #1112}
+.compare-source{border:1px solid var(--line);background:#faf8f2;border-radius:5px;padding:7px 10px;font-size:11px;color:#595650;margin:6px 0;cursor:pointer}
+.source-note{font-size:11px;color:var(--mute);line-height:1.5}
 @media(max-width:960px){.spread{display:block}.page{display:none;max-width:660px;margin:auto;min-height:760px}.page.current{display:block}.mobile-pages{display:flex}}
 @media(max-width:570px){.top{padding:14px 10px;gap:6px}.brand{font-size:10px}main{padding:7px 9px 163px}.page{padding:25px 10px 56px}.toolbar{gap:6px}.toolbar button,.toolbar select{padding:9px 8px}.player{padding:9px 10px}.controls{gap:8px}.opts{width:100%}.tempo{min-width:140px}.score-scroll svg{min-width:460px}}
 </style></head><body>
@@ -44,6 +56,19 @@ h1{font:500 clamp(29px,5vw,43px)/1.1 Georgia,serif;letter-spacing:-.03em;margin:
 <div class="toolbar"><button id="prev" type="button">← Anterior</button><label for="pagePick">Páginas</label><select id="pagePick" aria-label="Selecionar dupla de páginas"></select><button id="next" type="button">Próxima →</button><button id="nextMusic" type="button">Próximos exercícios <span aria-hidden="true">↗</span></button></div>
 <div class="mobile-pages"><button type="button" id="leftButton" aria-pressed="true">Página esquerda</button><button type="button" id="rightButton" aria-pressed="false">Página direita</button></div>
 <section id="spread" class="spread" aria-label="Duas páginas originais do livro"></section>
+<details class="source-reader" id="sourceDetails">
+ <summary>Consultar o livro original completo · 49 folhas do PDF</summary>
+ <p class="source-note">Selecione seu arquivo <strong>WORKBOOK FOR EAR TRAINING 1.pdf</strong>. A digitalização fica no seu aparelho, sem envio ao servidor. O leitor mostrará as páginas originais onde ainda não houver partitura transcrita.</p>
+ <div class="source-actions">
+  <label>PDF original <input id="sourcePdf" type="file" accept=".pdf,application/pdf"></label>
+  <label><input id="keepPdf" type="checkbox" checked> Guardar apenas neste aparelho</label>
+  <label>Folha do PDF <select id="sourceSheet" aria-label="Escolher uma das 49 folhas"></select></label>
+  <label>Mostrar <select id="sourceSide" aria-label="Escolher lado da folha"><option value="current">Página atual</option><option value="full">Folha dupla</option><option value="left">Página esquerda</option><option value="right">Página direita</option></select></label>
+  <label>Zoom <input id="sourceZoom" type="range" min="75" max="240" value="100" step="5"><output id="sourceZoomText">100%</output></label>
+ </div>
+ <p id="sourceState" class="source-note" role="status">O PDF original ainda não foi selecionado. Você também pode consultá-lo no link do Drive abaixo.</p>
+ <div class="source-frame" id="sourceFrame" hidden><canvas id="sourceCanvas" aria-label="Página digitalizada do livro original"></canvas></div>
+</details>
 <p class="source"><a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener noreferrer">Consultar o PDF de origem no Google Drive ↗</a>. As partituras são transcrições de estudo e exigem verificação editorial antes de uso definitivo.</p>
 </main>
 <div class="player" role="region" aria-label="Player do livro">
@@ -207,12 +232,25 @@ async function renderPage(number){
  const article=document.createElement("article");article.className="page";article.id="page"+number;
  putText(article,"h2","Volume I — "+number);
  const found=entries.filter(x=>x.printedPage===number);
- if(!found.length){putText(article,"p","Esta página está no PDF original, mas sua transcrição musical ainda não foi incorporada ao leitor.", "empty")}
+ if(!found.length){
+  if(sourceDocument){
+   const scan=document.createElement("canvas");scan.className="scan-page";scan.setAttribute("aria-label","Página "+number+" do PDF original");article.append(scan);
+   try{await paintOriginalPage(number,scan)}catch(err){putText(article,"p","Não foi possível desenhar a página original: "+err.message,"empty")}
+  }else{
+   const txt=putText(article,"p","Esta página está no PDF original. Anexe o PDF em ‘Consultar o livro original completo’ para vê-la aqui.","empty");
+   const btn=putText(article,"button","Abrir o PDF original","compare-source");
+   btn.type="button";btn.addEventListener("click",()=>{$("sourceDetails").open=true;$("sourceDetails").scrollIntoView({behavior:"smooth",block:"start"})});
+  }
+}
  else {
   for(const item of found){
    try{const music=await fetchMusic(item);renderStudy(item,music,article)}
    catch(e){putText(article,"p","Não foi possível carregar o exercício "+item.exerciseNumber+": "+e.message,"empty")}
   }
+ }
+ if(found.length&&sourceDocument){
+  const compare=putText(article,"button","Conferir a imagem original desta página","compare-source");compare.type="button";
+  compare.addEventListener("click",async()=>{compare.disabled=true;const canvas=document.createElement("canvas");canvas.className="scan-page";compare.after(canvas);await paintOriginalPage(number,canvas);compare.remove()});
  }
  const num=putText(article,"div",String(number),"number");
  return article
@@ -227,10 +265,12 @@ async function openSpread(page){
  stop();const even=Math.max(4,Math.min(94,page%2===0?page:page-1));spread=even;
  const p=new URLSearchParams(location.search);p.set("pagina",String(page));history.replaceState(null,"","?"+p.toString());
  $("pagePick").value=String(even);$("prev").disabled=even<=4;$("next").disabled=even>=94;
+ if($("sourceSheet"))$("sourceSheet").value=String(Math.floor((page+4)/2));
  $("spread").replaceChildren();
  const [left,right]=await Promise.all([renderPage(even),renderPage(even+1)]);
  $("spread").append(left,right);
  mobilePage(page===even+1?even+1:even);
+ if(sourceDocument&&$("sourceDetails").open)drawSourceSpread().catch(()=>{});
  $("track").textContent="Páginas "+even+"–"+(even+1)+" · escolha um exercício";
  $("status").textContent="Transcrições ainda sujeitas à revisão musical";
 }
@@ -298,6 +338,138 @@ $("leftButton").addEventListener("click",()=>mobilePage(spread));$("rightButton"
 $("nextMusic").addEventListener("click",()=>{const next=pages.find(p=>p>=spread+2&&entries.some(e=>e.printedPage===p));if(next)openSpread(next);else $("status").textContent="Nenhuma página posterior transcrita nesta edição"});
 $("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
 window.addEventListener("pagehide",stop);
+
+// PDF original privado: leitura e cache local, sem upload à hospedagem.
+let sourceDocument=null,sourceRenderToken=0;
+const sourceRenderCache=new Map();
+async function openSourceDatabase(){
+ if(!("indexedDB" in window))throw Error("Este navegador não oferece armazenamento local");
+ return new Promise((resolve,reject)=>{
+  const req=indexedDB.open("monroe-source-pdf-v1",1);
+  req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains("files"))req.result.createObjectStore("files")};
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error||Error("Falha no armazenamento local"))
+ })
+}
+async function rememberSource(bytes){
+ const db=await openSourceDatabase();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction("files","readwrite");
+  tx.objectStore("files").put(bytes.slice(0),"volume-1");
+  tx.oncomplete=()=>{db.close();resolve()};
+  tx.onerror=()=>{db.close();reject(tx.error)}
+ })
+}
+async function recalledSource(){
+ try{
+  const db=await openSourceDatabase();
+  return await new Promise(resolve=>{
+   const tx=db.transaction("files","readonly"),req=tx.objectStore("files").get("volume-1");
+   req.onsuccess=()=>{db.close();resolve(req.result||null)};
+   req.onerror=()=>{db.close();resolve(null)}
+  })
+ }catch(e){return null}
+}
+let pdfJsPromise=null;
+function loadPdfJs(){
+ if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
+ if(pdfJsPromise)return pdfJsPromise;
+ pdfJsPromise=new Promise((resolve,reject)=>{
+  const script=document.createElement("script");
+  script.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+  script.onload=()=>{
+   if(!window.pdfjsLib){reject(Error("Não foi possível carregar o leitor de PDF"));return}
+   window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+   resolve(window.pdfjsLib)
+  };
+  script.onerror=()=>reject(Error("Biblioteca PDF indisponível; verifique a conexão"));
+  document.head.appendChild(script)
+ });
+ return pdfJsPromise
+}
+async function loadPrivatePdf(bytes,restore=false){
+ $("sourceState").textContent="Abrindo PDF original…";
+ const lib=await loadPdfJs();
+ sourceDocument=await lib.getDocument({data:new Uint8Array(bytes.slice(0))}).promise;
+ sourceRenderCache.clear();
+ if(sourceDocument.numPages!==49){
+  $("sourceState").textContent="O PDF possui "+sourceDocument.numPages+" folhas, não 49. Confirme se selecionou o Volume I original.";
+ }else{
+  $("sourceState").textContent=(restore?"PDF original restaurado deste aparelho. ":"PDF original aberto. ")+"49 folhas disponíveis, incluindo capa e páginas preliminares.";
+ }
+ await drawSourceSpread();
+ await openSpread(shown||spread)
+}
+async function cachedSheet(sheet){
+ if(!sourceDocument)throw Error("Escolha o PDF original");
+ if(sheet<1||sheet>sourceDocument.numPages)throw Error("Folha não encontrada");
+ if(sourceRenderCache.has(sheet))return sourceRenderCache.get(sheet);
+ const result=(async()=>{
+  const page=await sourceDocument.getPage(sheet);
+  const viewport=page.getViewport({scale:2.1});
+  const canvas=document.createElement("canvas");
+  canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+  await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+  return canvas
+ })();
+ sourceRenderCache.set(sheet,result);
+ if(sourceRenderCache.size>3){
+  const oldest=sourceRenderCache.keys().next().value;
+  sourceRenderCache.delete(oldest)
+ }
+ return result
+}
+async function paintOriginalPage(pageNumber,canvas){
+ const sheet=Math.floor((pageNumber+4)/2),original=await cachedSheet(sheet);
+ const side=pageNumber%2===0?0:1;
+ const half=Math.floor(original.width/2);
+ canvas.width=side===0?half:original.width-half;
+ canvas.height=original.height;
+ canvas.getContext("2d").drawImage(original,side*half,0,canvas.width,original.height,0,0,canvas.width,canvas.height);
+}
+async function drawSourceSpread(){
+ if(!sourceDocument)return;
+ const token=++sourceRenderToken;
+ const sheet=Number($("sourceSheet").value)||Math.floor((shown+4)/2)||4;
+ if(sheet>sourceDocument.numPages)return;
+ const original=await cachedSheet(sheet);if(token!==sourceRenderToken)return;
+ const side=$("sourceSide").value;
+ let x=0,w=original.width;
+ if(side!=="full"){
+  const isRight=side==="right"||(side==="current"&&sheet>=4&&shown%2===1);
+  if(side!=="current"||sheet>=4){x=isRight?Math.floor(original.width/2):0;w=isRight?original.width-x:Math.floor(original.width/2)}
+ }
+ const output=$("sourceCanvas");
+ output.width=w;output.height=original.height;
+ output.getContext("2d").drawImage(original,x,0,w,original.height,0,0,w,original.height);
+ $("sourceFrame").hidden=false;
+ const zoom=Number($("sourceZoom").value)/100;
+ output.style.width=Math.round((w/original.width)*(sourceDocument.numPages?1100:1100)*zoom)+"px";
+ $("sourceZoomText").textContent=Math.round(zoom*100)+"%";
+}
+for(let sheet=1;sheet<=49;sheet++){
+ const option=document.createElement("option");option.value=String(sheet);
+ option.textContent=sheet<=3?"Folha "+sheet+" · capa e preliminares":"Folha "+sheet+" · páginas "+(sheet*2-4)+"–"+(sheet*2-3);
+ $("sourceSheet").append(option)
+}
+$("sourceSheet").value="4";
+$("sourceSheet").addEventListener("change",()=>{
+ const sheet=Number($("sourceSheet").value);
+ if(sheet>=4)openSpread(sheet*2-4).then(drawSourceSpread);
+ else drawSourceSpread()
+});
+$("sourceSide").addEventListener("change",drawSourceSpread);
+$("sourceZoom").addEventListener("input",drawSourceSpread);
+$("sourcePdf").addEventListener("change",async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{
+  const bytes=await file.arrayBuffer();
+  if($("keepPdf").checked)await rememberSource(bytes).catch(()=>{$("sourceState").textContent="PDF carregado, mas não foi possível guardá-lo neste aparelho"});
+  await loadPrivatePdf(bytes)
+ }catch(err){$("sourceState").textContent="Não foi possível abrir o PDF: "+err.message}
+});
+recalledSource().then(bytes=>{if(bytes)loadPrivatePdf(bytes,true).catch(()=>{$("sourceState").textContent="Selecione novamente o PDF original"})});
+
 Promise.all([fetch("./partituras/index.json").then(r=>r.json())]).then(([index])=>{
  entries=index.entries.filter(x=>x.volume===1&&x.status==="pilot");
  pages=Array.from(new Set(entries.map(e=>e.printedPage))).sort((a,b)=>a-b);
