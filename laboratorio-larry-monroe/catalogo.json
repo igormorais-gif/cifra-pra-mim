@@ -874,8 +874,18 @@
           "sourcePage": 20,
           "printedLeft": 36,
           "printedRight": 37,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao4-melodicos",
+              "printedPage": 36,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=36",
+              "note": "Escala de Fá maior em clave de fá"
+            }
+          ]
         },
         {
           "sheet": 21,
