@@ -1870,6 +1870,166 @@
       "notes": "Transcrição piloto de imagem; comparação musical independente ainda pendente"
     },
     {
+      "id": "v1-l7-r001",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 60,
+      "pdfSheet": 32,
+      "exerciseNumber": 1,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
+      "id": "v1-l7-r002",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 60,
+      "pdfSheet": 32,
+      "exerciseNumber": 2,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r002.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
+      "id": "v1-l7-r003",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 60,
+      "pdfSheet": 32,
+      "exerciseNumber": 3,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r003.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
+      "id": "v1-l7-r004",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 60,
+      "pdfSheet": 32,
+      "exerciseNumber": 4,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r004.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
+      "id": "v1-l7-r005",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 60,
+      "pdfSheet": 32,
+      "exerciseNumber": 5,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r005.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
+      "id": "v1-l7-r006",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 61,
+      "pdfSheet": 32,
+      "exerciseNumber": 6,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r006.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
+      "id": "v1-l7-r007",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 61,
+      "pdfSheet": 32,
+      "exerciseNumber": 7,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r007.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
+      "id": "v1-l7-r008",
+      "volume": 1,
+      "sectionKey": "licao7-ritmicos",
+      "section": "Lição 7 — Estudos rítmicos · 4/4",
+      "printedPage": 61,
+      "pdfSheet": 32,
+      "exerciseNumber": 8,
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-l7-r008.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Lição sobre ligaduras, leitura visual da fonte; conferência musical independente pendente"
+    },
+    {
       "id": "v1-l7-r009",
       "volume": 1,
       "sectionKey": "licao7-ritmicos",
