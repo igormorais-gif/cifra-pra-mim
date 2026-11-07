@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4f1eb">
+<title>Monroe Digital — Motor de partituras MusicXML</title>
+<style>
+:root{--bg:#f4f1eb;--ink:#272725;--line:#d9d5cd;--muted:#77746b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}a{color:inherit;text-underline-offset:3px}button,input{font:inherit}
+.top{padding:16px;max-width:1000px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}
+.brand{letter-spacing:.14em;font-weight:800;text-decoration:none}
+main{max-width:1000px;padding:20px 16px 90px;margin:auto}
+.eyebrow{font-size:10px;font-weight:750;letter-spacing:.15em;color:#716e68;text-transform:uppercase}
+h1{font:500 clamp(32px,5vw,46px)/1.1 Georgia,serif;margin:9px 0}
+.lead{color:var(--muted);font-size:13px;max-width:760px}
+.paper{background:#fffefa;border:1px solid var(--line);border-radius:8px;padding:clamp(12px,3vw,30px);margin-top:22px}
+.paper h2{font:500 21px Georgia,serif;margin:0 0 14px}
+.sheet-wrap{overflow-x:auto;max-width:100%}.score{width:100%;min-width:780px;min-height:240px}
+.score svg{overflow:visible}
+.controls{display:flex;flex-wrap:wrap;gap:13px;align-items:center;margin-top:20px;border-top:1px solid #e4e0d9;padding-top:20px}
+#play{border:0;background:#262622;color:white;border-radius:7px;padding:11px 21px;min-width:110px;cursor:pointer}
+#play:disabled{opacity:.5;cursor:not-allowed}
+.tempo{display:flex;gap:8px;align-items:center;flex:1;min-width:190px}.tempo input{flex:1;accent-color:#323732}
+output{font-weight:700;font-variant-numeric:tabular-nums;min-width:56px}
+label{font-size:12px}.switches{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.switches label{display:flex;gap:5px;align-items:center}
+.switches input{accent-color:#34342d}
+.progress{height:3px;border-radius:2px;background:#dedbd6;margin:17px 0 7px;overflow:hidden}.progress div{width:0;height:100%;background:#b74436;transition:width .06s linear}
+.meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.notice{font-size:12px;color:#706e69;line-height:1.6;border-top:1px solid var(--line);padding-top:15px;margin-top:21px}
+.source{font-size:12px;color:#777}.error{color:#a23428}
+@media(max-width:560px){main{padding:10px 10px 95px}.paper{padding:15px 9px}.controls{gap:11px}.tempo{width:100%}}
+</style>
+<script src="https://unpkg.com/opensheetmusicdisplay@0.8.3/build/opensheetmusicdisplay.min.js" defer></script>
+</head>
+<body>
+<header class="top"><a href="./catalogo.html">← Índice dos volumes</a><a href="./" class="brand">MONROE DIGITAL</a><a href="../">Hub ↗</a></header>
+<main>
+<div class="eyebrow">Motor musical · transcrição estruturada</div>
+<h1 id="title">Partitura executável</h1>
+<p class="lead">Notação reconstruída a partir de MusicXML e reprodução dos eventos musicais no mesmo andamento. A disposição editorial definitiva é preservada no leitor do livro; este visor serve para conferir a estrutura digital da transcrição.</p>
+<div class="paper">
+ <h2 id="scoreTitle">Carregando partitura…</h2>
+ <div class="sheet-wrap"><div id="notation" class="score" aria-label="Partitura musical interativa"></div></div>
+ <div class="controls">
+  <button id="play" type="button" disabled>▶ Tocar</button>
+  <div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="40" max="160" value="80" step="1"><output id="bpmText">80 BPM</output></div>
+  <div class="switches"><label><input id="click" type="checkbox" checked>Metrônomo</label><label><input id="loop" type="checkbox">Loop</label></div>
+ </div>
+ <div class="progress" aria-hidden="true"><div id="position"></div></div>
+ <div class="meta"><span id="measure">Compasso —</span><span id="status" role="status">Carregando fonte MusicXML…</span></div>
+</div>
+<div class="notice">Esta tela não converte automaticamente as digitalizações em música. Cada exercício precisa primeiro ser transcrito e conferido. Os existentes estão identificados como versões piloto. A execução vocal sintetizada é uma referência de altura e duração, não uma avaliação de solfejo.</div>
+<p class="source"><a href="./">Abrir a página do livro</a> · <a href="./catalogo.html">Ver os quatro volumes</a></p>
+</main>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const q=new URLSearchParams(location.search);
+const vol=Number(q.get("volume")||1),exercise=Number(q.get("exercicio")||1);
+const AudioClass=window.AudioContext||window.webkitAudioContext;
+let ctx=null,playing=false,startTime=0,events=[],bars=[],barDuration=4,totalQ=0,frameId=null,osmd=null,cyclesScheduled=0,bpm=80;
+function children(parent,name){return [...parent.children].filter(e=>e.localName===name)}
+function first(parent,name){return children(parent,name)[0]||null}
+function content(parent,name){return first(parent,name)?.textContent||""}
+function midi(pitch){let steps={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let step=content(pitch,"step");let oct=Number(content(pitch,"octave"));let alt=Number(content(pitch,"alter")||0);if(!(step in steps)||!Number.isFinite(oct))throw Error("Nota inválida em MusicXML");return (oct+1)*12+steps[step]+alt}
+function parseMusicXml(raw){
+ const xml=new DOMParser().parseFromString(raw,"application/xml");
+ if(xml.querySelector("parsererror"))throw Error("XML musical inválido");
+ const parts=[...xml.querySelectorAll("score-partwise > part")];
+ if(!parts.length)throw Error("Nenhuma voz identificada no MusicXML");
+ const output=[],measures=[],partMeasures=parts.map(p=>children(p,"measure"));
+ let prevBarLength=4;
+ // All parts share common measure numbers. Duration math is in quarter-note units.
+ for(let m=0;m<Math.max(...partMeasures.map(m=>m.length));m++){
+   let measureLength=prevBarLength;
+   for(const group of partMeasures){let elem=group[m];if(!elem)continue;
+    for(const a of children(elem,"attributes")){
+      let time=first(a,"time");
+      if(time){let numerator=Number(content(time,"beats")),denominator=Number(content(time,"beat-type"));if(numerator>0&&denominator>0)measureLength=numerator*4/denominator}
+    }
+   }
+   prevBarLength=measureLength;measures.push({start:measures.length?measures[measures.length-1].start+measures[measures.length-1].duration:0,duration:measureLength});
+ }
+ partMeasures.forEach(group=>{
+  let division=1,measureIndex=0;
+  group.forEach(meas=>{
+   const start=measures[measureIndex].start;
+   let t=0,lastOnset=0;
+   for(const item of [...meas.children]){
+    if(item.localName==="attributes"){const d=Number(content(item,"divisions"));if(d>0)division=d;continue}
+    if(item.localName==="backup"){t-=Number(content(item,"duration"))/division;continue}
+    if(item.localName==="forward"){t+=Number(content(item,"duration"))/division;continue}
+    if(item.localName!=="note")continue;
+    let duration=Number(content(item,"duration"))/division;
+    if(!Number.isFinite(duration)||duration<=0)throw Error("Duração inválida na partitura");
+    let on=first(item,"chord")?lastOnset:t;
+    const pitch=first(item,"pitch"),rest=first(item,"rest");
+    if(!rest){if(!pitch)throw Error("Nota sem altura");output.push({at:start+on,duration,midi:midi(pitch),measure:measureIndex+1,
+      tieStart:children(item,"tie").some(x=>x.getAttribute("type")==="start"),
+      tieStop:children(item,"tie").some(x=>x.getAttribute("type")==="stop")})}
+    lastOnset=on;
+    if(!first(item,"chord"))t+=duration;
+   }
+   if(t>measures[measureIndex].duration+1e-5)throw Error("Compasso excede a fórmula de compasso");
+   measureIndex++;
+  });
+ });
+ output.sort((a,b)=>a.at-b.at||a.midi-b.midi);
+ // Coalesce tie continuations, so there is no second attack over a barline.
+ const merged=[];
+ for(const n of output){
+  if(n.tieStop){const earlier=merged.findLast?.(p=>p.midi===n.midi&&p.tieStart&&Math.abs(p.at+p.duration-n.at)<1e-6);
+    if(earlier){earlier.duration+=n.duration;earlier.tieStart=n.tieStart;continue}}
+  merged.push({...n})
+ }
+ return {events:merged,measures,total:measures.reduce((n,m)=>n+m.duration,0)}
+}
+function makeTone(at,len,pitch){
+ const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=440*Math.pow(2,(pitch-69)/12);
+ let dur=Math.max(.07,len-.03);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.105,at+.025);
+ g.gain.setValueAtTime(.105,at+Math.max(.027,dur-.045));g.gain.exponentialRampToValueAtTime(.0001,at+dur);
+ o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+dur+.025)
+}
+function click(at,beat){if(!$("click").checked)return;let o=ctx.createOscillator(),g=ctx.createGain();
+ o.type="sine";o.frequency.value=beat===0?1290:960;
+ g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(beat===0?.085:.042,at+.004);g.gain.exponentialRampToValueAtTime(.0001,at+.065);
+ o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+.07)
+}
+function scheduleCycle(cycle){
+ const s=startTime+cycle*totalQ*60/bpm;
+ events.forEach(n=>makeTone(s+n.at*60/bpm,n.duration*60/bpm,n.midi));
+ bars.forEach(b=>{for(let t=0;t<Math.ceil(b.duration);t++)click(s+(b.start+t)*60/bpm,t)});
+}
+function stop(){
+ playing=false;cancelAnimationFrame(frameId);frameId=null;
+ if(ctx){ctx.close().catch(()=>{});ctx=null}
+ $("play").textContent="▶ Tocar";$("position").style.width="0%";$("status").textContent="Pronto para tocar"
+}
+function update(){
+ if(!playing||!ctx)return;
+ const elapsed=(ctx.currentTime-startTime)*bpm/60;
+ if(elapsed>=totalQ&&!$("loop").checked){stop();return}
+ const cycle=Math.max(0,Math.floor(elapsed/totalQ));
+ if($("loop").checked&&cycle+1>=cyclesScheduled){scheduleCycle(cycle+1);cyclesScheduled=cycle+2}
+ const position=((elapsed%totalQ)+totalQ)%totalQ;
+ const measure=bars.findIndex(b=>position>=b.start&&position<b.start+b.duration)+1;
+ $("measure").textContent="Compasso "+Math.max(1,measure)+" de "+bars.length;
+ $("position").style.width=(100*position/totalQ).toFixed(2)+"%";
+ frameId=requestAnimationFrame(update)
+}
+async function play(){
+ if(playing){stop();return}
+ if(!AudioClass){$("status").textContent="Áudio indisponível";return}
+ try{ctx=new AudioClass();await ctx.resume();bpm=Number($("bpm").value);startTime=ctx.currentTime+.16;playing=true;cyclesScheduled=1;scheduleCycle(0);
+ $("play").textContent="■ Parar";$("status").textContent="Reprodução sonora · piloto";update()}
+ catch(e){stop();$("status").textContent="Falha ao iniciar áudio"}
+}
+async function load(){
+ const index=await fetch("./partituras/index.json").then(r=>{if(!r.ok)throw Error("Índice musical não encontrado");return r.json()});
+ const entry=index.entries.find(e=>e.volume===vol&&e.exerciseNumber===exercise);
+ if(!entry)throw Error("Este exercício ainda não foi transcrito em MusicXML.");
+ const xml=await fetch("./"+entry.musicXml).then(r=>{if(!r.ok)throw Error("Partitura indisponível");return r.text()});
+ const parsed=parseMusicXml(xml);events=parsed.events;bars=parsed.measures;totalQ=parsed.total;
+ $("title").textContent="Volume "+vol+" · Exercício "+exercise;
+ $("scoreTitle").textContent=entry.section+" — página "+entry.printedPage;
+ $("measure").textContent=bars.length+" compassos · "+events.length+" ataques";
+ $("status").textContent="Transcrição piloto · revisão pendente";
+ if(!window.opensheetmusicdisplay)throw Error("Módulo de escrita musical indisponível. Recarregue a página.");
+ osmd=new opensheetmusicdisplay.OpenSheetMusicDisplay("notation",{autoResize:false,backend:"svg",drawTitle:false,drawPartNames:false});
+ await osmd.load(xml);osmd.render();
+ $("play").disabled=false;
+}
+$("bpm").addEventListener("input",e=>{$("bpmText").textContent=e.target.value+" BPM";if(playing)stop()});
+$("play").addEventListener("click",play);
+window.addEventListener("pagehide",()=>{if(playing)stop()});
+window.addEventListener("load",()=>load().catch(err=>{$("scoreTitle").textContent="Partitura não disponível";$("status").textContent=err.message;$("status").classList.add("error")}));
+})();
+</script>
+</body></html>
