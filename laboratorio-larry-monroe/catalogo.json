@@ -211,8 +211,8 @@
               "exercise": 1,
               "state": "pilot",
               "location": "right",
-              "onlineHref": "./partitura.html?volume=1&secao=melodicos&exercicio=1",
-              "note": "Estudo melódico 1 em Dó maior; solfejo e execução disponíveis"
+              "onlineHref": "./estudos-melodicos-p10-11.html",
+              "note": "Página 11: exercício 1 transcrito e executável, com sílabas de solfejo"
             },
             {
               "sectionKey": "melodicos",
