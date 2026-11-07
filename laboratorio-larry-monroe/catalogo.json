@@ -1317,8 +1317,18 @@
           "sourcePage": 34,
           "printedLeft": 64,
           "printedRight": 65,
-          "status": "not_inventoried",
-          "studies": []
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao7-melodicos",
+              "printedPage": 64,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./livro.html?pagina=64",
+              "note": "Estudo melódico de Si♭ maior, escala com 2 bemóis e execução sonora"
+            }
+          ]
         },
         {
           "sheet": 35,
