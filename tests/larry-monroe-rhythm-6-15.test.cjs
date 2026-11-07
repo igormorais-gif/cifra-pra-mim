@@ -91,7 +91,9 @@ test('as páginas melódicas 10 e 11 incluem a instrução traduzida e 16 notas 
  assert.match(html,/Todos os estudos melódicos serão cantados utilizando sílabas de solfejo/);
  assert.match(html,/independentemente do registro/);
  assert.match(html,/Tonalidade de Dó maior/);
- assert.match(html,/id="melScore"/);
+ assert.match(html,/id="melScore1"/);
+ assert.match(html,/id="melScore2"/);
+ assert.match(html,/id="melScore3"/);
  assert.match(html,/const melodic=\[/);
  assert.match(html,/function schedule\(cycle\)/);
  const script=html.match(/<script>([\s\S]*?)<\/script>/);
