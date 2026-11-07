@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f2">
+<title>Laboratório Larry Monroe — Volume 1, Exercício 1</title>
+<style>
+:root{color-scheme:light;--ink:#1a2022;--muted:#647075;--bg:#f5f5f2;--line:#d9dddd;--red:#c74434}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+main{max-width:920px;margin:auto;padding:24px 15px 45px}.top{display:flex;justify-content:space-between;gap:14px;align-items:center;font-size:12px;margin-bottom:31px}
+.top a{color:inherit;text-decoration:none}.top b{letter-spacing:.11em}.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:#677176}
+h1{font-family:Georgia,serif;font-size:clamp(29px,5vw,44px);font-weight:600;line-height:1.1;letter-spacing:-.03em;margin:7px 0 12px}p{margin:7px 0 22px;color:var(--muted)}
+.panel{background:white;border:1px solid var(--line);padding:clamp(14px,3vw,24px);border-radius:14px;margin-bottom:15px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.head h2{font-size:15px;margin:0}.status{font-size:11px;color:var(--muted)}
+#score{width:100%;display:block;max-height:700px}.staff{stroke:#283034;stroke-width:1}.bar{stroke:#283034;stroke-width:1.3}.notehead{fill:white;stroke:#242c30;stroke-width:2}.halfstem{stroke:#242c30;stroke-width:2}.note.active .notehead{fill:var(--red);stroke:var(--red)}.note.active .halfstem{stroke:var(--red)}.note.active .lyric{fill:var(--red)}.lyric{font:italic 18px Georgia,serif;fill:#596267}.count{font-size:14px;fill:#6d757b;font-family:system-ui}.count.active{fill:var(--red);font-weight:800}
+.controls{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.play{border:0;border-radius:9px;background:#182226;color:white;min-width:142px;height:47px;font-weight:700;font-size:14px;cursor:pointer}.tempo{display:flex;gap:12px;align-items:center;flex:1;min-width:205px}.tempo strong{font-variant-numeric:tabular-nums;white-space:nowrap}input[type=range]{flex:1;accent-color:#24323a}.opts{display:flex;gap:18px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:15px;margin-top:15px}.opts label{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}input[type=checkbox]{accent-color:#27363d}
+.tracker{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px;flex-wrap:wrap}.beats{display:flex;gap:6px}.beats span{width:38px;height:38px;display:grid;place-items:center;border:1px solid #d5dadc;border-radius:8px;color:#879094;font-weight:700}.beats span.active{color:#bf4336;border-color:#bf4336;background:#fff4f0}.mono{font-variant-numeric:tabular-nums;font-size:13px;font-weight:650;color:#505b60}
+.small{font-size:12px;color:var(--muted);line-height:1.6}.small a{color:#304d5a}footer{font-size:11px;color:#92999d;margin:26px 3px}
+@media(max-width:600px){main{padding:17px 10px 35px}.top{margin-bottom:24px}.panel{padding:15px 10px}.controls{align-items:stretch}.play{width:100%}.tempo{width:100%}.opts{gap:12px}.beats span{width:35px;height:35px}}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><a href="../"><b>CIFRA PRA MIM</b></a><a href="../metronomo-regencia/">Regência ↗</a></header>
+<div class="eyebrow">LABORATÓRIO LARRY MONROE · TRANSCRIÇÃO PILOTO</div>
+<h1>Volume 1 / Exercício 1</h1>
+<p>Rhythm Studies · página impressa 7 · página 5 do PDF. Primeiro exercício numerado, na ordem original do livro.</p>
+<section class="panel">
+<div class="head"><h2>Partitura e execução</h2><span class="status" id="status" role="status">Pronto para tocar</span></div>
+<svg id="score" viewBox="0 0 720 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quatro compassos em 4 por 4, com cinco notas Fá quatro: semibreve, duas mínimas, semibreve, semibreve."></svg>
+<div class="controls">
+<button id="play" class="play" type="button">▶ Tocar</button>
+<div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="40" max="160" value="80"><strong id="bpmText">80 BPM</strong></div>
+</div>
+<div class="opts">
+<label><input type="checkbox" id="click" checked> Metrônomo</label>
+<label><input type="checkbox" id="count" checked> Contagem</label>
+<label><input type="checkbox" id="loop"> Repetir</label>
+</div>
+<div class="tracker"><span class="mono" id="measure">Compasso 1 de 4</span><div class="beats" aria-label="Contagem dos tempos"><span>1</span><span>2</span><span>3</span><span>4</span></div></div>
+</section>
+<section class="panel">
+<div class="head"><h2>Fonte e conferência</h2><span class="status">Revisão provisória</span></div>
+<p class="small">Volume 1, exercício 1: cinco ataques em quatro compassos de 4/4, cantados em “la”, sobre Fá4 (349,23 Hz). Os eventos musicais são dados estruturados, não um áudio gravado. A conferência independente com a partitura digitalizada ainda está pendente.</p>
+<p class="small"><a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener">Consultar o Volume 1 original no Drive ↗</a> · <a href="../metronomo-regencia/">Abrir aplicativo de regência ↗</a></p>
+</section>
+<footer>Laboratório Larry Monroe · Protótipo 01 · Sem exercícios seguintes cadastrados · Gestual de regência ainda não sincronizado a este player</footer>
+</main>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var events=[
+ {measure:1,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+ {measure:2,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+ {measure:2,beat:2,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+ {measure:3,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+ {measure:4,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"}
+];
+var ns="http://www.w3.org/2000/svg",score=$("score");
+function el(tag,attrs,parent,text){var e=document.createElementNS(ns,tag);Object.keys(attrs||{}).forEach(function(k){e.setAttribute(k,attrs[k])});if(text!==undefined)e.textContent=text;(parent||score).appendChild(e);return e}
+for(var m=0;m<4;m++){
+ var y=55+m*146;
+ el("text",{x:20,y:y+32,fill:"#232b2f","font-size":50,"font-family":"FreeSerif, serif"},score,"𝄞");
+ if(m===0){el("text",{x:81,y:y+27,"font-size":22,"font-family":"Georgia",fill:"#252b2d"},score,"4");el("text",{x:81,y:y+54,"font-size":22,"font-family":"Georgia",fill:"#252b2d"},score,"4")}
+ for(var l=0;l<5;l++){el("line",{x1:14,x2:701,y1:y+l*15,y2:y+l*15,"class":"staff"})}
+ el("line",{x1:701,x2:701,y1:y,y2:y+60,"class":"bar"});
+ if(m===3)el("line",{x1:696,x2:696,y1:y,y2:y+60,"class":"bar"});
+ var es=events.filter(function(n){return n.measure===m+1});
+ es.forEach(function(n){
+  var x=150+n.beat*125,g=el("g",{"class":"note","data-measure":m,"data-beat":n.beat});
+  el("text",{x:x,y:y-17,"text-anchor":"middle","class":"lyric"},g,"la");
+  el("ellipse",{cx:x,cy:y+52.5,rx:n.type==="half"?10:12,ry:7.3,transform:"rotate(-18 "+x+" "+(y+52.5)+")","class":"notehead"},g);
+  if(n.type==="half")el("line",{x1:x+9,x2:x+9,y1:y+52,y2:y+3,"class":"halfstem"},g);
+ });
+ for(var b=0;b<4;b++)el("text",{x:150+b*125,y:y+100,"text-anchor":"middle","class":"count","data-absolute-beat":m*4+b},score,String(b+1));
+}
+var AudioClass=window.AudioContext||window.webkitAudioContext,ctx=null,startedAt=0,secondsPerBeat=0,animation=0,playing=false,scheduled=0,nodes=[];
+var notes=[].slice.call(document.querySelectorAll(".note")),counts=[].slice.call(document.querySelectorAll(".count")),beatCells=[].slice.call(document.querySelectorAll(".beats span"));
+function note(at,seconds,freq){if(seconds<=0)return;var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=freq;g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.115,at+.035);g.gain.setValueAtTime(.115,at+Math.max(.05,seconds-.065));g.gain.exponentialRampToValueAtTime(.0001,at+seconds);o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+seconds+.03)}
+function tick(at,beat){if(!$("click").checked)return;var o=ctx.createOscillator(),g=ctx.createGain(),f=beat===0?1260:beat===2?1100:910,vol=beat===0?.11:beat===2?.078:.047;o.type="sine";o.frequency.setValueAtTime(f,at);o.frequency.exponentialRampToValueAtTime(f*.76,at+.055);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(vol,at+.004);g.gain.exponentialRampToValueAtTime(.0001,at+.07);o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+.075)}
+function scheduleCycle(cycle){var start=startedAt+cycle*16*secondsPerBeat;events.forEach(function(n){note(start+((n.measure-1)*4+n.beat)*secondsPerBeat,n.duration*secondsPerBeat-.012,n.frequency)});for(var i=0;i<16;i++)tick(start+i*secondsPerBeat,i%4)}
+function stop(){playing=false;cancelAnimationFrame(animation);if(ctx){ctx.close().catch(function(){});ctx=null}$("play").textContent="▶ Tocar";$("status").textContent="Pronto para tocar";notes.forEach(function(n){n.classList.remove("active")});counts.forEach(function(n){n.classList.remove("active")});beatCells.forEach(function(n){n.classList.remove("active")})}
+function frame(){if(!playing||!ctx)return;var pos=(ctx.currentTime-startedAt)/secondsPerBeat;if(pos>=16&&!$("loop").checked){stop();return}var cycle=Math.max(0,Math.floor(pos/16));if($("loop").checked && cycle+1>=scheduled){scheduleCycle(cycle+1);scheduled=cycle+2}var beat=(pos%16+16)%16,m=Math.max(0,Math.min(3,Math.floor(beat/4))),b=Math.floor(beat)%4;$("measure").textContent="Compasso "+(m+1)+" de 4";notes.forEach(function(node){var nb=+node.dataset.measure*4 + +node.dataset.beat,n=events.find(function(e){return e.measure===+node.dataset.measure+1&&e.beat===+node.dataset.beat});node.classList.toggle("active",nb<=beat&&beat<nb+n.duration)});counts.forEach(function(node){node.classList.toggle("active",$("count").checked&&+node.dataset.absoluteBeat===Math.floor(beat))});beatCells.forEach(function(node,i){node.classList.toggle("active",i===b)});animation=requestAnimationFrame(frame)}
+async function start(){stop();if(!AudioClass){$("status").textContent="Áudio indisponível neste navegador";return}try{ctx=new AudioClass();await ctx.resume();secondsPerBeat=60/Number($("bpm").value);startedAt=ctx.currentTime+.12;playing=true;scheduled=1;scheduleCycle(0);$("play").textContent="■ Parar";$("status").textContent="Executando · 4/4";frame()}catch(e){stop();$("status").textContent="Falha de áudio: "+e.message}}
+$("play").addEventListener("click",function(){if(playing)stop();else start()});
+$("bpm").addEventListener("input",function(){$("bpmText").textContent=this.value+" BPM";if(playing)stop()});
+$("count").addEventListener("change",function(){counts.forEach(function(n){n.style.display=$("count").checked?"":"none"})});
+window.addEventListener("pagehide",stop);
+})();
+</script>
+</body></html>
