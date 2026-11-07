@@ -55,8 +55,8 @@
         {
           "sheet": 4,
           "sourcePage": 4,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 4,
+          "printedRight": 5,
           "status": "not_inventoried",
           "studies": []
         },
@@ -525,16 +525,16 @@
         {
           "sheet": 12,
           "sourcePage": 12,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 20,
+          "printedRight": 21,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 13,
           "sourcePage": 13,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 22,
+          "printedRight": 23,
           "status": "not_inventoried",
           "studies": []
         },
@@ -703,276 +703,277 @@
         {
           "sheet": 16,
           "sourcePage": 16,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 28,
+          "printedRight": 29,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 17,
           "sourcePage": 17,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 30,
+          "printedRight": 31,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 18,
           "sourcePage": 18,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 32,
+          "printedRight": 33,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 19,
           "sourcePage": 19,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 34,
+          "printedRight": 35,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 20,
           "sourcePage": 20,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 36,
+          "printedRight": 37,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 21,
           "sourcePage": 21,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 38,
+          "printedRight": 39,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 22,
           "sourcePage": 22,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 40,
+          "printedRight": 41,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 23,
           "sourcePage": 23,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 42,
+          "printedRight": 43,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 24,
           "sourcePage": 24,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 44,
+          "printedRight": 45,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 25,
           "sourcePage": 25,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 46,
+          "printedRight": 47,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 26,
           "sourcePage": 26,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 48,
+          "printedRight": 49,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 27,
           "sourcePage": 27,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 50,
+          "printedRight": 51,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 28,
           "sourcePage": 28,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 52,
+          "printedRight": 53,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 29,
           "sourcePage": 29,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 54,
+          "printedRight": 55,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 30,
           "sourcePage": 30,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 56,
+          "printedRight": 57,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 31,
           "sourcePage": 31,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 58,
+          "printedRight": 59,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 32,
           "sourcePage": 32,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 60,
+          "printedRight": 61,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 33,
           "sourcePage": 33,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 62,
+          "printedRight": 63,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 34,
           "sourcePage": 34,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 64,
+          "printedRight": 65,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 35,
           "sourcePage": 35,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 66,
+          "printedRight": 67,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 36,
           "sourcePage": 36,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 68,
+          "printedRight": 69,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 37,
           "sourcePage": 37,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 70,
+          "printedRight": 71,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 38,
           "sourcePage": 38,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 72,
+          "printedRight": 73,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 39,
           "sourcePage": 39,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 74,
+          "printedRight": 75,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 40,
           "sourcePage": 40,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 76,
+          "printedRight": 77,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 41,
           "sourcePage": 41,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 78,
+          "printedRight": 79,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 42,
           "sourcePage": 42,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 80,
+          "printedRight": 81,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 43,
           "sourcePage": 43,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 82,
+          "printedRight": 83,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 44,
           "sourcePage": 44,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 84,
+          "printedRight": 85,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 45,
           "sourcePage": 45,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 86,
+          "printedRight": 87,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 46,
           "sourcePage": 46,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 88,
+          "printedRight": 89,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 47,
           "sourcePage": 47,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 90,
+          "printedRight": 91,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 48,
           "sourcePage": 48,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 92,
+          "printedRight": 93,
           "status": "not_inventoried",
           "studies": []
         },
         {
           "sheet": 49,
           "sourcePage": 49,
-          "printedLeft": null,
-          "printedRight": null,
+          "printedLeft": 94,
+          "printedRight": 95,
           "status": "not_inventoried",
           "studies": []
         }
-      ]
+      ],
+      "printedPageMapNote": "Associação nominal das folhas 4–49 com as páginas impressas 4–95, pela sequência regular do PDF. Números de páginas ainda sujeitos à auditoria pontual."
     },
     {
       "volume": 2,
