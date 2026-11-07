@@ -268,6 +268,46 @@
         "layout": false
       },
       "notes": "Solfejo da escala de Dó maior, 8 compassos; revisão independente pendente"
+    },
+    {
+      "id": "v1-mel002",
+      "sectionKey": "melodicos",
+      "volume": 1,
+      "printedPage": 11,
+      "pdfSheet": 7,
+      "exerciseNumber": 2,
+      "section": "Estudos melódicos",
+      "time": "C (4/4)",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-mel002.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Estudo transcrito da digitalização; alturas e espaçamento em revisão independente"
+    },
+    {
+      "id": "v1-mel003",
+      "sectionKey": "melodicos",
+      "volume": 1,
+      "printedPage": 11,
+      "pdfSheet": 7,
+      "exerciseNumber": 3,
+      "section": "Estudos melódicos",
+      "time": "C (4/4)",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-mel003.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Estudo transcrito da digitalização; alturas e espaçamento em revisão independente"
     }
   ]
 }
