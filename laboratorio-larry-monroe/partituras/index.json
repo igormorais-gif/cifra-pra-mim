@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "project": "Monroe Digital",
+  "entries": [
+    {
+      "id": "v1-ex001",
+      "volume": 1,
+      "printedPage": 7,
+      "pdfSheet": 5,
+      "exerciseNumber": 1,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex001.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto; não aprovada após dupla conferência"
+    },
+    {
+      "id": "v1-ex002",
+      "volume": 1,
+      "printedPage": 7,
+      "pdfSheet": 5,
+      "exerciseNumber": 2,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex002.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto; não aprovada após dupla conferência"
+    },
+    {
+      "id": "v1-ex003",
+      "volume": 1,
+      "printedPage": 7,
+      "pdfSheet": 5,
+      "exerciseNumber": 3,
+      "section": "Estudos rítmicos",
+      "time": "4/4",
+      "keyFifths": 0,
+      "musicXml": "partituras/v1-ex003.musicxml",
+      "status": "pilot",
+      "review": {
+        "score": false,
+        "audio": false,
+        "instructions": false,
+        "layout": false
+      },
+      "notes": "Transcrição piloto; não aprovada após dupla conferência"
+    }
+  ]
+}
