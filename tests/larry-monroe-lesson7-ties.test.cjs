@@ -13,17 +13,17 @@ function measures(e){
   assert.equal(Number(m[1]),k+1);
   const notes=[...m[2].matchAll(/<note>([\s\S]*?)<\/note>/g)].map(x=>x[1]);
   const d=notes.reduce((sum,n)=>sum+Number(n.match(/<duration>(\d+)<\/duration>/)?.[1]||0),0);
-  assert.equal(d,12,e.id+' compasso '+(k+1));
+  assert.equal(d,e.time==='3/4'?12:16,e.id+' compasso '+(k+1));
   return notes;
  })}
 }
 test('Lição 7: sete estudos reais estão indexados nas páginas 61–62',()=>{
- assert.deepEqual(lesson7.map(x=>x.exerciseNumber),[9,10,11,12,13,14,15]);
- assert.deepEqual(lesson7.map(x=>x.printedPage),[61,61,61,62,62,62,62]);
- assert.ok(lesson7.every(x=>x.time==='3/4'&&x.status==='pilot'&&x.pdfSheet===(x.printedPage===61?32:33)));
+ assert.deepEqual(lesson7.map(x=>x.exerciseNumber),Array.from({length:15},(_,i)=>i+1));
+ assert.deepEqual(lesson7.map(x=>x.printedPage),[...Array(5).fill(60),...Array(6).fill(61),...Array(4).fill(62)]);
+ assert.ok(lesson7.every(x=>x.time===(x.exerciseNumber<=8?'4/4':'3/4')&&x.status==='pilot'&&x.pdfSheet===Math.floor((x.printedPage+4)/2)));
  for(const s of cat.volumes[0].sheets.slice(31,33)){
   const found=s.studies.filter(x=>x.sectionKey==='licao7-ritmicos');
-  assert.equal(found.length,s.sheet===32?3:4);
+  assert.equal(found.length,s.sheet===32?11:4);
   assert.ok(found.every(x=>x.onlineHref.includes('/livro.html?pagina=')));
  }
 });
@@ -32,7 +32,7 @@ test('MusicXML verifica compassos 3/4, colcheias, ligaduras e pontuações',()=>
  for(const e of lesson7){
   const {s,rows}=measures(e);
   assert.equal(rows.length,e.exerciseNumber<=11?4:8);
-  assert.match(s,/<beats>3<\/beats><beat-type>4<\/beat-type>/);
+  assert.match(s,e.exerciseNumber<=8?/<beats>4<\/beats><beat-type>4<\/beat-type>/:/<beats>3<\/beats><beat-type>4<\/beat-type>/);
   for(const row of rows)for(const n of row){
    noteCount++;
    if(n.includes('<beam number="1">'))beamCount++;
@@ -41,11 +41,11 @@ test('MusicXML verifica compassos 3/4, colcheias, ligaduras e pontuações',()=>
    if(n.includes('<tie type="stop"/>'))tieStops++;
   }
  }
- assert.ok(noteCount>110);
+ assert.ok(noteCount>160);
  assert.ok(beamCount>20);
  assert.ok(dots>8);
  assert.equal(tieStarts,tieStops);
- assert.ok(tieStarts>=4);
+ assert.ok(tieStarts>=11);
 });
 test('As notas ligadas não recebem segundo ataque no leitor unificado',()=>{
  const html=fs.readFileSync(path.join(base,'livro.html'),'utf8');
