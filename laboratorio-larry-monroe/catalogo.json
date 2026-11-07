@@ -541,18 +541,155 @@
         {
           "sheet": 14,
           "sourcePage": 14,
-          "printedLeft": null,
-          "printedRight": null,
-          "status": "not_inventoried",
-          "studies": []
+          "printedLeft": 24,
+          "printedRight": 25,
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 24,
+              "exercise": 1,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=1",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 24,
+              "exercise": 2,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=2",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 24,
+              "exercise": 3,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=3",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 24,
+              "exercise": 4,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=4",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 24,
+              "exercise": 5,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=5",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 25,
+              "exercise": 6,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=6",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 25,
+              "exercise": 7,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=7",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 25,
+              "exercise": 8,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=8",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 25,
+              "exercise": 9,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=9",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 25,
+              "exercise": 10,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=10",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 25,
+              "exercise": 11,
+              "state": "pilot",
+              "location": "right",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=11",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            }
+          ]
         },
         {
           "sheet": 15,
           "sourcePage": 15,
-          "printedLeft": null,
-          "printedRight": null,
-          "status": "not_inventoried",
-          "studies": []
+          "printedLeft": 26,
+          "printedRight": 27,
+          "status": "partial_review",
+          "studies": [
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 26,
+              "exercise": 12,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=12",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 26,
+              "exercise": 13,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=13",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 26,
+              "exercise": 14,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=14",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            },
+            {
+              "sectionKey": "licao3-ritmicos",
+              "printedPage": 26,
+              "exercise": 15,
+              "state": "pilot",
+              "location": "left",
+              "onlineHref": "./partitura.html?volume=1&secao=licao3-ritmicos&exercicio=15",
+              "note": "Estudo em MusicXML com reprodução musical, revisão visual pendente"
+            }
+          ]
         },
         {
           "sheet": 16,
