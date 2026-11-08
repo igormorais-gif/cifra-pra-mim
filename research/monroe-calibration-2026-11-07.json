@@ -1,0 +1,63 @@
+{
+  "evaluated_at": "2026-11-07",
+  "result": "BLOCK_FULL_BOOK_BATCH",
+  "image_variants": [
+    "raw",
+    "contrast enhanced",
+    "binary threshold"
+  ],
+  "source": "private user-supplied WORKBOOK FOR EAR TRAINING 1.pdf (not published)",
+  "test_cases": [
+    {
+      "id": "simple_v1p7_ex1",
+      "reference": {
+        "pitched": 5,
+        "rests": 0,
+        "measures": 4,
+        "voices": 1
+      },
+      "best_candidate": {
+        "pitched": 2,
+        "rests": 0,
+        "measures": 2,
+        "voices": 1
+      },
+      "status": "fail"
+    },
+    {
+      "id": "rhythm_v1p61_ex8",
+      "reference": {
+        "pitched": 12,
+        "rests": 3,
+        "ties": 3,
+        "measures": 4,
+        "voices": 1
+      },
+      "best_candidate": {
+        "pitched": 3,
+        "rests": 0,
+        "ties": 0,
+        "measures": 4,
+        "voices": 1
+      },
+      "status": "fail"
+    },
+    {
+      "id": "duet_v1p76_ex12",
+      "reference": {
+        "pitched": 29,
+        "rests": 1,
+        "measures": 4,
+        "voices": 2
+      },
+      "best_candidate": {
+        "pitched": 9,
+        "rests": 1,
+        "measures": 11,
+        "voices": 1
+      },
+      "status": "fail"
+    }
+  ],
+  "caveat": "These are necessary score-structure checks, NOT a melodic/rhythmic fidelity certificate. Must compare note-by-note to source after structural pass."
+}
