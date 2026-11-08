@@ -47,10 +47,10 @@ button.tab[aria-pressed=true]{background:var(--text);color:white;border-color:va
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 // [início em semínimas, duração, MIDI (null = pausa), entrada ligada, saída ligada]
-// P.7, exercício 1: a nota fica na linha Mi4. Uma semibreve, duas mínimas, duas semibreves.
-const EX1=[[0,4,64,0,0],[4,2,64,0,0],[6,2,64,0,0],[8,4,64,0,0],[12,4,64,0,0]];
-// P.61, exercício 6: duas pausas, três ligaduras de duração, todos os sons Mi4.
-const EX6=[[0,1,64,0,0],[1,.5,64,0,0],[1.5,.5,64,0,0],[2,1,64,0,0],[3,1,64,0,1],[4,1,64,1,0],[5,1,64,0,0],[6,.5,64,0,0],[6.5,.5,64,0,0],[7,1,64,0,1],[8,1,64,1,0],[9,1,null,0,0],[10,1,null,0,0],[11,1,64,0,1],[12,1,64,1,0],[13,1,64,0,0],[14,.5,64,0,0],[14.5,.5,64,0,0],[15,1,64,0,0]];
+// P.7, exercício 1: a nota fica no espaço Fá4. Uma semibreve, duas mínimas, duas semibreves.
+const EX1=[[0,4,65,0,0],[4,2,65,0,0],[6,2,65,0,0],[8,4,65,0,0],[12,4,65,0,0]];
+// P.61, exercício 6: duas pausas, três ligaduras de duração, todos os sons Fá4.
+const EX6=[[0,1,65,0,0],[1,.5,65,0,0],[1.5,.5,65,0,0],[2,1,65,0,0],[3,1,65,0,1],[4,1,65,1,0],[5,1,65,0,0],[6,.5,65,0,0],[6.5,.5,65,0,0],[7,1,65,0,1],[8,1,65,1,0],[9,1,null,0,0],[10,1,null,0,0],[11,1,65,0,1],[12,1,65,1,0],[13,1,65,0,0],[14,.5,65,0,0],[14.5,.5,65,0,0],[15,1,65,0,0]];
 const corpus=[{id:'ex1',page:7,no:1,symbols:EX1,title:'Exercício 1 · Página 7',tag:'Semibreve e mínima',meta:'5 notas · 4 compassos'},{id:'ex6',page:61,no:6,symbols:EX6,title:'Exercício 6 · Página 61',tag:'Pausas e ligaduras',meta:'17 cabeças · 2 pausas · 3 ligaduras'}];
 function semantics(symbols){const out=[],ties=[],rests=[];let pending=null;
  for(let i=0;i<symbols.length;i++){const [t,d,p,from,to]=symbols[i];
@@ -63,7 +63,7 @@ function semantics(symbols){const out=[],ties=[],rests=[];let pending=null;
  }
  if(pending!==null)throw Error('Ligadura termina sem resolver');return {events:out,ties,rests};}
 function assert(ok,msg){if(!ok)throw Error(msg)}
-function validate(ex){const s=ex.symbols,sem=semantics(s);assert(s.length>0,'vazio');assert(s[0][0]===0,'não começa em 0');assert(s.every(x=>x[2]===null||x[2]===64),'altura Mi4 divergente');
+function validate(ex){const s=ex.symbols,sem=semantics(s);assert(s.length>0,'vazio');assert(s[0][0]===0,'não começa em 0');assert(s.every(x=>x[2]===null||x[2]===65),'altura Fá4 divergente');
  for(let b=0;b<4;b++){let cursor=b*4;for(const x of s.filter(x=>x[0]>=b*4&&x[0]<(b+1)*4)){assert(Math.abs(x[0]-cursor)<1e-7,`lacuna ou sobreposição no compasso ${b+1}`);cursor+=x[1]}assert(Math.abs(cursor-(b+1)*4)<1e-7,`duração irregular no compasso ${b+1}`)}
  assert(Math.abs(sem.events.at(-1).end-16)<1e-7,'não termina no tempo 16');
  assert(sem.events.length===(ex.id==='ex6'?14:5),'ataques sonoros incorretos');
@@ -73,7 +73,7 @@ function validate(ex){const s=ex.symbols,sem=semantics(s);assert(s.length>0,'vaz
 let current=0,playing=false,ctx=null,voices=[],raf=0,startAudio=0,secPerBeat=0,sourceEvents=[],cursor=0,notesBySymbol=[],generation=0;
 const semanticCache=corpus.map(validate);
 function svgElement(tag,attrs={},parent){const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);parent?.appendChild(n);return n}
-function render(){stop(false);const ex=corpus[current],sem=semanticCache[current];$('exerciseTitle').textContent=ex.title;$('musicalInfo').textContent='4/4 · Mi4 · 16 tempos';$('validation').textContent=`${ex.tag} · ${sem.events.length} ataques sonoros · ${sem.rests.length} pausas · ${sem.ties.length} ligaduras`;notesBySymbol=[];
+function render(){stop(false);const ex=corpus[current],sem=semanticCache[current];$('exerciseTitle').textContent=ex.title;$('musicalInfo').textContent='4/4 · Fá4 · 16 tempos';$('validation').textContent=`${ex.tag} · ${sem.events.length} ataques sonoros · ${sem.rests.length} pausas · ${sem.ties.length} ligaduras`;notesBySymbol=[];
  $('tabs').replaceChildren();corpus.forEach((e,i)=>{const b=document.createElement('button');b.className='tab';b.setAttribute('aria-pressed',String(i===current));b.innerHTML=`${e.title}<span>${e.tag}</span>`;b.onclick=()=>{current=i;render()};$('tabs').appendChild(b)});
  $('score').replaceChildren();for(let bar=0;bar<4;bar++)renderBar(bar,ex.symbols);
  $('transportStatus').textContent=`Pronto · ${ex.title}`;}
@@ -84,7 +84,7 @@ function renderBar(bar,all){const div=document.createElement('div');div.classNam
  if(bar===0){const sign=svgElement('text',{x:37,y:85,'font-size':58,'font-family':'Noto Music, Apple Symbols, serif',fill:'#303733'},svg);sign.textContent='𝄞';svgElement('text',{x:80,y:58,'font-size':19,'font-family':'Georgia,serif'},svg).textContent='4';svgElement('text',{x:80,y:78,'font-size':19,'font-family':'Georgia,serif'},svg).textContent='4'}
  const x0=bar===0?115:65,step=bar===0?59:70;
  const notes=all.map((s,i)=>({s,i})).filter(o=>o.s[0]>=bar*4&&o.s[0]<(bar+1)*4);
- for(const {s,i} of notes){const [t,d,p,from,to]=s,x=x0+(t-bar*4)*step,y=top+40;
+ for(const {s,i} of notes){const [t,d,p,from,to]=s,x=x0+(t-bar*4)*step,y=top+35;
    const g=svgElement('g',{'data-symbol':i,class:'symbol'},svg);notesBySymbol[i]=g;
    if(p===null){svgElement('path',{d:`M${x-6} ${y-23}l9 4-8 10 9 5-5 9`,class:'rest'},g);continue}
    if(d===4){svgElement('ellipse',{cx:x,cy:y,rx:11,ry:6,transform:`rotate(-20 ${x} ${y})`,class:'staff-note hollow'},g)}
@@ -110,7 +110,7 @@ function play(){stop(false);const ac=getAudio(),events=semanticCache[current].ev
  if(beat>=16){playing=false;notesBySymbol.forEach(n=>n?.classList.remove('note-active'));$('transportStatus').textContent='Exercício concluído';if($('loop').checked)play();return;}raf=requestAnimationFrame(draw)};raf=requestAnimationFrame(draw);
 }
 $('play').onclick=play;$('stop').onclick=()=>stop();$('bpm').oninput=()=>{$('bpmOutput').textContent=$('bpm').value};
-try {let n=0;corpus.forEach(ex=>{validate(ex);n+=4});$('testResult').textContent=`${n} verificações estruturais aprovadas`;$('testDetail').textContent='Verificados: 4 compassos de 4/4 completos, Mi4, número de ataques, pausas, ligaduras e duração total. A leitura das imagens de origem continua sendo uma etapa editorial independente.'}catch(e){$('testResult').textContent='Falhou: '+e.message;$('play').disabled=true;}
+try {let n=0;corpus.forEach(ex=>{validate(ex);n+=4});$('testResult').textContent=`${n} verificações estruturais aprovadas`;$('testDetail').textContent='Verificados: 4 compassos de 4/4 completos, Fá4, número de ataques, pausas, ligaduras e duração total. A leitura das imagens de origem continua sendo uma etapa editorial independente.'}catch(e){$('testResult').textContent='Falhou: '+e.message;$('play').disabled=true;}
 render();
 })();
 </script>
