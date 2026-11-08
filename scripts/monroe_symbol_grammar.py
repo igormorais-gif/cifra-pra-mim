@@ -62,7 +62,7 @@ def vertical_stems(image,minimum=40):
  v=cv2.morphologyEx(mask,cv2.MORPH_OPEN,cv2.getStructuringElement(cv2.MORPH_RECT,(2,minimum)))
  _,_,st,_=cv2.connectedComponentsWithStats(v)
  return [(int(x+w//2),int(y),int(h)) for x,y,w,h,a in st[1:]
-         if h>=minimum and 120<=x<=image.shape[1]-75]
+         if h>=minimum and 120<=x<=image.shape[1]-15]
 def unmatched_stems(image,heads,barlines):
  found=[]
  for x,y,h in vertical_stems(image):
@@ -84,13 +84,39 @@ def ties(image,heads,barlines,staff):
  result=[]
  for a,b in zip(same,same[1:]):
   x0,x1=a["x"],b["x"]
-  if x1-x0>190 or any(x0<v[0]<x1 for v in barlines):continue
+  if x1-x0>190:continue
   y0=max(0,int(bottom((x0+x1)/2)+4));y1=min(image.shape[0],y0+33)
   mask=(image[y0:y1,x0:x1]<145).astype("uint8")*255
   _,_,st,_=cv2.connectedComponentsWithStats(mask)
   if any(w>=min(42,.48*(x1-x0)) and area>=100 and h>=5 for x,y,w,h,area in st[1:]):
    result.append(dict(from_x=x0,to_x=x1))
  return result
+def refined_heads(image,heads,staves):
+ """Filtra cópias espúrias do pentagrama: posição, curvatura e haste."""
+ bottoms=[bottom_tracker(image,lines) for lines in staves]
+ stems=vertical_stems(image,40)
+ result=[]
+ for n in heads:
+  x,y=n["x"],n["y"]
+  idx=min(range(len(staves)),key=lambda i:abs(y-(bottoms[i](x)-44)))
+  bottom=bottoms[idx](x)
+  if not(bottom-114<=y<=bottom+18):continue
+  attached=any(abs(x-sx)<=15 and sy-8<=y<=sy+h+16 for sx,sy,h in stems)
+  if not attached and n["similarity"]<.84:continue
+  if any(abs(x-other["x"])<17 and abs(y-other["y"])<20 for other in result):continue
+  result.append(n)
+ return result
+def proper_barlines(image,staves,heads):
+ """A barra cruza as cinco linhas; a haste de uma nota não basta."""
+ bottoms=[bottom_tracker(image,lines) for lines in staves]
+ result=[]
+ for x,y,h in vertical_stems(image,70):
+  for i,lines in enumerate(staves):
+   bottom=bottoms[i](x);top=bottom-(lines[4]-lines[0])
+   if abs(y-top)>9 or abs(y+h-bottom)>10:continue
+   if any(abs(x-n["x"])<=17 and y-18<=n["y"]<=y+h+18 for n in heads):continue
+   if not any(abs(x-p[0])<17 for p in result):result.append([x,y,h])
+ return sorted(result)
 def read(reference,image):
  staves=find_staves(image)
  if not staves:raise ValueError("Nenhum pentagrama detectado")
@@ -102,7 +128,8 @@ def read(reference,image):
  found={"staves":staves}
  for name,(center,size,threshold,nms) in TEMPLATES.items():
   found[name]=match(image,template(reference,center,size),threshold,nms,regions,rest=(name=="quarter_rest"))
- found["barlines"]=bars(image,max(0,staves[0][0]-35),staves[0][-1]+75)
+ found["filled"]=refined_heads(image,found["filled"],staves)
+ found["barlines"]=proper_barlines(image,staves,found["filled"])
  found["hollow_stem_candidates"]=unmatched_stems(image,found["filled"],found["barlines"])
  found["tie_candidates"]=ties(image,found["filled"],found["barlines"],staves[0]) if len(staves)==1 else []
  return found
@@ -117,10 +144,12 @@ def measure_durations(image,found):
  events=[]
  for n in found["filled"]:
   x,y=n["x"],n["y"]
-  roi=(image[y-10:y+12,x+17:x+47]<160).astype("uint8")*255
+  roi=(image[y-13:y+16,x+19:x+45]<170).astype("uint8")*255
+  row_ink=(roi>0).mean(axis=1)
+  roi[row_ink>.55,:]=0
   _,_,components,_=cv2.connectedComponentsWithStats(roi)
-  dotted=any(3<=w<=10 and 3<=h<=10 and area>=12 for xx,yy,w,h,area in components[1:])
-  nearest=[s for s in stems if abs(s[0]-x)<=14 and s[1]<=y<=s[1]+s[2]+12]
+  dotted=any(3<=w<=12 and 4<=h<=12 and area>=16 for xx,yy,w,h,area in components[1:])
+  nearest=[s for s in stems if abs(s[0]-x)<=14 and s[1]<=y<=s[1]+s[2]+26]
   if not nearest:raise ValueError("Cabeça sem haste em x="+str(x))
   sx,sy,sh=min(nearest,key=lambda e:abs(e[0]-x))
   right=dark[sy+4:sy+43,sx+5:sx+35]
