@@ -31,6 +31,7 @@ button.tab[aria-pressed=true]{background:var(--text);color:white;border-color:va
     <div class="score-grid" id="score"></div>
     <p class="status" id="validation"></p>
     <p class="note">Fonte: <a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener">Workbook for Ear Training 1</a>. Estes exercícios foram reconstruídos para teste; os demais ainda precisam passar por conferência musical antes de receber o selo de execução validada.</p>
+    <p class="muted">MusicXML: <a id="xmlLink" href="./vol1_p07_ex01.musicxml" download>Baixar este exercício</a></p>
   </section>
   <section class="panel">
     <div class="row"><h2>Teste de consistência</h2><span class="muted" id="testResult">Executando testes…</span></div>
@@ -73,7 +74,7 @@ function validate(ex){const s=ex.symbols,sem=semantics(s);assert(s.length>0,'vaz
 let current=0,playing=false,ctx=null,voices=[],raf=0,startAudio=0,secPerBeat=0,sourceEvents=[],cursor=0,notesBySymbol=[],generation=0;
 const semanticCache=corpus.map(validate);
 function svgElement(tag,attrs={},parent){const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);parent?.appendChild(n);return n}
-function render(){stop(false);const ex=corpus[current],sem=semanticCache[current];$('exerciseTitle').textContent=ex.title;$('musicalInfo').textContent='4/4 · Fá4 · 16 tempos';$('validation').textContent=`${ex.tag} · ${sem.events.length} ataques sonoros · ${sem.rests.length} pausas · ${sem.ties.length} ligaduras`;notesBySymbol=[];
+function render(){stop(false);const ex=corpus[current],sem=semanticCache[current];$('exerciseTitle').textContent=ex.title;$('musicalInfo').textContent='4/4 · Fá4 · 16 tempos';$('validation').textContent=`${ex.tag} · ${sem.events.length} ataques sonoros · ${sem.rests.length} pausas · ${sem.ties.length} ligaduras`;notesBySymbol=[];$('xmlLink').href=current===0?'./vol1_p07_ex01.musicxml':'./vol1_p61_ex06.musicxml';
  $('tabs').replaceChildren();corpus.forEach((e,i)=>{const b=document.createElement('button');b.className='tab';b.setAttribute('aria-pressed',String(i===current));b.innerHTML=`${e.title}<span>${e.tag}</span>`;b.onclick=()=>{current=i;render()};$('tabs').appendChild(b)});
  $('score').replaceChildren();for(let bar=0;bar<4;bar++)renderBar(bar,ex.symbols);
  $('transportStatus').textContent=`Pronto · ${ex.title}`;}
