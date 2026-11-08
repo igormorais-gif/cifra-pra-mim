@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Monroe Digital · 4 volumes</title>
+<style>
+:root{--paper:#fffefb;--bg:#f1efeb;--ink:#232722;--line:#d8d5cc;--muted:#73726b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,Arial}button,select,input{font:inherit}button,select{border:1px solid var(--line);border-radius:7px;padding:10px 13px;background:var(--paper);color:var(--ink);cursor:pointer}button:disabled{opacity:.38}button.primary{background:var(--ink);color:var(--paper)}.wrap{max-width:1000px;margin:auto;padding:14px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}a{color:inherit}h1{font:normal clamp(29px,5vw,44px) Georgia,serif;letter-spacing:-.03em;margin:23px 0 4px}p.sub{font-size:12px;color:var(--muted);margin:5px 0 21px}.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.nav select{min-width:112px}.surface{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:17px 16px;min-height:360px;margin-bottom:110px}.bar{display:flex;justify-content:space-between;gap:9px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:15px}.bar h2{margin:0;font:normal 22px Georgia,serif}.tiny{color:var(--muted);font-size:11px}.score-frame{width:100%;overflow-x:auto}.score-frame svg{display:block;min-width:620px;width:100%;height:auto}.note-name{font-size:10px;fill:#6e716b}.note-active{fill:#be5c50!important;stroke:#be5c50!important}.foot{position:fixed;bottom:0;left:0;right:0;background:#fcfbf9ed;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:11px 0 14px}.foot .wrap{padding-top:0;padding-bottom:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.foot label{display:flex;gap:8px;align-items:center;white-space:nowrap}.foot input{accent-color:var(--ink)}.foot button{font-weight:650}.empty{padding:40px 0;color:var(--muted);font:italic 16px Georgia,serif}.help{font-size:11px;color:var(--muted);line-height:1.7;padding:10px 0 0;border-top:1px solid var(--line);margin-top:13px}@media(max-width:600px){.surface{padding:13px 9px}.foot .wrap{gap:6px}.foot label{font-size:12px}.foot .wrap #play{flex:1}.nav{gap:6px}.nav button,.nav select{padding:9px}}
+</style></head><body>
+<div class="wrap"><header><a href="./index.html">← Laboratório Larry Monroe</a><a href="./livro.html">MusicXML · Volume I</a></header>
+<h1>Monroe Digital</h1><p class="sub">Quatro volumes · leitura experimental por identificação geométrica de notas · execução no navegador</p>
+<div class="nav"><select id="volume" aria-label="Volume"><option value="1">Volume I</option><option value="2">Volume II</option><option value="3">Volume III</option><option value="4">Volume IV</option></select><button id="prevPage">‹ Página</button><select id="page" aria-label="Página"></select><button id="nextPage">Página ›</button><button id="prevStaff">‹ Pauta</button><button id="nextStaff">Pauta ›</button></div>
+<section class="surface"><div class="bar"><h2 id="heading">Carregando…</h2><span id="meta" class="tiny"></span></div><div class="score-frame" id="score"></div><div class="help" id="help">As notas e durações aqui vêm de leitura geométrica automatizada. Não constituem transcrição verificada dos exercícios, de suas pausas, acidentes ou duetos. A versão MusicXML existente do Volume I fica disponível no link superior.</div></section></div>
+<div class="foot"><div class="wrap"><button class="primary" id="play">▶ Ouvir pauta</button><button id="stop">■ Parar</button><label>BPM <input id="tempo" type="range" min="40" max="180" value="80"><output id="bpm">80</output></label><label><input type="checkbox" id="click" checked> Metrônomo</label><label><input type="checkbox" id="loop"> Loop</label><span id="status" class="tiny">Selecione uma pauta.</span></div></div>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+const numbers={1:98,2:104,3:92,4:78},cache={},data={};let vol=1,page=6,staff=0,ctx=null,osc=[],timer=null,current=[],active=-1;
+function decode(src){return src.split('|').map(p=>p?p.split('.').filter(Boolean).map(x=>[...x].map(c=>{const n=alphabet.indexOf(c);return {degree:(n>>2)-3,d:(n&2)?2:((n&1)?.5:1),hollow:!!(n&2)}})):[])}
+function load(v){stop();vol=v;page=6;staff=0;const show=()=>{drawPageChoices();render();history.replaceState(null,'','?volume='+vol+'&pagina='+page)};
+ if(data[v])return show();$('status').textContent="Carregando notas…";
+ const s=document.createElement('script');s.src='./vetor-v'+v+'.js';
+ s.onload=()=>{if(typeof window['MONROE_V'+v]!=='string')throw Error('Dados ausentes');data[v]=decode(window['MONROE_V'+v]);show()};
+ s.onerror=()=>{$('status').textContent="Não foi possível carregar este volume";$('score').textContent="Conteúdo temporariamente indisponível"};document.head.appendChild(s)}
+function drawPageChoices(){const el=$('page');el.replaceChildren();for(let i=6;i<numbers[vol];i++){let o=document.createElement('option');o.value=i;o.textContent='Pág. '+(i-2);el.append(o)}}
+function notes(){return data[vol]?.[page]?.[staff]||[]}
+function staves(){return data[vol]?.[page]||[]}
+function y(d){return 96-d*9}
+function pitch(d){
+ const ix=4*7+2+d,oct=Math.floor(ix/7),step=((ix%7)+7)%7;
+ const midi=[0,2,4,5,7,9,11][step]+(oct+1)*12;
+ return {midi,name:['Dó','Ré','Mi','Fá','Sol','Lá','Si'][step]+oct}
+}
+function render(){stop();$('page').value=String(page);const s=staves();
+ if(staff>=s.length)staff=Math.max(0,s.length-1);
+ $('heading').textContent='Volume '+['','I','II','III','IV'][vol]+' · página '+(page-2);
+ $('meta').textContent=s.length?('Pauta '+(staff+1)+' de '+s.length+' · '+notes().length+' notas candidatas'):'Nenhuma pauta reconhecida';
+ $('prevStaff').disabled=page<=6&&staff===0;$('nextStaff').disabled=page>=numbers[vol]-1&&staff>=s.length-1;
+ $('prevPage').disabled=page<=6;$('nextPage').disabled=page>=numbers[vol]-1;
+ const target=$('score');target.replaceChildren();
+ if(!notes().length){let p=document.createElement('p');p.className='empty';p.textContent="Esta página não possui notas identificadas pela leitura automática.";target.append(p);return}
+ const n=notes(),width=Math.max(630,70+n.length*46),ns="http://www.w3.org/2000/svg";
+ const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 '+width+' 180');svg.setAttribute('aria-label','Prévia geométrica, sem notação rítmica verificada');
+ function add(tag,a,txt){let e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(a))e.setAttribute(k,v);if(txt)e.textContent=txt;svg.append(e);return e}
+ for(let i=0;i<5;i++)add('line',{x1:14,y1:60+18*i,x2:width-14,y2:60+18*i,stroke:'#53554c','stroke-width':1});
+ add('text',{x:20,y:126,'font-size':54,fill:'#363931','font-family':'Georgia,serif'},'𝄞');
+ const t=(m)=>Math.min(1,m/.7),total=n.reduce((a,b)=>a+b.d,0);let elapsed=0;
+ n.forEach((note,i)=>{
+  const x=72+(width-100)*(elapsed+note.d/2)/total,yy=y(note.degree);
+  for(let ledger=150;ledger<=yy;ledger+=18)if(yy>=150)add('line',{x1:x-12,y1:ledger,x2:x+12,y2:ledger,stroke:'#45463f'});
+  const ell=add('ellipse',{cx:x,cy:yy,rx:note.hollow?10:8,ry:5.5,fill:note.hollow?'#fffefb':'#3b3d38',stroke:'#3b3d38','stroke-width':1.4,'data-index':i,'class':'score-note'});
+  if(!note.hollow)add('line',{x1:x+7,x2:x+7,y1:yy,y2:yy-33,stroke:'#3b3d38','stroke-width':1.4});
+  add('text',{x:x,y:166,'text-anchor':'middle',class:'note-name'},pitch(note.degree).name);
+  elapsed+=note.d;
+ });
+ target.append(svg);current=n;$('status').textContent=n.length+' notas detectadas · duração aproximada';
+}
+function shiftPage(d){const n=page+d;if(n<6||n>=numbers[vol])return;page=n;staff=0;render();history.replaceState(null,'','?volume='+vol+'&pagina='+page)}
+function shiftStaff(d){if(staff+d>=0&&staff+d<staves().length){staff+=d;render();return}if(d>0&&page+1<numbers[vol])shiftPage(1);else if(d<0&&page>6){shiftPage(-1);staff=Math.max(0,staves().length-1);render()}}
+function stop(){if(timer){clearTimeout(timer);timer=null}if(ctx){ctx.close().catch(()=>{});ctx=null}osc=[];active=-1;document.querySelectorAll('.score-note').forEach(n=>n.classList.remove('note-active'))}
+function tone(m,t,d,velocity=.1){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(440*Math.pow(2,(m-69)/12),t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(velocity,t+.008);g.gain.setTargetAtTime(.00001,t+Math.max(.05,d-.06),.026);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+d+.12);osc.push(o)}
+async function play(){stop();const n=notes();if(!n.length)return;const A=window.AudioContext||window.webkitAudioContext;if(!A){$('status').textContent='Áudio indisponível';return}ctx=new A;await ctx.resume();const beat=60/Number($('tempo').value),start=ctx.currentTime+.12,sequence=[];let at=0;
+ n.forEach((p,i)=>{sequence.push({i,at,d:p.d});tone(pitch(p.degree).midi,start+at*beat,p.d*beat*.92);at+=p.d});
+ if($('click').checked){for(let b=0;b<at;b++)tone(b%4===0?95:88,start+b*beat,.065,b%4===0?.06:.035)}
+ const started=performance.now();function tick(){if(!ctx)return;const t=(performance.now()-started)/1000/beat;let idx=-1;for(let i=0;i<sequence.length;i++)if(t>=sequence[i].at&&t<sequence[i].at+sequence[i].d){idx=i;break}
+ if(active!==idx){active=idx;document.querySelectorAll('.score-note').forEach(el=>el.classList.toggle('note-active',Number(el.dataset.index)===idx))}
+ if(t>=at){stop();if($('loop').checked)play();else $('status').textContent='Fim da pauta'}else timer=setTimeout(tick,50)}
+ $('status').textContent='Reproduzindo leitura automática';tick()}
+ $('volume').onchange=e=>load(Number(e.target.value));$('page').onchange=e=>{page=Number(e.target.value);staff=0;render()};
+ $('prevPage').onclick=()=>shiftPage(-1);$('nextPage').onclick=()=>shiftPage(1);$('prevStaff').onclick=()=>shiftStaff(-1);$('nextStaff').onclick=()=>shiftStaff(1);
+ $('play').onclick=play;$('stop').onclick=stop;$('tempo').oninput=e=>$('bpm').textContent=e.target.value;window.addEventListener('pagehide',stop);
+ const params=new URLSearchParams(location.search),targetV=Number(params.get('volume'));load([1,2,3,4].includes(targetV)?targetV:1);
+})();
+</script></body></html>
