@@ -54,6 +54,56 @@ h1{font:400 clamp(33px,5vw,56px)/1.04 Georgia,Times,serif;letter-spacing:-.045em
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#2d3c32;color:#fff;padding:10px 16px;border-radius:7px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:20}#toast.show{opacity:1}
 @media(max-width:640px){.shell{padding:0 11px 65px}.sitehead{padding:13px 0}.intro{margin:23px 0 19px}.intro h1{font-size:35px}.donut{width:65px;height:65px;flex-basis:65px}.donut:before{inset:6px}.donut strong{font-size:20px}.proglabel{font-size:10px;max-width:75px}.proglabel b{font-size:11px}.chapters{margin-right:-11px}.chapter{min-width:112px;max-width:112px;flex-basis:112px;padding:11px 9px}.bookinner{padding:21px 14px 23px 24px}.titleline{padding-top:20px}.titleline h2{font-size:28px}.system svg{min-width:570px}.runner{align-items:start}.settings{width:100%}.footnav{font-size:13px}}
 .score-event.current > ellipse,.score-event.current > path,.score-event.current > rect,.score-event.current > circle{fill:#ad513e!important;stroke:#ad513e!important}.score-event.current > ellipse[fill='#fffef9']{fill:#fff0e6!important}
+
+/* Versão Livro: a tela inteira é a folha, não um cartão que a contém */
+html,body{background:var(--paper);min-height:100%;overscroll-behavior-x:none}
+.shell{max-width:none;width:100%;padding:0 0 70px}
+.sitehead{padding:17px clamp(17px,4vw,64px);margin:0;border-bottom:1px solid var(--line)}
+.intro{padding:25px clamp(17px,4vw,64px) 14px;margin:0}
+.sectionlabel{padding:4px clamp(17px,4vw,64px);margin:8px 0}
+.chapters{padding:2px clamp(17px,4vw,64px) 15px;margin:0;border-bottom:1px solid var(--line)}
+.book{margin:0;background:transparent;border:0;box-shadow:none;border-radius:0;min-height:calc(100svh - 280px);overflow:visible}
+.book:before{display:none}
+.bookinner{width:100%;max-width:none;padding:23px clamp(17px,4vw,64px) 25px}
+.titleline{padding:17px 0 10px}
+.score-area{border:0;position:relative;padding:13px 0 12px;min-height:156px;margin:0}
+.musicline{display:block;position:relative}
+.score-window{position:relative;width:100%;overflow:hidden;border-top:1px solid #ebe7df;border-bottom:1px solid #ebe7df}
+.score-window .system{margin:0;padding:16px 0 7px;overflow:auto hidden;scrollbar-width:thin;touch-action:pan-x;overscroll-behavior-x:contain}
+.score-window .system svg{display:block;max-width:none;height:128px;min-width:0}
+.score-window .playline{position:absolute;left:0;top:22px;width:2px;height:88px;background:#b84a36;box-shadow:0 0 0 1px #fff9;pointer-events:none;opacity:0;transition:opacity .2s}
+.score-window.playing .playline{opacity:.9}
+.score-window .score-event.current ellipse{fill:#b34838!important;stroke:#b34838!important}
+.score-window .score-event.current path,.score-window .score-event.current rect,.score-window .score-event.current circle{stroke:#b34838!important}
+.system-hint{padding:6px 0 0;margin:0;color:#938b7d;text-align:right}
+.audiobox{margin:12px 0 8px;padding:11px 0 8px;border-top:1px solid var(--line)}
+.audiobox-head{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--soft);font-size:11px;margin-bottom:7px}
+.audiobox-head b{font-size:10px;letter-spacing:.1em;color:var(--ink)}
+#audio-state{font-size:11px;color:var(--green);text-align:right}
+#exercise-audio{display:block;width:min(100%,650px);height:46px;min-height:46px}
+.runner{padding:8px 0 13px}
+.runner .btn{background:#27352c;border-color:#27352c}
+.bookfoot{margin-top:10px}
+.source{margin:10px clamp(17px,4vw,64px);padding-top:12px}
+@media(max-width:640px){
+ .shell{padding:0 0 70px}
+ .sitehead{padding:11px 14px}
+ .intro{padding:20px 14px 10px;margin:0}
+ .sectionlabel{padding:6px 14px;margin:3px 0}
+ .chapters{padding:1px 14px 12px;margin:0}
+ .bookinner{padding:16px 14px 28px}
+ .titleline{padding-top:16px}
+ .score-area{padding:12px 0 9px}
+ .score-window{width:calc(100% + 28px);margin-left:-14px}
+ .score-window .system{padding:14px 0 6px}
+ .score-window .system svg{height:119px;min-width:0}
+ .score-window .playline{top:18px;height:90px}
+ .system-hint{padding-right:1px}
+ .audiobox{margin-top:9px}
+ #exercise-audio{width:100%}
+ .runner{gap:5px}
+ .source{margin:12px 14px}
+}
 </style>
 </head>
 <body>
@@ -72,6 +122,10 @@ h1{font:400 clamp(33px,5vw,56px)/1.04 Georgia,Times,serif;letter-spacing:-.045em
  <nav class="exstrip" id="exstrip" aria-label="Escolher exercício da lição"></nav>
  <div class="score-area"><div class="musicline" id="score"></div></div>
  <div class="beatbar" id="beats"></div>
+ <div class="audiobox">
+  <div class="audiobox-head"><b>ÁUDIO DO EXERCÍCIO</b><span id="audio-state" role="status" aria-live="polite">Preparando áudio…</span></div>
+  <audio id="exercise-audio" controls playsinline preload="auto" aria-label="Ouvir o exercício rítmico"></audio>
+ </div>
  <div class="runner">
   <div class="player"><button class="btn" id="play">▶ Ouvir e estudar</button><button class="ghost" id="restart" title="Voltar ao início">↺</button><button class="ghost donebtn" id="complete">✓ Concluir</button></div>
   <div class="settings"><label><strong id="bpmvalue">80</strong> BPM <input id="bpm" type="range" min="45" max="160" value="80"></label><label><input id="metro" type="checkbox" checked> Metrônomo</label><label><input id="loop" type="checkbox"> Loop</label></div>
@@ -110,7 +164,7 @@ $('exstrip').querySelectorAll('button').forEach(function(b){var id=curr.l+'-'+b.
 
 function drawSystem(bars,startIndex){
  var meter=items[select].meter,offset=82,bw=240,W=offset+bw*bars.length+14;
- var svg='<svg viewBox="0 0 '+W+' 115" role="img" aria-label="Pauta contínua dos compassos '+(startIndex+1)+' a '+(startIndex+bars.length)+'">';
+ var svg='<svg style="width:'+W+'px;height:128px" viewBox="0 0 '+W+' 115" role="img" aria-label="Pauta contínua dos compassos '+(startIndex+1)+' a '+(startIndex+bars.length)+'">';
  for(var s=0;s<5;s++)svg+='<path d="M8 '+(37+s*10)+' H'+(W-7)+'" stroke="#7d7a71" stroke-width=".85"/>';
  svg+='<text x="12" y="76" font-size="45" font-family="Georgia,serif" fill="#252721">𝄞</text>';
  svg+='<text x="51" y="56" font-size="18" font-family="Georgia,serif">'+meter+'</text><text x="51" y="75" font-size="18" font-family="Georgia,serif">4</text>';
@@ -151,12 +205,9 @@ function drawSystem(bars,startIndex){
  return '<div class="system" data-start="'+startIndex+'" data-end="'+(startIndex+bars.length-1)+'">'+svg+'</div>';
 }
 function drawScore(o){
- var per=window.innerWidth<650?2:4,lines=Math.ceil(o.bars.length/per),from=0,out='';
- for(var i=0;i<lines;i++){
-  var size=Math.ceil((o.bars.length-from)/(lines-i));
-  out+=drawSystem(o.bars.slice(from,from+size),from);from+=size;
- }
- return out+'<p class="system-hint">Deslize a pauta horizontalmente no celular, quando necessário.</p>';
+ return '<div class="score-window" id="score-window">'+drawSystem(o.bars,0)
+  +'<div class="playline" id="playline" aria-hidden="true"></div></div>'
+  +'<p class="system-hint">A partitura avança horizontalmente durante a reprodução.</p>';
 }
 function choose(n){
 stop();select=Math.max(0,Math.min(items.length-1,n));var o=items[select];
@@ -172,112 +223,151 @@ $('play').disabled=!o.bars.length||o.status==='c';$('complete').disabled=!o.bars
 $('prev').disabled=select===0;$('next').disabled=select===items.length-1;
 $('notice').textContent=o.status==='v'?'Transcrição visual de trabalho; ainda requer revisão.':o.status==='c'?'Dados com divergência editorial. Reprodução bloqueada.':o.status==='s'||o.status==='d'?'Transcrição rítmica em revisão; não tratar como edição definitiva.':o.status==='p'?'Exercício sem áudio porque ainda não foi transcrito.':''; 
 $('play').textContent='▶ Ouvir e estudar';
-updateSummary();updateAnimation(0);window.scrollTo({top:0,behavior:'smooth'});
+updateSummary();prepareAudio();updateAnimation(0);window.scrollTo({top:0,behavior:'smooth'});
 }
 function markDone(automatic){var o=items[select];if(!o.bars.length||o.status==='c')return;var k=key(o);if(automatic){if(done[k])return;done[k]=true}else{done[k]=!done[k]}save();updateSummary();toast(automatic?'Exercício concluído!':done[k]?'Exercício concluído!':'Conclusão desfeita')}
-var audioNodes=[],audioTimer=null,timeline=[],nextEvent=0,totalBeats=0,lastFollow=-1;
-function tone(at,d,f,v,kind){
- if(!ctx)return;
- var t=Math.max(at,ctx.currentTime+.004),osc=ctx.createOscillator(),g=ctx.createGain();
- osc.type=kind==='click'?'sine':'triangle';osc.frequency.setValueAtTime(f,t);
- d=Math.max(.075,d);g.gain.setValueAtTime(.0001,t);
- g.gain.exponentialRampToValueAtTime(v,t+.009);
- g.gain.setValueAtTime(v*.65,t+Math.max(.019,d-.06));
- g.gain.exponentialRampToValueAtTime(.0001,t+d);
- osc.connect(g).connect(ctx.destination);osc.start(t);osc.stop(t+d+.015);
- audioNodes.push({osc:osc,g:g});
- osc.onended=function(){var i=audioNodes.findIndex(function(n){return n.osc===osc});if(i>=0)audioNodes.splice(i,1);try{osc.disconnect();g.disconnect()}catch(e){}};
-}
-function makeTimeline(o){
- timeline=[];var beat=0;
- o.bars.forEach(function(bar){bar.forEach(function(e){if(e.t==='n')timeline.push({beat:beat,d:e.d,k:'n'});beat+=e.d})});
- totalBeats=o.bars.length*o.meter;
- if(met)for(var i=0;i<totalBeats;i++)timeline.push({beat:i,d:.075,k:'m',accent:i%o.meter===0});
- timeline.sort(function(a,b){return a.beat-b.beat||(a.k==='m'?-1:1)});
- nextEvent=0;
-}
-function pump(){
- if(!playing||!ctx||!timeline.length)return;
- var sec=60/bpm,now=ctx.currentTime,end=now+.22;
- while(true){
-  var cycle=Math.floor(nextEvent/timeline.length);
-  if(!loop&&cycle>0)break;
-  var ev=timeline[nextEvent%timeline.length],at=startTime+(cycle*totalBeats+ev.beat)*sec;
-  if(at>end)break;
-  if(at>=now-.07){
-   if(ev.k==='m')tone(at,.075,ev.accent?1250:890,ev.accent?.12:.06,'click');
-   else tone(at,Math.max(.1,ev.d*sec*.78),590,.14,'note');
+/* Áudio por arquivo WAV PCM, reproduzido pelo controle nativo do Safari/iPhone. */
+var audio=$('exercise-audio'),audioURL='',lastPlaybackTime=0,audioEndedMarked=false;
+function renderWave(o,speed,clickOn){
+ var rate=22050,seconds=o.bars.length*o.meter*60/speed+.18;
+ var frames=Math.ceil(seconds*rate),pcm=new Float32Array(frames);
+ function oscillator(beat,duration,frequency,gain,click){
+  var start=Math.round(beat*60/speed*rate),max=Math.min(frames-start,Math.floor(duration*rate)),pi=Math.PI*2;
+  if(max<=0)return;
+  for(var j=0;j<max;j++){
+   var t=j/rate,remaining=duration-t;
+   var env=click?Math.exp(-t*56):Math.min(1,t/.009,remaining/.045)*Math.exp(-t*.45);
+   var v=Math.sin(pi*frequency*t)*.82+Math.sin(pi*frequency*2*t)*.18;
+   pcm[start+j]+=v*env*gain;
   }
-  nextEvent++;
  }
+ var units=0;
+ o.bars.forEach(function(bar){bar.forEach(function(e){
+  if(e.t==='n')oscillator(units,Math.max(.12,e.d*60/speed*.91),523.251,.23,false);
+  units+=e.d;
+ })});
+ if(clickOn)for(var b=0;b<o.bars.length*o.meter;b++)
+  oscillator(b,.083,b%o.meter===0?1160:820,b%o.meter===0?.23:.12,true);
+ var bytes=new ArrayBuffer(44+frames*2),view=new DataView(bytes);
+ function text4(off,s){for(var i=0;i<s.length;i++)view.setUint8(off+i,s.charCodeAt(i))}
+ text4(0,'RIFF');view.setUint32(4,36+frames*2,true);text4(8,'WAVE');
+ text4(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);
+ view.setUint16(22,1,true);view.setUint32(24,rate,true);
+ view.setUint32(28,rate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);
+ text4(36,'data');view.setUint32(40,frames*2,true);
+ for(var x=0;x<frames;x++){var v=Math.max(-.97,Math.min(.97,pcm[x]));view.setInt16(44+x*2,Math.round(v*32767),true)}
+ return new Blob([bytes],{type:'audio/wav'});
 }
 function stop(){
  playing=false;cancelAnimationFrame(raf);
- if(audioTimer){clearInterval(audioTimer);audioTimer=null}
- if(ctx){
-  var now=ctx.currentTime;
-  audioNodes.splice(0).forEach(function(n){
-   try{n.g.gain.cancelScheduledValues(now);n.g.gain.setValueAtTime(.0001,now);n.osc.stop(now+.012)}catch(e){}
-  });
- }
- $('play').textContent='▶ Ouvir e estudar';lastFollow=-1;
+ if(audio&&!audio.paused)audio.pause();
+ $('play').textContent='▶ Tocar';
  document.querySelectorAll('.score-event').forEach(function(e){e.classList.remove('current')});
  document.querySelectorAll('#beats i').forEach(function(e){e.classList.remove('on')});
+ var win=$('score-window');if(win)win.classList.remove('playing');
 }
-function updateAnimation(p){
- var o=items[select],bar=Math.floor(p/o.meter),beat=Math.floor(p)%o.meter,active=null;
+function prepareAudio(){
+ var o=items[select];stop();audio.removeAttribute('src');
+ if(audioURL){URL.revokeObjectURL(audioURL);audioURL=''}
+ if(!o.bars.length||o.status==='c'){
+  $('audio-state').textContent='Ainda não há transcrição para tocar';
+  audio.style.display='none';$('play').disabled=true;return;
+ }
+ bpm=+$('bpm').value;met=$('metro').checked;
+ $('audio-state').textContent='Gerando áudio…';
+ try{
+  audioURL=URL.createObjectURL(renderWave(o,bpm,met));
+  audio.src=audioURL;audio.preload='auto';audio.loop=$('loop').checked;
+  audio.style.display='block';audio.load();
+  $('audio-state').textContent='Pronto para ouvir';
+  $('play').disabled=false;
+ }catch(error){$('audio-state').textContent='Falha ao gerar áudio';toast('Não foi possível gerar o áudio');}
+ audioEndedMarked=false;lastPlaybackTime=0;
+}
+function updateAnimation(pos){
+ var o=items[select],beat=Math.floor(pos)%o.meter,active=null;
  document.querySelectorAll('#beats i').forEach(function(e,i){e.classList.toggle('on',playing&&i===beat)});
- document.querySelectorAll('.score-event').forEach(function(e){
-  var begin=+e.dataset.on,d=+e.dataset.dur,on=playing&&p>=begin&&p<begin+d;
-  e.classList.toggle('current',on);if(on&&!active)active=e;
+ var list=document.querySelectorAll('.score-event'),before=null,after=null;
+ list.forEach(function(e){
+  var from=+e.dataset.on,d=+e.dataset.dur,on=playing&&pos>=from&&pos<from+d;
+  e.classList.toggle('current',on);
+  if(on&&!active)active=e;
+  if(from<=pos)before=e;
+  else if(!after)after=e;
  });
- if(active&&lastFollow!==bar){
-  lastFollow=bar;var sys=active.closest('.system');
-  if(sys){
+ if(playing&&list.length){
+  var win=$('score-window'),sys=win&&win.querySelector('.system'),line=$('playline');
+  var base=before||list[0],x=+base.dataset.x;
+  if(after&&before){
+   var a=+before.dataset.on,b=+after.dataset.on;
+   if(b>a)x+=(+after.dataset.x-x)*Math.max(0,Math.min(1,(pos-a)/(b-a)));
+  }
+  if(sys&&line){
    var svg=sys.querySelector('svg'),vw=svg.viewBox.baseVal.width||1;
-   var x=+active.dataset.x*svg.clientWidth/vw;
-   if(x-sys.scrollLeft>sys.clientWidth-35||x-sys.scrollLeft<35)
-    sys.scrollLeft=Math.max(0,x-sys.clientWidth*.3);
+   var px=x*svg.clientWidth/vw;
+   sys.scrollLeft=Math.max(0,px-sys.clientWidth*.32);
+   line.style.left=Math.max(0,px-sys.scrollLeft)+'px';
+   win.classList.add('playing');
   }
  }
 }
 function animation(){
- if(!playing||!ctx)return;
- var pos=(ctx.currentTime-startTime)*bpm/60;
- if(pos<0){raf=requestAnimationFrame(animation);return}
- if(pos>=totalBeats){if(!seen){markDone(true);seen=true}if(!loop){stop();return}}
- updateAnimation(pos%totalBeats);raf=requestAnimationFrame(animation);
+ if(!playing)return;
+ var pos=(audio.currentTime||0)*bpm/60;
+ if(audio.loop&&audio.currentTime<lastPlaybackTime-.35&&!audioEndedMarked){
+  markDone(true);audioEndedMarked=true;
+ }
+ if(!audioEndedMarked&&audio.duration&&audio.duration-audio.currentTime<.24&&audio.currentTime>1){
+  markDone(true);audioEndedMarked=true;
+ }
+ lastPlaybackTime=audio.currentTime;
+ updateAnimation(pos);
+ raf=requestAnimationFrame(animation);
 }
 function start(){
- var o=items[select];if(!o.bars.length||o.status==='c')return;
- stop();
- var AC=window.AudioContext||window.webkitAudioContext;
- if(!AC){toast('Áudio não disponível neste navegador');return}
+ if(!audio.src){toast('Este exercício ainda não tem áudio');return}
+ if(!audio.paused){audio.pause();return}
+ if(audio.ended||audio.currentTime>=audio.duration-.05)audio.currentTime=0;
+ /* play() executa diretamente a partir do toque, sem await ou AudioContext. */
  try{
-  if(!ctx||ctx.state==='closed')ctx=new AC();
-  var resumed=ctx.resume(); // acionado diretamente pelo toque, necessário no Safari
-  bpm=+$('bpm').value;met=$('metro').checked;loop=$('loop').checked;
-  startTime=ctx.currentTime+.13;seen=false;makeTimeline(o);
-  playing=true;$('play').textContent='■ Parar';pump();
-  audioTimer=setInterval(function(){
-   pump();
-   if(playing&&ctx&&ctx.currentTime>=startTime+totalBeats*60/bpm){
-    if(!seen){markDone(true);seen=true}
-    if(!loop)stop();
-   }
-  },30);
-  raf=requestAnimationFrame(animation);
-  if(resumed&&typeof resumed.catch==='function')resumed.catch(function(){stop();toast('Toque novamente para ativar o áudio')});
- }catch(e){stop();toast('Erro ao iniciar áudio')}
+  var promise=audio.play();
+  if(promise&&typeof promise.catch==='function')promise.catch(function(e){
+   $('audio-state').textContent='Toque no ▶ do player para ativar o som';
+   toast('Use o ▶ do reprodutor de áudio');
+  });
+ }catch(e){toast('Toque no ▶ do reprodutor de áudio')}
 }
-$('play').onclick=function(){if(playing)stop();else start()};
-$('restart').onclick=function(){if(playing)start();else updateAnimation(0)};
+audio.addEventListener('play',function(){
+ playing=true;$('play').textContent='■ Pausar';
+ $('audio-state').textContent='Reproduzindo';cancelAnimationFrame(raf);raf=requestAnimationFrame(animation);
+});
+audio.addEventListener('pause',function(){
+ playing=false;cancelAnimationFrame(raf);
+ $('play').textContent='▶ Tocar';
+ var w=$('score-window');if(w)w.classList.remove('playing');
+ if(!audio.ended)$('audio-state').textContent='Pausado';
+});
+audio.addEventListener('ended',function(){
+ if(!audioEndedMarked)markDone(true);
+ audioEndedMarked=true;playing=false;$('play').textContent='▶ Tocar';
+ $('audio-state').textContent='Exercício concluído';
+ var w=$('score-window');if(w)w.classList.remove('playing');
+});
+audio.addEventListener('error',function(){
+ if(audio.src)$('audio-state').textContent='O áudio não pôde ser carregado';
+});
+audio.addEventListener('loadedmetadata',function(){
+ if(audio.src)$('audio-state').textContent='Pronto para ouvir · '+Math.round(audio.duration)+' s';
+});
+$('play').onclick=start;
+$('restart').onclick=function(){if(audio.src){audio.currentTime=0;start()}};
 $('complete').onclick=function(){markDone(false)};
 $('prev').onclick=function(){choose(select-1)};
 $('next').onclick=function(){choose(select+1)};
-$('bpm').oninput=function(){bpm=+this.value;$('bpmvalue').textContent=bpm;if(playing)start()};
-$('metro').onchange=function(){met=this.checked;if(playing)start()};
-$('loop').onchange=function(){loop=this.checked};
+$('bpm').oninput=function(){$('bpmvalue').textContent=this.value};
+$('bpm').onchange=function(){prepareAudio()};
+$('metro').onchange=function(){prepareAudio()};
+$('loop').onchange=function(){audio.loop=this.checked;audioEndedMarked=false};
 choose(0);
 })();
 </script></body></html>
