@@ -26,7 +26,7 @@ def find_staves(image):
  candidates=[]
  for i in range(len(peaks)-4):
   lines=peaks[i:i+5];diff=np.diff(lines)
-  if (diff>=18).all() and (diff<=28).all() and max(diff)-min(diff)<=5:
+  if (diff>=15).all() and (diff<=31).all() and max(diff)-min(diff)<=5:
    candidates.append((float(sum(z[v-20] for v in lines)),list(map(int,lines))))
  result=[]
  for _,lines in sorted(candidates,reverse=True):
@@ -169,8 +169,11 @@ def measure_durations(image,found):
   measures.append(dict(bar=i+1,beats=sum(e["duration"] for e in subset),events=subset))
  return measures
 def main():
- if len(sys.argv)!=3:sys.exit("Uso: python monroe_symbol_grammar.py REF_P61.png ALVO.png")
+ if len(sys.argv) not in (3,4):sys.exit("Uso: python monroe_symbol_grammar.py REF_P61.png ALVO.png [escala]")
  reference=cv2.imread(sys.argv[1],0);image=cv2.imread(sys.argv[2],0)
+ if image is not None and len(sys.argv)==4:
+  factor=float(sys.argv[3]);assert .5<=factor<=3.0,"Escala fora do intervalo"
+  image=cv2.resize(image,None,fx=factor,fy=factor,interpolation=cv2.INTER_CUBIC)
  if reference is None or image is None:sys.exit("Imagem inválida")
  result=read(reference,image)
  if len(result["staves"])==1:result["rhythm_test"]=measure_durations(image,result)
