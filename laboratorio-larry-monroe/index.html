@@ -86,7 +86,7 @@ h1{font:500 clamp(30px,4vw,47px)/1.05 Georgia,serif;letter-spacing:-.04em;margin
     </article>
     <article class="page" id="page7" aria-label="Página 7">
       <p class="booktext hint">Cante os estudos a seguir em diferentes andamentos. Lembre-se: cante sempre no tempo, independentemente de quão lento ou rápido seja o andamento.</p>
-      <div class="exercise-line current-study" id="ex1"><button type="button" class="exercise-num" data-exercise="1" aria-label="Selecionar exercício 1" aria-current="true">1.</button><div class="score-scroll" title="Deslize horizontalmente no celular para acompanhar toda a pauta"><svg id="score" viewBox="0 0 790 199" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 1 em uma única pauta horizontal, quatro compassos de 4/4, cinco notas Mi4: semibreve, duas mínimas, semibreve e semibreve."></svg></div></div>
+      <div class="exercise-line current-study" id="ex1"><button type="button" class="exercise-num" data-exercise="1" aria-label="Selecionar exercício 1" aria-current="true">1.</button><div class="score-scroll" title="Deslize horizontalmente no celular para acompanhar toda a pauta"><svg id="score" viewBox="0 0 790 199" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 1 em uma única pauta horizontal, quatro compassos de 4/4, cinco notas Fá4: semibreve, duas mínimas, semibreve e semibreve."></svg></div></div>
 
       <div class="exercise-line" id="ex2"><button type="button" class="exercise-num" data-exercise="2" aria-label="Selecionar exercício 2" aria-current="false">2.</button><div class="score-scroll" title="Pauta contínua do exercício 2"><svg id="score2" viewBox="0 0 790 199" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 2 em quatro compassos: duas mínimas; uma semibreve; quatro semínimas; duas mínimas."></svg></div></div>
       <div class="exercise-line" id="ex3"><button type="button" class="exercise-num" data-exercise="3" aria-label="Selecionar exercício 3" aria-current="false">3.</button><div class="score-scroll" title="Pauta contínua do exercício 3"><svg id="score3" viewBox="0 0 790 199" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exercício 3 em quatro compassos: quatro semínimas; uma semibreve; uma mínima e duas semínimas; uma semibreve."></svg></div></div>
@@ -114,35 +114,35 @@ const $=id=>document.getElementById(id);
 const ns="http://www.w3.org/2000/svg";
 function add(tag,attrs,parent,text){let e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!=null)e.textContent=text;parent.appendChild(e);return e}
 var events=[
- {measure:1,beat:0,duration:4,pitch:"E4",frequency:329.627557,type:"whole"},
- {measure:2,beat:0,duration:2,pitch:"E4",frequency:329.627557,type:"half"},
- {measure:2,beat:2,duration:2,pitch:"E4",frequency:329.627557,type:"half"},
- {measure:3,beat:0,duration:4,pitch:"E4",frequency:329.627557,type:"whole"},
- {measure:4,beat:0,duration:4,pitch:"E4",frequency:329.627557,type:"whole"}
+ {measure:1,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+ {measure:2,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+ {measure:2,beat:2,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+ {measure:3,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+ {measure:4,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"}
 ];
 const studies={
  1:events,
  2:[
-  {measure:1,beat:0,duration:2,pitch:"E4",frequency:329.627557,type:"half"},
-  {measure:1,beat:2,duration:2,pitch:"E4",frequency:329.627557,type:"half"},
-  {measure:2,beat:0,duration:4,pitch:"E4",frequency:329.627557,type:"whole"},
-  {measure:3,beat:0,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:3,beat:1,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:3,beat:2,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:3,beat:3,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:4,beat:0,duration:2,pitch:"E4",frequency:329.627557,type:"half"},
-  {measure:4,beat:2,duration:2,pitch:"E4",frequency:329.627557,type:"half"}
+  {measure:1,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:1,beat:2,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:2,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+  {measure:3,beat:0,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:1,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:2,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:3,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:4,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:4,beat:2,duration:2,pitch:"F4",frequency:349.228231,type:"half"}
  ],
  3:[
-  {measure:1,beat:0,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:1,beat:1,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:1,beat:2,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:1,beat:3,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:2,beat:0,duration:4,pitch:"E4",frequency:329.627557,type:"whole"},
-  {measure:3,beat:0,duration:2,pitch:"E4",frequency:329.627557,type:"half"},
-  {measure:3,beat:2,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:3,beat:3,duration:1,pitch:"E4",frequency:329.627557,type:"quarter"},
-  {measure:4,beat:0,duration:4,pitch:"E4",frequency:329.627557,type:"whole"}
+  {measure:1,beat:0,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:1,beat:1,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:1,beat:2,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:1,beat:3,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:2,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"},
+  {measure:3,beat:0,duration:2,pitch:"F4",frequency:349.228231,type:"half"},
+  {measure:3,beat:2,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:3,beat:3,duration:1,pitch:"F4",frequency:349.228231,type:"quarter"},
+  {measure:4,beat:0,duration:4,pitch:"F4",frequency:349.228231,type:"whole"}
  ]
 };
 let activeStudy=1, scoreNotes=[],nums=[];
