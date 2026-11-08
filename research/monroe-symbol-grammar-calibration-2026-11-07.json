@@ -1,9 +1,9 @@
 {
-  "version": "monroe-symbol-grammar-calibration-v1",
+  "version": "monroe-symbol-grammar-calibration-v2",
   "date": "2026-11-07",
   "source": "Volume I, printed pages 61 (study 8) and 76 (study 12); private user-supplied source pages; source scans not published",
   "method": "symbol-first: staff geometry, source-font templates, vertical/horizontal morphology, notation rules",
-  "validation_note": "Visual symbol-count audit on the two calibration samples. This is not blinded evaluation on unseen book pages and is not a note-by-note performance certificate.",
+  "validation_note": "The symbol parser matches examined structures on p61 exercise 8, p76 exercise 12, and an additional non-template exercise p61 exercise 7. This does NOT establish accuracy throughout four volumes.",
   "cases": [
     {
       "key": "v1-p61-e8",
@@ -64,6 +64,32 @@
         "reason": "beams and duration on each staff not yet decoded independently"
       },
       "pitch_fidelity_confirmed": false
+    },
+    {
+      "key": "v1-p61-e7_holdout",
+      "independence": "Different exercise on same printed page, not used to extract the source glyph templates",
+      "staves": 1,
+      "detected": {
+        "filled_noteheads": 14,
+        "hollow_stem_candidates": 1,
+        "quarter_rests": 0,
+        "barlines": 4,
+        "lower_tie_arcs": 3
+      },
+      "rhythmic_decoding": {
+        "bars": 4,
+        "beats_per_bar": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "dotted_quarter_count": 4,
+        "eighth_note_count": 4,
+        "matched_structure": true
+      },
+      "limitations": "Same book/scanning, manually cropped and scaled 2.35×; pitch fidelity has NOT been compared note by note",
+      "pitch_fidelity_confirmed": false
     }
   ],
   "limitations": [
@@ -71,8 +97,9 @@
     "Notehead candidate center can be displaced by staff lines and stems; pitches not yet reliable",
     "Hollow candidates identified via unattached stems but duration still needs direct head inspection",
     "Upper/lower staff candidates are detected, but independent full polyphony not decoded",
-    "Unseen-page test revealed spurious matches: no book-wide automation approved",
-    "No automatic output should be published as a verified playable lesson at this stage"
+    "No automatic output should be published as a verified playable lesson at this stage",
+    "Initial holdout test produced 34 candidate filled heads instead of 14. Spatial/attachment filtering reduced it to the 14 visually examined heads; independent pages and scan resolutions remain untested.",
+    "Dots merging into staff lines are now handled by local staff-line subtraction; four 4/4 bars recovered in the holdout."
   ],
-  "verdict": "symbol_recognition_calibration_passed; end_to_end_score_transcription_NOT_passed; whole_book_batch_BLOCKED"
+  "verdict": "grammar_symbol_tests_passed_for_three_selected_exercises; score_fidelity_NOT_certified; whole_book_batch_BLOCKED"
 }
