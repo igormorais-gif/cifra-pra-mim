@@ -1,0 +1,78 @@
+{
+  "version": "monroe-symbol-grammar-calibration-v1",
+  "date": "2026-11-07",
+  "source": "Volume I, printed pages 61 (study 8) and 76 (study 12); private user-supplied source pages; source scans not published",
+  "method": "symbol-first: staff geometry, source-font templates, vertical/horizontal morphology, notation rules",
+  "validation_note": "Visual symbol-count audit on the two calibration samples. This is not blinded evaluation on unseen book pages and is not a note-by-note performance certificate.",
+  "cases": [
+    {
+      "key": "v1-p61-e8",
+      "staffs": 1,
+      "detected": {
+        "filled_noteheads": 11,
+        "hollow_stem_candidates": 1,
+        "quarter_rests": 3,
+        "barlines": 4,
+        "lower_tie_arcs": 3
+      },
+      "reference": {
+        "filled_noteheads": 11,
+        "hollow_noteheads": 1,
+        "quarter_rests": 3,
+        "barlines": 4,
+        "ties": 3
+      },
+      "rhythmic_decoding": {
+        "bars": 4,
+        "beats_per_bar": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "duration_types": [
+          "quarter",
+          "dotted quarter",
+          "eighth",
+          "half",
+          "quarter rest"
+        ],
+        "note_count": 12,
+        "rest_count": 3,
+        "ties": 3,
+        "matched_structure": true
+      },
+      "pitch_fidelity_confirmed": false
+    },
+    {
+      "key": "v1-p76-e12",
+      "staffs": 2,
+      "detected": {
+        "filled_noteheads": 25,
+        "hollow_stem_candidates": 4,
+        "quarter_rests": 1,
+        "barlines_per_staff": 4
+      },
+      "reference": {
+        "filled_noteheads": 25,
+        "hollow_noteheads": 4,
+        "quarter_rests": 1,
+        "barlines_per_staff": 4
+      },
+      "rhythmic_decoding": {
+        "status": "pending",
+        "reason": "beams and duration on each staff not yet decoded independently"
+      },
+      "pitch_fidelity_confirmed": false
+    }
+  ],
+  "limitations": [
+    "Templates calibrated on p61 symbols and near-identical raster scale",
+    "Notehead candidate center can be displaced by staff lines and stems; pitches not yet reliable",
+    "Hollow candidates identified via unattached stems but duration still needs direct head inspection",
+    "Upper/lower staff candidates are detected, but independent full polyphony not decoded",
+    "Unseen-page test revealed spurious matches: no book-wide automation approved",
+    "No automatic output should be published as a verified playable lesson at this stage"
+  ],
+  "verdict": "symbol_recognition_calibration_passed; end_to_end_score_transcription_NOT_passed; whole_book_batch_BLOCKED"
+}
