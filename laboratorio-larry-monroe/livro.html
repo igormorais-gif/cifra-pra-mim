@@ -91,33 +91,66 @@ function node(tag,atts,parent,txt){const e=document.createElementNS(ns,tag);Obje
 function parseMusicXML(raw){
  const xml=new DOMParser().parseFromString(raw,"application/xml");
  if(xml.querySelector("parsererror"))throw Error("MusicXML inválido");
- const part=xml.querySelector("part");if(!part)throw Error("MusicXML sem voz");
- const measures=[...part.children].filter(n=>n.localName==="measure"),bars=[];
- let divisions=4,clef="G",key=0,beatsPerBar=4,beatType=4;
- for(const bar of measures){
-  for(const a of [...bar.children].filter(n=>n.localName==="attributes")){
-   const d=Number(xmlText(a,"divisions"));if(d>0)divisions=d;
-   const c=xmlFirst(a,"clef");if(c)clef=xmlText(c,"sign")||"G";
-   const k=xmlFirst(a,"key");if(k)key=Number(xmlText(k,"fifths"))||0;
-   const t=xmlFirst(a,"time");if(t){beatsPerBar=Number(xmlText(t,"beats"))||4;beatType=Number(xmlText(t,"beat-type"))||4;beatsPerBar=beatsPerBar*4/beatType}
-  }
-  let elapsed=0;const notes=[];
-  for(const e of [...bar.children].filter(n=>n.localName==="note")){
-   const duration=Number(xmlText(e,"duration"))/divisions;if(!(duration>0))throw Error("Duração musical inválida");
-   const rest=!!xmlFirst(e,"rest"),p=xmlFirst(e,"pitch"),type=xmlText(e,"type");
-   const step=p?xmlText(p,"step"):"",oct=p?Number(xmlText(p,"octave")):0;
-   const alter=p?Number(xmlText(p,"alter")||0):0;
-   const eighth=xmlFirst(e,"beam")?.textContent||"";
-   const ties=[...e.children].filter(t=>t.localName==="tie").map(t=>t.getAttribute("type"));
-   const index=p?oct*7+letters[step]:null;
-   const midi=p?(oct+1)*12+semis[step]+alter:null;
-   notes.push({at:elapsed,duration,rest,step,oct,alter,index,midi,type,beam:eighth,dotted:!!xmlFirst(e,"dot"),tieStart:ties.includes("start"),tieStop:ties.includes("stop")});
-   elapsed+=duration;
-  }
-  if(Math.abs(elapsed-beatsPerBar)>.001)throw Error("Compasso inconsistente: esperado "+beatsPerBar+" tempos, encontrado "+elapsed);
-  bars.push(notes);
- }
- return {bars,clef,key,beatsPerBar,beatType}
+ const parts=[...xml.querySelectorAll("score-partwise > part")];
+ if(!parts.length)throw Error("MusicXML sem partes musicais");
+ const bars=[],events=[];
+ let clef="G",key=0,beatsPerBar=4,beatType=4;
+ const EPS=.001;
+ parts.forEach((part,partNo)=>{
+  let divisions=1,localBeats=4,localBeatType=4,absolute=0;
+  const measures=[...part.children].filter(n=>n.localName==="measure");
+  measures.forEach((measure,barNo)=>{
+   let cursor=0,maxEnd=0,previousStart=0,notes=[],firstVoice="";
+   for(const el of measure.children){
+    const name=el.localName;
+    if(name==="attributes"){
+     const d=Number(xmlText(el,"divisions"));if(d>0)divisions=d;
+     const c=xmlFirst(el,"clef");if(c&&partNo===0)clef=xmlText(c,"sign")||clef;
+     const k=xmlFirst(el,"key");if(k&&partNo===0)key=Number(xmlText(k,"fifths"))||0;
+     const tm=xmlFirst(el,"time");if(tm){
+      const b=Number(xmlText(tm,"beats")),u=Number(xmlText(tm,"beat-type"));
+      if(b>0&&u>0){localBeats=b*4/u;localBeatType=u;
+       if(partNo===0){beatsPerBar=localBeats;beatType=u}}
+     }
+     continue;
+    }
+    if(name==="backup"||name==="forward"){
+     const delta=Number(xmlText(el,"duration"))/divisions;
+     if(!Number.isFinite(delta)||delta<0)throw Error("Deslocamento temporal inválido");
+     cursor+=(name==="backup"?-delta:delta);
+     if(cursor< -EPS)throw Error("Voz recuada para antes do compasso");
+     maxEnd=Math.max(maxEnd,cursor);continue;
+    }
+    if(name!=="note")continue;
+    if(xmlFirst(el,"grace"))continue;
+    const duration=Number(xmlText(el,"duration"))/divisions;
+    if(!Number.isFinite(duration)||duration<=0)throw Error("Nota sem duração válida");
+    const chord=!!xmlFirst(el,"chord"),at=chord?previousStart:cursor;
+    if(!chord){previousStart=cursor;cursor+=duration}
+    maxEnd=Math.max(maxEnd,at+duration,cursor);
+    const voice=xmlText(el,"voice")||"1",rest=!!xmlFirst(el,"rest"),p=xmlFirst(el,"pitch"),type=xmlText(el,"type");
+    if(!firstVoice)firstVoice=voice;
+    const step=p?xmlText(p,"step"):"",oct=p?Number(xmlText(p,"octave")):0;
+    const alter=p?Number(xmlText(p,"alter")||0):0;
+    const ties=[...el.children].filter(x=>x.localName==="tie").map(x=>x.getAttribute("type"));
+    const note={at,duration,rest,step,oct,alter,index:p?oct*7+letters[step]:null,midi:p?(oct+1)*12+semis[step]+alter:null,
+      type,beam:xmlFirst(el,"beam")?.textContent||"",dotted:!!xmlFirst(el,"dot"),tieStart:ties.includes("start"),tieStop:ties.includes("stop"),part:partNo,voice};
+    if(p&&!Number.isFinite(note.midi))throw Error("Altura musical inválida");
+    if(!rest)events.push({...note,absolute:absolute+at});
+    if(partNo===0&&voice===firstVoice&&!chord)notes.push(note);
+   }
+   const length=measure.getAttribute("implicit")==="yes"?maxEnd:localBeats;
+   if(maxEnd>localBeats+EPS&&measure.getAttribute("implicit")!=="yes")throw Error("Compasso excede a fórmula de compasso: "+(barNo+1));
+   if(partNo===0){
+    const total=notes.reduce((v,n)=>v+n.duration,0);
+    if(notes.length&&Math.abs(total-length)>EPS&&measure.getAttribute("implicit")!=="yes")throw Error("Voz principal incompleta no compasso "+(barNo+1));
+    bars.push(notes);
+   }
+   absolute+=length;
+  });
+ });
+ events.sort((a,b)=>a.absolute-b.absolute||a.part-b.part||a.voice.localeCompare(b.voice));
+ return {bars,events,clef,key,beatsPerBar,beatType,parts:parts.length,totalBeats:Math.max(bars.length*beatsPerBar,...events.map(e=>e.absolute+e.duration),0)};
 }
 function pitchY(n,clef){const bottom=clef==="F"?2*7+letters.G:4*7+letters.E;return 69-(n.index-bottom)*5}
 
@@ -275,11 +308,11 @@ async function openSpread(page){
  $("status").textContent="Transcrições ainda sujeitas à revisão musical";
 }
 function select(entry,music){
- stop();active={entry,music};count=music.bars.length*music.beatsPerBar;
+ stop();active={entry,music};count=music.totalBeats||music.bars.length*music.beatsPerBar;
  $("beats").replaceChildren(...Array.from({length:music.beatsPerBar},(_,i)=>{const x=document.createElement("span");x.textContent=String(i+1);return x}));scoreNotes=[...document.querySelectorAll('.score-note[data-entry="'+entry.id+'"]')];
  document.querySelectorAll(".exercise").forEach(e=>e.classList.toggle("selected",e.id==="ex-"+entry.id));
  $("play").disabled=false;$("play").textContent="▶ Estudo "+entry.exerciseNumber;
- $("track").textContent=entry.section+" · exercício "+entry.exerciseNumber+" · "+music.bars.length+" compassos";
+ $("track").textContent=entry.section+" · exercício "+entry.exerciseNumber+" · "+music.bars.length+" compassos"+(music.parts>1?" · "+music.parts+" vozes instrumentais":"");
  const num=document.getElementById("ex-"+entry.id)?.closest(".page");
  if(num&&innerWidth<=960)mobilePage(Number(num.id.replace("page","")))
 }
@@ -291,16 +324,15 @@ function schedule(cycle){
  active.music.bars.forEach((bar,i)=>{
   for(let b=0;b<active.music.beatsPerBar;b++)tick(base+(i*active.music.beatsPerBar+b)*beatSeconds,b);
  });
- const sequence=active.music.bars.flatMap((bar,i)=>bar.map(note=>({...note,absolute:i*active.music.beatsPerBar+note.at})));
- for(let i=0;i<sequence.length;i++){
-  const note=sequence[i];if(note.rest||note.tieStop)continue;
-  let duration=note.duration;
+ const sequence=active.music.events?.length?active.music.events:active.music.bars.flatMap((bar,i)=>bar.map(note=>({...note,absolute:i*active.music.beatsPerBar+note.at})));
+ for(const note of sequence){
+  if(note.rest||note.tieStop||!Number.isFinite(note.midi))continue;
+  let duration=note.duration,at=note.absolute+duration,segment=note;
   if(note.tieStart){
-   let at=note.absolute+note.duration;
-   for(let j=i+1;j<sequence.length;j++){
+   for(let j=0;j<sequence.length;j++){
     const next=sequence[j];
-    if(!next.tieStop||next.midi!==note.midi||Math.abs(next.absolute-at)>.001)break;
-    duration+=next.duration;at+=next.duration;
+    if(!next.tieStop||next.midi!==note.midi||next.part!==note.part||next.voice!==note.voice||Math.abs(next.absolute-at)>.001)continue;
+    duration+=next.duration;at+=next.duration;segment=next;
     if(!next.tieStart)break;
    }
   }
