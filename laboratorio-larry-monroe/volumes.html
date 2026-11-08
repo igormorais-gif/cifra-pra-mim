@@ -6,7 +6,7 @@
 </style></head><body>
 <div class="wrap"><header><a href="./index.html">← Laboratório Larry Monroe</a><a href="./livro.html">MusicXML · Volume I</a></header>
 <h1>Monroe Digital</h1><p class="sub">Quatro volumes · leitura experimental por identificação geométrica de notas · execução no navegador</p>
-<div class="nav"><select id="volume" aria-label="Volume"><option value="1">Volume I</option><option value="2">Volume II</option><option value="3">Volume III</option><option value="4">Volume IV</option></select><button id="prevPage">‹ Página</button><select id="page" aria-label="Página"></select><button id="nextPage">Página ›</button><button id="prevStaff">‹ Pauta</button><button id="nextStaff">Pauta ›</button></div>
+<div class="nav"><select id="volume" aria-label="Volume"><option value="1">Volume I</option><option value="2">Volume II</option><option value="3">Volume III</option><option value="4">Volume IV</option></select><button id="prevPage">‹ Página</button><select id="page" aria-label="Página"></select><button id="nextPage">Página ›</button><button id="prevStaff">‹ Pauta</button><button id="nextStaff">Pauta ›</button><select id="clef" aria-label="Clave"><option value="G">Clave de Sol</option><option value="F">Clave de Fá</option></select><select id="key" aria-label="Armadura"><option value="0">Sem acidentes</option><option value="1">1♯</option><option value="2">2♯</option><option value="3">3♯</option><option value="4">4♯</option><option value="-1">1♭</option><option value="-2">2♭</option><option value="-3">3♭</option><option value="-4">4♭</option></select></div>
 <section class="surface"><div class="bar"><h2 id="heading">Carregando…</h2><span id="meta" class="tiny"></span></div><div class="score-frame" id="score"></div><div class="help" id="help">As notas e durações aqui vêm de leitura geométrica automatizada. Não constituem transcrição verificada dos exercícios, de suas pausas, acidentes ou duetos. A versão MusicXML existente do Volume I fica disponível no link superior.</div></section></div>
 <div class="foot"><div class="wrap"><button class="primary" id="play">▶ Ouvir pauta</button><button id="stop">■ Parar</button><label>BPM <input id="tempo" type="range" min="40" max="180" value="80"><output id="bpm">80</output></label><label><input type="checkbox" id="click" checked> Metrônomo</label><label><input type="checkbox" id="loop"> Loop</label><span id="status" class="tiny">Selecione uma pauta.</span></div></div>
 <script>
@@ -14,7 +14,7 @@
 const $=id=>document.getElementById(id),alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 const numbers={1:98,2:104,3:92,4:78},cache={},data={};let vol=1,page=6,staff=0,ctx=null,osc=[],timer=null,current=[],active=-1;
 function decode(src){return src.split('|').map(p=>p?p.split('.').filter(Boolean).map(x=>[...x].map(c=>{const n=alphabet.indexOf(c);return {degree:(n>>2)-3,d:(n&2)?2:((n&1)?.5:1),hollow:!!(n&2)}})):[])}
-function load(v){stop();vol=v;page=6;staff=0;const show=()=>{drawPageChoices();render();history.replaceState(null,'','?volume='+vol+'&pagina='+page)};
+function load(v){stop();vol=v;page=6;staff=0;const show=()=>{const first=data[v].findIndex((s,i)=>i>=6&&s.length>0);const q=new URLSearchParams(location.search);const requested=Number(q.get('pagina'));page=requested>=6&&requested<numbers[v]&&data[v][requested]?.length?requested:Math.max(6,first);drawPageChoices();render();history.replaceState(null,'','?volume='+vol+'&pagina='+page)};
  if(data[v])return show();$('status').textContent="Carregando notas…";
  const s=document.createElement('script');s.src='./vetor-v'+v+'.js';
  s.onload=()=>{if(typeof window['MONROE_V'+v]!=='string')throw Error('Dados ausentes');data[v]=decode(window['MONROE_V'+v]);show()};
@@ -24,9 +24,11 @@ function notes(){return data[vol]?.[page]?.[staff]||[]}
 function staves(){return data[vol]?.[page]||[]}
 function y(d){return 132-d*9}
 function pitch(d){
- const ix=4*7+2+d,oct=Math.floor(ix/7),step=((ix%7)+7)%7;
- const midi=[0,2,4,5,7,9,11][step]+(oct+1)*12;
- return {midi,name:['Dó','Ré','Mi','Fá','Sol','Lá','Si'][step]+oct}
+ const ix=($('clef').value==='F'?2*7+4:4*7+2)+d,oct=Math.floor(ix/7),step=((ix%7)+7)%7;
+ const key=Number($('key').value),order=key>=0?[3,0,4,1,5,2,6]:[6,2,5,1,4,0,3];
+ const alter=order.slice(0,Math.abs(key)).includes(step)?Math.sign(key):0;
+ const midi=[0,2,4,5,7,9,11][step]+(oct+1)*12+alter;
+ return {midi,name:['Dó','Ré','Mi','Fá','Sol','Lá','Si'][step]+(alter===1?'♯':alter===-1?'♭':'')+oct}
 }
 function render(){stop();$('page').value=String(page);const s=staves();
  if(staff>=s.length)staff=Math.max(0,s.length-1);
@@ -40,7 +42,7 @@ function render(){stop();$('page').value=String(page);const s=staves();
  const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 '+width+' 180');svg.setAttribute('aria-label','Prévia geométrica, sem notação rítmica verificada');
  function add(tag,a,txt){let e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(a))e.setAttribute(k,v);if(txt)e.textContent=txt;svg.append(e);return e}
  for(let i=0;i<5;i++)add('line',{x1:14,y1:60+18*i,x2:width-14,y2:60+18*i,stroke:'#53554c','stroke-width':1});
- add('text',{x:20,y:126,'font-size':54,fill:'#363931','font-family':'Georgia,serif'},'𝄞');
+ add('text',{x:20,y:126,'font-size':54,fill:'#363931','font-family':'Georgia,serif'},($('clef').value==='F'?'𝄢':'𝄞'));
  const total=n.reduce((a,b)=>a+b.d,0);let elapsed=0;
  n.forEach((note,i)=>{
   const x=72+(width-100)*(elapsed+note.d/2)/total,yy=y(note.degree);
@@ -53,7 +55,12 @@ function render(){stop();$('page').value=String(page);const s=staves();
  target.append(svg);current=n;$('status').textContent=n.length+' notas detectadas · duração aproximada';
 }
 function shiftPage(d){const n=page+d;if(n<6||n>=numbers[vol])return;page=n;staff=0;render();history.replaceState(null,'','?volume='+vol+'&pagina='+page)}
-function shiftStaff(d){if(staff+d>=0&&staff+d<staves().length){staff+=d;render();return}if(d>0&&page+1<numbers[vol])shiftPage(1);else if(d<0&&page>6){shiftPage(-1);staff=Math.max(0,staves().length-1);render()}}
+function shiftStaff(d){
+ if(staff+d>=0&&staff+d<staves().length){staff+=d;render();return}
+ for(let i=page+d;i>=6&&i<numbers[vol];i+=d){
+  if(data[vol]?.[i]?.length){page=i;staff=d<0?data[vol][i].length-1:0;render();history.replaceState(null,'','?volume='+vol+'&pagina='+page);return}
+ }
+}
 function stop(){if(timer){clearTimeout(timer);timer=null}if(ctx){ctx.close().catch(()=>{});ctx=null}osc=[];active=-1;document.querySelectorAll('.score-note').forEach(n=>n.classList.remove('note-active'))}
 function tone(m,t,d,velocity=.1){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(440*Math.pow(2,(m-69)/12),t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(velocity,t+.008);g.gain.setTargetAtTime(.00001,t+Math.max(.05,d-.06),.026);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+d+.12);osc.push(o)}
 async function play(){stop();const n=notes();if(!n.length)return;const A=window.AudioContext||window.webkitAudioContext;if(!A){$('status').textContent='Áudio indisponível';return}ctx=new A;await ctx.resume();const beat=60/Number($('tempo').value),start=ctx.currentTime+.12,sequence=[];let at=0;
@@ -65,7 +72,7 @@ async function play(){stop();const n=notes();if(!n.length)return;const A=window.
  $('status').textContent='Reproduzindo leitura automática';tick()}
  $('volume').onchange=e=>load(Number(e.target.value));$('page').onchange=e=>{page=Number(e.target.value);staff=0;render()};
  $('prevPage').onclick=()=>shiftPage(-1);$('nextPage').onclick=()=>shiftPage(1);$('prevStaff').onclick=()=>shiftStaff(-1);$('nextStaff').onclick=()=>shiftStaff(1);
- $('play').onclick=play;$('stop').onclick=stop;$('tempo').oninput=e=>$('bpm').textContent=e.target.value;window.addEventListener('pagehide',stop);
+ $('play').onclick=play;$('stop').onclick=stop;$('tempo').oninput=e=>$('bpm').textContent=e.target.value;$('clef').onchange=render;$('key').onchange=render;window.addEventListener('pagehide',stop);
  const params=new URLSearchParams(location.search),targetV=Number(params.get('volume'));load([1,2,3,4].includes(targetV)?targetV:1);
 })();
 </script></body></html>
