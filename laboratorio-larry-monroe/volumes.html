@@ -22,7 +22,7 @@ function load(v){stop();vol=v;page=6;staff=0;const show=()=>{drawPageChoices();r
 function drawPageChoices(){const el=$('page');el.replaceChildren();for(let i=6;i<numbers[vol];i++){let o=document.createElement('option');o.value=i;o.textContent='Pág. '+(i-2);el.append(o)}}
 function notes(){return data[vol]?.[page]?.[staff]||[]}
 function staves(){return data[vol]?.[page]||[]}
-function y(d){return 96-d*9}
+function y(d){return 132-d*9}
 function pitch(d){
  const ix=4*7+2+d,oct=Math.floor(ix/7),step=((ix%7)+7)%7;
  const midi=[0,2,4,5,7,9,11][step]+(oct+1)*12;
@@ -41,7 +41,7 @@ function render(){stop();$('page').value=String(page);const s=staves();
  function add(tag,a,txt){let e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(a))e.setAttribute(k,v);if(txt)e.textContent=txt;svg.append(e);return e}
  for(let i=0;i<5;i++)add('line',{x1:14,y1:60+18*i,x2:width-14,y2:60+18*i,stroke:'#53554c','stroke-width':1});
  add('text',{x:20,y:126,'font-size':54,fill:'#363931','font-family':'Georgia,serif'},'𝄞');
- const t=(m)=>Math.min(1,m/.7),total=n.reduce((a,b)=>a+b.d,0);let elapsed=0;
+ const total=n.reduce((a,b)=>a+b.d,0);let elapsed=0;
  n.forEach((note,i)=>{
   const x=72+(width-100)*(elapsed+note.d/2)/total,yy=y(note.degree);
   for(let ledger=150;ledger<=yy;ledger+=18)if(yy>=150)add('line',{x1:x-12,y1:ledger,x2:x+12,y2:ledger,stroke:'#45463f'});
