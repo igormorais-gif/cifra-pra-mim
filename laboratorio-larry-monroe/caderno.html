@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eee9df">
+<meta name="description" content="Laboratório Larry Monroe: caderno interativo de estudos rítmicos, com execução e progresso de leitura.">
+<title>Laboratório Larry Monroe · Caderno Interativo</title>
+<style>
+:root{--bg:#eeeae2;--paper:#fffef9;--ink:#252621;--soft:#716f66;--line:#ddd8cd;--accent:#a54835;--accentsoft:#f4e7db;--green:#456a51;--greenbg:#e8efe9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,system-ui,sans-serif}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #b0774f;outline-offset:3px}button:disabled{cursor:not-allowed;opacity:.48}a{color:inherit}
+.shell{max-width:1080px;margin:auto;padding:0 20px 85px}
+.sitehead{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:19px 0 14px;border-bottom:1px solid #cec9c1}
+.sitehead a{font-size:12px;text-decoration:none}.brand{font-size:11px;font-weight:800;letter-spacing:.15em}.brand span{display:block;color:var(--soft);font-size:9px;letter-spacing:.12em;margin-top:2px}
+.intro{display:grid;grid-template-columns:1fr auto;gap:15px;align-items:center;margin:32px 0 24px}.eyebrow{letter-spacing:.18em;font-size:10px;color:var(--accent);font-weight:750;text-transform:uppercase}
+h1{font:400 clamp(33px,5vw,56px)/1.04 Georgia,Times,serif;letter-spacing:-.045em;margin:9px 0 9px}.intro p{margin:0;color:var(--soft);font-size:12px}
+.progress-overall{display:flex;align-items:center;gap:13px}.donut{--pct:0;display:grid;place-items:center;width:86px;height:86px;flex:0 0 86px;border-radius:50%;background:conic-gradient(var(--green) calc(var(--pct)*1%),#d8d5cd 0);position:relative}
+.donut:before{content:"";inset:8px;position:absolute;border-radius:50%;background:var(--bg)}.donut strong{position:relative;font:400 25px Georgia,serif;z-index:1}.proglabel{font-size:11px;color:var(--soft);max-width:105px}.proglabel b{display:block;color:var(--ink);font-size:13px}
+.sectionlabel{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#716e67;letter-spacing:.13em;text-transform:uppercase;font-weight:750;margin:12px 0}
+.chapters{display:flex;gap:9px;overflow-x:auto;padding:1px 1px 13px;scrollbar-width:thin}
+.chapter{min-width:129px;max-width:129px;flex:0 0 129px;text-align:left;background:#f9f7f1;border:1px solid #d8d2c8;padding:13px 12px 11px;border-radius:6px;color:var(--ink);transition:background .15s}
+.chapter.active{background:#29352c;color:#fff;border-color:#29352c}.chapter small{display:block;font-size:10px;opacity:.7}.chapter b{display:block;font:400 21px Georgia,serif;margin:3px 0 9px}.chapter .mini{display:block;height:3px;background:#d5d3ca;border-radius:8px;overflow:hidden}.chapter.active .mini{background:#65746a}.chapter .mini i{height:100%;display:block;background:var(--green);width:0}.chapter.active .mini i{background:#d6dfcf}.chapter em{display:block;font:10px system-ui,sans-serif;opacity:.72;margin-top:7px}
+.book{background:var(--paper);position:relative;border:1px solid #dbd5ca;box-shadow:1px 2px 0 #dad3c8,6px 9px 28px #3f37231c;margin-top:9px;border-radius:3px;min-height:470px;overflow:hidden}
+.book:before{content:"";position:absolute;top:0;bottom:0;left:0;width:8px;background:linear-gradient(90deg,#e5dfd2,#faf9f4);border-right:1px solid #e5dfd6;pointer-events:none}
+.bookinner{padding:32px clamp(18px,4vw,54px) 28px clamp(25px,5vw,62px)}
+.booktop{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:11px;color:var(--soft);border-bottom:1px solid var(--line);padding-bottom:13px}
+.chaptertitle{font:italic 13px Georgia,serif}.lessonprogress{font-size:10px;white-space:nowrap}.lessonprogress strong{color:var(--green)}
+.titleline{display:flex;justify-content:space-between;gap:15px;align-items:start;padding:26px 0 14px}
+.titleline h2{font:400 clamp(27px,4vw,37px)/1.1 Georgia,serif;letter-spacing:-.03em;margin:6px 0}
+.titleline p{font:14px Georgia,serif;color:var(--soft);margin:0}
+.rightnum{color:#bbb2a3;font:italic 26px Georgia,serif}
+.exstrip{display:flex;gap:6px;overflow-x:auto;padding:7px 0 15px;scrollbar-width:thin}
+.exstrip button{position:relative;flex:0 0 39px;height:40px;border-radius:50%;border:1px solid #ded9cf;background:var(--paper);color:var(--ink);font-size:12px}
+.exstrip button.active{background:var(--ink);border-color:var(--ink);color:white}.exstrip button.done:not(.active){border-color:#94ad9b;background:#edf4ed;color:#41674d}
+.exstrip button.done:after{content:"✓";font-size:9px;position:absolute;bottom:-2px;right:-2px;background:var(--green);color:white;width:15px;height:15px;display:grid;place-items:center;border-radius:50%}
+.exstrip button.pending{color:#a9a398;border-style:dashed}
+.score-area{min-height:170px;padding:10px 0 16px;border-top:1px solid #eae5dc;border-bottom:1px solid #eae5dc}
+.musicline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:7px;row-gap:9px}
+.measure{border-radius:5px;padding:2px;position:relative;min-width:0;transition:background .1s}
+.measure.active{background:#f7ede3}.measure svg{display:block;width:100%;height:auto;color:var(--ink)}.measure svg .current{fill:var(--accent)!important;stroke:var(--accent)!important}
+.measure small{font:10px Georgia,serif;color:#999083;padding-left:10px}
+.pending-note{padding:37px 8px;text-align:center;color:#897f70;font:17px/1.5 Georgia,serif}
+.runner{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:18px 0 10px}
+.player{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn{background:#2e3a2f;border:1px solid #2e3a2f;color:white;border-radius:5px;padding:11px 17px;font-size:12px;font-weight:700;min-width:95px}
+.ghost{background:transparent;border:1px solid #d8d1c5;color:var(--ink);border-radius:5px;padding:10px 12px;font-size:12px}
+.ghost.donebtn{border-color:#9ab6a0;color:#3b6946;background:#eaf1e9}
+.settings{display:flex;gap:9px;flex-wrap:wrap;align-items:center;color:var(--soft);font-size:11px}.settings label{display:flex;gap:5px;align-items:center}.settings input[type=range]{width:83px;accent-color:#445d49}.settings input[type=checkbox]{accent-color:var(--green)}
+.beatbar{display:flex;gap:5px;margin:8px 0 0}.beatbar i{display:grid;place-items:center;width:25px;height:27px;border:1px solid #dedbd1;border-radius:4px;font-size:11px;color:#8e8b81;font-style:normal}.beatbar i.on{background:#a84e3c;color:white;border-color:#a84e3c}
+.bookfoot{border-top:1px solid var(--line);margin-top:13px;padding-top:17px;display:flex;justify-content:space-between;align-items:center;gap:10px}.footnav{border:0;background:none;padding:9px 0;font:italic 15px Georgia,serif}.footnav:disabled{opacity:.2}
+.footnum{font:12px Georgia,serif;color:#8c877d}.notice{color:var(--soft);font-size:10px;line-height:1.5;margin:13px 0 0}.source{text-align:center;margin-top:18px;color:#777168;font:11px Georgia,serif}.source a{color:#695f54}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#2d3c32;color:#fff;padding:10px 16px;border-radius:7px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:20}#toast.show{opacity:1}
+@media(max-width:640px){.shell{padding:0 11px 65px}.sitehead{padding:13px 0}.intro{margin:23px 0 19px}.intro h1{font-size:35px}.donut{width:65px;height:65px;flex-basis:65px}.donut:before{inset:6px}.donut strong{font-size:20px}.proglabel{font-size:10px;max-width:75px}.proglabel b{font-size:11px}.chapters{margin-right:-11px}.chapter{min-width:112px;max-width:112px;flex-basis:112px;padding:11px 9px}.bookinner{padding:21px 14px 23px 24px}.titleline{padding-top:20px}.titleline h2{font-size:28px}.musicline{grid-template-columns:1fr}.measure svg{max-width:390px;margin:auto}.runner{align-items:start}.settings{width:100%}.footnav{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="sitehead"><a href="../">← HUB DE APLICATIVOS</a><div class="brand">LARRY MONROE<span>LABORATÓRIO · CADERNO INTERATIVO</span></div><a href="livro.html?pagina=24" title="Consultar referência do livro">Referência ↗</a></header>
+<section class="intro">
+<div><div class="eyebrow">Volume I · Estudos rítmicos</div><h1>Um livro para tocar.</h1><p>Vire os exercícios. Leia, escute e avance no seu ritmo.</p></div>
+<div class="progress-overall"><div class="donut" id="donut"><strong id="pct">0%</strong></div><div class="proglabel"><b id="done-count">0 de 159</b>exercícios concluídos</div></div>
+</section>
+<div class="sectionlabel"><span>Sumário · 10 lições</span><span id="chapnotice">Seu progresso</span></div>
+<nav class="chapters" id="chapters" aria-label="Escolher lição"></nav>
+<article class="book" aria-label="Livro interativo">
+<div class="bookinner">
+ <div class="booktop"><span class="chaptertitle" id="chapname">Lição 1 · Primeiros ritmos</span><span class="lessonprogress" id="lessonprogress">0 / 15 · <strong>0%</strong></span></div>
+ <div class="titleline"><div><div class="eyebrow" id="heading">Estudos rítmicos</div><h2 id="exname">Exercício 1</h2><p id="instruction">Leia no tempo do metrônomo.</p></div><span class="rightnum" id="exordinal">01</span></div>
+ <nav class="exstrip" id="exstrip" aria-label="Escolher exercício da lição"></nav>
+ <div class="score-area"><div class="musicline" id="score"></div></div>
+ <div class="beatbar" id="beats"></div>
+ <div class="runner">
+  <div class="player"><button class="btn" id="play">▶ Ouvir e estudar</button><button class="ghost" id="restart" title="Voltar ao início">↺</button><button class="ghost donebtn" id="complete">✓ Concluir</button></div>
+  <div class="settings"><label><strong id="bpmvalue">80</strong> BPM <input id="bpm" type="range" min="45" max="160" value="80"></label><label><input id="metro" type="checkbox" checked> Metrônomo</label><label><input id="loop" type="checkbox"> Loop</label></div>
+ </div>
+ <div class="bookfoot"><button id="prev" class="footnav">← Exercício anterior</button><span class="footnum" id="footnum">1 / 159</span><button id="next" class="footnav">Próximo exercício →</button></div>
+ <div class="notice" id="notice"></div>
+</div>
+</article>
+<p class="source">Ritmos digitais em revisão · <a href="livro.html?pagina=24">Consultar páginas originais</a>. O progresso é salvo neste navegador.</p>
+</div><div id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+var raw='1,1,7,4,r,A/CC/A/A;1,2,7,4,r,CC/A/EEEE/CC;1,3,7,4,r,EEEE/A/CEE/A;1,4,7,4,p,;1,5,7,4,p,;1,6,8,4,r,CEE/CI/IC/EEC;1,7,8,4,r,CI/IC/EEI/IEE;1,8,8,4,r,A/IEE/EEEE/IC;1,9,8,4,r,EEC/G/IEE/CEE;1,10,8,4,r,EEI/IEE/IEE/EEI;1,11,8,4,r,IC/EEI/IEE/IEE;1,12,9,4,r,CC/EEI/IC/EEI/EEEE/G/IC/EEI;1,13,9,4,r,CEE/EEI/IEE/IC/IEE/G/IEE/CI;1,14,9,4,r,CEE/CEE/IEE/CEE/IC/EEI/IC/IEE;1,15,9,4,r,IEE/CI/G/EEI/IC/IC/EEI/IC;2,1,15,4,s,CC/BE/BE/A;2,2,15,4,s,EB/BE/EEC/A;2,3,15,4,s,ECE/CC/ECE/EB;2,4,15,4,s,EEEE/ECE/EB/ECE;2,5,15,4,s,EB/ECE/CEE/EEC;2,6,16,4,s,BJ/CI/EJI/EEEJ;2,7,16,4,s,EEEJ/JEEE/IEE/EJJE;2,8,16,4,s,EJEE/JEEJ/EEJE/EJEE;2,9,16,4,s,JEJE/JEJE/EJEJ/EJJE;2,10,16,4,s,JB/JCE/EJJE/JCE;2,11,16,4,s,JEEJ/IEE/IJE/EJI;2,12,17,4,s,EJJE/JEEJ/EJEJ/EEJE;2,13,17,4,s,ECJ/EB/JCE/BE;2,14,17,4,s,ECJ/EB/JCE/BE;2,15,17,4,s,IJE/JEJE/JEC/JCE;2,16,17,4,s,EJEE/JEI/IJE/IEJ;2,17,17,4,s,IEE/JEEJ/JEEJ/EEI;2,18,18,4,s,BE/JCE/JEC/IEE/JCJ/CJE/EIE/CEJ;2,19,18,4,s,EEJE/EJEE/JEEJ/IEE/ECE/EIE/JCE/EJC;2,20,18,4,s,BE/JB/ECJ/IC/JEEE/JCJ/EEJE/JEEJ;2,21,18,4,s,ECE/ECE/CEE/JB/JEEJ/EEI/JCE/CI;3,1,24,4,s,FFFFC/EFFC/FFFFFFFF/EFFC;3,2,24,4,s,EFFEFF/FFFFC/FFEFFE/FFFFC;3,3,24,4,s,EFFEFF/FFFFFFE/EEFFFF/FFFFEFF;3,4,24,4,s,BFF/BFF/FFEEFF/FFB;3,5,24,4,s,CEFF/CFFE/FFEC/EFFC;3,6,25,4,s,EFFFFE/EFFEFF/FFEEFF/FFEFFE;3,7,25,4,s,FFFFFFFF/EJFFFF/FFFFEJ/FFEEE;3,8,25,4,s,FFFFEJ/JFFFFE/IFFFF/EFFEJ;3,9,25,4,s,EFFEJ/JEFFE/IEFF/EH;3,10,25,4,s,FFEJFF/EJFFE/JFFEJ/FFEI;3,11,25,4,s,EEEFF/EEFFE/EFFEE/FFEC;3,12,26,4,s,EFFC/BFF/EFFEFF/FFFFC/JCE/FFEEJ/JFFEFF/FFEC;3,13,26,4,s,EFFEJ/IFFE/FFCFF/EEFFFF/EEJFF/EEJE/FFFFFFE/JFFFFE;3,14,26,4,s,JFFEJ/IFFFF/EIFF/FFFFEJ/JFFEJ/EFFEJ/JFFFFE/JFFEJ;3,15,26,4,s,EEI/FFEI/JFFEFF/EEJE/EIFF/EH/FFEFFE/EJEJ;4,1,32,4,s,EFFEFF/DFC/FFEC/DFC;4,2,32,4,s,DFDF/DFC/DFDF/EFFC;4,3,32,4,s,DFEJ/JCE/EJDF/ECE;4,4,32,4,s,DFFFFF/DFEFF/FFFFDF/EFFFFE;4,5,32,4,s,EJDF/ECE/DFEJ/JCE;4,6,33,4,s,EEDF/EJEE/DFEJ/DFEJ;4,7,33,4,s,DFFFE/FFEDF/FFEDF/DFFFE;4,8,33,4,s,FFEFFE/DFEFF/FFEDF/FFEFFE;4,9,33,4,s,BFF/DFEJ/JEDF/ECE;4,10,33,4,s,FFFFEJ/JFFFFE/IDF/FFEJE;4,11,33,4,s,JEDF/EJFFE/DFEJ/JFFEJ;4,12,34,4,s,DFFFFF/FFFFDF/FFEEFF/DFFFE/FFEDF/FFFFFFE/DFDF/DFFFE;4,13,34,4,s,CDF/ECE/DFC/ECE/DFEJ/JCE/EEDF/CEE;4,14,34,4,s,EIE/DFEE/ECE/EJDF/EJDF/ECE/EEDF/DFEJ;4,15,34,4,s,FFEJFF/DFEFF/EJDF/FFEJFF/DFFFE/FFEDF/FFFFEE/DFFFE;5,1,41,4,v,DFC/FDC/DFDF/FDC;5,2,41,4,v,FDFFFF/FDDF/FFFFFD/DFC;5,3,41,4,v,FFJC/FFJC/FFJFFJ/FFJC;5,4,41,4,v,FFJFFFF/FFJJFF/FFJJFF/FFJI;5,5,41,4,v,BFF/FFJC/FFJI/JFFFFJ;5,6,42,4,v,FFJFFJ/IFFJ/IFFJ/FFJFFJ;5,7,42,4,v,DFFFJ/JFFDF/FFJFD/FFJFFJ;5,8,42,4,v,BE/FFJFFJ/JFFFFJ/BE;5,9,42,4,v,EEFFJ/JFFEE/IEE/FFJJE;5,10,42,4,v,EJFFJ/DFFFJ/JEFFJ/IFFE;5,11,42,4,v,FFFFFFJ/IFFFF/FFJI/FFFFFFJ;5,12,43,4,v,DFFFJ/JCE/FFJDF/FFJJE/FFJEFF/FDEJ/FFEJFF/EJFFE;5,13,43,4,v,JEFFJ/JEFFE/FFKKC/JEFFJ/JFFEJ/JFFEFF/EJJFF/EJFFJ;5,14,43,4,v,BFF/EB/FFEC/FFEFFE/BFF/FFB/JFFFFE/FFB;5,15,43,4,v,JFFFFJ/FFEJFF/FFJFFE/JFFFFJ/FFJEFF/FFEJFF/FFJFFFF/FFJI;6,1,51,3,d,B/B/CE/B;6,2,51,3,d,EEE/B/EEE/B;6,3,51,3,d,CE/EC/CE/B;6,4,51,3,d,CE/EEE/EC/B;6,5,51,3,d,EEE/EC/CE/EEE;6,6,51,3,d,CE/EEE/EC/CE;6,7,52,3,d,EJE/CE/JEE/JEE/JC/EJE/EJE/B;6,8,52,3,d,EJE/JC/JEE/EJE/JC/EC/EC/JC;6,9,52,3,d,EJE/JEJ/EJE/JEE/JEE/EEJ/IE/EJE;6,10,52,3,d,EEE/EJE/EEE/JEE/EEJ/EEE/EJE/EEE;6,11,53,3,d,EI/IE/JEJ/EJE/IE/JEJ/JC/EJE;6,12,53,3,d,JEE/EJE/EEJ/EEE/JEE/IE/EEJ/JEE;6,13,53,3,d,B/JEJ/CE/JC/JEJ/CE/JEJ/JC;6,14,53,3,d,CJ/JEE/EEJ/EC/CE/EJE/EC/EEJ;6,15,54,3,d,EI/JEJ/IE/H/JEJ/EJE/IE/JEJ;6,16,54,3,d,EEJ/JEE/IE/EI/EEJ/JC/EJE/B;6,17,54,3,d,IE/CE/JEJ/JC/EJE/CE/IE/JC;6,18,54,3,d,JEJ/JEE/JEE/EJE/EEJ/JEE/EEJ/JEJ;7,1,60,4,d,EEEE/EEC/ECE/A;7,2,60,4,d,EFFC/CEFF/ECE/BE;7,3,60,4,d,BE/CC/EB/BJ;7,4,60,4,d,ECE/ECE/ECE/ECE;7,5,60,4,d,EJC/EEJE/CEJ/BE;7,6,61,4,a,EFFEL/MEFFL/MJJL/MEFFE;7,7,61,4,d,DFEE/DFEE/DFEE/DFC;7,8,61,4,d,DFEJ/JCE/DFEJ/DFEE;7,9,61,3,c,EEE/EEE/EC/B;7,10,61,3,c,CE/EC/CE/EC;7,11,61,3,c,EFFE/EFFFF/FFFFFF/B;7,12,62,3,c,FFEJ/JFFE/JFFFF/FFEJ/JEFF/FFEJ/JFFFF/JFFE;7,13,62,3,c,EFFE/DFE/FFEFF/DFE/FFEE/FDE/DFE/B;7,14,62,3,c,DFE/EDF/DFE/B/EDF/DFE/FDE/B;7,15,62,3,c,DFE/EFFFF/FDE/CE/JC/EFFE/EDF/B';
+var codes={A:['n',4],B:['n',3],C:['n',2],D:['n',1.5],E:['n',1],F:['n',.5],G:['r',4],H:['r',3],I:['r',2],J:['r',1],K:['r',.5],L:['n',1],M:['n',1]};
+var counts=[15,21,15,15,15,18,15,15,15,15];
+var trans={};raw.split(';').forEach(function(r){var p=r.split(',');trans[p[0]+'-'+p[1]]={l:+p[0],n:+p[1],meter:+p[3],status:p[4],bars:p[5]?p[5].split('/').map(function(b){return b.split('').map(function(ch){return {t:codes[ch][0],d:codes[ch][1]}})}):[]};});
+var items=[];counts.forEach(function(c,i){for(var n=1;n<=c;n++){var key=(i+1)+'-'+n;items.push(trans[key]||{l:i+1,n:n,meter:4,status:'p',bars:[]});}});
+var $=function(id){return document.getElementById(id)},select=0,bpm=80,loop=false,met=true,playing=false,raf=0,ctx=null,startTime=0,lastLoop=-1,seen=false;
+var storage='larry-monroe-rhythm-v1-progress-v8',done={};
+try{done=JSON.parse(localStorage.getItem(storage)||'{}')||{}}catch(e){done={}}
+var key=function(o){return o.l+'-'+o.n};
+function save(){try{localStorage.setItem(storage,JSON.stringify(done))}catch(e){}}
+function pct(n,d){return d?Math.round(100*n/d):0}
+function countLesson(l){return items.filter(function(x){return x.l===l&&done[key(x)]}).length}
+function allDone(){return Object.keys(done).filter(function(k){return done[k]}).length}
+function toast(t){var el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(function(){el.classList.remove('show')},1750)}
+function updateSummary(){
+var n=allDone(),p=pct(n,159);$('pct').textContent=p+'%';$('done-count').textContent=n+' de 159';$('donut').style.setProperty('--pct',p);
+$('chapters').innerHTML=counts.map(function(c,i){var l=i+1,n=countLesson(l);return '<button class="chapter '+(items[select].l===l?'active':'')+'" data-l="'+l+'"><small>CAPÍTULO</small><b>Lição '+String(l).padStart(2,'0')+'</b><span class="mini"><i style="width:'+pct(n,c)+'%"></i></span><em>'+n+'/'+c+' · '+pct(n,c)+'%</em></button>'}).join('');
+$('chapters').querySelectorAll('button').forEach(function(b){b.onclick=function(){var l=+b.dataset.l;choose(items.findIndex(function(x){return x.l===l}))}});
+var curr=items[select],count=countLesson(curr.l);$('lessonprogress').innerHTML=count+' / '+counts[curr.l-1]+' · <strong>'+pct(count,counts[curr.l-1])+'%</strong>';
+$('complete').textContent=done[key(curr)]?'✓ Concluído · desfazer':'✓ Concluir';$('complete').classList.toggle('donebtn',!!done[key(curr)]);
+$('exstrip').querySelectorAll('button').forEach(function(b){var id=curr.l+'-'+b.dataset.n;b.classList.toggle('done',!!done[id])});
+}
+function drawMeasure(bar,idx,first){
+var sum=bar.reduce(function(s,e){return s+e.d},0),out=[],start=0;
+bar.forEach(function(e){out.push({t:e.t,d:e.d,start:start});start+=e.d});
+var P=first?75:18,W=265,pw=W-P-19,cx=function(a){return P+(a.start+a.d/2)*(pw/(sum||4))};
+var beams={};for(var i=0;i<out.length-1;i++){var a=out[i],b=out[i+1];if(a.t==='n'&&b.t==='n'&&a.d===.5&&b.d===.5&&Math.floor(a.start+.00001)===Math.floor(b.start+.00001)&&Math.abs(a.start+.5-b.start)<.001){beams[i]=true;beams[i+1]=true;i++;}}
+var svg='<svg viewBox="0 0 270 111" aria-label="Compasso '+(idx+1)+' em '+items[select].meter+'/4">';
+for(var z=0;z<5;z++)svg+='<path d="M5 '+(39+z*9)+' H264" stroke="#827f74" stroke-width=".65"/>';
+if(first)svg+='<text x="7" y="75" font-size="38" font-family="Georgia,serif">𝄞</text><text x="48" y="56" font="17px Georgia">'+items[select].meter+'</text><text x="48" y="74" font="17px Georgia">4</text>';
+out.forEach(function(e,i){var x=cx(e),y=65,nid='n-'+idx+'-'+i;var s='<g data-on="'+(idx*items[select].meter+e.start)+'" data-dur="'+e.d+'" data-type="'+e.t+'" class="score-event">';
+if(e.t==='r'){
+if(e.d>=2)s+='<rect x="'+(x-7)+'" y="'+(e.d===4?48:51)+'" width="14" height="5" fill="#30322d"/>';
+else s+='<path d="M'+(x-2)+' 41 q9 9 2 14 q13 -5 5 11 l-8 9" stroke="#30322d" stroke-width="2.5" fill="none"/>';
+if(e.d===.5||e.d===1.5)s+='<circle cx="'+(x+12)+'" cy="67" r="2" fill="#30322d"/>';
+}else{
+var hollow=e.d>=2;
+s+='<ellipse cx="'+x+'" cy="'+y+'" rx="'+(e.d===4?9:7.7)+'" ry="5.3" transform="rotate(-18 '+x+' '+y+')" fill="'+(hollow?'#fffef9':'#292b27')+'" stroke="#292b27" stroke-width="1.5"/>';
+if(e.d<4)s+='<path d="M'+(x+7)+' '+y+' V29" stroke="#292b27" stroke-width="1.7"/>';
+if(e.d===.5&&!beams[i])s+='<path d="M'+(x+7)+' 29 q15 7 3 19" fill="none" stroke="#292b27" stroke-width="2"/>';
+if(e.d===1.5||e.d===3)s+='<circle cx="'+(x+17)+'" cy="'+y+'" r="2.1" fill="#292b27"/>';
+}
+svg+=s+'</g>';
+});
+for(var j=0;j<out.length-1;j++){if(beams[j]&&beams[j+1]&&out[j].d===.5&&out[j+1].d===.5&&out[j].t==='n'&&out[j+1].t==='n'&&Math.abs(out[j].start+.5-out[j+1].start)<.001&&Math.floor(out[j].start+.00001)===Math.floor(out[j+1].start+.00001)){svg+='<path d="M'+(cx(out[j])+7)+' 29 L'+(cx(out[j+1])+7)+' 29" stroke="#292b27" stroke-width="5"/>';j++;}}
+svg+='<path d="M266 39 V75" stroke="#393a32" stroke-width="1.2"/></svg>';
+return '<div class="measure" data-measure="'+idx+'">'+svg+'<small>'+(idx+1)+'</small></div>';
+}
+function choose(n){
+stop();select=Math.max(0,Math.min(items.length-1,n));var o=items[select];
+$('chapname').textContent='Lição '+o.l+' · Estudos rítmicos';$('exname').textContent='Exercício '+o.n;
+$('exordinal').textContent=String(o.n).padStart(2,'0');$('heading').textContent='Caderno I · Leitura e pulsação';
+$('footnum').textContent=(select+1)+' / '+items.length;
+$('instruction').textContent=!o.bars.length?'Transcrição em preparação.':o.status==='c'?'Esta leitura precisa de correção antes da execução.':o.meter+'/4 · Leia e pratique no seu andamento.';
+$('exstrip').innerHTML=items.filter(function(x){return x.l===o.l}).map(function(x){return '<button data-n="'+x.n+'" class="'+(x.n===o.n?'active ':'')+(!x.bars.length?'pending ':'')+'" title="Exercício '+x.n+'" aria-label="Exercício '+x.n+'">'+x.n+'</button>'}).join('');
+$('exstrip').querySelectorAll('button').forEach(function(b){b.onclick=function(){choose(items.findIndex(function(x){return x.l===o.l&&x.n===+b.dataset.n}))}});
+$('score').innerHTML=o.bars.length?o.bars.map(function(b,i){return drawMeasure(b,i,i===0)}).join(''):'<div class="pending-note">Esta página ainda está sendo preparada.<br>Avance para outro exercício.</div>';
+$('beats').innerHTML=Array.from({length:o.meter},function(_,i){return '<i>'+(i+1)+'</i>'}).join('');
+$('play').disabled=!o.bars.length||o.status==='c';$('complete').disabled=!o.bars.length||o.status==='c';
+$('prev').disabled=select===0;$('next').disabled=select===items.length-1;
+$('notice').textContent=o.status==='v'?'Transcrição visual de trabalho; ainda requer revisão.':o.status==='c'?'Dados com divergência editorial. Reprodução bloqueada.':o.status==='s'||o.status==='d'?'Transcrição rítmica em revisão; não tratar como edição definitiva.':o.status==='p'?'Exercício ainda não transcrito.':''; 
+$('play').textContent='▶ Ouvir e estudar';
+updateSummary();updateAnimation(0);window.scrollTo({top:0,behavior:'smooth'});
+}
+function markDone(automatic){var o=items[select];if(!o.bars.length||o.status==='c')return;var k=key(o);if(automatic){if(done[k])return;done[k]=true}else{done[k]=!done[k]}save();updateSummary();toast(automatic?'Exercício concluído!':done[k]?'Exercício concluído!':'Conclusão desfeita')}
+function tone(t,d,f,v){if(!ctx)return;var osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.008);g.gain.setValueAtTime(v*.65,t+Math.max(.012,d-.08));g.gain.exponentialRampToValueAtTime(.0001,t+d);osc.connect(g).connect(ctx.destination);osc.start(t);osc.stop(t+d+.01)}
+function scheduleCycle(cycle){
+if(!ctx)return;var o=items[select],sec=60/bpm,T=startTime+cycle*o.bars.length*o.meter*sec,units=0;
+o.bars.forEach(function(bar){bar.forEach(function(e){if(e.t==='n')tone(T+units*sec,Math.max(.07,e.d*sec*.85),523.25,.07);units+=e.d})});
+if(met)for(var j=0;j<o.bars.length*o.meter;j++)tone(T+j*sec,.055,j%o.meter===0?1300:900,j%o.meter===0?.11:.055);
+}
+function stop(){playing=false;cancelAnimationFrame(raf);if(ctx){var old=ctx;ctx=null;old.close().catch(function(){})}$('play').textContent='▶ Ouvir e estudar';document.querySelectorAll('.measure').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('#beats i').forEach(function(x){x.classList.remove('on')})}
+function updateAnimation(p){
+var o=items[select],bar=Math.floor(p/o.meter),beat=Math.floor(p)%o.meter;
+document.querySelectorAll('#beats i').forEach(function(b,i){b.classList.toggle('on',playing&&i===beat)});
+document.querySelectorAll('.measure').forEach(function(m,i){m.classList.toggle('active',playing&&i===bar);
+m.querySelectorAll('.score-event').forEach(function(g){var from=+g.dataset.on,d=+g.dataset.dur;g.classList.toggle('current',playing&&p>=from&&p<from+d)})});
+}
+function animation(){
+if(!playing||!ctx)return;
+var o=items[select],length=o.bars.length*o.meter,p=(ctx.currentTime-startTime)*bpm/60;
+if(p>=length){if(!seen){markDone(true);seen=true}if(!loop){stop();updateAnimation(0);return}}
+var cycle=Math.max(0,Math.floor(p/length));
+if(loop&&cycle+1>lastLoop){lastLoop=cycle+1;scheduleCycle(lastLoop)}
+updateAnimation(((p%length)+length)%length);raf=requestAnimationFrame(animation);
+}
+function start(){
+var o=items[select];if(!o.bars.length||o.status==='c')return;
+stop();var AC=window.AudioContext||window.webkitAudioContext;if(!AC){toast('Áudio indisponível neste navegador');return}
+ctx=new AC();bpm=+$('bpm').value;met=$('metro').checked;loop=$('loop').checked;startTime=ctx.currentTime+.12;seen=false;lastLoop=0;ctx.resume().then(function(){scheduleCycle(0);playing=true;$('play').textContent='■ Parar';raf=requestAnimationFrame(animation)}).catch(function(){stop();toast('Não foi possível iniciar o áudio')});
+}
+$('play').onclick=function(){if(playing)stop();else start()};
+$('restart').onclick=function(){if(playing)start();else updateAnimation(0)};
+$('complete').onclick=function(){markDone(false)};
+$('prev').onclick=function(){choose(select-1)};
+$('next').onclick=function(){choose(select+1)};
+$('bpm').oninput=function(){bpm=+this.value;$('bpmvalue').textContent=bpm;if(playing)start()};
+$('metro').onchange=function(){met=this.checked;if(playing)start()};
+$('loop').onchange=function(){loop=this.checked};
+choose(0);
+})();
+</script></body></html>
