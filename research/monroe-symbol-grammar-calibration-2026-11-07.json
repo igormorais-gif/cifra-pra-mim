@@ -1,9 +1,9 @@
 {
-  "version": "monroe-symbol-grammar-calibration-v2",
+  "version": "monroe-symbol-grammar-calibration-v3",
   "date": "2026-11-07",
   "source": "Volume I, printed pages 61 (study 8) and 76 (study 12); private user-supplied source pages; source scans not published",
   "method": "symbol-first: staff geometry, source-font templates, vertical/horizontal morphology, notation rules",
-  "validation_note": "The symbol parser matches examined structures on p61 exercise 8, p76 exercise 12, and an additional non-template exercise p61 exercise 7. This does NOT establish accuracy throughout four volumes.",
+  "validation_note": "Template tests on p61 exercises 7 and 8, p76 duet exercise 12, and additional printed page62 exercise13 first staff. No end-to-end audio fidelity certification.",
   "cases": [
     {
       "key": "v1-p61-e8",
@@ -90,6 +90,31 @@
       },
       "limitations": "Same book/scanning, manually cropped and scaled 2.35×; pitch fidelity has NOT been compared note by note",
       "pitch_fidelity_confirmed": false
+    },
+    {
+      "key": "v1-p62-e13-first-staff_cross-page",
+      "independence": "Different printed page, printed p62; source glyph templates remain from p61",
+      "normalization": {
+        "source_crop_px": [
+          1630,
+          200
+        ],
+        "scale": 1.15,
+        "interpolation": "cubic"
+      },
+      "detected": {
+        "filled_noteheads": 15,
+        "quarter_rests": 0,
+        "internal_barlines": 3
+      },
+      "visual_reference": {
+        "filled_noteheads": 15,
+        "quarter_rests": 0,
+        "internal_barlines": 3
+      },
+      "tie_detection": "not_detected_above_staff",
+      "notes": "All 15 detected horizontal head positions visually correspond to score heads; last barline sits at crop's right edge, not counted. Musical durations, note pitches and upper ties not certified.",
+      "end_to_end_certified": false
     }
   ],
   "limitations": [
@@ -99,7 +124,8 @@
     "Upper/lower staff candidates are detected, but independent full polyphony not decoded",
     "No automatic output should be published as a verified playable lesson at this stage",
     "Initial holdout test produced 34 candidate filled heads instead of 14. Spatial/attachment filtering reduced it to the 14 visually examined heads; independent pages and scan resolutions remain untested.",
-    "Dots merging into staff lines are now handled by local staff-line subtraction; four 4/4 bars recovered in the holdout."
+    "Dots merging into staff lines are now handled by local staff-line subtraction; four 4/4 bars recovered in the holdout.",
+    "Fourth test on printed page 62 exercise 13 requires a 1.15× raster scale adjustment to match the font; 15/15 filled heads found, but above-staff ties not yet detected."
   ],
   "verdict": "grammar_symbol_tests_passed_for_three_selected_exercises; score_fidelity_NOT_certified; whole_book_batch_BLOCKED"
 }
