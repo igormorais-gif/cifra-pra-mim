@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Larry Monroe · Calibração Musical</title>
+<style>
+:root{--paper:#fffdfa;--bg:#f3f1ec;--text:#222725;--sub:#666e6b;--line:#dadbd7;--mark:#ab3b36}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text)}
+main{max-width:930px;margin:auto;padding:23px 14px 158px}h1{font:500 clamp(28px,5vw,42px)/1.05 Georgia,serif;margin:7px 0 8px;letter-spacing:-.03em}h2{font:600 18px/1.3 Georgia,serif;margin:0}
+.kicker{font-size:10px;letter-spacing:.15em;font-weight:800;color:var(--sub)}.sub{font-size:13px;color:var(--sub);margin:8px 0 20px}.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;touch-action:manipulation}button.tab{border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:11px 15px;min-width:140px;text-align:left;font-size:13px}
+button.tab[aria-pressed=true]{background:var(--text);color:white;border-color:var(--text)}.tab span{display:block;font-size:11px;opacity:.74}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:17px;margin-bottom:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.muted{font-size:12px;color:var(--sub)}
+.score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}.bar{padding:4px 4px 3px;border:1px solid #e7e6e1;border-radius:6px;min-width:0}.bar svg{display:block;width:100%;height:auto;max-height:135px}
+.staff-line{stroke:#565b57;stroke-width:1.25}.staff-note{stroke:#222725;fill:#222725}.staff-note.hollow{fill:#fffdfa;stroke-width:2}.note-active .staff-note{stroke:var(--mark);fill:var(--mark)}.note-active .staff-note.hollow{fill:#f6bdb5}.stem{stroke:#222725;stroke-width:2}.note-active .stem,.note-active .beam{stroke:var(--mark);fill:var(--mark)}.beam{fill:#222725}.rest{fill:none;stroke:#222725;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}.tie{fill:none;stroke:#343a36;stroke-width:2.4}
+.status{font-size:12px;color:var(--sub);margin-top:12px}.note{border-top:1px solid var(--line);padding-top:12px;margin-top:16px;font-size:12px;color:var(--sub)}a{color:#304d55;text-underline-offset:3px}
+.transport{position:fixed;bottom:0;left:0;right:0;background:#faf9f6f5;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:10px max(14px,calc((100vw - 900px)/2));box-shadow:0 -6px 16px #0000000a;z-index:10}
+.player-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.primary{background:#202624;color:white;border:0;border-radius:7px;padding:11px 18px;font-weight:650}.stop{background:transparent;border:1px solid var(--line);border-radius:7px;padding:10px 15px}.tempo{display:flex;align-items:center;gap:8px;flex:1;min-width:150px;font-size:12px}.tempo input{width:100%;min-width:50px;accent-color:#333}.tempo output{min-width:68px;font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.options{display:flex;gap:12px;font-size:12px;align-items:center}.options input{accent-color:#333}.beats{display:flex;gap:5px;margin-top:8px}.beats span{display:grid;place-items:center;width:26px;height:25px;border-radius:5px;background:#e8e8e4;font-size:12px;color:#787b76}.beats span.on{background:#343b37;color:white}.transport-status{font-size:11px;color:var(--sub);margin:6px 0 0}
+@media(max-width:570px){main{padding:19px 10px 178px}.panel{padding:12px}.score-grid{grid-template-columns:1fr;gap:7px}.bar svg{max-height:125px}.player-top{gap:7px}.tempo{min-width:135px}.options{width:100%}.tabs{gap:6px}.tab{flex:1}}
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">LABORATÓRIO LARRY MONROE / VALIDAÇÃO DE LEITURA</div>
+  <h1>Calibração musical</h1>
+  <p class="sub">Volume I · Exercícios de referência. Partitura, tempo musical, áudio e ligaduras confrontados com o material de origem.</p>
+  <div class="tabs" id="tabs" role="group" aria-label="Escolher exercício"></div>
+  <section class="panel" aria-label="Partitura executável">
+    <div class="row"><h2 id="exerciseTitle">Carregando…</h2><span id="musicalInfo" class="muted"></span></div>
+    <div class="score-grid" id="score"></div>
+    <p class="status" id="validation"></p>
+    <p class="note">Fonte: <a href="https://drive.google.com/file/d/1ayJrsEaRRBLfIk95TP2fJuvzIhE2-R9r/view" target="_blank" rel="noopener">Workbook for Ear Training 1</a>. Estes exercícios foram reconstruídos para teste; os demais ainda precisam passar por conferência musical antes de receber o selo de execução validada.</p>
+  </section>
+  <section class="panel">
+    <div class="row"><h2>Teste de consistência</h2><span class="muted" id="testResult">Executando testes…</span></div>
+    <p class="muted" id="testDetail">Verificação de duração dos quatro compassos, pausas, ligaduras, alturas e ataques.</p>
+  </section>
+</main>
+<div class="transport" role="region" aria-label="Reprodução musical">
+  <div class="player-top"><button class="primary" id="play">▶ Tocar</button><button class="stop" id="stop">■</button><div class="tempo"><label for="bpm">BPM</label><input id="bpm" type="range" min="40" max="160" value="76"><output id="bpmOutput">76</output></div></div>
+  <div class="options"><label><input type="checkbox" id="metronome" checked> Metrônomo</label><label><input type="checkbox" id="loop"> Loop</label></div>
+  <div class="beats" id="beatRow"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+  <div class="transport-status" id="transportStatus">Pronto para tocar</div>
+</div>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+// [início em semínimas, duração, MIDI (null = pausa), entrada ligada, saída ligada]
+// P.7, exercício 1: a nota fica na linha Mi4. Uma semibreve, duas mínimas, duas semibreves.
+const EX1=[[0,4,64,0,0],[4,2,64,0,0],[6,2,64,0,0],[8,4,64,0,0],[12,4,64,0,0]];
+// P.61, exercício 6: duas pausas, três ligaduras de duração, todos os sons Mi4.
+const EX6=[[0,1,64,0,0],[1,.5,64,0,0],[1.5,.5,64,0,0],[2,1,64,0,0],[3,1,64,0,1],[4,1,64,1,0],[5,1,64,0,0],[6,.5,64,0,0],[6.5,.5,64,0,0],[7,1,64,0,1],[8,1,64,1,0],[9,1,null,0,0],[10,1,null,0,0],[11,1,64,0,1],[12,1,64,1,0],[13,1,64,0,0],[14,.5,64,0,0],[14.5,.5,64,0,0],[15,1,64,0,0]];
+const corpus=[{id:'ex1',page:7,no:1,symbols:EX1,title:'Exercício 1 · Página 7',tag:'Semibreve e mínima',meta:'5 notas · 4 compassos'},{id:'ex6',page:61,no:6,symbols:EX6,title:'Exercício 6 · Página 61',tag:'Pausas e ligaduras',meta:'17 cabeças · 2 pausas · 3 ligaduras'}];
+function semantics(symbols){const out=[],ties=[],rests=[];let pending=null;
+ for(let i=0;i<symbols.length;i++){const [t,d,p,from,to]=symbols[i];
+  if(!(Number.isFinite(t)&&Number.isFinite(d)&&d>0))throw Error('Evento sem posição/duração válida');
+  if(p===null){if(from||to||pending!==null)throw Error('Pausa em ligadura');rests.push(i);continue;}
+  if(!Number.isInteger(p)||p<0||p>127)throw Error('MIDI inválido');
+  if(from){if(pending===null)throw Error('Ligadura sem origem');const e=out[pending];if(e.pitch!==p||Math.abs(e.end-t)>1e-7)throw Error('Ligadura de alturas/tempos diferentes');e.end=t+d;e.symbols.push(i);ties.push([i-1,i]);}
+  else{if(pending!==null)throw Error('Ligadura interrompida');out.push({start:t,end:t+d,pitch:p,symbols:[i]});}
+  pending=to?(from?pending:out.length-1):null;
+ }
+ if(pending!==null)throw Error('Ligadura termina sem resolver');return {events:out,ties,rests};}
+function assert(ok,msg){if(!ok)throw Error(msg)}
+function validate(ex){const s=ex.symbols,sem=semantics(s);assert(s.length>0,'vazio');assert(s[0][0]===0,'não começa em 0');assert(s.every(x=>x[2]===null||x[2]===64),'altura Mi4 divergente');
+ for(let b=0;b<4;b++){let cursor=b*4;for(const x of s.filter(x=>x[0]>=b*4&&x[0]<(b+1)*4)){assert(Math.abs(x[0]-cursor)<1e-7,`lacuna ou sobreposição no compasso ${b+1}`);cursor+=x[1]}assert(Math.abs(cursor-(b+1)*4)<1e-7,`duração irregular no compasso ${b+1}`)}
+ assert(Math.abs(sem.events.at(-1).end-16)<1e-7,'não termina no tempo 16');
+ assert(sem.events.length===(ex.id==='ex6'?14:5),'ataques sonoros incorretos');
+ assert(sem.ties.length===(ex.id==='ex6'?3:0),'ligaduras incorretas');
+ assert(sem.rests.length===(ex.id==='ex6'?2:0),'pausas incorretas');
+ return sem;}
+let current=0,playing=false,ctx=null,voices=[],raf=0,startAudio=0,secPerBeat=0,sourceEvents=[],cursor=0,notesBySymbol=[],generation=0;
+const semanticCache=corpus.map(validate);
+function svgElement(tag,attrs={},parent){const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);parent?.appendChild(n);return n}
+function render(){stop(false);const ex=corpus[current],sem=semanticCache[current];$('exerciseTitle').textContent=ex.title;$('musicalInfo').textContent='4/4 · Mi4 · 16 tempos';$('validation').textContent=`${ex.tag} · ${sem.events.length} ataques sonoros · ${sem.rests.length} pausas · ${sem.ties.length} ligaduras`;notesBySymbol=[];
+ $('tabs').replaceChildren();corpus.forEach((e,i)=>{const b=document.createElement('button');b.className='tab';b.setAttribute('aria-pressed',String(i===current));b.innerHTML=`${e.title}<span>${e.tag}</span>`;b.onclick=()=>{current=i;render()};$('tabs').appendChild(b)});
+ $('score').replaceChildren();for(let bar=0;bar<4;bar++)renderBar(bar,ex.symbols);
+ $('transportStatus').textContent=`Pronto · ${ex.title}`;}
+function renderBar(bar,all){const div=document.createElement('div');div.className='bar';const svg=svgElement('svg',{viewBox:'0 0 390 126',role:'img','aria-label':`Compasso ${bar+1} do exercício ${corpus[current].no}`},div);
+ svgElement('text',{x:15,y:18,'font-size':12,fill:'#69716d'},svg).textContent=`COMPASSO ${bar+1}`;
+ const top=39,space=10;for(let j=0;j<5;j++)svgElement('line',{x1:37,y1:top+j*space,x2:365,y2:top+j*space,class:'staff-line'},svg);
+ svgElement('line',{x1:37,y1:top,x2:37,y2:top+40,class:'staff-line'},svg);svgElement('line',{x1:365,y1:top,x2:365,y2:top+40,class:'staff-line'},svg);
+ if(bar===0){const sign=svgElement('text',{x:37,y:85,'font-size':58,'font-family':'Noto Music, Apple Symbols, serif',fill:'#303733'},svg);sign.textContent='𝄞';svgElement('text',{x:80,y:58,'font-size':19,'font-family':'Georgia,serif'},svg).textContent='4';svgElement('text',{x:80,y:78,'font-size':19,'font-family':'Georgia,serif'},svg).textContent='4'}
+ const x0=bar===0?115:65,step=bar===0?59:70;
+ const notes=all.map((s,i)=>({s,i})).filter(o=>o.s[0]>=bar*4&&o.s[0]<(bar+1)*4);
+ for(const {s,i} of notes){const [t,d,p,from,to]=s,x=x0+(t-bar*4)*step,y=top+40;
+   const g=svgElement('g',{'data-symbol':i,class:'symbol'},svg);notesBySymbol[i]=g;
+   if(p===null){svgElement('path',{d:`M${x-6} ${y-23}l9 4-8 10 9 5-5 9`,class:'rest'},g);continue}
+   if(d===4){svgElement('ellipse',{cx:x,cy:y,rx:11,ry:6,transform:`rotate(-20 ${x} ${y})`,class:'staff-note hollow'},g)}
+   else{svgElement('ellipse',{cx:x,cy:y,rx:d===2?9:8,ry:5.6,transform:`rotate(-20 ${x} ${y})`,class:`staff-note ${d===2?'hollow':''}`},g);svgElement('line',{x1:x+7.5,y1:y,x2:x+7.5,y2:y-32,class:'stem'},g)}
+   if(to)svgElement('path',{d:`M${x+8} ${y+12} Q${x+34} ${y+28} ${Math.min(363,x+58)} ${y+13}`,class:'tie'},svg);
+   if(from)svgElement('path',{d:`M${x-34} ${y+13} Q${x-12} ${y+27} ${x+8} ${y+13}`,class:'tie'},svg);
+ }
+ // Vigas: duas colcheias consecutivas no mesmo compasso.
+ for(let j=0;j<notes.length-1;j++){const a=notes[j].s,b=notes[j+1].s;if(a[1]===.5&&b[1]===.5&&Math.abs(a[0]+.5-b[0])<1e-6){let xa=x0+(a[0]-bar*4)*step,xb=x0+(b[0]-bar*4)*step;svgElement('rect',{x:xa+7,y:top+7,width:xb-xa,height:5,class:'beam'},svg)}}
+ for(let k=0;k<4;k++)svgElement('text',{x:x0+k*step,y:111,'text-anchor':'middle','font-size':12,fill:'#828782'},svg).textContent=String(k+1);
+ $('score').appendChild(div);
+}
+function getAudio(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();ctx.resume();return ctx}
+function stop(resetStatus=true){generation++;cancelAnimationFrame(raf);voices.forEach(v=>{try{v.stop()}catch(e){}});voices=[];playing=false;if(resetStatus&&$('transportStatus'))$('transportStatus').textContent='Reprodução interrompida';$('beatRow').querySelectorAll('span').forEach(n=>n.classList.remove('on'));notesBySymbol.forEach(n=>n?.classList.remove('note-active'));}
+function sound(midi,when,sec,volume=.11){const ac=getAudio(),osc=ac.createOscillator(),gain=ac.createGain();osc.type='sine';osc.frequency.setValueAtTime(440*Math.pow(2,(midi-69)/12),when);gain.gain.setValueAtTime(0.0001,when);gain.gain.exponentialRampToValueAtTime(volume,when+.012);gain.gain.setValueAtTime(volume,when+Math.max(.03,sec-.05));gain.gain.exponentialRampToValueAtTime(.0001,when+Math.max(.065,sec));osc.connect(gain).connect(ac.destination);osc.start(when);osc.stop(when+sec+.04);voices.push(osc)}
+function click(when,strong){const ac=getAudio(),osc=ac.createOscillator(),gain=ac.createGain();osc.type='sine';osc.frequency.setValueAtTime(strong?1000:740,when);gain.gain.setValueAtTime(.05,when);gain.gain.exponentialRampToValueAtTime(.0001,when+.06);osc.connect(gain).connect(ac.destination);osc.start(when);osc.stop(when+.065);voices.push(osc)}
+function play(){stop(false);const ac=getAudio(),events=semanticCache[current].events,gen=generation;secPerBeat=60/Number($('bpm').value);startAudio=ac.currentTime+.1;sourceEvents=events;
+ events.forEach(e=>sound(e.pitch,startAudio+e.start*secPerBeat,(e.end-e.start)*secPerBeat*.985));if($('metronome').checked){for(let b=0;b<16;b++)click(startAudio+b*secPerBeat,b%4===0)}
+ playing=true;$('transportStatus').textContent=`Tocando · ${corpus[current].title}`;
+ const draw=()=>{if(gen!==generation||!playing)return;let beat=(ac.currentTime-startAudio)/secPerBeat;
+ notesBySymbol.forEach((node,i)=>{if(!node)return;const s=corpus[current].symbols[i], e=events.find(ev=>ev.symbols.includes(i));node.classList.toggle('note-active',!!e&&beat>=e.start&&beat<e.end) });
+ const idx=Math.floor(beat)%4;$('beatRow').querySelectorAll('span').forEach((n,i)=>n.classList.toggle('on',beat>=0&&beat<16&&i===idx));
+ if(beat>=16){playing=false;notesBySymbol.forEach(n=>n?.classList.remove('note-active'));$('transportStatus').textContent='Exercício concluído';if($('loop').checked)play();return;}raf=requestAnimationFrame(draw)};raf=requestAnimationFrame(draw);
+}
+$('play').onclick=play;$('stop').onclick=()=>stop();$('bpm').oninput=()=>{$('bpmOutput').textContent=$('bpm').value};
+try {let n=0;corpus.forEach(ex=>{validate(ex);n+=4});$('testResult').textContent=`${n} verificações estruturais aprovadas`;$('testDetail').textContent='Verificados: 4 compassos de 4/4 completos, Mi4, número de ataques, pausas, ligaduras e duração total. A leitura das imagens de origem continua sendo uma etapa editorial independente.'}catch(e){$('testResult').textContent='Falhou: '+e.message;$('play').disabled=true;}
+render();
+})();
+</script>
+</body></html>
