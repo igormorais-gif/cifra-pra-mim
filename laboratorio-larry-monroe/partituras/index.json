@@ -14,12 +14,12 @@
       "musicXml": "partituras/v1-ex001.musicxml",
       "status": "pilot",
       "review": {
-        "score": false,
+        "score": true,
         "audio": false,
         "instructions": false,
         "layout": false
       },
-      "notes": "Transcrição piloto; não aprovada após dupla conferência"
+      "notes": "Ritmo confrontado visualmente com a página 7 do volume I (scan do material original, 08/11/2026). A conferência não certifica áudio, layout ou instruções."
     },
     {
       "id": "v1-ex002",
@@ -33,12 +33,12 @@
       "musicXml": "partituras/v1-ex002.musicxml",
       "status": "pilot",
       "review": {
-        "score": false,
+        "score": true,
         "audio": false,
         "instructions": false,
         "layout": false
       },
-      "notes": "Transcrição piloto; não aprovada após dupla conferência"
+      "notes": "Ritmo confrontado visualmente com a página 7 do volume I (scan do material original, 08/11/2026). A conferência não certifica áudio, layout ou instruções."
     },
     {
       "id": "v1-ex003",
@@ -52,12 +52,12 @@
       "musicXml": "partituras/v1-ex003.musicxml",
       "status": "pilot",
       "review": {
-        "score": false,
+        "score": true,
         "audio": false,
         "instructions": false,
         "layout": false
       },
-      "notes": "Transcrição piloto; não aprovada após dupla conferência"
+      "notes": "Ritmo confrontado visualmente com a página 7 do volume I (scan do material original, 08/11/2026). A conferência não certifica áudio, layout ou instruções."
     },
     {
       "id": "v1-ex006",
