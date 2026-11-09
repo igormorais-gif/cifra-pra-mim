@@ -134,7 +134,7 @@ html,body{background:var(--paper);min-height:100%;overscroll-behavior-x:none}
  <div class="notice" id="notice"></div>
 </div>
 </article>
-<p class="source">Ritmos digitais em revisão · <a href="livro.html?pagina=24">Consultar páginas originais</a>. O progresso é salvo neste navegador.</p>
+<p class="source">O progresso é salvo neste navegador · <a href="./digitalizacao.html">Estado da digitalização e MusicXML conferidos</a> · <a href="livro.html?pagina=24">Referência ao original</a></p>
 </div><div id="toast" role="status" aria-live="polite"></div>
 <script>
 (function(){
@@ -221,7 +221,7 @@ $('score').innerHTML=o.bars.length?drawScore(o):'<div class="pending-note">Esta 
 $('beats').innerHTML=Array.from({length:o.meter},function(_,i){return '<i>'+(i+1)+'</i>'}).join('');
 $('play').disabled=!o.bars.length||o.status==='c';$('complete').disabled=!o.bars.length||o.status==='c';
 $('prev').disabled=select===0;$('next').disabled=select===items.length-1;
-$('notice').textContent=o.status==='v'?'Transcrição visual de trabalho; ainda requer revisão.':o.status==='c'?'Dados com divergência editorial. Reprodução bloqueada.':o.status==='s'||o.status==='d'?'Transcrição rítmica em revisão; não tratar como edição definitiva.':o.status==='p'?'Exercício sem áudio porque ainda não foi transcrito.':''; 
+$('notice').textContent=(o.l===1&&o.n<=3)?'Ritmo conferido visualmente com o original. Reprodução sonora em desenvolvimento.':o.status==='v'?'Transcrição visual de trabalho; ainda requer revisão.':o.status==='c'?'Dados com divergência editorial. Reprodução bloqueada.':o.status==='s'||o.status==='d'?'Transcrição rítmica em revisão; não tratar como edição definitiva.':o.status==='p'?'Exercício sem áudio porque ainda não foi transcrito.':''; 
 $('play').textContent='▶ Ouvir e estudar';
 updateSummary();prepareAudio();updateAnimation(0);window.scrollTo({top:0,behavior:'smooth'});
 }
