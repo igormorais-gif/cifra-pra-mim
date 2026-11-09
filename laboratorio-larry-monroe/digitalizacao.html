@@ -1,0 +1,62 @@
+<!doctype html><html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fffefa">
+<title>Digitalização · Laboratório Larry Monroe</title>
+<style>
+:root{color-scheme:light;--paper:#fffefa;--ink:#272923;--gray:#78776f;--line:#e2ddd3;--green:#356e52;--warm:#a44c36}
+*{box-sizing:border-box}body{background:var(--paper);color:var(--ink);margin:0;font:14px/1.48 -apple-system,BlinkMacSystemFont,Segoe UI,system-ui,sans-serif}
+main{max-width:1080px;margin:auto;padding:12px 22px 70px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:8px 0 17px;border-bottom:1px solid var(--line);font-size:12px}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:4px}.mark{font-weight:800;letter-spacing:.14em;font-size:11px}
+header{padding:36px 0 18px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--warm)}
+h1{font:400 clamp(35px,6vw,57px)/1.05 Georgia,serif;letter-spacing:-.04em;margin:8px 0 11px}
+header p{max-width:720px;color:var(--gray);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:20px 0 28px}
+.stat{border-bottom:2px solid var(--line);padding:5px 0 15px}.stat b{font:normal 36px Georgia,serif;display:block}.stat span{font-size:11px;color:var(--gray)}
+.stat.ready{border-color:var(--green)}.stat.warn{border-color:#bd8a65}
+h2{font:normal 28px Georgia,serif;margin:30px 0 12px}
+.chapters{display:grid;gap:8px}.chapter{border-top:1px solid var(--line);padding:12px 0}
+.chaphead{display:flex;justify-content:space-between;align-items:center;gap:15px}.chaphead strong{font:normal 20px Georgia,serif}.chaphead span{font-size:11px;color:var(--gray)}
+.exes{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.ex{width:43px;height:45px;border:1px solid var(--line);display:grid;place-items:center;position:relative;border-radius:4px;font-size:13px}
+.ex[data-st="v"]{border-color:#64916c;color:#315c3c;background:#f1f6ef}
+.ex[data-st="b"]{border-color:#c9a897;color:#8d5139;background:#fff8f4}
+.ex[data-st="p"]{border-style:dashed;color:#b7b0a5}
+.ex small{position:absolute;bottom:1px;right:3px;font-size:8px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--gray);margin:14px 0}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#bcb7af;margin-right:5px}
+.legend .checked i{background:#48825c}.legend .blocked i{background:#b97958}.legend .pending i{background:#dfd8cd}
+.note{color:var(--gray);font-size:12px;line-height:1.65}
+.call{background:#f6f4ee;border-left:3px solid #9b644a;padding:16px 20px;margin-top:23px}
+.files{margin:20px 0}.files a{display:inline-block;padding:10px 14px;border:1px solid var(--line);border-radius:6px;margin:4px 5px 4px 0;font-size:12px}
+footer{margin-top:40px;border-top:1px solid var(--line);padding-top:13px;font-size:11px;color:var(--gray)}
+@media(max-width:600px){main{padding:10px 14px 65px}.stats{grid-template-columns:repeat(2,1fr);gap:18px}.stat b{font-size:32px}.chaphead strong{font-size:19px}header{padding-top:22px}}
+</style></head><body><main>
+<nav><a href="./caderno.html?v=10">← Voltar ao livro interativo</a><span class="mark">LARRY MONROE · OMR</span><a href="../">HUB</a></nav>
+<header><span class="eyebrow">Controle editorial · Volume I</span><h1>Da imagem à música.</h1><p>A digitalização é feita em etapas. Um exercício só recebe o estado <strong>Conferido</strong> após comparação visual com o livro; fechar a soma dos tempos ou gerar áudio não basta.</p></header>
+<section class="stats" aria-label="Situação da transcrição"><div class="stat ready"><b>03</b><span>Comparados visualmente ao original</span></div><div class="stat"><b>102</b><span>MusicXML de trabalho, ainda não conferidos</span></div><div class="stat warn"><b>07</b><span>Em correção rítmica</span></div><div class="stat"><b>47</b><span>Não transcritos</span></div></section>
+<h2>Mapa dos 159 exercícios</h2>
+<div class="legend"><span class="checked"><i></i> Conferido</span><span><i></i>Provisório</span><span class="blocked"><i></i>Em correção</span><span class="pending"><i></i>Pendente</span></div>
+<div class="chapters" id="chapters"></div>
+<section class="call"><b>Critério de publicação</b><p class="note">Transcrever → conferir durações, pausas e ligaduras → confrontar a imagem do original → validar o MusicXML → liberar no laboratório. Os primeiros três estudos da Lição 1 já passaram pela comparação visual do ritmo; os demais não devem ser tratados como partituras definitivas.</p></section>
+<h2>MusicXML conferidos</h2><div class="files">
+<a href="./partituras/v1-ex001.musicxml" download>Exercício 1 · XML</a>
+<a href="./partituras/v1-ex002.musicxml" download>Exercício 2 · XML</a>
+<a href="./partituras/v1-ex003.musicxml" download>Exercício 3 · XML</a></div>
+<p class="note">O acervo original utilizado nesta auditoria contém 372 imagens de páginas distribuídas pelos quatro volumes. A presente rodada valida somente o núcleo rítmico do Volume I. Os exercícios 8–10 da Lição 1 não são confundidos com as Lições 8–10: são seções diferentes do catálogo.</p>
+<footer>Laboratório Larry Monroe · Auditoria editorial de 08/11/2026 · Base de trabalho V7 / Caderno V10. Referência ao material enviado pelo usuário.</footer>
+</main><script>
+const raw="1:1:v|1:2:v|1:3:v|1:4:p|1:5:p|1:6:d|1:7:d|1:8:d|1:9:d|1:10:d|1:11:d|1:12:d|1:13:d|1:14:d|1:15:d|2:1:d|2:2:d|2:3:d|2:4:d|2:5:d|2:6:d|2:7:d|2:8:d|2:9:d|2:10:d|2:11:d|2:12:d|2:13:d|2:14:d|2:15:d|2:16:d|2:17:d|2:18:d|2:19:d|2:20:d|2:21:d|3:1:d|3:2:d|3:3:d|3:4:d|3:5:d|3:6:d|3:7:d|3:8:d|3:9:d|3:10:d|3:11:d|3:12:d|3:13:d|3:14:d|3:15:d|4:1:d|4:2:d|4:3:d|4:4:d|4:5:d|4:6:d|4:7:d|4:8:d|4:9:d|4:10:d|4:11:d|4:12:d|4:13:d|4:14:d|4:15:d|5:1:d|5:2:d|5:3:d|5:4:d|5:5:d|5:6:d|5:7:d|5:8:d|5:9:d|5:10:d|5:11:d|5:12:d|5:13:d|5:14:d|5:15:d|6:1:d|6:2:d|6:3:d|6:4:d|6:5:d|6:6:d|6:7:d|6:8:d|6:9:d|6:10:d|6:11:d|6:12:d|6:13:d|6:14:d|6:15:d|6:16:d|6:17:d|6:18:d|7:1:d|7:2:d|7:3:d|7:4:d|7:5:d|7:6:d|7:7:d|7:8:d|7:9:b|7:10:b|7:11:b|7:12:b|7:13:b|7:14:b|7:15:b|8:1:p|8:2:p|8:3:p|8:4:p|8:5:p|8:6:p|8:7:p|8:8:p|8:9:p|8:10:p|8:11:p|8:12:p|8:13:p|8:14:p|8:15:p|9:1:p|9:2:p|9:3:p|9:4:p|9:5:p|9:6:p|9:7:p|9:8:p|9:9:p|9:10:p|9:11:p|9:12:p|9:13:p|9:14:p|9:15:p|10:1:p|10:2:p|10:3:p|10:4:p|10:5:p|10:6:p|10:7:p|10:8:p|10:9:p|10:10:p|10:11:p|10:12:p|10:13:p|10:14:p|10:15:p";
+const mapping={v:"Conferido visualmente",d:"Prévia MusicXML",b:"Em correção",p:"Pendente"};
+const records=raw.split("|").map(x=>{const [l,n,s]=x.split(":");return {l:+l,n:+n,s}});
+const root=document.getElementById("chapters");
+for(let l=1;l<=10;l++){
+ let group=records.filter(r=>r.l===l);
+ let conf=group.filter(r=>r.s==="v").length;
+ let ready=group.filter(r=>r.s==="d").length;
+ let el=document.createElement("section");el.className="chapter";
+ el.innerHTML='<div class="chaphead"><strong>Lição '+String(l).padStart(2,"0")+'</strong><span>'+conf+' conferido(s) · '+ready+' provisório(s)</span></div><div class="exes">'+group.map(r=>'<span class="ex" data-st="'+r.s+'" title="'+mapping[r.s]+'" aria-label="Exercício '+r.n+': '+mapping[r.s]+'">'+r.n+(r.s==="v"?'<small>✓</small>':"")+'</span>').join("")+'</div>';
+ root.append(el);
+}
+</script></body></html>
