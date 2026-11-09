@@ -3,7 +3,7 @@
 <score-partwise version="4.0">
   <work><work-title>Monroe Digital - Volume 1 - Exercício 1</work-title></work>
   <movement-title>Estudos rítmicos · Exercício 1</movement-title>
-  <identification><creator type="composer">Larry Monroe</creator><miscellaneous><miscellaneous-field name="transcription-state">PILOTO, não conferido independentemente</miscellaneous-field><miscellaneous-field name="source">Workbook for Ear Training 1, página impressa 7, PDF folha 5</miscellaneous-field></miscellaneous></identification>
+  <identification><creator type="composer">Larry Monroe</creator><miscellaneous><miscellaneous-field name="transcription-state">Ritmo confrontado visualmente com o original; áudio e layout ainda pendentes de revisão</miscellaneous-field><miscellaneous-field name="source">Workbook for Ear Training 1, página impressa 7, PDF folha 5</miscellaneous-field></miscellaneous></identification>
   <part-list><score-part id="P1"><part-name>Voz</part-name><part-abbreviation>V.</part-abbreviation><score-instrument id="I1"><instrument-name>Voz</instrument-name></score-instrument></score-part></part-list>
   <part id="P1">
   <measure number="1">
