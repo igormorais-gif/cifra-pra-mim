@@ -175,7 +175,7 @@ function audioStatus(message){
 }
 async function unlock(){
  try{
-  if(navigator.audioSession)navigator.audioSession.type='playback';
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(_e){}
   const AudioCtor=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtor)throw new Error('Web Audio não disponível');
   if(!audio||audio.state==='closed'){
@@ -288,7 +288,7 @@ function playNative(all,token){
  state.stage=originalStage;
  render();
  try{
-  if(navigator.audioSession)navigator.audioSession.type='playback';
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(_e){}
   nativeClock=window.NativeGuitarAudio.create({
    events,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
    onTick:elapsed=>{
