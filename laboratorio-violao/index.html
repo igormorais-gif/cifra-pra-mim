@@ -48,6 +48,7 @@
 .loop-toggle{background:#20374a!important;border:1px solid #718da1!important;color:#e7f0f4!important}
 .loop-toggle[aria-pressed="true"]{background:#eab989!important;border-color:#efbd92!important;color:#251b16!important}
 @media(max-width:660px){.play-near-board .transport{grid-template-columns:repeat(4,minmax(0,1fr))}.play-near-board .tempo{grid-column:1/-1}.play-near-board .loop-toggle{font-size:10px;padding:7px 2px}}
+.audio-status{margin:2px 25px 8px;color:#ffc09d;font-size:11px}.audio-status[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -74,7 +75,8 @@
     <div class="stage-label"><div><div class="chord-title" id="chord">G</div><div class="chord-sub" id="name">Sol Maior</div><div class="tiny-reading" id="read">Lê-se: Sol</div></div><div class="pill-badges" id="badges"></div></div>
     <div class="wood-caption"><span> <span class="hint-dot"></span>Braço do violão · 6 cordas reais</span><span class="tiny">As bolinhas são graus intervalares</span></div>
     <div class="play-near-board" aria-label="Reprodução do violão"><div class="transport"><button class="play" id="playOne">▶ Ouvir arpejo</button><button class="play secondary" id="playAll">▶ Sequência</button><button class="play red" id="stop">■ Parar</button><button class="play loop-toggle" id="loop" type="button" aria-pressed="false" title="Repetir continuamente até Parar">↻ Loop: desligado</button><div class="tempo"><label for="bpm">Andamento</label><input id="bpm" type="range" min="55" max="160" step="5" value="100"><output id="bpmValue">100</output><span>BPM</span></div></div></div>
-<div class="board-scroller" id="boardScroll"><svg xmlns="http://www.w3.org/2000/svg" id="fretboard" class="board" viewBox="0 0 1080 387" role="img" aria-label="Braço do violão com seis cordas e quatro notas tocadas"><rect x="180" y="45" width="870" height="288" rx="12" fill="#352721"/><text x="500" y="193" fill="#e4b17b" text-anchor="middle">Carregando braço...</text></svg></div>
+<div id="audioStatus" class="audio-status" role="status" aria-live="polite" hidden></div>
+ <div class="board-scroller" id="boardScroll"><svg xmlns="http://www.w3.org/2000/svg" id="fretboard" class="board" viewBox="0 0 1080 387" role="img" aria-label="Braço do violão com seis cordas e quatro notas tocadas"><rect x="180" y="45" width="870" height="288" rx="12" fill="#352721"/><text x="500" y="193" fill="#e4b17b" text-anchor="middle">Carregando braço...</text></svg></div>
     <div class="quick-tip-near" role="status" aria-live="polite"><div class="quick-label">✧ DICA RÁPIDA</div><div class="quick-content"><strong id="hint">Tríade maior: graus 1, 3 e 5.</strong><span id="hintDetail">1B: fundamental que localiza a forma no braço.</span></div></div><div class="surface-bottom"><div><div class="notes" id="cards" aria-label="Graus e nomes das notas"></div><div class="degree-legend"><span><i style="background:#e58c42"></i>1</span><span><i style="background:#5c95cd"></i>3</span><span><i style="background:#6c78db"></i>5</span><span><i style="background:#ad66d0"></i>7</span><span><i style="background:#64ac99"></i>Tensões</span><span><i style="background:#aa8bdf"></i>1B</span></div></div><div class="rhythm"><strong>♪ ♪ ♩ ♩</strong> · colcheia, colcheia, semínima, semínima<br><span>1º, 2º e 3º graus da forma → baixo por último</span></div></div>
     
   </section>
@@ -322,7 +324,52 @@ function pluck(midi,sec,bass=false,at=null){
   osc.onended=()=>{const i=loopVoices.indexOf(osc);if(i>=0)loopVoices.splice(i,1)};
  }
 }
-async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='O navegador bloqueou o áudio. Toque novamente para ativá-lo.';return false}}
+function audioStatus(message){
+ const line=$('audioStatus');
+ if(line){line.textContent=message;line.hidden=!message}
+}
+async function unlock(){
+ try{
+  const AudioCtor=window.AudioContext||window.webkitAudioContext;
+  if(!AudioCtor)throw new Error('Web Audio não disponível');
+  if(!audio||audio.state==='closed'){
+   audio=new AudioCtor();
+   for(const key of Object.keys(sweetRooms))delete sweetRooms[key];
+  }
+  // O Safari do iPhone exige que uma fonte inicie no gesto do toque,
+  // antes de qualquer await; o ganho abaixo é inaudível.
+  const wake=audio.createOscillator(),silent=audio.createGain();
+  silent.gain.value=.00001;
+  wake.connect(silent);silent.connect(audio.destination);
+  wake.start();wake.stop(audio.currentTime+.03);
+  if(audio.state!=='running')await audio.resume();
+  if(audio.state!=='running')throw new Error('AudioContext: '+audio.state);
+  audioStatus('');
+  return true;
+ }catch(e){
+  console.error('Cifra pra Mim: falha ao iniciar áudio',e);
+  audioStatus('O áudio não foi liberado. Toque novamente em Ouvir; no iPhone, confira o volume e abra no Safari.');
+  return false;
+ }
+}
+function createAudioLoop(config){
+ if(window.SeamlessLoop&&typeof window.SeamlessLoop.create==='function')return window.SeamlessLoop.create(config);
+ // O player continua funcionando mesmo se o script de loop externo não carregar.
+ const {audio:ctx,cycleSeconds,schedule,shouldRepeat,onFinish}=config;
+ let active=true,timer=null,cycle=0,nextAt=ctx.currentTime+.10;
+ function pump(){
+  if(!active)return;
+  if(cycle>0&&!shouldRepeat()){
+   timer=setTimeout(()=>{if(active){active=false;onFinish()}},Math.max(0,(nextAt-ctx.currentTime)*1000));
+   return;
+  }
+  schedule(nextAt,cycle++);
+  nextAt+=cycleSeconds;
+  timer=setTimeout(pump,Math.max(0,(nextAt-ctx.currentTime-.15)*1000));
+ }
+ pump();
+ return {cancel(){active=false;clearTimeout(timer)}};
+}
 function visualAt(at,token,cb){
  const id=setTimeout(()=>{const i=loopHighlights.indexOf(id);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)cb()},Math.max(0,(at-audio.currentTime)*1000));
  loopHighlights.push(id);
@@ -334,7 +381,7 @@ async function play(sequence){
  const beat=60/state.bpm,phraseLength=3*beat;
  const count=sequence?route().length:1;
  const originalStage=state.stage;
- loopClock=window.SeamlessLoop.create({
+ loopClock=createAudioLoop({
   audio,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
   schedule:at=>{
    for(let j=0;j<count;j++){
