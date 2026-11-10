@@ -438,7 +438,7 @@ function writeScore(){
 function startNative(){
  if(!window.NativeSurdoAudio){status.textContent='Motor de áudio não carregou. Atualize a página.';return}
  try{
-  if(navigator.audioSession)navigator.audioSession.type='playback';
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(_e){}
   if(nativePreview){nativePreview.cancel();nativePreview=null}
   const events=eventList().map(function(e){return{at:e.phase*dur(),kind:e.kind==='Q'?'qui':'tom'}});
   const recording=current.id===2?P2_ORIGINAL_B64:current.id===4?P4_ORIGINAL_B64:null;
@@ -450,8 +450,8 @@ function startNative(){
    markFirst:BASE_FIRST_B64,markSecond:BASE_SECOND_B64,
    markMode:pulseMode,markVolume:pulseVolume,tick:pulse,sound,loop:true,
    onError:function(message){
-    status.textContent='Erro na reprodução: '+message+' · verifique o volume e toque novamente.';
     if(running)stop();
+    status.textContent='Erro na reprodução: '+message+' · verifique o volume e toque novamente.';
    }
   });
   if(nativeClock){
@@ -469,7 +469,7 @@ function auditionNative(kind){
  try{
   stop();resetPhrase();
   if(nativePreview){nativePreview.cancel();nativePreview=null}
-  if(navigator.audioSession)navigator.audioSession.type='playback';
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(_e){}
   if(!sound){sound=true;var b=$('audioToggle');b.classList.add('active');b.setAttribute('aria-pressed','true')}
   const phrase=kind==='frase'?['qui','qui','tom','tom','qui','qui','tom','tom','qui']:[kind];
   const delta=30/bpm,length=phrase.length*delta+.2;
@@ -527,7 +527,7 @@ function setTempo(v){
 }
 bpmInput.oninput=function(){setTempo(bpmInput.value)};$('minus').onclick=function(){setTempo(bpm-1)};$('plus').onclick=function(){setTempo(bpm+1)};$('offset').oninput=function(){visualOffset=Number(this.value)/1000;$('offsetVal').textContent=(this.value>0?'+':'')+this.value+' ms'};
 function initAudio(){
- if(navigator.audioSession)navigator.audioSession.type='playback';
+ try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(_e){}
  var C=window.AudioContext||window.webkitAudioContext;
  if(!C)return false;
  if(!context)context=new C({latencyHint:'interactive'});
