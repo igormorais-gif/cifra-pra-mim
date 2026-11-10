@@ -45,6 +45,7 @@
 <footer class="footer"><span>Estudo de voicings inspirado nos conceitos do livro de Sérgio Benevenuto · Diagramas próprios</span><span>Afinação Mi–Lá–Ré–Sol–Si–Mi</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer>
 </div>
 <script src="../../src/seamless-loop.js?v=8"></script>
+<script src="../../src/native-guitar-audio.js?v=1"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),SVG='http://www.w3.org/2000/svg';
@@ -153,7 +154,13 @@ function render(){let c=computed();$('generator').hidden=state.mode!=='gen';$('r
 }
 function playing(i){state.playing=i;nodes.forEach((e,j)=>e.classList.toggle('playing',i===j));document.querySelectorAll('.note-card').forEach((e,j)=>e.classList.toggle('playing',i===j))}
 let loopClock=null,loopVoices=[],loopHighlights=[];
+let nativeClock=null;
+function preferNativeAudio(){
+ const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ return !!window.NativeGuitarAudio&&(ios||new URLSearchParams(location.search).has('audioNative'));
+}
 function stop(){
+ if(nativeClock){nativeClock.cancel();nativeClock=null}
  if(loopClock){loopClock.cancel();loopClock=null}
  for(const id of loopHighlights)clearTimeout(id);
  loopHighlights=[];
@@ -167,6 +174,7 @@ function audioStatus(message){
 }
 async function unlock(){
  try{
+  if(navigator.audioSession)navigator.audioSession.type='playback';
   const AudioCtor=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtor)throw new Error('Web Audio não disponível');
   if(!audio||audio.state==='closed'){
@@ -268,8 +276,45 @@ function visualAt(at,token,callback){
  const t=setTimeout(()=>{const i=loopHighlights.indexOf(t);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)callback()},Math.max(0,(at-audio.currentTime)*1000));
  loopHighlights.push(t);
 }
+function playNative(all,token){
+ const beat=60/state.bpm,phraseLength=2*beat,count=all?stages().length:1,originalStage=state.stage;
+ const events=[];
+ for(let j=0;j<count;j++){
+  state.stage=all?j:originalStage;
+  const c=computed();
+  for(let i=0;i<4;i++)events.push({at:j*phraseLength+i*beat*.5,midi:c.midis[i],duration:beat*.5});
+ }
+ state.stage=originalStage;
+ render();
+ try{
+  if(navigator.audioSession)navigator.audioSession.type='playback';
+  nativeClock=window.NativeGuitarAudio.create({
+   events,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
+   onTick:elapsed=>{
+    if(token!==state.token)return;
+    const j=Math.min(count-1,Math.floor(elapsed/phraseLength));
+    const i=Math.min(3,Math.floor((elapsed-j*phraseLength)/(beat*.5)));
+    const nextStage=all?j:originalStage;
+    if(state.stage!==nextStage){state.stage=nextStage;render()}
+    if(state.playing!==i)playing(i);
+   },
+   onFinish:()=>{
+    if(token!==state.token)return;
+    nativeClock=null;playing(-1);
+    $('playOne').disabled=false;$('playAll').disabled=false;
+   },
+   onError:error=>audioStatus('O player do iPhone não conseguiu tocar: '+error)
+  });
+  $('playOne').disabled=true;$('playAll').disabled=true;
+ }catch(e){
+  console.error('Cifra pra Mim: áudio HTML5',e);
+  audioStatus('Falha no áudio do iPhone: '+e.message);
+  $('playOne').disabled=false;$('playAll').disabled=false;
+ }
+}
 async function play(all){
  stop();const token=state.token;
+ if(preferNativeAudio()){playNative(all,token);return;}
  if(!await unlock()||token!==state.token)return;
  $('playOne').disabled=true;$('playAll').disabled=true;
  const beat=60/state.bpm,phraseLength=2*beat,count=all?stages().length:1,initialStage=state.stage;
