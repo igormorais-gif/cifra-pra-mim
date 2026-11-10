@@ -85,6 +85,7 @@
   <footer class="foot"><span>Referência pedagógica: O Mapa dos Acordes, de Sérgio Benevenuto — tríades, pontas e localizadores</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer>
 </div>
 <script src="../src/seamless-loop.js?v=8"></script>
+<script src="../src/native-guitar-audio.js?v=1"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
@@ -259,7 +260,13 @@ function render(){let c=computed();currentComputed=c;const r=root();$('root').va
 }
 function updatePlaying(){visNodes.forEach((el,i)=>el?.classList.toggle('playing',i===state.playing));document.querySelectorAll('.note-card').forEach((el,i)=>el.classList.toggle('playing',i===state.playing))}
 let loopClock=null,loopVoices=[],loopHighlights=[];
+let nativeClock=null;
+function preferNativeAudio(){
+ const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ return !!window.NativeGuitarAudio&&(ios||new URLSearchParams(location.search).has('audioNative'));
+}
 function stop(){
+ if(nativeClock){nativeClock.cancel();nativeClock=null}
  if(loopClock){loopClock.cancel();loopClock=null}
  for(const id of loopHighlights)clearTimeout(id);
  loopHighlights=[];
@@ -330,6 +337,7 @@ function audioStatus(message){
 }
 async function unlock(){
  try{
+  if(navigator.audioSession)navigator.audioSession.type='playback';
   const AudioCtor=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtor)throw new Error('Web Audio não disponível');
   if(!audio||audio.state==='closed'){
@@ -374,8 +382,50 @@ function visualAt(at,token,cb){
  const id=setTimeout(()=>{const i=loopHighlights.indexOf(id);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)cb()},Math.max(0,(at-audio.currentTime)*1000));
  loopHighlights.push(id);
 }
+function playNative(sequence,token){
+ const beat=60/state.bpm,phraseLength=3*beat,count=sequence?route().length:1,originalStage=state.stage;
+ const durations=[.5,.5,1,1],events=[];
+ for(let j=0;j<count;j++){
+  state.stage=sequence?j:originalStage;
+  const c=computed(),midis=[...c.noteMidi,c.bass.midi];
+  let offset=0;
+  for(let i=0;i<4;i++){
+   events.push({at:j*phraseLength+offset*beat,midi:midis[i],duration:durations[i]*beat,bass:i===3});
+   offset+=durations[i];
+  }
+ }
+ state.stage=originalStage;
+ render();
+ try{
+  if(navigator.audioSession)navigator.audioSession.type='playback';
+  nativeClock=window.NativeGuitarAudio.create({
+   events,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
+   onTick:elapsed=>{
+    if(token!==state.token)return;
+    const j=Math.min(count-1,Math.floor(elapsed/phraseLength));
+    const local=elapsed-j*phraseLength;
+    const i=local<beat*.5?0:local<beat?1:local<2*beat?2:3;
+    const nextStage=sequence?j:originalStage;
+    if(state.stage!==nextStage){state.stage=nextStage;render()}
+    if(state.playing!==i){state.playing=i;updatePlaying()}
+   },
+   onFinish:()=>{
+    if(token!==state.token)return;
+    nativeClock=null;state.playing=-1;updatePlaying();
+    $('playOne').disabled=false;$('playAll').disabled=false;
+   },
+   onError:error=>audioStatus('O player do iPhone não conseguiu tocar: '+error)
+  });
+  $('playOne').disabled=true;$('playAll').disabled=true;
+ }catch(e){
+  console.error('Cifra pra Mim: áudio HTML5',e);
+  audioStatus('Falha no áudio do iPhone: '+e.message);
+  $('playOne').disabled=false;$('playAll').disabled=false;
+ }
+}
 async function play(sequence){
  stop();const token=state.token;
+ if(preferNativeAudio()){playNative(sequence,token);return;}
  if(!await unlock()||token!==state.token)return;
  $('playOne').disabled=true;$('playAll').disabled=true;
  const beat=60/state.bpm,phraseLength=3*beat;
