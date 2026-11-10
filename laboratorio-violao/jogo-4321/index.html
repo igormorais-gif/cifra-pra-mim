@@ -156,8 +156,9 @@ function playing(i){state.playing=i;nodes.forEach((e,j)=>e.classList.toggle('pla
 let loopClock=null,loopVoices=[],loopHighlights=[];
 let nativeClock=null;
 function preferNativeAudio(){
- const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
- return !!window.NativeGuitarAudio&&(ios||new URLSearchParams(location.search).has('audioNative'));
+ // O motor nativo funciona no Safari, Chrome e navegadores internos.
+ // A versão Web Audio continua acessível para diagnóstico via ?engineWeb=1.
+ return !!window.NativeGuitarAudio&&!new URLSearchParams(location.search).has('engineWeb');
 }
 function stop(){
  if(nativeClock){nativeClock.cancel();nativeClock=null}
