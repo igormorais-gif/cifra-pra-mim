@@ -27,6 +27,7 @@
  .play-near-board .transport{grid-template-columns:repeat(2,minmax(0,1fr))}
  .shell{padding-bottom:calc(164px + env(safe-area-inset-bottom,0px))}
 }
+.audio-status{margin:2px 25px 8px;color:#ffc09d;font-size:11px}.audio-status[hidden]{display:none!important}
 </style></head><body><div class="shell">
 <header class="top"><div class="brand"><span class="mark" aria-hidden="true"></span><div><h1>Cifra <em>pra Mim</em></h1><div class="subtitle">Laboratório de Transições</div><div class="instrument">VIOLÃO · JOGO DE CORDAS 4–3–2–1</div><div class="credit">Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/" target="_blank" rel="noopener noreferrer">@igmoraisb</a></div></div></div>
 <div class="header-right"><div class="modes"><button class="mode active" data-mode="trans">↝ Transições</button><button class="mode" data-mode="gen">♬ Gerador de tensões</button></div><div class="toplinks"><a href="../../">Início</a><a href="../">Voltar aos jogos 4–3–2 e 3–2–1</a></div></div></header>
@@ -35,7 +36,8 @@
 <section class="panel tension-panel" id="generator" hidden><div class="tension-row"><div><span class="label">Terça do acorde</span><div class="quality"><button data-quality="major" class="active">Maior</button><button data-quality="minor">Menor</button></div><p class="gen-msg">Acordes de quatro vozes permitem mais substituições; a fundamental pode ser omitida.</p></div><div><span class="label">Notas que entram</span><div id="tensions" class="tensions"></div><div class="presets"><button data-preset="7,9,♯11">7M · 9 · ♯11</button><button data-preset="♭7,9,13">7 · 9 · 13</button><button data-preset="♭7,♭9">7 · ♭9</button><button data-preset="6">6</button><button data-preset="">Limpar</button></div><div class="source-opts"><div><label class="label" for="seventhSource">Origem da sétima</label><select id="seventhSource" class="select"><option value="auto">Automática · 1 ou 5</option><option value="1">Substitui o 1</option><option value="5">Substitui o 5</option></select></div><div><label class="label" for="sixthSource">Origem da sexta</label><select id="sixthSource" class="select"><option value="auto">Automática · 1 ou 5</option><option value="1">Substitui o 1</option><option value="5">Substitui o 5</option></select></div></div></div><div><button class="btn primary" id="generate">Gerar voicing</button><p id="genMsg" class="gen-msg" role="status" aria-live="polite"></p></div></div></section>
 <div id="stages" class="stepbar" aria-label="Etapas da transformação"></div>
 <section class="panel hero"><div class="chordhead"><div><div id="symbol" class="symbol">E7M</div><div id="fullName" class="symbolname">Mi com sétima maior</div></div><div id="badges" class="badges"></div></div><div class="boardhead"><strong>Braço do violão · cordas 4–3–2–1</strong><span>Círculos = graus · tracejado = tônica visual</span></div><div class="play-near-board" aria-label="Reprodução do violão · jogo 4–3–2–1"><div class="transport"><button class="btn primary" id="playOne">▶ Ouvir voicing</button><button class="btn" id="playAll">▶ Percorrer as posições</button><button class="btn red" id="stop">■ Parar</button><button class="btn loop-toggle" id="loop" type="button" aria-pressed="false" title="Repetir o voicing ou a sequência até Parar">↻ Loop: desligado</button><div class="tempo"><label for="bpm">Andamento</label><input type="range" id="bpm" min="50" max="170" step="5" value="100"><output id="bpmLabel">100</output><span>BPM</span></div></div></div>
-<div class="boardscroll" id="scroll"><svg id="board" class="board" viewBox="0 0 1100 363" aria-label="Diagrama original com seis cordas, quatro notas tocadas e tônica visual"></svg></div>
+<div id="audioStatus" class="audio-status" role="status" aria-live="polite" hidden></div>
+ <div class="boardscroll" id="scroll"><svg id="board" class="board" viewBox="0 0 1100 363" aria-label="Diagrama original com seis cordas, quatro notas tocadas e tônica visual"></svg></div>
 <div class="near-tip" role="status" aria-live="polite"><div class="head">✧ DICA RÁPIDA</div><div><strong id="hint">Quatro pontas de um acorde.</strong><p id="hintDetail">A tônica visual não é tocada.</p><p class="matrix-relation" id="matrixRelation">Matriz 1513 → 1573 · 1V fixa na 6ª corda</p></div></div>
 <div class="under"><div id="cards" class="cards"></div><div class="under-info"><b>♪ ♪ ♪ ♪</b> · quatro colcheias<br>Quatro vozes, sem baixo adicional</div></div>
 </section>
@@ -159,7 +161,52 @@ function stop(){
  loopVoices=[];
  state.token++;playing(-1);$('playOne').disabled=false;$('playAll').disabled=false}
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
-async function unlock(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();return true}catch(e){$('hintDetail').textContent='Áudio bloqueado pelo navegador. Toque novamente para ativar.';return false}}
+function audioStatus(message){
+ const line=$('audioStatus');
+ if(line){line.textContent=message;line.hidden=!message}
+}
+async function unlock(){
+ try{
+  const AudioCtor=window.AudioContext||window.webkitAudioContext;
+  if(!AudioCtor)throw new Error('Web Audio não disponível');
+  if(!audio||audio.state==='closed'){
+   audio=new AudioCtor();
+   for(const key of Object.keys(sweetRooms))delete sweetRooms[key];
+  }
+  // O Safari do iPhone exige que uma fonte inicie no gesto do toque,
+  // antes de qualquer await; o ganho abaixo é inaudível.
+  const wake=audio.createOscillator(),silent=audio.createGain();
+  silent.gain.value=.00001;
+  wake.connect(silent);silent.connect(audio.destination);
+  wake.start();wake.stop(audio.currentTime+.03);
+  if(audio.state!=='running')await audio.resume();
+  if(audio.state!=='running')throw new Error('AudioContext: '+audio.state);
+  audioStatus('');
+  return true;
+ }catch(e){
+  console.error('Cifra pra Mim: falha ao iniciar áudio',e);
+  audioStatus('O áudio não foi liberado. Toque novamente em Ouvir; no iPhone, confira o volume e abra no Safari.');
+  return false;
+ }
+}
+function createAudioLoop(config){
+ if(window.SeamlessLoop&&typeof window.SeamlessLoop.create==='function')return window.SeamlessLoop.create(config);
+ // O player continua funcionando mesmo se o script de loop externo não carregar.
+ const {audio:ctx,cycleSeconds,schedule,shouldRepeat,onFinish}=config;
+ let active=true,timer=null,cycle=0,nextAt=ctx.currentTime+.10;
+ function pump(){
+  if(!active)return;
+  if(cycle>0&&!shouldRepeat()){
+   timer=setTimeout(()=>{if(active){active=false;onFinish()}},Math.max(0,(nextAt-ctx.currentTime)*1000));
+   return;
+  }
+  schedule(nextAt,cycle++);
+  nextAt+=cycleSeconds;
+  timer=setTimeout(pump,Math.max(0,(nextAt-ctx.currentTime-.15)*1000));
+ }
+ pump();
+ return {cancel(){active=false;clearTimeout(timer)}};
+}
 // Ambiência curta e discreta: impulso estéreo criado uma vez por instrumento.
 // Roda inteiramente em Web Audio, sem downloads, sem dependências e sem tocar em outros apps.
 const sweetRooms={};
@@ -226,7 +273,7 @@ async function play(all){
  if(!await unlock()||token!==state.token)return;
  $('playOne').disabled=true;$('playAll').disabled=true;
  const beat=60/state.bpm,phraseLength=2*beat,count=all?stages().length:1,initialStage=state.stage;
- loopClock=window.SeamlessLoop.create({
+ loopClock=createAudioLoop({
   audio,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
   schedule:at=>{
    for(let j=0;j<count;j++){
