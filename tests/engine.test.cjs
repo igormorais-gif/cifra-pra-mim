@@ -24,7 +24,22 @@ test("sétima maior e baixo invertido são distintos",()=>{
 });
 
 test("sexta com #11 não recebe sétima artificial",()=>{
-  assert.equal(tones("Bb6(#11)"),"B♭:1, D:3, F:5, E:♯11, G:6");
+  assert.equal(tones("Bb6(#11)"),"G:6, D:3, F:5, E:♯11");
+});
+
+test("sexta substitui a fundamental da mão direita, descendo 3 ST",()=>{
+  assert.equal(tones("C6"),"A:6, E:3, G:5");
+  assert.equal(tones("Am6"),"F♯:6, C:♭3, E:5");
+  const result=engine.generate("C C6 F6 G6");
+  for(let i=1;i<result.chords.length;i++){
+    assert.equal(result.chords[i].tones.length,3);
+    assert.equal(result.originalTrack[i].notes.length,3);
+    for(const track of result.adapted)assert.equal(track[i].notes.length,3);
+  }
+  assert.equal(result.originalTrack[1].notes[0].label,"6");
+  assert.equal(result.originalTrack[1].notes[0].midi,
+    result.originalTrack[0].notes[0].midi-3);
+  assert.equal(tones("C6(9)"),"D:9, E:3, A:6");
 });
 
 test("extensões e alterações são reconhecidas",()=>{
