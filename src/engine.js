@@ -50,7 +50,20 @@ window.CifraEngine = (function createEngine(){
       if(sus&&sus===4)tones[tones.findIndex(t=>t.number===4)]=e;else tones.push(e);
     }
     if(thirteenth){tones[tones.findIndex(t=>t.number===5)]=degree(thirteenth,thirteenth==="♭13"?20:21,13);}
-    if(sixth)tones.push(degree("6",9,6));
+    if(sixth){
+      // Sexta: a fundamental da M.D. desce 3 semitons (1 -> 6).
+      // A sexta substitui um grau, não cria automaticamente uma quarta voz.
+      const sixthTone=degree("6",9,6);
+      const rootIndex=tones.findIndex(t=>t.number===1);
+      if(rootIndex!==-1)tones[rootIndex]=sixthTone;
+      else{
+        // Quando a fundamental já foi substituída (7, 9 etc.),
+        // a sexta pode tomar o lugar da quinta, preservando três vozes.
+        const fifthIndex=tones.findIndex(t=>t.number===5);
+        if(fifthIndex!==-1)tones[fifthIndex]=sixthTone;
+        else tones.push(sixthTone);
+      }
+    }
     const unique=[];for(const tone of tones){if(!unique.some(t=>t.semitones===tone.semitones))unique.push({...tone,name:spell(root,tone.number,tone.semitones)})}
     if(unique.length>5)throw Error("Acorde extenso demais para esta versão: "+raw);
     return {raw:source,root,bass,rootPc:pitch(root),bassPc:pitch(bass),tones:unique,signature:unique.map(t=>t.label).join(" – ")};
@@ -67,7 +80,7 @@ window.CifraEngine = (function createEngine(){
   function hasClash(bass,notes){return notes.some(n=>[1,13].includes(Math.abs(n.midi-bass)));}
   function candidates(chord){
     const root=60+chord.rootPc;
-    const base=chord.tones.map((tone,index)=>({...tone,index,midi:root+tone.semitones})).sort((a,b)=>a.midi-b.midi);
+    const base=chord.tones.map((tone,index)=>({...tone,index,midi:root+tone.semitones-(tone.number===6?12:0)})).sort((a,b)=>a.midi-b.midi);
     const out=[];
     for(let k=0;k<base.length;k++){
       const order=base.slice(k).concat(base.slice(0,k).map(x=>({...x,midi:x.midi+12})));
@@ -101,7 +114,7 @@ window.CifraEngine = (function createEngine(){
       // um/dois semitons ABAIXO da fundamental original, nunca uma oitava acima.
       const root=60+chord.rootPc;
       const base=chord.tones.map((tone,index)=>({
-        ...tone,index,midi:root+tone.semitones-(tone.number===7?12:0)
+        ...tone,index,midi:root+tone.semitones-([6,7].includes(tone.number)?12:0)
       })).sort((a,b)=>a.midi-b.midi);
       const turn=mod(origin,3);
       const rotated=base.slice(turn).concat(base.slice(0,turn).map(n=>({...n,midi:n.midi+12})));
