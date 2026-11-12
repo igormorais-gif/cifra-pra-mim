@@ -83,7 +83,62 @@
 </section>
 <div class="below"><section class="panel subpanel"><h3>Formas Originais → Adaptando Pontas</h3><p>Tríades nas formas 135, 351 e 513. As tensões substituem graus conforme o método Arranja pra Mim; quando necessário, o voicing pode chegar a quatro notas.</p></section><section class="panel subpanel"><h3>Legenda dos graus</h3><div class="legend"><span><i style="background:#e58c42"></i>1</span><span><i style="background:#5c95cd"></i>3</span><span><i style="background:#6c78db"></i>5</span><span><i style="background:#ad66d0"></i>7</span><span><i style="background:#64ac99"></i>Tensões</span></div></section></div>
 <footer class="foot"><span>Cifra pra Mim · Laboratório de Piano · Afinação temperada · Som sintetizado</span><span>Desenvolvido por Igor Morais · <a href="https://www.instagram.com/igmoraisb/">@igmoraisb</a></span></footer></div>
-<script src="../src/seamless-loop.js?v=8"></script>
+<script>
+/* Sequenciador compartilhado: o áudio usa AudioContext.currentTime,
+   nunca o instante de retorno de setTimeout como início da próxima volta. */
+(function(root,factory){
+ const api=factory();
+ if(typeof module!=="undefined"&&module.exports)module.exports=api;
+ if(root)root.SeamlessLoop=api;
+})(typeof globalThis!=="undefined"?globalThis:this,function(){
+ "use strict";
+ function create({audio,cycleSeconds,schedule,shouldRepeat=()=>false,onFinish=()=>{},lead=.09,horizon=.65,interval=25}){
+  if(!audio||!Number.isFinite(audio.currentTime))throw new Error("AudioContext necessário");
+  if(!(cycleSeconds>0)||!Number.isFinite(cycleSeconds))throw new RangeError("Duração do ciclo inválida");
+  if(typeof schedule!=="function")throw new TypeError("É necessário agendar os sons");
+  let nextAt=audio.currentTime+lead,cycle=0,running=true,finished=false;
+  let timer=null,finishTimer=null,lastEnd=nextAt;
+  const planned=[];
+  function finish(){
+   if(finished)return;
+   finished=true;
+   if(timer!==null)clearTimeout(timer);
+   if(finishTimer!==null)clearTimeout(finishTimer);
+   timer=null;finishTimer=null;
+   onFinish();
+  }
+  function pump(){
+   if(!running)return;
+   while(running&&nextAt<=audio.currentTime+horizon){
+    if(cycle>0&&!shouldRepeat()){
+     running=false;
+     finishTimer=setTimeout(finish,Math.max(0,(lastEnd-audio.currentTime)*1000+8));
+     return;
+    }
+    schedule(nextAt,cycle);
+    planned.push(nextAt);
+    if(planned.length>32)planned.shift(); // histórico limitado: loop pode ficar horas ligado
+    lastEnd=nextAt+cycleSeconds;
+    nextAt=lastEnd;cycle++;
+   }
+   if(running)timer=setTimeout(pump,interval);
+  }
+  pump();
+  return{
+   cancel(){
+    running=false;finished=true;
+    if(timer!==null)clearTimeout(timer);
+    if(finishTimer!==null)clearTimeout(finishTimer);
+    timer=null;finishTimer=null;
+   },
+   get planned(){return planned.slice()},
+   get active(){return running}
+  };
+ }
+ return{create};
+});
+
+</script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
@@ -194,6 +249,11 @@ function compute(){
 }
 function svg(type,attr={},parent){const e=document.createElementNS(NS,type);for(const [k,v] of Object.entries(attr))e.setAttribute(k,v);parent.appendChild(e);return e}
 let nodes=[],audio=null;
+// Safari, navegadores dentro de apps e iPhone: reproduzir como arquivo WAV local.
+// O som é inteiramente gerado aqui; não depende de servidor, sample ou biblioteca.
+const nativePlayback=/iPhone|iPad|iPod/i.test(navigator.userAgent)||
+ (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+let nativeAudio=null,nativeUrl=null,nativeTimer=null;
 function drawKeys(id,played,hand){const board=$(id);board.replaceChildren();let whiteCount=21,start=60,anchor=Math.min(...played.map(x=>x.midi));
  start=(Math.floor((anchor-(hand==='lh'?9:5))/12)*12);while(pc(start)!==0)start--;
  // For left hand, keep the reference in the center-left portion of the keyboard.
@@ -239,6 +299,9 @@ function markPlaying(hand,index){state.playing={hand,index};nodes.forEach(n=>{n.
 function markRightHandChord(){state.playing={hand:'rh',index:'all'};nodes.forEach(n=>{n.el.classList.toggle('played',n.hand==='rh')});for(const [id,hand] of [['rightCards','rh']])Array.from($(id).children).forEach(e=>e.classList.toggle('playing',hand==='rh'))}
 let loopClock=null,loopVoices=[],loopHighlights=[];
 function stop(){
+ if(nativeTimer!==null){clearInterval(nativeTimer);nativeTimer=null}
+ if(nativeAudio){try{nativeAudio.pause();nativeAudio.onended=null;nativeAudio.removeAttribute('src');nativeAudio.remove()}catch(e){}nativeAudio=null}
+ if(nativeUrl){URL.revokeObjectURL(nativeUrl);nativeUrl=null}
  if(loopClock){loopClock.cancel();loopClock=null}
  for(const id of loopHighlights)clearTimeout(id);
  loopHighlights=[];
@@ -315,7 +378,114 @@ function sound(midi,sec,bass=false,at=null){
   osc.onended=()=>{const i=loopVoices.indexOf(osc);if(i>=0)loopVoices.splice(i,1)};
  }
 }
-function playNote(midi,sec,bass){if(unlock())sound(midi,sec,bass)}
+
+function wavFromEvents(events,seconds){
+ // Sintetizador de piano sem Web Audio; fornece um WAV tocável por HTMLAudioElement.
+ const rate=22050,frames=Math.max(1,Math.ceil(Math.min(70,seconds)*rate));
+ const samples=new Float32Array(frames);
+ for(const event of events){
+  const start=Math.max(0,Math.floor(event.when*rate));
+  const length=Math.max(.28,event.length+.25);
+  const end=Math.min(frames,Math.ceil((event.when+length)*rate));
+  const hz=440*Math.pow(2,(event.midi-69)/12);
+  if(!Number.isFinite(hz)||hz<=0)continue;
+  const w=2*Math.PI*hz/rate;
+  for(let i=start;i<end;i++){
+   const t=(i-start)/rate;
+   const attack=Math.min(1,t*95);
+   const decay=Math.exp(-t*(event.bass?1.35:1.65));
+   const release=Math.min(1,(end-i)/(rate*.06));
+   const tone=Math.sin(w*(i-start))*.77+Math.sin(2*w*(i-start))*.17+Math.sin(3*w*(i-start))*.06;
+   samples[i]+=tone*attack*decay*release*.42;
+  }
+ }
+ const bytes=new ArrayBuffer(44+frames*2),view=new DataView(bytes);
+ function word(at,value){view.setUint32(at,value,true)}
+ function short(at,value){view.setUint16(at,value,true)}
+ function id(at,value){for(let i=0;i<4;i++)view.setUint8(at+i,value.charCodeAt(i))}
+ id(0,'RIFF');word(4,36+frames*2);id(8,'WAVE');id(12,'fmt ');
+ word(16,16);short(20,1);short(22,1);word(24,rate);word(28,rate*2);short(32,2);short(34,16);
+ id(36,'data');word(40,frames*2);
+ for(let i=0;i<frames;i++){
+  const value=Math.tanh(samples[i]*1.3);
+  view.setInt16(44+i*2,Math.round(Math.max(-1,Math.min(1,value))*32767),true);
+ }
+ return new Blob([bytes],{type:'audio/wav'});
+}
+function startNative(events,duration,mode='note',token=state.token){
+ try{
+  if(!events.length)throw Error('Nenhuma nota para reproduzir');
+  const blob=wavFromEvents(events,duration);
+  nativeUrl=URL.createObjectURL(blob);
+  const player=document.createElement('audio');
+  player.setAttribute('playsinline','');
+  player.preload='auto';
+  player.src=nativeUrl;
+  player.loop=state.loop&&mode!=='note';
+  player.volume=1;
+  player.style.display='none';
+  document.body.appendChild(player);
+  nativeAudio=player;
+  const labels=events.slice().sort((a,b)=>a.when-b.when);
+  let lastVisual='';
+  nativeTimer=setInterval(()=>{
+   if(token!==state.token||!nativeAudio||nativeAudio.paused)return;
+   const time=nativeAudio.currentTime;
+   if(mode==='all'){
+    const currentStage=Math.min(stages().length-1,Math.floor(time/(duration/stages().length)));
+    if(state.stage!==currentStage){state.stage=currentStage;render();lastVisual=''}
+   }
+   const active=labels.filter(e=>e.when<=time+.025&&e.when+Math.max(.23,e.length) >time);
+   if(!active.length)return;
+   const latest=active[active.length-1];
+   const identity=latest.when+':'+latest.index+':'+latest.stage;
+   if(identity===lastVisual)return;
+   lastVisual=identity;
+   if(latest.index===-1)markRightHandChord();else if(latest.index>=0)markPlaying('rh',latest.index);
+  },65);
+  player.onended=()=>{
+   if(token!==state.token)return;
+   if(nativeTimer!==null){clearInterval(nativeTimer);nativeTimer=null}
+   ['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=false);
+   state.playing=null;
+  };
+  const result=player.play();
+  if(result&&typeof result.catch==='function')result.catch(()=>{
+   if(token===state.token)$('tipDetail').textContent='O navegador impediu o som. Toque novamente no botão de reprodução e confira o volume do aparelho.';
+  });
+  return true;
+ }catch(error){
+  $('tipDetail').textContent='Não foi possível reproduzir o piano neste navegador.';
+  stop();return false;
+ }
+}
+function performNative(mode,token){
+ const beat=60/state.bpm,stageLength=mode==='chord'?beat*2.1:beat*3.2;
+ const count=mode==='all'?stages().length:1;
+ const selectedStage=state.stage,events=[];
+ try{
+  for(let j=0;j<count;j++){
+   state.stage=mode==='all'?j:selectedStage;
+   const chord=compute();
+   const when=j*stageLength;
+   if(mode==='chord'){
+    for(const midi of chord.rightMidi)events.push({midi,when,length:beat*1.85,bass:false,index:-1,stage:j});
+   }else{
+    const step=beat*.56;
+    chord.rightMidi.forEach((midi,i)=>events.push({midi,when:when+i*step,length:beat*1.20,bass:false,index:i,stage:j}));
+   }
+  }
+ }finally{state.stage=selectedStage}
+ if(mode==='all'){state.stage=0;render()}
+ ['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=true);
+ const duration=stageLength*count;
+ if(!startNative(events,duration,mode,token))return;
+}
+function playNote(midi,sec,bass){
+ if(nativePlayback){startNative([{midi,when:0,length:sec,bass,index:0,stage:0}],Math.max(.7,sec+.28));return}
+ if(unlock())sound(midi,sec,bass);
+ else startNative([{midi,when:0,length:sec,bass,index:0,stage:0}],Math.max(.7,sec+.28));
+}
 function visualAt(at,token,cb){
  const delay=Math.max(0,(at-audio.currentTime)*1000);
  const handle=setTimeout(()=>{const i=loopHighlights.indexOf(handle);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)cb()},delay);
@@ -323,8 +493,9 @@ function visualAt(at,token,cb){
 }
 async function perform(mode){
  stop();const token=state.token;
- // Web Audio deve ser ativado pela ação do usuário no iPhone.
- if(!unlock())return;
+ // Evita bloqueio de Web Audio em iPhone e navegadores embutidos em aplicativos.
+ if(nativePlayback){performNative(mode,token);return}
+ if(!unlock()){performNative(mode,token);return}
  ['playChord','playArp','playSequence'].forEach(id=>$(id).disabled=true);
  const beat=60/state.bpm,stageLength=mode==='chord'?beat*2.1:beat*3.2;
   const count=mode==='all'?stages().length:1;
@@ -375,7 +546,7 @@ $('prevStage').onclick=()=>{if(state.stage<=0)return;stop();state.stage--;render
 $('generate').onclick=generateNow;
 $('bpm').oninput=e=>{state.bpm=Number(e.target.value);$('bpmLabel').textContent=state.bpm};
 $('playChord').onclick=()=>perform('chord');$('playArp').onclick=()=>perform('arp');$('playSequence').onclick=()=>perform('all');$('stop').onclick=stop;
-$('loop').onclick=()=>{state.loop=!state.loop;$('loop').setAttribute('aria-pressed',String(state.loop));$('loop').textContent=state.loop?'↻ Loop: ligado':'↻ Loop: desligado'};
+$('loop').onclick=()=>{state.loop=!state.loop;$('loop').setAttribute('aria-pressed',String(state.loop));$('loop').textContent=state.loop?'↻ Loop: ligado':'↻ Loop: desligado';if(nativeAudio)nativeAudio.loop=state.loop};
 window.addEventListener('pagehide',stop);
 window.CifraPraMimPiano={
  get:()=>{const c=compute();return{root:state.root,form:state.form,mode:state.mode,stage:state.stage,chord:c.chord.symbol,referenceBass:{degree:'1',midi:c.bass,name:c.bassName},right:c.rightDegrees.map((degree,i)=>({degree,midi:c.rightMidi[i],name:c.rightNames[i]})),total:c.count,omitted:c.omitted,warning:c.warnings.join(' '),error:state.error||c.error}},
