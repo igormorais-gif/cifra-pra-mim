@@ -121,9 +121,14 @@ async function run() {
 
     await page.locator('#chapters [data-l="6"]').click();
     await page.waitForFunction(() => document.querySelector('#instruction').textContent.startsWith('3/4'));
+    assert.deepEqual(await readSystems(), [4]);
+    await page.locator('#exstrip [data-n="7"]').click();
+    await page.waitForFunction(() => document.querySelectorAll('.system').length === 2);
+    assert.deepEqual(await readSystems(), [4, 4]);
     await page.locator('#conductor-toggle').click();
     await page.locator('#play').tap();
     await page.waitForFunction(() => document.querySelector('audio').currentTime > 1.65);
+    await matchScore(3, 2.25);
     assert.equal(await page.locator('#beats > span:not(.subdivision)').count(), 3);
     assert.match(await page.locator('#conductor-meter').textContent(), /3\/4/);
     await page.locator('#complete').click();

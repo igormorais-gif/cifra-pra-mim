@@ -16,6 +16,14 @@
     "4-15": [6, "q[ee][ee]q"]
   };
   const cache = new Map();
+  // Longer beam groups and adjacent separate beams checked on pp. 41–43 and 60.
+  const sourceBeams = {
+    '5-2': { 0: [[2, 3, 4, 5]], 2: [[0, 1, 2, 3]] },
+    '5-4': { 0: [[0, 1], [3, 4, 5, 6]] },
+    '5-11': { 0: [[0, 1, 2, 3], [4, 5]], 1: [[1, 2, 3, 4]], 3: [[0, 1, 2, 3], [4, 5]] },
+    '5-15': { 6: [[0, 1], [3, 4, 5, 6]] },
+    '7-2': { 0: [[1, 2]], 1: [[2, 3]] }
+  };
   const close = (a, b) => Math.abs(a - b) < .00001;
   const children = (element, name) => element ? [...element.children].filter(child => child.localName === name) : [];
   const first = (element, name) => children(element, name)[0];
@@ -174,7 +182,7 @@
 
   async function load(exercise) {
     const systems = root.MonroeSystems?.[exercise.l + "-" + exercise.n] ?? null;
-    const initial = { ...exercise, meter: meterFor(exercise), systems };
+    const initial = { ...exercise, meter: meterFor(exercise), systems, timeSymbol: exercise.l === 5 ? 'common' : '' };
     const file = exercise.bars.length ? fileFor(exercise) : null;
     if (!file) return initial;
     if (!cache.has(file)) {
@@ -253,6 +261,19 @@
       cursor += note.d;
       return { ...note, on, type, dots, y, isFullRest };
     });
+  }
+
+  function reviewedBeams(bar, groups) {
+    if (!groups) return bar;
+    const marked = bar.map(note => ({ ...note, beams: [] }));
+    for (const group of groups) {
+      group.forEach((index, position) => {
+        if (marked[index]?.d === 0.5) {
+          marked[index].beams = [position === 0 ? 'begin' : position === group.length - 1 ? 'end' : 'continue'];
+        }
+      });
+    }
+    return marked;
   }
 
   const line = (x1, y1, x2, y2, width = 1, color = ink, extra = "") =>
@@ -450,7 +471,8 @@
     const length = numerator * 4 / denominator;
     const beatUnit = denominator === 8 && numerator >= 6 && numerator % 3 === 0 ? 1.5 : 4 / denominator;
     const clef = exercise.clef || "G";
-    const bars = exercise.bars.map((bar, index) => normalizeBar(bar, index * length, length, clef));
+    const beamGroups = sourceBeams[exercise.l + '-' + exercise.n];
+    const bars = exercise.bars.map((bar, index) => normalizeBar(reviewedBeams(bar, beamGroups?.[index]), index * length, length, clef));
     const minBarWidth = Math.max(118, ...bars.map(bar => {
       const gaps = bar.slice(0, -1).map(event => length / event.d * (event.dots ? 25 : 19) + 30);
       return Math.ceil(Math.max(118, ...gaps));
