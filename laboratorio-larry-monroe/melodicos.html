@@ -255,6 +255,9 @@ audio.addEventListener('pause',()=>{$('play').textContent='▶ Tocar';cancelAnim
 audio.addEventListener('seeked',visual);
 audio.addEventListener('ended',()=>{$('play').textContent='▶ Tocar';visual()});
 audio.addEventListener('error',()=>{$('status').textContent='Erro ao reproduzir este áudio. Tente selecionar a leitura novamente.'});
-select(Math.max(0,all.findIndex(x=>x.l===1&&x.ex===1)));
+const params=new URLSearchParams(location.search);
+const lesson=Number(params.get('licao')||1),exercise=Number(params.get('exercicio')||1);
+const initial=all.findIndex(x=>x.l===lesson&&x.ex===exercise);
+select(Math.max(0,initial));
 })();
 </script></body></html>
