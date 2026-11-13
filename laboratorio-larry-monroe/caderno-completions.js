@@ -57,7 +57,7 @@ const codes = {A:['n',4],B:['n',3],C:['n',2],D:['n',1.5],E:['n',1],F:['n',.5],P:
 const catalog = root.MonroeCatalog;
 if (!Array.isArray(catalog)) throw Error('MonroeCatalog indisponivel');
 let added = 0;
-for (const row of raw.trim().split('\\n')) {
+for (const row of raw.trim().split('\n')) {
  const [l,n,page,meter,serialized] = row.trim().split(',');
  const original = catalog.find(item => item.l===+l && item.n===+n);
  if (!original) throw Error('Exercicio nao catalogado '+l+'-'+n);
