@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fffefa">
+<title>Larry Monroe — Caderno Melódico</title>
+<style>
+:root{--paper:#fffefa;--ink:#282a26;--muted:#716f69;--line:#ded9d0;--accent:#a54835;--green:#365c42}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.3;cursor:not-allowed}a{color:inherit;text-underline-offset:3px}
+header{display:flex;align-items:center;justify-content:space-between;gap:13px;padding:15px clamp(16px,4vw,60px);border-bottom:1px solid var(--line)}
+.brand{font-size:12px;letter-spacing:.15em;font-weight:800}.navlinks{display:flex;align-items:center;gap:15px;flex-wrap:wrap;font-size:12px}
+.intro{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:27px clamp(16px,4vw,60px) 16px}
+.eyebrow{font-size:10px;letter-spacing:.17em;color:var(--accent);font-weight:800;text-transform:uppercase}
+h1{font:400 clamp(32px,5vw,52px)/1.06 Georgia,serif;letter-spacing:-.04em;margin:8px 0 8px}.intro p{font-size:12px;color:var(--muted);margin:0}
+.progress{min-width:104px;text-align:right}.progress strong{font:400 27px Georgia,serif}.progress span{display:block;color:var(--muted);font-size:11px}
+.bar{height:4px;border-radius:4px;background:#e5e1d9;margin-top:6px;overflow:hidden}.bar i{height:100%;display:block;width:0;background:var(--green)}
+.section{padding:8px clamp(16px,4vw,60px) 5px;font-size:10px;color:var(--muted);letter-spacing:.13em;text-transform:uppercase;font-weight:700}
+.lessons{display:flex;gap:8px;overflow-x:auto;padding:5px clamp(16px,4vw,60px) 16px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.lessons button{flex:0 0 118px;text-align:left;padding:11px 13px;border:1px solid #dcd7ce;border-radius:5px;background:#faf8f3;color:var(--ink)}
+.lessons button[aria-current=true]{background:#29342e;border-color:#29342e;color:#fff}.lessons small{display:block;font-size:10px;opacity:.75}
+.lessons b{font:400 21px Georgia,serif;display:block;margin:3px 0}
+article{padding:21px clamp(16px,4vw,60px) 55px;min-height:75vh}
+.booktop{font:italic 13px Georgia,serif;color:var(--muted);border-bottom:1px solid var(--line);padding:0 0 13px;display:flex;justify-content:space-between;gap:8px}
+.bookhead{display:flex;gap:15px;align-items:start;justify-content:space-between;padding:20px 0 11px}
+h2{font:400 clamp(26px,4vw,38px) Georgia,serif;margin:6px 0}.subtitle{font-size:12px;color:var(--muted)}.source{font-size:12px;white-space:nowrap;align-self:center}
+.strip{display:flex;gap:6px;overflow-x:auto;padding:10px 0 20px;scrollbar-width:thin}
+.strip button{flex:0 0 auto;min-width:43px;height:41px;border:1px solid #dad5cc;border-radius:21px;color:var(--ink);background:none;font-size:12px}
+.strip button[aria-current=true]{color:#fff;background:#292d28;border-color:#292d28}
+.strip button.completed:not([aria-current=true]){border-color:#8bb39b;background:#edf4ec;color:#285638}
+.playerrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:5px 0 13px}
+.play{border:0;border-radius:5px;background:#27372d;color:#fff;padding:12px 20px;font-weight:700;min-width:130px}
+.ghost{background:transparent;border:1px solid #d7d1c7;border-radius:5px;padding:11px 13px;color:var(--ink)}
+.done{color:var(--green)}
+.settings{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-left:auto}
+.settings label{display:flex;align-items:center;gap:5px}.settings input[type=range]{width:110px;accent-color:var(--green)}
+.settings input[type=checkbox]{accent-color:var(--green)}
+.staff{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:21px 0 10px;min-height:157px}
+.musicline{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;min-height:122px}
+.score-window{width:max-content;min-width:100%}
+.system{width:calc(var(--system-width,720px) * var(--score-zoom,1));margin:4px 0 8px}
+.system svg{display:block;width:100%;height:auto}
+.score-event.current{color:var(--accent)}
+.score-event.current [stroke]:not([stroke="none"]){stroke:var(--accent)}
+.score-event.current [fill]:not([fill="none"]):not([fill="#fffef9"]){fill:var(--accent)}
+.score-event.current ellipse[fill="#fffef9"]{stroke:var(--accent)}
+.footmeta{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted);margin:11px 0 0}
+footer{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:18px;margin-top:24px;font:italic 16px Georgia,serif}
+footer button{background:transparent;border:0;color:var(--ink);padding:10px 0;font:inherit}
+#status{font-size:11px;color:var(--muted);margin:6px 0 0}
+#source-status{max-width:750px;font-size:11px;color:var(--muted);margin:13px 0 0}
+.pending-note{color:var(--muted);font:16px Georgia,serif;padding:33px 0;text-align:center}
+@media(max-width:660px){header{padding:12px 14px}.intro{padding:20px 14px 12px}.section{padding-left:14px;padding-right:14px}.lessons{padding-left:14px;padding-right:14px}.lessons button{flex-basis:104px;padding:10px}.progress strong{font-size:23px}article{padding:15px 14px 80px}.settings{width:100%;margin-left:0}.source{white-space:normal;text-align:right}.bookhead h2{font-size:29px}.playerrow{gap:7px}}
+</style>
+</head>
+<body>
+<header><div class="brand">LARRY MONROE <span style="color:#888">/ CADERNO</span></div><nav class="navlinks"><a href="../">HUB</a><a href="./">Rítmicos</a><a href="./catalogo.html">Volumes</a></nav></header>
+<section class="intro"><div><div class="eyebrow">Workbook for Ear Training · Volume I</div><h1>Estudos melódicos.</h1><p>Leia, escute e avance pelas dez lições.</p></div>
+<div class="progress"><strong id="pct">0%</strong><span id="count">0 de 0 concluídos</span><div class="bar"><i id="progress-bar"></i></div></div></section>
+<div class="section">Lições</div>
+<nav id="lessons" class="lessons" aria-label="Escolher lição"></nav>
+<article>
+<div class="booktop"><span id="lesson-title">Lição 1 · Estudos melódicos</span><span id="lesson-count"></span></div>
+<div class="bookhead"><div><div class="eyebrow" id="type">Estudo melódico</div><h2 id="title">Exercício 1</h2><div class="subtitle" id="page">Volume I</div></div><a class="source" id="original" href="./livro.html" target="_blank" rel="noopener">Ver página original</a></div>
+<nav class="strip" id="studies" aria-label="Leituras da lição"></nav>
+<div class="playerrow">
+<button id="play" class="play" type="button" disabled>▶ Tocar</button>
+<button id="restart" class="ghost" type="button" disabled aria-label="Reiniciar reprodução">↺</button>
+<button id="complete" class="ghost done" type="button">✓ Concluir</button>
+<div class="settings"><label><b id="bpm-label">80</b> BPM <input id="bpm" type="range" min="40" max="160" step="5" value="80"></label>
+<label><input id="metro" type="checkbox" checked> Metrônomo</label>
+<label><input id="loop" type="checkbox"> Loop</label></div>
+</div>
+<div class="staff"><div class="musicline" id="score" role="region" aria-label="Partitura de leitura horizontal" tabindex="0"><div class="pending-note">Preparando partitura…</div></div></div>
+<p id="status" role="status">Selecione uma leitura.</p>
+<div class="footmeta"><span id="source-status">Transcrição em revisão.</span><span id="ordinal"></span></div>
+<footer><button id="prev">← Anterior</button><button id="next">Próxima →</button></footer>
+</article>
+<audio id="audio" playsinline preload="auto" style="display:none"></audio>
+<script src="./caderno-score.js?v=14"></script>
+<script src="./caderno-audio.js?v=13"></script>
+<script src="./melodicos-dados.js?v=1"></script>
+<script>
+(function(){
+'use strict';
+const all=window.MonroeMelodicData||[];
+const $=id=>document.getElementById(id);
+const audio=$('audio');
+const urlKey='larry-monroe-melodic-progress-v1';
+let done={};try{done=JSON.parse(localStorage.getItem(urlKey)||'{}')||{}}catch(e){}
+let position=0,loadSequence=0,scoreData=null,scoreNodes=[],timeline=null,blobUrl='',lastFrame=0;
+const names=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];
+const steps=['C','C','D','D','E','F','F','G','G','A','A','B'];
+const altered=new Set([1,3,6,8,10]);
+const round=n=>Math.max(0,Math.round(n*2)/2);
+const key=item=>item.id;
+function pitch(midi){const p=((midi%12)+12)%12;return{step:steps[p],octave:Math.floor(midi/12)-1,midi:midi,accidental:altered.has(p)?'sharp':''}}
+function rawToScore(item){
+  const groups=new Map();
+  for(const e of item.e){if(!Array.isArray(e)||e.length<3)continue;const [t,d,p,v]=e;if(![t,d,p].every(Number.isFinite)||t<0||d<=0||p<30||p>99)continue;const voice=Number(v)||0;if(!groups.has(voice))groups.set(voice,[]);groups.get(voice).push({t:round(t),d:Math.max(.5,round(d)),p:Math.round(p)})}
+  const voices=[...groups.values()].sort((a,b)=>b.length-a.length);
+  const chosen=voices[0]||[];
+  chosen.sort((a,b)=>a.t-b.t||a.p-b.p);
+  const distinct=[];let last=-1;
+  for(const e of chosen){if(e.t!==last){distinct.push(e);last=e.t}}
+  if(!distinct.length)return null;
+  const base=distinct[0].t;
+  let events=[],at=0;
+  for(let i=0;i<distinct.length;i++){
+    const n=distinct[i],start=Math.max(0,round(n.t-base));
+    const next=distinct[i+1]?round(distinct[i+1].t-base):Infinity;
+    if(start<at)continue;
+    if(start>at){events.push({t:'r',d:start-at});at=start}
+    const length=Math.min(n.d,next-start);
+    if(length>=.5){events.push({t:'n',d:length,...pitch(n.p)});at=start+length}
+  }
+  if(!events.length)return null;
+  const duration=Math.max(4,Math.ceil(at/4)*4);
+  if(duration>at)events.push({t:'r',d:duration-at});
+  const bars=[];let bar=[],used=0;
+  for(const note of events){let remain=note.d,part=0;
+    while(remain>.00001){
+      const space=4-used;
+      const size=Math.min(remain,space);
+      if(size<=0)break;
+      const piece={...note,d:size};
+      if(note.t==='n'){piece.tieStop=part>0;piece.tieStart=remain>size+.00001}
+      bar.push(piece);used+=size;remain-=size;part++;
+      if(Math.abs(4-used)<.00001){bars.push(bar);bar=[];used=0}
+    }
+  }
+  if(bar.length)bars.push(bar);
+  if(!bars.length)return null;
+  const midis=chosen.map(x=>x.p).sort((a,b)=>a-b),middle=midis[Math.floor(midis.length/2)];
+  return{l:item.l,n:item.ex||1,meter:[4,4],clef:middle<59?'F':'G',bars,systems:[bars.length]};
+}
+function updateSummary(){
+  let n=all.filter(x=>done[key(x)]).length;let pct=all.length?Math.round(n*100/all.length):0;
+  $('pct').textContent=pct+'%';$('count').textContent=n+' de '+all.length+' leituras concluídas';$('progress-bar').style.width=pct+'%';
+  const current=all[position];$('complete').textContent=done[key(current)]?'✓ Concluído · desfazer':'✓ Concluir';
+  $('lessons').innerHTML=Array.from({length:10},(_,i)=>{
+   const n=all.filter(x=>x.l===i+1),completed=n.filter(x=>done[key(x)]).length;
+   return '<button type="button" data-lesson="'+(i+1)+'" aria-current="'+(current.l===i+1)+'"><small>VOLUME I</small><b>Lição '+String(i+1).padStart(2,'0')+'</b><small>'+completed+'/'+n.length+' concluídos</small></button>'
+  }).join('');
+  $('lessons').querySelectorAll('button').forEach(b=>b.onclick=()=>select(all.findIndex(x=>x.l===+b.dataset.lesson)));
+  let local=all.filter(x=>x.l===current.l);
+  $('lesson-count').textContent=local.filter(x=>done[key(x)]).length+' / '+local.length;
+  $('studies').innerHTML=local.map((x,i)=>{
+    const label=x.ex?'Ex. '+x.ex: 'p. '+x.p+' · '+(all.filter(y=>y.l===x.l&&y.p===x.p).indexOf(x)+1);
+    return '<button type="button" data-id="'+x.id+'" title="'+label+'" aria-current="'+(x===current)+'" class="'+(done[key(x)]?'completed':'')+'">'+(i+1)+'</button>';
+  }).join('');
+  $('studies').querySelectorAll('button').forEach(b=>b.onclick=()=>select(all.findIndex(x=>x.id===b.dataset.id)));
+}
+function clearAudio(){
+  cancelAnimationFrame(lastFrame);audio.pause();audio.removeAttribute('src');audio.load();
+  if(blobUrl){URL.revokeObjectURL(blobUrl);blobUrl=''}
+  $('play').textContent='▶ Tocar';$('play').disabled=true;$('restart').disabled=true;
+}
+function visual(){
+ if(!timeline)return;
+ const q=audio.currentTime*80/60*timeline.pulseLength;
+ for(const n of scoreNodes)n.el.classList.toggle('current',audio.currentTime>0&&q>=n.start&&q<n.end);
+ if(!audio.paused&&!audio.ended)lastFrame=requestAnimationFrame(visual);
+}
+function prepareAudio(){
+ clearAudio();if(!timeline)return;
+ try{
+  blobUrl=URL.createObjectURL(window.MonroeAudio.renderWave(timeline,80,$('metro').checked));
+  audio.src=blobUrl;audio.loop=$('loop').checked;
+  const rate=+$('bpm').value/80;
+  audio.playbackRate=rate;audio.defaultPlaybackRate=rate;audio.preservesPitch=true;
+  $('play').disabled=false;$('restart').disabled=false;
+  $('status').textContent='Áudio preparado. Arraste a partitura para a direita para continuar a leitura.';
+ }catch(error){$('status').textContent='Falha ao preparar áudio: '+error.message}
+}
+async function select(index){
+ if(!all.length)return;
+ position=Math.max(0,Math.min(all.length-1,index));const item=all[position];const call=++loadSequence;
+ clearAudio();timeline=null;scoreNodes=[];scoreData=null;
+ $('lesson-title').textContent='Lição '+item.l+' · Estudos melódicos';
+ const same=all.filter(x=>x.l===item.l&&x.p===item.p);
+ const seq=same.indexOf(item)+1;
+ $('title').textContent=item.ex?'Exercício '+item.ex:'Página '+item.p+' · leitura '+seq;
+ $('page').textContent='Volume I · página impressa '+item.p;
+ $('original').href='./livro.html?pagina='+item.p;
+ $('type').textContent=item.q==='piloto'&&item.ex?'Transcrição MusicXML · piloto':'Leitura extraída da digitalização';
+ $('source-status').textContent=item.q==='piloto'&&item.ex?'Partitura estruturada; segunda conferência com o original pendente.':'Leitura automática de trabalho: alturas, figuras e limites de exercício podem precisar de correção.';
+ $('ordinal').textContent=(position+1)+' / '+all.length;
+ $('prev').disabled=position===0;$('next').disabled=position===all.length-1;
+ updateSummary();
+ $('score').innerHTML='<div class="pending-note">Montando partitura…</div>';
+ let loaded=null;
+ if(item.ex&&item.l===1){
+  try{
+   const source='./partituras/v1-mel'+String(item.ex).padStart(3,'0')+'.musicxml';
+   const response=await fetch(source);
+   if(response.ok)loaded=window.MonroeScore.parseMusicXML(await response.text());
+   if(loaded)loaded={...loaded,l:item.l,n:item.ex,systems:loaded.systems||[loaded.bars.length]};
+  }catch(error){}
+ }
+ if(call!==loadSequence)return;
+ if(!loaded)loaded=rawToScore(item);
+ if(!loaded){$('score').innerHTML='<div class="pending-note">Leitura musical indisponível.</div>';$('status').textContent='Sem notas reconhecidas';return}
+ try{
+  $('score').innerHTML=window.MonroeScore.render(loaded);
+  $('score').scrollLeft=0;
+  scoreNodes=[...$('score').querySelectorAll('.score-event')].map(el=>({el,start:+el.dataset.on,end:+el.dataset.on + +el.dataset.dur}));
+  scoreData=loaded;timeline=window.MonroeAudio.timeline(loaded,null);
+  prepareAudio();
+ }catch(e){$('score').innerHTML='<div class="pending-note">Erro na notação desta leitura.</div>';$('status').textContent=e.message}
+}
+$('complete').onclick=()=>{const x=all[position];done[key(x)]=!done[key(x)];try{localStorage.setItem(urlKey,JSON.stringify(done))}catch(e){}updateSummary()};
+$('prev').onclick=()=>select(position-1);$('next').onclick=()=>select(position+1);
+$('play').onclick=async()=>{
+ if(audio.paused){if(audio.ended)audio.currentTime=0;
+  try{await audio.play()}catch(error){$('status').textContent='Áudio bloqueado. Toque novamente em Tocar.'}
+ }else audio.pause();
+};
+$('restart').onclick=()=>{audio.currentTime=0;visual()};
+$('bpm').oninput=()=>{$('bpm-label').textContent=$('bpm').value;if(blobUrl){audio.playbackRate=+$('bpm').value/80;audio.defaultPlaybackRate=+$('bpm').value/80;}};
+$('metro').onchange=prepareAudio;
+$('loop').onchange=()=>audio.loop=$('loop').checked;
+audio.addEventListener('play',()=>{$('play').textContent='Ⅱ Pausar';cancelAnimationFrame(lastFrame);visual()});
+audio.addEventListener('pause',()=>{$('play').textContent='▶ Tocar';cancelAnimationFrame(lastFrame);visual()});
+audio.addEventListener('seeked',visual);
+audio.addEventListener('ended',()=>{$('play').textContent='▶ Tocar';visual()});
+audio.addEventListener('error',()=>{$('status').textContent='Erro ao reproduzir este áudio. Tente selecionar a leitura novamente.'});
+select(Math.max(0,all.findIndex(x=>x.l===1&&x.ex===1)));
+})();
+</script></body></html>
