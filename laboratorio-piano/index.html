@@ -381,24 +381,25 @@ function sound(midi,sec,bass=false,at=null){
  }
 }
 
-function wavFromEvents(events,seconds){
+function wavFromEvents(events,seconds,wrapTails=false){
  // Sintetizador de piano sem Web Audio; fornece um WAV tocável por HTMLAudioElement.
  const rate=22050,frames=Math.max(1,Math.ceil(Math.min(70,seconds)*rate));
  const samples=new Float32Array(frames);
  for(const event of events){
   const start=Math.max(0,Math.floor(event.when*rate));
   const length=Math.max(.28,event.length+.25);
-  const end=Math.min(frames,Math.ceil((event.when+length)*rate));
+  const end=Math.ceil((event.when+length)*rate);
   const hz=440*Math.pow(2,(event.midi-69)/12);
   if(!Number.isFinite(hz)||hz<=0)continue;
   const w=2*Math.PI*hz/rate;
   for(let i=start;i<end;i++){
+   if(!wrapTails&&i>=frames)break;
    const t=(i-start)/rate;
    const attack=Math.min(1,t*95);
    const decay=Math.exp(-t*(event.bass?1.35:1.65));
    const release=Math.min(1,(end-i)/(rate*.06));
    const tone=Math.sin(w*(i-start))*.77+Math.sin(2*w*(i-start))*.17+Math.sin(3*w*(i-start))*.06;
-   samples[i]+=tone*attack*decay*release*.42;
+   samples[i%frames]+=tone*attack*decay*release*.42;
   }
  }
  const bytes=new ArrayBuffer(44+frames*2),view=new DataView(bytes);
@@ -417,7 +418,7 @@ function wavFromEvents(events,seconds){
 function startNative(events,duration,mode='note',token=state.token){
  try{
   if(!events.length)throw Error('Nenhuma nota para reproduzir');
-  const blob=wavFromEvents(events,duration);
+  const blob=wavFromEvents(events,duration,state.loop&&mode!=='note');
   nativeUrl=URL.createObjectURL(blob);
   const player=document.createElement('audio');
   player.setAttribute('playsinline','');
