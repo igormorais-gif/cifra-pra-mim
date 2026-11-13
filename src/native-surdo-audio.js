@@ -57,13 +57,15 @@
    d.setInt16(44+2*i,Math.round(Math.max(-1,Math.min(1,samples[i]*adjust))*32767),true);
   return new Blob([b],{type:'audio/wav'});
  }
- function addSample(mix,sample,at,gain=.55){
+ function addSample(mix,sample,at,gain=.55,loop=false){
   if(!sample)return;
   const first=Math.max(0,Math.ceil(at*RATE));
-  const frames=Math.min(mix.length-first,Math.ceil(sample.pcm.length*RATE/sample.rate)+1);
+  const frames=Math.ceil(sample.pcm.length*RATE/sample.rate)+1;
   for(let i=0;i<frames;i++){
-   const position=first+i,time=position/RATE-at;
-   mix[position]+=value(sample,time)*gain;
+   const position=first+i;
+   if(position>=mix.length&&!loop)break;
+   const time=position/RATE-at;
+   mix[position%mix.length]+=value(sample,time)*gain;
   }
  }
  function click(mix,at,accent){
@@ -73,7 +75,7 @@
    mix[first+i]+=(accent?.17:.10)*Math.sin(2*Math.PI*(accent?850:570)*t)*Math.exp(-90*t);
   }
  }
- function build({recording,recordingSeconds,sourceBpm,bpm,bar=0,mode='integral',events=[],short,open,markFirst,markSecond,markMode='off',markVolume=0.4,tick=false,sound=true,seconds}){
+ function build({recording,recordingSeconds,sourceBpm,bpm,bar=0,mode='integral',events=[],short,open,markFirst,markSecond,markMode='off',markVolume=0.4,tick=false,sound=true,seconds,loop=true}){
   if(!(seconds>0&&seconds<120))throw new Error('Duração de reprodução inválida');
   const length=Math.max(1,Math.ceil(seconds*RATE)),mix=new Float32Array(length);
   if(recording&&sound){
@@ -83,15 +85,15 @@
    const shortSample=parseWav(short),openSample=parseWav(open);
    for(const e of events){
     const t=((e.at%seconds)+seconds)%seconds;
-    addSample(mix,e.kind==='qui'?shortSample:openSample,t,e.kind==='qui'?.64:.57);
+    addSample(mix,e.kind==='qui'?shortSample:openSample,t,e.kind==='qui'?.64:.57,loop);
    }
   }
   if(markMode!=='off'&&markVolume>0){
    const f=parseWav(markFirst),s=parseWav(markSecond),step=15/bpm;
    const count=mode==='integral'?32:8;
    for(let k=0;k<count;k++){
-    if(k%8===0&&(markMode==='both'||markMode==='second'))addSample(mix,s,k*step,markVolume*.58);
-    if(k%8===4&&(markMode==='both'||markMode==='first'))addSample(mix,f,k*step,markVolume*.69);
+    if(k%8===0&&(markMode==='both'||markMode==='second'))addSample(mix,s,k*step,markVolume*.58,loop);
+    if(k%8===4&&(markMode==='both'||markMode==='first'))addSample(mix,f,k*step,markVolume*.69,loop);
    }
   }
   if(tick){
