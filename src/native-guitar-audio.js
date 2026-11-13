@@ -3,29 +3,32 @@
 (function(root){
  'use strict';
  const SAMPLE_RATE=22050;
- function wav(events,seconds){
+ function wav(events,seconds,wrapTails=false){
   const length=Math.max(1,Math.ceil(seconds*SAMPLE_RATE));
   const mix=new Float32Array(length);
   for(const ev of events){
    const start=Math.max(0,Math.round(ev.at*SAMPLE_RATE));
    if(start>=length)continue;
    const duration=Math.min(1.85,Math.max(.17,(ev.duration||.35)+.19));
-   const total=Math.min(Math.ceil(duration*SAMPLE_RATE),length-start);
+   const total=Math.ceil(duration*SAMPLE_RATE);
    const f=440*Math.pow(2,(ev.midi-69)/12);
    if(!Number.isFinite(f)||f<20||f>3000)continue;
-   const bass=!!ev.bass;
-   const strength=bass?.42:.35;
-   const decay=bass?3.9:4.9;
+   const bass=!!ev.bass,cav=ev.timbre==='cavaquinho';
+   const strength=cav?.37:(bass?.42:.35);
+   const decay=cav?6.4:(bass?3.9:4.9);
    const period=2*Math.PI*f/SAMPLE_RATE;
    for(let i=0;i<total;i++){
     const t=i/SAMPLE_RATE,phase=period*i;
     const attack=Math.min(1,t/.008);
     const envelope=attack*Math.exp(-decay*t/duration);
-    const tone=Math.sin(phase)+.29*Math.sin(phase*2)+.105*Math.sin(phase*3)+.027*Math.sin(phase*4);
+    const tone=Math.sin(phase)+(cav?.35:.29)*Math.sin(phase*2)+.105*Math.sin(phase*3)+.027*Math.sin(phase*4);
     const sample=strength*envelope*tone;
-    mix[start+i]+=sample;
-    // Reflexao muito discreta, sem deixar a nota seca demais.
-    if(start+i+1500<length)mix[start+i+1500]+=sample*.085;
+    const position=start+i;
+    if(position>=length&&!wrapTails)break;
+    mix[position%length]+=sample;
+    // Cauda atravessa a fronteira do ciclo quando Loop está ligado.
+    const echo=position+1500;
+    if(echo<length||wrapTails)mix[echo%length]+=sample*.085;
    }
   }
   let peak=.01;
@@ -43,7 +46,7 @@
  }
  function create({events,cycleSeconds,shouldRepeat=()=>false,onTick=()=>{},onFinish=()=>{},onError=()=>{}}){
   if(!events?.length||!(cycleSeconds>0))throw new Error('Sequencia de audio invalida');
-  const url=URL.createObjectURL(wav(events,cycleSeconds));
+  const url=URL.createObjectURL(wav(events,cycleSeconds,Boolean(shouldRepeat())));
   const player=new Audio();
   let closed=false,interval=null;
   player.preload='auto';player.src=url;player.volume=1;player.muted=false;
