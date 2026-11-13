@@ -35,7 +35,13 @@ h2{font:400 clamp(26px,4vw,38px) Georgia,serif;margin:6px 0}.subtitle{font-size:
 .settings{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-left:auto}
 .settings label{display:flex;align-items:center;gap:5px}.settings input[type=range]{width:110px;accent-color:var(--green)}
 .settings input[type=checkbox]{accent-color:var(--green)}
-.staff{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:21px 0 10px;min-height:157px}
+.staff{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:21px 0 10px;min-height:157px;min-width:0}
+.study-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}.study-grid.show-conductor{grid-template-columns:minmax(0,1fr) minmax(190px,250px)}
+.conductor{margin:0;min-width:0;padding:9px 0 10px 14px;border-left:1px solid var(--line);text-align:center}
+.conductor figcaption{font:italic 15px Georgia,serif;color:var(--muted);margin-bottom:7px}
+.conductor canvas{display:block;width:100%;max-width:225px;height:auto;margin:auto}
+.conductor p{font-size:11px;color:var(--muted)}
+@media(max-width:720px){.study-grid.show-conductor{grid-template-columns:minmax(0,1fr)}.conductor{border-left:0;border-top:1px solid var(--line);padding:12px 0 0}.conductor canvas{max-width:185px}}
 .musicline{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;min-height:122px}
 .score-window{width:max-content;min-width:100%}
 .system{width:calc(var(--system-width,720px) * var(--score-zoom,1));margin:4px 0 8px}
@@ -67,11 +73,13 @@ footer button{background:transparent;border:0;color:var(--ink);padding:10px 0;fo
 <button id="play" class="play" type="button" disabled>▶ Tocar</button>
 <button id="restart" class="ghost" type="button" disabled aria-label="Reiniciar reprodução">↺</button>
 <button id="complete" class="ghost done" type="button">✓ Concluir</button>
+<button id="conductor-toggle" class="ghost" type="button" aria-expanded="false" aria-controls="conductor">Mostrar regência</button>
 <div class="settings"><label><b id="bpm-label">80</b> BPM <input id="bpm" type="range" min="40" max="160" step="5" value="80"></label>
 <label><input id="metro" type="checkbox" checked> Metrônomo</label>
 <label><input id="loop" type="checkbox"> Loop</label></div>
 </div>
-<div class="staff"><div class="musicline" id="score" role="region" aria-label="Partitura de leitura horizontal" tabindex="0"><div class="pending-note">Preparando partitura…</div></div></div>
+<div class="study-grid" id="study-grid"><div class="staff"><div class="musicline" id="score" role="region" aria-label="Partitura de leitura horizontal" tabindex="0"><div class="pending-note">Preparando partitura…</div></div></div>
+<figure id="conductor" class="conductor" hidden><figcaption>Regência · 4/4</figcaption><canvas id="conductor-hand" width="300" height="415" aria-label="Mão regendo os quatro tempos"></canvas><p id="conductor-status" role="status"></p></figure></div>
 <p id="status" role="status">Selecione uma leitura.</p>
 <div class="footmeta"><span id="source-status">Transcrição em revisão.</span><span id="ordinal"></span></div>
 <footer><button id="prev">← Anterior</button><button id="next">Próxima →</button></footer>
@@ -79,7 +87,8 @@ footer button{background:transparent;border:0;color:var(--ink);padding:10px 0;fo
 <audio id="audio" playsinline preload="auto" style="display:none"></audio>
 <script src="./caderno-score.js?v=14"></script>
 <script src="./caderno-audio.js?v=13"></script>
-<script src="./melodicos-dados.js?v=1"></script>
+<script src="./conducting.js?v=11"></script>
+<script src="./melodicos-dados.js?v=2"></script>
 <script>
 (function(){
 'use strict';
@@ -89,6 +98,10 @@ const audio=$('audio');
 const urlKey='larry-monroe-melodic-progress-v1';
 let done={};try{done=JSON.parse(localStorage.getItem(urlKey)||'{}')||{}}catch(e){}
 let position=0,loadSequence=0,scoreData=null,scoreNodes=[],timeline=null,blobUrl='',lastFrame=0;
+let conductorShown=false,conductorImageFailed=false;
+const conductor=window.MonroeConducting.create($('conductor-hand'),ready=>{
+  if(!ready){conductorImageFailed=true;$('conductor-hand').hidden=true;$('conductor-status').textContent='A imagem da mão não foi carregada.';}
+});
 const names=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];
 const steps=['C','C','D','D','E','F','F','G','G','A','A','B'];
 const altered=new Set([1,3,6,8,10]);
@@ -160,7 +173,22 @@ function visual(){
  if(!timeline)return;
  const q=audio.currentTime*80/60*timeline.pulseLength;
  for(const n of scoreNodes)n.el.classList.toggle('current',audio.currentTime>0&&q>=n.start&&q<n.end);
+ drawConductor();
  if(!audio.paused&&!audio.ended)lastFrame=requestAnimationFrame(visual);
+}
+function drawConductor(){
+ if(!conductorShown||!timeline||!scoreData||conductorImageFailed)return;
+ const quarters=audio.currentTime*80/60*timeline.pulseLength;
+ const state=window.MonroeAudio.positionAt(timeline,quarters);
+ conductor.draw({meter:scoreData.meter,beat:state.beat});
+}
+function toggleConductor(){
+ conductorShown=!conductorShown;
+ $('conductor').hidden=!conductorShown;
+ $('study-grid').classList.toggle('show-conductor',conductorShown);
+ $('conductor-toggle').setAttribute('aria-expanded',String(conductorShown));
+ $('conductor-toggle').textContent=conductorShown?'Ocultar regência':'Mostrar regência';
+ drawConductor();
 }
 function prepareAudio(){
  clearAudio();if(!timeline)return;
@@ -192,7 +220,7 @@ async function select(index){
  let loaded=null;
  if(item.ex&&item.l===1){
   try{
-   const source='./partituras/v1-mel'+String(item.ex).padStart(3,'0')+'.musicxml';
+   const source='./partituras/v1-mel'+String(item.ex).padStart(3,'0')+'.musicxml?v=2';
    const response=await fetch(source);
    if(response.ok)loaded=window.MonroeScore.parseMusicXML(await response.text());
    if(loaded)loaded={...loaded,l:item.l,n:item.ex,systems:loaded.systems||[loaded.bars.length]};
@@ -207,8 +235,10 @@ async function select(index){
   scoreNodes=[...$('score').querySelectorAll('.score-event')].map(el=>({el,start:+el.dataset.on,end:+el.dataset.on + +el.dataset.dur}));
   scoreData=loaded;timeline=window.MonroeAudio.timeline(loaded,null);
   prepareAudio();
+  drawConductor();
  }catch(e){$('score').innerHTML='<div class="pending-note">Erro na notação desta leitura.</div>';$('status').textContent=e.message}
 }
+$('conductor-toggle').onclick=toggleConductor;
 $('complete').onclick=()=>{const x=all[position];done[key(x)]=!done[key(x)];try{localStorage.setItem(urlKey,JSON.stringify(done))}catch(e){}updateSummary()};
 $('prev').onclick=()=>select(position-1);$('next').onclick=()=>select(position+1);
 $('play').onclick=async()=>{
