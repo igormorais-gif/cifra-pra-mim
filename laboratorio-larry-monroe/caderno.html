@@ -182,6 +182,7 @@ let subdivisionCount = 1;
 let zoom = 1;
 let conductorShown = false;
 let mediaURL = '';
+let generatedAudioURL = '';
 let mediaRevision = 0;
 let readyForPlay = false;
 let conductorImageFailed = false;
@@ -214,7 +215,10 @@ function updateSummary() {
   }).join('');
   $('chapters').scrollLeft = chapterOffset;
   $('chapters').querySelectorAll('button').forEach(button => {
-    button.onclick = () => choose(items.findIndex(item => item.l === Number(button.dataset.l)));
+    const firstPlayable = items.findIndex(item => item.l === Number(button.dataset.l) && item.bars.length);
+    button.disabled = firstPlayable < 0;
+    button.title = firstPlayable < 0 ? 'Esta lição ainda não foi transcrita' : '';
+    if (firstPlayable >= 0) button.onclick = () => choose(firstPlayable);
   });
   const item = items[selection];
   const count = countLesson(item.l);
@@ -225,6 +229,13 @@ function updateSummary() {
   $('exstrip').querySelectorAll('button').forEach(button => {
     button.classList.toggle('done', Boolean(done[item.l + '-' + button.dataset.n]));
   });
+}
+
+function adjacentPlayable(from, direction) {
+  for (let i = from + direction; i >= 0 && i < items.length; i += direction) {
+    if (items[i].bars.length && items[i].status !== 'c') return i;
+  }
+  return -1;
 }
 
 function markDone() {
@@ -274,6 +285,11 @@ function setBeatMarkers() {
 
 async function choose(index, movePage = true) {
   selection = Math.max(0, Math.min(items.length - 1, index));
+  if (!items[selection].bars.length || items[selection].status === 'c') {
+    const next = adjacentPlayable(selection, 1);
+    const prior = adjacentPlayable(selection, -1);
+    selection = next >= 0 ? next : (prior >= 0 ? prior : selection);
+  }
   const item = items[selection];
   const id = ++loadId;
   try { localStorage.setItem(lastExerciseStorage, key(item)); } catch (_) {}
@@ -291,7 +307,7 @@ async function choose(index, movePage = true) {
   $('exstrip').innerHTML = items.filter(entry => entry.l === item.l).map(entry => {
     const active = entry.n === item.n;
     return '<button data-n="' + entry.n + '" class="' + (active ? 'active ' : '') + (!entry.bars.length ? 'pending' : '')
-      + '" aria-label="Exercício ' + entry.n + '"' + (active ? ' aria-current="true"' : '') + '>' + entry.n + '</button>';
+      + '" aria-label="Exercício ' + entry.n + '"' + (!entry.bars.length ? ' disabled title="Transcrição ainda não disponível"' : '') + (active ? ' aria-current="true"' : '') + '>' + entry.n + '</button>';
   }).join('');
   $('exstrip').querySelectorAll('button').forEach(button => {
     button.onclick = () => choose(items.findIndex(entry => entry.l === item.l && entry.n === Number(button.dataset.n)));
@@ -302,8 +318,8 @@ async function choose(index, movePage = true) {
   $('instruction').textContent = '';
   $('notice').textContent = '';
   $('complete').disabled = !item.bars.length || item.status === 'c';
-  $('prev').disabled = selection === 0;
-  $('next').disabled = selection === items.length - 1;
+  $('prev').disabled = adjacentPlayable(selection, -1) < 0;
+  $('next').disabled = adjacentPlayable(selection, 1) < 0;
   updateSummary();
   if (movePage) window.scrollTo(0, 0);
   const activeChapter = $('chapters').querySelector('.active');
@@ -348,6 +364,10 @@ function clearAudio() {
   audio.pause();
   audio.removeAttribute('src');
   audio.load();
+  if (generatedAudioURL) {
+    URL.revokeObjectURL(generatedAudioURL);
+    generatedAudioURL = '';
+  }
   mediaURL = '';
   $('play').textContent = '▶ Tocar';
   setPlayable(false);
@@ -366,7 +386,10 @@ function prepareAudio(time = 0, resume = false) {
   const wasMarked = positionReady;
   clearAudio();
   try {
-    mediaURL = './audio/' + key(current) + (withClick ? '-click' : '') + '.wav?v=11';
+    // Gera áudio a partir da partitura exibida: funciona inclusive para exercícios
+    // provisórios e não depende de haver um WAV publicado no GitHub.
+    generatedAudioURL = URL.createObjectURL(window.MonroeAudio.renderWave(score, recordingBpm, withClick));
+    mediaURL = generatedAudioURL;
     audio.loop = $('loop').checked;
     audio.src = mediaURL;
     updateTempo();
@@ -447,8 +470,14 @@ $('conductor-toggle').onclick = () => { conductorShown = !conductorShown; showCo
 $('zoom-out').onclick = () => { zoom = Math.max(0.8, zoom - 0.2); adjustScore(); };
 $('zoom-in').onclick = () => { zoom = Math.min(1.8, zoom + 0.2); adjustScore(); };
 $('complete').onclick = markDone;
-$('prev').onclick = () => choose(selection - 1);
-$('next').onclick = () => choose(selection + 1);
+$('prev').onclick = () => {
+  const next = adjacentPlayable(selection, -1);
+  if (next >= 0) choose(next);
+};
+$('next').onclick = () => {
+  const next = adjacentPlayable(selection, 1);
+  if (next >= 0) choose(next);
+};
 window.addEventListener('resize', adjustScore);
 
 audio.addEventListener('playing', () => {
@@ -494,6 +523,11 @@ try {
   const link = location.hash.match(/^#ex(\d+)$/);
   const last = link ? '1-' + link[1] : localStorage.getItem(lastExerciseStorage);
   initial = Math.max(0, items.findIndex(item => key(item) === last));
+  if (!items[initial].bars.length || items[initial].status === 'c') {
+    const next = adjacentPlayable(initial, 1);
+    const prior = adjacentPlayable(initial, -1);
+    initial = next >= 0 ? next : (prior >= 0 ? prior : 0);
+  }
 } catch (_) {}
 choose(initial, false);
 
