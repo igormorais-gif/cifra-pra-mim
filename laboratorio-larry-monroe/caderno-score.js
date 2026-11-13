@@ -181,7 +181,7 @@
   }
 
   async function load(exercise) {
-    const systems = root.MonroeSystems?.[exercise.l + "-" + exercise.n] ?? null;
+    const systems = root.MonroeSystems?.[exercise.l + "-" + exercise.n] ?? (exercise.bars.length ? [exercise.bars.length] : null);
     const initial = { ...exercise, meter: meterFor(exercise), systems, timeSymbol: exercise.l === 5 ? 'common' : '' };
     const file = exercise.bars.length ? fileFor(exercise) : null;
     if (!file) return initial;
