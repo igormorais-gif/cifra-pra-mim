@@ -99,6 +99,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:18px;pa
 </div>
 <script src="../src/essencia-audio-boot.js?v=20261112"></script>
 <script src="../src/seamless-loop.js?v=8"></script>
+<script src="../src/native-guitar-audio.js?v=3"></script>
 <script>
 (function(){'use strict';
 const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
@@ -208,8 +209,9 @@ function render(){let s=current();$('chordSymbol').textContent=s.meta.symbol;$('
  document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));document.querySelectorAll('[data-form]').forEach(b=>b.classList.toggle('selected',b.dataset.form===state.form));renderEnharmonic();showGenMessage();
  if(window.innerWidth<701){let scroller=$('boardScroller'),svgw=$('fretboard').getBoundingClientRect().width,frets=positions(s),mid=frets.reduce((a,b)=>a+b,0)/frets.length,x=fretX(mid)/1140*svgw;scroller.scrollLeft=Math.max(0,x-scroller.clientWidth/2)}
 }
-let loopClock=null,loopVoices=[],loopHighlights=[];
+let loopClock=null,loopVoices=[],loopHighlights=[],nativeClock=null;
 function stop(){
+ if(nativeClock){nativeClock.cancel();nativeClock=null}
  if(loopClock){loopClock.cancel();loopClock=null}
  for(const t of loopHighlights)clearTimeout(t);
  loopHighlights=[];
@@ -279,8 +281,62 @@ function visualAt(at,token,callback){
  const id=setTimeout(()=>{const i=loopHighlights.indexOf(id);if(i>=0)loopHighlights.splice(i,1);if(token===state.token)callback()},Math.max(0,(at-audio.currentTime)*1000));
  loopHighlights.push(id);
 }
+function preferNativeAudio(){
+ return !!window.NativeGuitarAudio&&(
+  /iPad|iPhone|iPod/i.test(navigator.userAgent)||
+  (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)
+ );
+}
+function nativeCavaquinho(all,token){
+ if(!window.NativeGuitarAudio)return;
+ const beat=60/state.bpm,phraseLength=4*beat,count=all?steps().length:1,initialStage=state.stage;
+ const durations=[.5,.5,1,2],events=[];
+ try{
+  for(let j=0;j<count;j++){
+   state.stage=all?j:initialStage;
+   const fingering=positions(current());
+   let offset=0;
+   for(let i=0;i<4;i++){
+    events.push({at:j*phraseLength+offset*beat,midi:TUNING[i]+fingering[i],
+     duration:beat*durations[i],timbre:'cavaquinho'});
+    offset+=durations[i];
+   }
+  }
+ }finally{state.stage=initialStage}
+ $('playOne').disabled=true;$('playSequence').disabled=true;
+ $('playOne').textContent='· · ·';$('nowPlaying').textContent=all?'Reproduzindo sequência':'Reproduzindo';
+ try{
+  nativeClock=window.NativeGuitarAudio.create({
+   events,cycleSeconds:count*phraseLength,shouldRepeat:()=>state.loop,
+   onTick:elapsed=>{
+    if(token!==state.token)return;
+    const j=Math.min(count-1,Math.floor(elapsed/phraseLength));
+    const wantedStage=all?j:initialStage;
+    if(state.stage!==wantedStage){state.stage=wantedStage;render()}
+    const within=elapsed-j*phraseLength;
+    let onset=0,lastIndex=0;
+    for(let i=0;i<durations.length;i++){
+     if(within+0.016>=onset*beat)lastIndex=i;
+     onset+=durations[i];
+    }
+    if(state.playing!==lastIndex){state.playing=lastIndex;updateActive()}
+   },
+   onFinish:()=>{
+    if(token!==state.token)return;
+    nativeClock=null;state.playing=-1;updateActive();
+    $('playOne').disabled=false;$('playSequence').disabled=false;
+    $('playOne').textContent='▶';$('nowPlaying').textContent='Arpejo';
+   },
+   onError:message=>{$('tipDetails').textContent='Áudio: '+message}
+  });
+ }catch(err){
+  $('tipDetails').textContent='Não foi possível tocar o arpejo no navegador.';
+  $('playOne').disabled=false;$('playSequence').disabled=false;
+ }
+}
 async function playSequence(all){
  stop();const token=state.token;
+ if(preferNativeAudio()){nativeCavaquinho(all,token);return}
  if(!await unlockAudio()||token!==state.token)return;
  $('playOne').disabled=true;$('playSequence').disabled=true;
  $('playOne').textContent='· · ·';
@@ -310,7 +366,23 @@ async function playSequence(all){
   }
  });
 }
-async function playSingle(i){stop();let ok=await unlockAudio();if(!ok)return;let s=current();state.playing=i;updateActive();pluck(TUNING[i]+positions(s)[i],.7);setTimeout(()=>{if(state.playing===i){state.playing=-1;updateActive()}},550)}
+async function playSingle(i){
+ stop();const token=state.token;
+ if(preferNativeAudio()){
+  const chord=current(),note=TUNING[i]+positions(chord)[i];
+  state.playing=i;updateActive();
+  try{nativeClock=window.NativeGuitarAudio.create({
+   events:[{at:0,midi:note,duration:.65,timbre:'cavaquinho'}],cycleSeconds:.83,
+   shouldRepeat:()=>false,
+   onFinish:()=>{if(token!==state.token)return;nativeClock=null;state.playing=-1;updateActive()},
+   onError:message=>{$('tipDetails').textContent='Áudio: '+message}
+  })}catch(err){$('tipDetails').textContent='Não foi possível tocar esta nota.'}
+  return;
+ }
+ let ok=await unlockAudio();if(!ok||token!==state.token)return;
+ let chord=current();state.playing=i;updateActive();pluck(TUNING[i]+positions(chord)[i],.7);
+ setTimeout(()=>{if(token===state.token&&state.playing===i){state.playing=-1;updateActive()}},550);
+}
 function generate(){stop();let g=tryGenerate();if(g.error){state.generated=null;state.error=g.error;state.stage=0}else{state.generated=g;state.error='';state.stage=1}state.boardKey='';render()}
 // Wiring: all controls are real; there are no dead decorative buttons.
 $('tonic').replaceChildren();ROOTS.forEach(r=>{let op=document.createElement('option');op.value=r.symbol;op.textContent=r.symbol+' · '+r.name;$('tonic').appendChild(op)});$('tonic').value=state.root;
