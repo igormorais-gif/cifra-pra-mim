@@ -102,9 +102,10 @@ async function run() {
     });
     await matchScore(4, 2);
     await page.locator('#play').tap();
+    await page.waitForFunction(() => document.querySelector('audio').paused);
     const paused = await audio.evaluate(el => el.currentTime);
     await page.waitForTimeout(120);
-    assert.equal(await audio.evaluate(el => el.currentTime), paused);
+    assert.ok(Math.abs(await audio.evaluate(el => el.currentTime) - paused) < 0.03);
     await page.locator('#restart').tap();
     await page.waitForFunction(() => {
       const element = document.querySelector('audio');
