@@ -5,6 +5,7 @@
  if(root.EssenciaAudioBoot)return;
  const Original=root.AudioContext||root.webkitAudioContext;
  const contexts=new Set();
+ const VERSION='20261113-b';
  let gesture=false;
  let supported=!!Original;
  function playbackSession(){
@@ -21,7 +22,9 @@
   // Não há som audível nem interferência na mixagem.
   try{
    const tone=ctx.createOscillator(),silence=ctx.createGain();
-   silence.gain.value=0;
+   // Sinal quase inaudível: Safari pode ignorar oscilador com ganho exatamente zero.
+   silence.gain.value=.00001;
+   tone.frequency.value=440;
    tone.connect(silence);silence.connect(ctx.destination);
    const now=ctx.currentTime;
    tone.start(now);tone.stop(now+.025);
@@ -52,6 +55,7 @@
   root.addEventListener(event,gestureStart,{capture:true,passive:true});
  }
  root.EssenciaAudioBoot={
+  version:VERSION,
   available:supported,
   retry:()=>{playbackSession();for(const ctx of contexts)wake(ctx)},
   states:()=>Array.from(contexts,ctx=>ctx.state)
