@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f4eb">
+<meta name="description" content="Experimento de microtiming aplicado aos quatro grupos de semicolcheias da levada de caixa da Mocidade Independente de Padre Miguel.">
+<title>Caixa da Mocidade · Microtiming — Arranja pra Mim</title>
+<style>
+:root{--paper:#f7f4eb;--surface:#fffdfa;--ink:#151719;--muted:#5f6768;--edge:#dcd8cf;--red:#e74731;--green:#087968;--blue:#2869da;--gold:#f0c044}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;line-height:1.45}
+a{color:inherit}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1110px;margin:auto;padding:0 16px}header{background:var(--surface);border-bottom:1px solid var(--edge)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 0;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.035em}.top a{text-decoration:none}
+.hero{padding:32px 0 24px}.eyebrow{margin:0 0 8px;text-transform:uppercase;font-weight:900;color:var(--green);font-size:12px;letter-spacing:.09em}
+h1{margin:0;font-size:clamp(35px,6vw,66px);letter-spacing:-.06em;line-height:1.01;text-transform:uppercase;max-width:910px}
+h1 em{font-style:normal;color:var(--green)}.intro{max-width:770px;margin:15px 0 0;font-size:16px}
+.panel{border:1px solid var(--edge);background:var(--surface);border-radius:17px;padding:20px;margin:0 0 16px}
+.panel h2{font-size:20px;letter-spacing:-.025em;margin:0 0 4px}p.small,.small{font-size:12px;color:var(--muted)}
+.controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.btn{min-height:42px;padding:10px 14px;border-radius:10px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-weight:800;font-size:14px}
+.btn.primary{color:white;background:var(--ink)}.btn.good{background:var(--green);color:white;border-color:var(--green)}
+.btn.pale{background:#ede9e1;border-color:var(--edge)}.btn.active{box-shadow:0 0 0 3px #08796820}
+.player{width:100%;height:50px;margin:13px 0 5px}
+.field{display:block;min-width:0}.field>span{font-size:12px;text-transform:uppercase;font-weight:900;letter-spacing:.025em;display:block;margin-bottom:4px}
+.field input[type=number],.field select{background:white;border:1px solid var(--edge);border-radius:9px;min-height:42px;padding:8px 10px;width:100%}
+.field input[type=range]{width:100%;accent-color:var(--green)}
+.options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.status{margin:8px 0 0;font-size:13px;color:var(--muted);min-height:20px}
+.legend{display:flex;flex-wrap:wrap;gap:15px;color:var(--muted);font-size:12px;margin:8px 0}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.beats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 10px}
+.beat{background:#fff;border:1px solid var(--edge);border-radius:12px;padding:14px;min-width:0}
+.beat h3{margin:0 0 6px;font-size:15px}.beat h3 span{color:var(--muted);font-size:12px;margin-left:4px;font-weight:500}
+.track{width:100%;height:auto;display:block;overflow:visible}
+.notegrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:9px 0 11px}
+.note{border:1px solid var(--edge);background:var(--paper);border-radius:10px;padding:7px 3px;min-width:0}
+.note button{border:none;background:transparent;width:100%;font-size:12px;font-weight:900;padding:5px 0;min-height:43px;color:var(--muted)}
+.note button.accent{color:#fff;background:var(--red);border-radius:7px}
+.note .stick{font-size:11px;text-align:center;color:var(--muted)}.note .amount{font-size:12px;text-align:center;font-weight:900;font-variant-numeric:tabular-nums}
+.note input[type=range]{display:block;width:100%;accent-color:var(--blue);margin-top:9px}
+.note[data-sub="2"] input[type=range],.note[data-sub="3"] input[type=range]{accent-color:var(--red)}
+.hint{border-left:4px solid var(--green);padding:12px 14px;background:#e6f2ed;border-radius:0 9px 9px 0;font-size:13px;margin-top:15px}
+.ruler-wrap{overflow-x:auto;max-width:100%}.ruler{width:100%;min-width:560px;height:auto;display:block}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px;min-width:460px}
+th,td{padding:8px;text-align:right;border-bottom:1px solid var(--edge);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}th{color:var(--muted)}.groupRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+label.check{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700}.check input{accent-color:var(--green);width:18px;height:18px}
+.credit{font-size:12px;color:var(--muted);margin-top:10px}footer{color:var(--muted);font-size:12px;padding:12px 0 32px}
+@media(max-width:720px){.options{grid-template-columns:repeat(2,minmax(0,1fr))}.beats{grid-template-columns:1fr}.panel{padding:14px}.beat{padding:12px}.hero{padding:26px 0 18px}.intro{font-size:14px}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><a href="../index.html">ARRANJA PRA MIM / HUB</a><a href="../laboratorio-microtiming/">← MICROTIMING</a></div></header>
+<main class="wrap">
+<section class="hero">
+<p class="eyebrow">Estudo de caixa / bateria de escola de samba</p>
+<h1>Caixa da <em>Mocidade.</em></h1>
+<p class="intro">A levada da <strong>Mocidade Independente de Padre Miguel</strong>, organizada em quatro grupos de semicolcheias e submetida aos mesmos deslocamentos do Reel. Ouça o padrão reto e o experimento com microtiming, preservando a alternância <strong>D–E–D–E</strong>.</p>
+</section>
+<section class="panel">
+<h2>1. Ouvir a comparação</h2>
+<p class="small">Áudio WAV gerado no próprio navegador: funciona pelo player nativo mesmo quando o Web Audio é bloqueado. Use os botões ou o ▶ do player.</p>
+<div class="controls" style="margin-top:12px">
+<button class="btn" type="button" id="straight">▶ Reto</button>
+<button class="btn good" type="button" id="shifted">▶ Microtiming</button>
+<button class="btn primary" type="button" id="ab">▶ Comparação A/B</button>
+<button class="btn pale" type="button" id="stop">■ Parar</button>
+</div>
+<audio id="audio" class="player" controls playsinline loop preload="metadata" aria-label="Reprodução da levada de caixa"></audio>
+<p id="status" class="status" role="status" aria-live="polite">Pronto. Escolha uma reprodução.</p>
+<div class="legend"><span><b style="background:var(--blue)"></b> Grade original</span><span><b style="background:var(--red)"></b> Ataque deslocado</span><span><b style="background:var(--green)"></b> Acento forte</span></div>
+</section>
+<section class="panel">
+<h2>2. Controles gerais</h2>
+<div class="options">
+<label class="field"><span>Andamento (BPM)</span><input id="bpm" type="number" min="50" max="210" value="138" step="1"></label>
+<label class="field"><span>Volume da caixa</span><input id="boxvol" type="range" min="0" max="100" value="85"></label>
+<label class="field"><span>Volume do metrônomo</span><input id="metrovol" type="range" min="0" max="100" value="45"></label>
+<label class="field"><span>Volume do surdo</span><input id="surdovol" type="range" min="0" max="100" value="40"></label>
+</div>
+<div class="groupRow">
+<label class="check"><input type="checkbox" id="metro" checked>Metrônomo agudo</label>
+<label class="check"><input type="checkbox" id="surdo" checked>Surdo de referência</label>
+<label class="check"><input type="checkbox" id="hands" checked>Destacar mão D/E no timbre</label>
+</div>
+<p class="small">Quatro tempos de semínima = dois compassos de 2/4. O surdo é uma referência didática, não uma reconstrução da bateria completa da escola.</p>
+</section>
+<section class="panel">
+<h2>3. Quatro grupos, dezesseis ataques</h2>
+<p class="small">A primeira nota de cada grupo permanece em 0 ms por padrão, enquanto a segunda atrasa 12 ms e a terceira e quarta adiantam 20 ms. Cada nota pode ser modificada separadamente. Toque em um botão vermelho para ativar ou desativar seu acento.</p>
+<div class="controls" style="margin:12px 0">
+<button type="button" class="btn good" id="reel">Aplicar +0 / +12 / −20 / −20 nos 4 grupos</button>
+<button type="button" class="btn" id="soft">Suavizar todos</button>
+<button type="button" class="btn pale" id="zero">Zerar microtiming</button>
+<button type="button" class="btn pale" id="accentsReset">Restaurar acentos</button>
+</div>
+<div id="beatCards" class="beats"></div>
+<p class="small">D = mão direita; E = mão esquerda. Os acentos iniciais são uma leitura pedagógica da partitura de referência e podem ser ajustados no laboratório.</p>
+</section>
+<section class="panel">
+<h2>4. Como os golpes se deslocam</h2>
+<p class="small">Cada linha representa uma semínima; os círculos vazios indicam a grade reta e os preenchidos os ataques modificados. Valores em milissegundos dependem do BPM.</p>
+<div id="diagram" class="ruler-wrap"></div>
+</section>
+<section class="panel">
+<h2>5. Intervalos entre golpes</h2>
+<p class="small">O que modifica o balanço é a distância real entre os ataques, e não apenas a antecipação ou o atraso considerados isoladamente.</p>
+<div class="tablewrap"><table><thead><tr><th>Grupo</th><th>1→2</th><th>2→3</th><th>3→4</th><th>4→Próximo</th></tr></thead><tbody id="intervals"></tbody></table></div>
+<div class="hint"><strong>Experimento de percepção:</strong> mantenha as mesmas acentuações e ouça reto → microtiming. Depois zere os deslocamentos e experimente apenas com os acentos. Esse preset não pretende reproduzir o microtiming real da bateria da Mocidade; é uma transformação experimental do padrão notado.</div>
+</section>
+<section class="panel">
+<h2>Referência da levada</h2>
+<p>A manulação D–E–D–E, os quatro grupos de semicolcheias, a métrica de 2/4 e a existência de acentos característicos vêm da transcrição de Rafael Y Castro, na <em>interFACES</em> (2020), figura 8, p. 77. A escolha de aplicar <strong>0, +12, −20, −20 ms</strong> a cada grupo foi feita exclusivamente para o nosso experimento.</p>
+<p><a href="https://revistas.ufrj.br/index.php/interfaces/article/download/39691/21611" target="_blank" rel="noopener noreferrer">Consultar a partitura de referência (PDF)</a></p>
+<p class="small">A síntese sonora é aproximativa. Não representa uma gravação oficial da bateria da escola, e a interpretação real pode ter articulações, rebotes e nuances diferentes.</p>
+</section>
+</main><footer class="wrap">ARRANJA PRA MIM · Laboratório autoral de ritmo · <a href="../index.html">Voltar ao Hub</a></footer>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var initialAccents=[0,3,6,9,12];
+var offsets=Array.from({length:4},function(){return [0,12,-20,-20];});
+var accents=Array.from({length:16},function(_,i){return initialAccents.includes(i);});
+var currentUrl=null,mode='shifted';
+var audio=$('audio');
+function nBpm(){var n=Number($('bpm').value);return isFinite(n)?Math.max(50,Math.min(210,n)):138;}
+function beatDuration(){return 60/nBpm();}
+function signed(n){return n>0?'+'+n:n<0?'−'+Math.abs(n):'0';}
+function fmt(n){return n.toFixed(1).replace('.',',');}
+function setStatus(s){$('status').textContent=s;}
+function setPattern(x){for(var i=0;i<4;i++)offsets[i]=x.slice();render();makeAudio();}
+function createCards(){
+var wrap=$('beatCards');wrap.textContent='';
+for(var b=0;b<4;b++){
+ var card=document.createElement('section');card.className='beat';card.id='beat'+b;
+ var headline=document.createElement('h3');headline.textContent='Grupo '+(b+1)+' ';var sub=document.createElement('span');
+ sub.textContent=(b<2?'1º':'2º')+' compasso · '+(b%2+1)+'º tempo';
+ headline.appendChild(sub);card.appendChild(headline);
+ var grid=document.createElement('div');grid.className='notegrid';
+ for(var k=0;k<4;k++){
+  (function(b,k){
+   var index=b*4+k, div=document.createElement('div');div.className='note';div.dataset.sub=String(k);
+   var hand=document.createElement('div');hand.className='stick';hand.textContent=(k%2===0?'D':'E')+' · '+(k+1)+'ª';
+   var accentBtn=document.createElement('button');accentBtn.type='button';accentBtn.id='accent'+index;accentBtn.setAttribute('aria-pressed',String(accents[index]));
+   accentBtn.setAttribute('aria-label','Alternar acento do golpe '+(index+1));accentBtn.textContent='FORTE';
+   accentBtn.addEventListener('click',function(){accents[index]=!accents[index];render();makeAudio();});
+   var val=document.createElement('div');val.className='amount';val.id='amount'+index;
+   var slider=document.createElement('input');slider.type='range';slider.min='-40';slider.max='40';slider.step='1';slider.id='step'+index;
+   slider.setAttribute('aria-label','Deslocamento em milissegundos do golpe '+(index+1));
+   slider.addEventListener('input',function(){offsets[b][k]=Number(slider.value);render(false);});
+   slider.addEventListener('change',makeAudio);
+   div.appendChild(hand);div.appendChild(accentBtn);div.appendChild(val);div.appendChild(slider);grid.appendChild(div);
+  })(b,k);
+ }
+ card.appendChild(grid);
+ var row=document.createElement('div');row.className='groupRow';
+ var btn=document.createElement('button');btn.type='button';btn.className='btn pale';btn.textContent='Preset neste grupo';
+ btn.style.minHeight='34px';btn.style.padding='6px 10px';btn.style.fontSize='12px';
+ btn.addEventListener('click',function(i){return function(){offsets[i]=[0,12,-20,-20];render();makeAudio();};}(b));
+ row.appendChild(btn);card.appendChild(row);wrap.appendChild(card);
+}
+}
+function render(sliderSync){
+ for(var b=0;b<4;b++)for(var k=0;k<4;k++){
+  var j=b*4+k,x=offsets[b][k],btn=$('accent'+j);
+  $('amount'+j).textContent=signed(x)+' ms';
+  btn.classList.toggle('accent',accents[j]);btn.setAttribute('aria-pressed',String(accents[j]));
+  btn.textContent=accents[j]?'FORTE':'leve';
+  if(sliderSync!==false)$('step'+j).value=x;
+ }
+ updateGraph();updateIntervals();
+}
+function updateGraph(){
+ var ms=beatDuration()*1000,unit=ms/4;
+ var out='<svg class="ruler" viewBox="0 0 740 310" role="img" aria-label="Quatro grupos: círculos da grade reta e ataques deslocados">';
+ out+='<rect width="740" height="310" rx="10" fill="#fff"/>';
+ for(var b=0;b<4;b++){
+  var y=48+b*75;
+  out+='<text x="10" y="'+(y+5)+'" font-size="13" font-weight="800" fill="#171716">'+(b+1)+'º</text>';
+  out+='<line x1="75" x2="690" y1="'+y+'" y2="'+y+'" stroke="#999" stroke-width="2"/>';
+  for(var k=0;k<5;k++){
+   var baseline=75+615*k/4;
+   out+='<line x1="'+baseline+'" x2="'+baseline+'" y1="'+(y-16)+'" y2="'+(y+16)+'" stroke="#d9d9d9" stroke-dasharray="3 3"/>';
+  }
+  for(var k=0;k<4;k++){
+   var ref=75+615*k/4, shifted=ref+615*offsets[b][k]/ms, idx=b*4+k;
+   var color=accents[idx]?'#087968':(k===1?'#2869da':'#e74731');
+   out+='<circle cx="'+ref+'" cy="'+y+'" r="16" stroke="#bbbbbb" stroke-width="2" fill="none" stroke-dasharray="4 4"/>';
+   out+='<circle cx="'+shifted.toFixed(2)+'" cy="'+y+'" r="'+(accents[idx]?'12':'9')+'" fill="'+color+'"/>';
+   out+='<text x="'+shifted.toFixed(2)+'" y="'+(y-22)+'" fill="#444" font-size="12" font-weight="800" text-anchor="middle">'+signed(offsets[b][k])+'</text>';
+  }
+ }
+ out+='<text x="75" y="307" fill="#6a6a6a" font-size="12">0 ms</text>';
+ out+='<text x="690" y="307" fill="#6a6a6a" font-size="12" text-anchor="end">'+fmt(ms)+' ms por tempo</text></svg>';
+ $('diagram').innerHTML=out;
+}
+function updateIntervals(){
+ var dur=beatDuration()*1000,u=dur/4,rows='';
+ for(var b=0;b<4;b++){
+  var x=offsets[b],d1=u+x[1]-x[0],d2=u+x[2]-x[1],d3=u+x[3]-x[2];
+  var next=offsets[(b+1)%4][0],d4=u+next-x[3];
+  rows+='<tr><td>Grupo '+(b+1)+'</td><td>'+fmt(d1)+' ms</td><td>'+fmt(d2)+' ms</td><td>'+fmt(d3)+' ms</td><td>'+fmt(d4)+' ms</td></tr>';
+ }
+ $('intervals').innerHTML=rows;
+}
+function buildWave(){
+ var rate=24000,b=beatDuration(),bars=4,beats=2*bars;
+ var pre=.065,duration=pre+beats*b+.16, samples=new Float32Array(Math.ceil(duration*rate));
+ var waveMode=mode;
+ // Gerador determinístico de ruído para o estalo da esteira da caixa.
+ var seed=354131;function random(){seed=(1664525*seed+1013904223)>>>0;return (seed/4294967296)*2-1;}
+ function addKick(time,amp,strong){
+   var start=Math.round(time*rate),end=Math.min(samples.length,start+Math.ceil(.22*rate));
+   for(var i=start;i<end;i++){if(i<0)continue;
+    var t=(i-start)/rate,env=Math.exp(-t*19);
+    samples[i]+=amp*env*(Math.sin(2*Math.PI*(strong?83:96)*t)+.10*random());}
+ }
+ function addClick(time,amp,strong){
+  var start=Math.round(time*rate),end=Math.min(samples.length,start+Math.ceil(.044*rate)),prev=0;
+  for(var i=start;i<end;i++){if(i<0)continue;
+   var t=(i-start)/rate,n=random(),hp=n-prev*.9;prev=n;
+   samples[i]+=amp*Math.exp(-t*75)*(.72*Math.sin(2*Math.PI*(strong?1630:1280)*t)+.38*hp);}
+ }
+ function addSnare(time,amp,right,hard){
+  var start=Math.round(time*rate),end=Math.min(samples.length,start+Math.ceil(.13*rate)),prev=0;
+  for(var i=start;i<end;i++){if(i<0)continue;
+    var t=(i-start)/rate,white=random(),high=white-prev*.78;prev=white;
+    var attack=Math.min(1,t*2200),decay=Math.exp(-t*(hard?46:64));
+    var body=Math.sin(2*Math.PI*(right?215:197)*t)*.46+Math.sin(2*Math.PI*318*t)*.19;
+    var wires=high*(hard?.58:.44);
+    samples[i]+=amp*attack*decay*(body+wires);
+  }
+ }
+ var vBox=Number($('boxvol').value)/100,vMetro=Number($('metrovol').value)/100,vSurdo=Number($('surdovol').value)/100;
+ for(var bar=0;bar<bars;bar++){
+  var phraseBar=bar%2, style=waveMode==='ab'?(bar<2?'straight':'shifted'):waveMode;
+  for(var t=0;t<2;t++){
+   var beat=bar*2+t,idx=phraseBar*2+t,at=pre+beat*b;
+   if($('metro').checked)addClick(at,.23*vMetro,t===0);
+   if($('surdo').checked)addKick(at,.35*vSurdo,t===1);
+   for(var k=0;k<4;k++){
+    var index=idx*4+k,isAccented=accents[index],delay=style==='shifted'?offsets[idx][k]/1000:0;
+    var right=k%2===0;
+    var vol=(isAccented?.62:.22)*vBox;
+    if($('hands').checked){vol*=right?1.0:.88;}
+    addSnare(at+k*b/4+delay,vol,right,isAccented);
+   }
+  }
+ }
+ var buffer=new ArrayBuffer(44+samples.length*2),view=new DataView(buffer);
+ function putStr(pos,s){for(var i=0;i<s.length;i++)view.setUint8(pos+i,s.charCodeAt(i));}
+ putStr(0,'RIFF');view.setUint32(4,36+samples.length*2,true);putStr(8,'WAVE');
+ putStr(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);
+ view.setUint16(22,1,true);view.setUint32(24,rate,true);view.setUint32(28,rate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);
+ putStr(36,'data');view.setUint32(40,samples.length*2,true);
+ for(var i=0;i<samples.length;i++){var v=Math.tanh(samples[i]*1.45)*.80;view.setInt16(44+i*2,Math.round(v*32767),true);}
+ return new Blob([buffer],{type:'audio/wav'});
+}
+function makeAudio(){
+ try{
+  var b=buildWave(),url=URL.createObjectURL(b),old=currentUrl;
+  currentUrl=url;
+  audio.pause();audio.src=url;audio.load();
+  if(old)URL.revokeObjectURL(old);
+  setStatus('Áudio WAV pronto · '+({straight:'reto',shifted:'microtiming',ab:'A/B'}[mode])+' · '+nBpm()+' BPM. Use os botões ou ▶ no player.');
+ }catch(e){setStatus('Falha ao gerar áudio WAV: '+e.message);}
+}
+function play(which){
+ mode=which;makeAudio();
+ // O gesto de toque no botão autoriza a reprodução no Safari/iOS.
+ var result=audio.play();
+ if(result&&result.then){result.then(function(){setStatus('Tocando: '+({straight:'reto',shifted:'microtiming',ab:'reto nos primeiros 2 compassos, deslocado nos 2 seguintes'}[which])+'.');}).catch(function(e){setStatus('Use ▶ no player de áudio abaixo. Bloqueio do navegador: '+e.name);});}
+}
+$('straight').addEventListener('click',function(){play('straight');});
+$('shifted').addEventListener('click',function(){play('shifted');});
+$('ab').addEventListener('click',function(){play('ab');});
+$('stop').addEventListener('click',function(){audio.pause();audio.currentTime=0;setStatus('Parado.');});
+$('reel').addEventListener('click',function(){setPattern([0,12,-20,-20]);});
+$('soft').addEventListener('click',function(){setPattern([0,6,-10,-10]);});
+$('zero').addEventListener('click',function(){setPattern([0,0,0,0]);});
+$('accentsReset').addEventListener('click',function(){accents=accents.map(function(_,i){return initialAccents.includes(i);});render();makeAudio();});
+['bpm','boxvol','metrovol','surdovol','metro','surdo','hands'].forEach(function(id){
+ $(id).addEventListener('change',function(){if(id==='bpm')$('bpm').value=nBpm();render();makeAudio();});
+});
+audio.addEventListener('error',function(){setStatus('Não foi possível carregar o WAV. Tente abrir esta página no Safari e toque em Atualizar a página.');});
+createCards();render();makeAudio();
+})();
+</script>
+</body></html>
