@@ -532,10 +532,10 @@ function point(side,ph){
   // O acento pertence ao PRÓXIMO golpe da mão, não ao pulso.
   // Preparação realmente alta nos acentos e trajetória pequena nos toques fracos.
   const strong=ACCENT[(next%16+16)%16];
-  const lift=crest*(strong?282:48);
+  const lift=crest*(strong?262:48);
   const tipX=left?285:405,tipY=326-lift;
-  // Levanta a própria mão (não apenas a ponta da baqueta).
-  const gripX=left?168:522, gripY=518-lift*.55;
+  // A mão/punho sobe muito mais nos acentos; golpes leves ficam próximos à pele.
+  const gripX=left?168:522, gripY=518-crest*(strong?218:24);
   return {tipX,tipY,gripX,gripY,lift};
 }
 function drawStick(side,p){
