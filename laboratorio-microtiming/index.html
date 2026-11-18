@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f2e9">
+<meta name="description" content="Laboratório interativo de microtiming do samba: escuta, comparação, deslocamentos, acentos e metrônomo.">
+<title>Microtiming do Samba — Arranja pra Mim</title>
+<style>
+:root{--paper:#f5f2e9;--white:#fffcf6;--ink:#171716;--muted:#686861;--line:#d7d3c8;--green:#007d69;--red:#e65034;--blue:#2966d6;--yellow:#f0bc2b}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px}
+header{border-bottom:1px solid var(--line);background:var(--white)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:13px 0;gap:12px;font-size:13px;font-weight:700}
+.top a{text-decoration:none}.top a:hover{text-decoration:underline}
+.brand{letter-spacing:.06em;text-transform:uppercase}
+.hero{padding:32px 0 24px}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--green);margin:0 0 10px}
+h1{font-size:clamp(35px,6.8vw,68px);line-height:1;letter-spacing:-.065em;text-transform:uppercase;margin:0;max-width:800px}
+h1 span{color:var(--green)}.lede{max-width:720px;font-size:16px;margin:15px 0 0}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px;margin:0 0 17px}
+.panel h2{font-size:19px;margin:0 0 5px;letter-spacing:-.025em}
+small,.sub{color:var(--muted);font-size:12px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.transport{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.btn{border:1px solid var(--ink);background:transparent;color:var(--ink);padding:11px 16px;border-radius:11px;font-weight:800;font-size:14px;min-height:44px}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #85bdeb;outline-offset:2px}
+.btn.black{background:var(--ink);color:#fff}.btn.green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.selected{background:var(--ink);color:#fff}.btn:disabled{opacity:.5;cursor:default}
+#status{font-size:12px;color:var(--muted);margin:10px 0 0;min-height:20px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:8px 0 0}
+.key{height:10px;width:10px;display:inline-block;border-radius:50%;margin-right:5px}
+.grid-layout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.field{display:block;min-width:0}.field>span{display:block;font-size:12px;text-transform:uppercase;font-weight:800;letter-spacing:.04em;margin:0 0 6px}
+.field select,.field input[type=number]{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:11px 9px;min-height:42px;color:var(--ink)}
+.field input[type=range]{width:100%;accent-color:var(--green)}
+.toggle{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;cursor:pointer;min-height:40px}
+.toggle input{accent-color:var(--green);width:19px;height:19px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+fieldset legend{font-weight:800;text-transform:uppercase;font-size:12px;margin:0 0 9px}
+.mode{display:flex;flex-wrap:wrap;gap:7px}
+.mode button{background:#eeebe3;border:1px solid var(--line);border-radius:10px;font-size:13px;font-weight:800;padding:10px}
+.mode button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:white}
+.graph{width:100%;height:auto;display:block;overflow:visible}
+.graph-wrap{border:1px solid var(--line);border-radius:12px;background:#fff;padding:6px 8px;margin-top:14px}
+.slider-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 0}
+.slot{border:1px solid var(--line);border-radius:12px;background:#fff;padding:13px;min-width:0}
+.slot h3{font-size:14px;margin:0 0 9px}
+.slot .subline{display:flex;justify-content:space-between;gap:5px;margin:8px 0 3px;font-size:12px}
+.slot output{font-weight:900;font-variant-numeric:tabular-nums}
+.slot input[type=range]{display:block;width:100%;accent-color:var(--green);margin:0}
+.slot:nth-child(2) input[type=range]{accent-color:var(--blue)}
+.slot:nth-child(3) input[type=range],.slot:nth-child(4) input[type=range]{accent-color:var(--red)}
+.stats{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;min-width:470px}
+th,td{text-align:right;padding:9px 8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}thead{color:var(--muted)}tbody tr:last-child td{border-bottom:0}
+.note{border-left:4px solid var(--green);padding:11px 14px;background:#e6f3ee;border-radius:0 9px 9px 0;font-size:13px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.info-grid p{margin:4px 0;font-size:13px}.actions-end{margin:15px 0 0}
+footer{padding:16px 0 28px;color:var(--muted);font-size:12px}
+@media(max-width:690px){.panel{padding:14px}.hero{padding:24px 0 18px}.grid-layout{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.slider-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.info-grid{grid-template-columns:1fr}.btn{padding:10px 12px}.graph-wrap{padding:0}.brand{font-size:11px}}
+@media(max-width:370px){.grid-layout{grid-template-columns:1fr}.slider-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><a class="brand" href="../index.html">ARRANJA PRA MIM / HUB</a><a href="../laboratorio.html">← Outros laboratórios</a></div></header>
+<main class="wrap">
+<section class="hero">
+<p class="eyebrow">Laboratório de ritmo / experimento de escuta</p>
+<h1>Microtiming <span>do samba.</span></h1>
+<p class="lede">Mesmas quatro semicolcheias. Outros lugares no tempo. Ouça as diferenças, altere cada ataque e descubra como tempo, acentuação e timbre interagem.</p>
+</section>
+<section class="panel" aria-label="Reprodução">
+<div class="transport">
+<button class="btn black" id="play" type="button">▶ Tocar</button>
+<button class="btn" id="stop" type="button">■ Parar</button>
+<button class="btn" id="hearStraight" type="button">Ouvir reto</button>
+<button class="btn green" id="hearShifted" type="button">Ouvir deslocado</button>
+</div>
+<p id="status" role="status" aria-live="polite">Toque em Tocar para ativar o áudio.</p>
+<div class="legend"><span><i class="key" style="background:#2966d6"></i>Referência reta</span><span><i class="key" style="background:#e65034"></i>Ataques deslocados</span><span><i class="key" style="background:#171716"></i>Pulso</span></div>
+</section>
+<section class="panel">
+<h2>1. Escolha como comparar</h2>
+<fieldset><legend>Execução</legend>
+<div class="mode" id="modes">
+<button type="button" data-mode="alternate" aria-pressed="true">A/B por compasso</button>
+<button type="button" data-mode="straight" aria-pressed="false">Reto</button>
+<button type="button" data-mode="shifted" aria-pressed="false">Deslocado</button>
+<button type="button" data-mode="together" aria-pressed="false">Simultâneo</button>
+</div></fieldset>
+<div class="grid-layout" style="margin-top:18px">
+<label class="field"><span>Andamento (BPM)</span><input type="number" id="bpm" min="40" max="220" step="1" value="120"></label>
+<label class="field"><span>Compasso</span><select id="meter"><option value="2" selected>2/4</option><option value="4">4/4</option></select></label>
+<label class="field"><span>Timbre dos ataques</span><select id="instrument"><option value="tamborim" selected>Tamborim (sintético)</option><option value="wood">Madeira</option><option value="palma">Palma</option><option value="shaker">Chocalho (sintético)</option><option value="agogo">Agogô (sintético)</option><option value="click">Clique seco</option></select></label>
+<label class="field"><span>Volume principal</span><input type="range" id="volume" min="0" max="100" value="70"></label>
+<label class="field"><span>Volume do metrônomo</span><input type="range" id="metroVolume" min="0" max="100" value="45"></label>
+<label class="field"><span>Volume do surdo</span><input type="range" id="surdoVolume" min="0" max="100" value="45"></label>
+</div>
+<div class="row" style="margin-top:10px">
+<label class="toggle"><input type="checkbox" id="metronome" checked>Metrônomo agudo</label>
+<label class="toggle"><input type="checkbox" id="surdo">Adicionar surdo de referência</label>
+</div>
+<p class="sub">O metrônomo marca semínimas, com destaque no início do compasso. O surdo é uma camada independente, sem microtiming aplicado. Os timbres são gerados pelo navegador, não são gravações de instrumentos.</p>
+</section>
+<section class="panel">
+<h2>2. Visualize as quatro semicolcheias</h2>
+<p class="sub">Círculos vazados = grade quantizada. Círculos preenchidos = ataque real. A régua mostra um pulso em milissegundos.</p>
+<div class="graph-wrap"><svg class="graph" id="timeline" viewBox="0 0 710 245" role="img" aria-label="Comparação entre posições retas e deslocadas das quatro semicolcheias"></svg></div>
+<p class="sub" id="timingSummary"></p>
+</section>
+<section class="panel">
+<h2>3. Mova cada ataque e ajuste a intensidade</h2>
+<p class="sub">Valores positivos atrasam; negativos adiantam. Mude os controles enquanto toca para experimentar.</p>
+<div class="slider-grid">
+<div class="slot"><h3>1ª semicolcheia</h3><label><span class="subline">Deslocamento <output id="msout0">0 ms</output></span><input id="ms0" type="range" min="-40" max="40" step="1" value="0"></label><label><span class="subline">Acento <output id="accentout0">100%</output></span><input id="accent0" type="range" min="0" max="160" step="1" value="100"></label></div>
+<div class="slot"><h3>2ª semicolcheia</h3><label><span class="subline">Deslocamento <output id="msout1">+12 ms</output></span><input id="ms1" type="range" min="-40" max="40" step="1" value="12"></label><label><span class="subline">Acento <output id="accentout1">100%</output></span><input id="accent1" type="range" min="0" max="160" step="1" value="100"></label></div>
+<div class="slot"><h3>3ª semicolcheia</h3><label><span class="subline">Deslocamento <output id="msout2">−20 ms</output></span><input id="ms2" type="range" min="-40" max="40" step="1" value="-20"></label><label><span class="subline">Acento <output id="accentout2">100%</output></span><input id="accent2" type="range" min="0" max="160" step="1" value="100"></label></div>
+<div class="slot"><h3>4ª semicolcheia</h3><label><span class="subline">Deslocamento <output id="msout3">−20 ms</output></span><input id="ms3" type="range" min="-40" max="40" step="1" value="-20"></label><label><span class="subline">Acento <output id="accentout3">100%</output></span><input id="accent3" type="range" min="0" max="160" step="1" value="100"></label></div>
+</div>
+<div class="row actions-end">
+<button type="button" class="btn" id="presetReel">Exemplo do Reel</button>
+<button type="button" class="btn" id="presetSoft">Deslocamento suave</button>
+<button type="button" class="btn" id="presetZero">Zerar deslocamentos</button>
+<button type="button" class="btn" id="resetAccents">Igualar acentos</button>
+</div>
+</section>
+<section class="panel">
+<h2>4. Compare os intervalos resultantes</h2>
+<p class="sub">Não basta observar onde cada nota cai: o intervalo entre ataques também muda.</p>
+<div class="stats"><table><thead><tr><th>Intervalo</th><th>Reto</th><th>Deslocado</th><th>Diferença</th></tr></thead><tbody id="intervals"></tbody></table></div>
+<div class="note" style="margin-top:15px"><strong>Experimento:</strong> primeiro ouça reto e deslocado com os quatro acentos iguais. Depois altere apenas os acentos, sem mexer nos milissegundos. O que transforma mais a sensação rítmica?</div>
+</section>
+<section class="panel">
+<h2>Ideia pedagógica</h2>
+<div class="info-grid">
+<div><p><strong>1. Quantização</strong></p><p>Ouça o pulso com semicolcheias equidistantes e identifique a referência.</p><p><strong>2. Microtiming</strong></p><p>Compare uma subdivisão atrasada e duas antecipadas; investigue a sensação de impulso.</p></div>
+<div><p><strong>3. Acentuação</strong></p><p>Mantenha os ataques e mude apenas a intensidade.</p><p><strong>4. Camadas</strong></p><p>Adicione surdo e metrônomo. O swing também depende das relações entre instrumentos.</p></div>
+</div>
+<p class="sub">Os valores do preset (+12, −20, −20 ms) reproduzem o exemplo discutido no Reel; não são uma definição universal do samba. A síntese dos timbres é aproximativa e não substitui a escuta de músicos reais.</p>
+</section>
+</main>
+<footer class="wrap">ARRANJA PRA MIM · Laboratório de Microtiming · <a href="../index.html">Voltar ao Hub</a></footer>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var A=null,master=null,patternGain=null,metroGain=null,surdoGain=null,noise=null;
+var playing=false,timer=null,nextBeat=0,beatIndex=0,barIndex=0,mode="alternate",runToken=0;
+var highlight={straight:-1,shifted:-1},lastVisual=0;
+var stateBpm=120;
+var off=function(){return [0,1,2,3].map(function(i){return Number($("ms"+i).value);});};
+var accents=function(){return [0,1,2,3].map(function(i){return Number($("accent"+i).value)/100;});};
+var bpm=function(){return Math.max(40,Math.min(220,Number($("bpm").value)||120));};
+var beatSec=function(){return 60/bpm();};
+function status(s){$("status").textContent=s;}
+function signed(v){return v===0?"0":v>0?"+"+v:"−"+Math.abs(v);}
+function createAudio(){
+ if(A)return;
+ var C=window.AudioContext||window.webkitAudioContext;
+ if(!C){status("Este navegador não oferece Web Audio.");return;}
+ A=new C();master=A.createGain();patternGain=A.createGain();metroGain=A.createGain();surdoGain=A.createGain();
+ patternGain.connect(master);metroGain.connect(master);surdoGain.connect(master);master.connect(A.destination);
+ noise=A.createBuffer(1,Math.ceil(A.sampleRate*.25),A.sampleRate);
+ var d=noise.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+ updateVolume();
+}
+function updateVolume(){
+ if(!A)return;
+ master.gain.value=0.85;
+ patternGain.gain.value=Number($("volume").value)/100;
+ metroGain.gain.value=Number($("metroVolume").value)/100;
+ surdoGain.gain.value=Number($("surdoVolume").value)/100;
+}
+function envelope(out,time,amp,end,attack){
+ var g=A.createGain();g.gain.setValueAtTime(.0001,time);
+ g.gain.linearRampToValueAtTime(Math.max(.0001,amp),time+(attack||.002));
+ g.gain.exponentialRampToValueAtTime(.0001,time+end);g.connect(out);return g;
+}
+function tone(t,f,amp,len,dest,type,fEnd){
+ var o=A.createOscillator();o.type=type||"sine";o.frequency.setValueAtTime(f,t);
+ if(fEnd)o.frequency.exponentialRampToValueAtTime(fEnd,t+len*.75);
+ o.connect(envelope(dest,t,amp,len));o.start(t);o.stop(t+len+.015);
+}
+function noiseHit(t,amp,len,cut,dest,filterKind){
+ var src=A.createBufferSource();src.buffer=noise;
+ var filt=A.createBiquadFilter();filt.type=filterKind||"highpass";filt.frequency.value=cut;
+ src.connect(filt);filt.connect(envelope(dest,t,amp,len,.001));
+ src.start(t);src.stop(t+len+.012);
+}
+function strike(t,amp,instr){
+ if(amp<=.001)return;
+ if(instr==="tamborim"){noiseHit(t,amp*.65,.075,2300,patternGain);tone(t,1750,amp*.22,.055,patternGain,"triangle",1050);}
+ else if(instr==="wood"){tone(t,1050,amp*.5,.05,patternGain,"triangle",600);noiseHit(t,amp*.24,.036,1600,patternGain);}
+ else if(instr==="palma"){noiseHit(t,amp*.75,.095,850,patternGain);noiseHit(t+.012,amp*.21,.05,2100,patternGain);}
+ else if(instr==="shaker"){noiseHit(t,amp*.55,.095,4600,patternGain);}
+ else if(instr==="agogo"){tone(t,780,amp*.43,.12,patternGain,"sine");tone(t,1240,amp*.23,.095,patternGain,"sine");}
+ else{noiseHit(t,amp*.5,.028,3000,patternGain);tone(t,1200,amp*.12,.025,patternGain,"sine");}
+}
+function metronome(t,accented){
+ noiseHit(t,accented?.42:.25,.027,accented?3400:2700,metroGain);
+ tone(t,accented?1550:1200,accented?.16:.09,.035,metroGain,"sine");
+}
+function surdo(t,beatInBar){
+ var strong=beatInBar===1;
+ tone(t,strong?110:95,strong?.6:.34,.19,surdoGain,"sine",strong?65:58);
+ noiseHit(t,strong?.1:.06,.045,1200,surdoGain);
+}
+function effectiveMode(bar){
+ if(mode==="alternate")return bar%2===0?"straight":"shifted";
+ return mode;
+}
+function scheduleBeat(t,b,barnum){
+ var sec=beatSec(),s=sec/4,d=off(),v=accents(),inst=$("instrument").value;
+ var selected=effectiveMode(barnum);
+ if($("metronome").checked)metronome(t,b===0);
+ if($("surdo").checked)surdo(t,b);
+ for(var i=0;i<4;i++){
+   var vol=.35*v[i];
+   if(selected==="straight"||selected==="together")strike(t+i*s,selected==="together"?vol*.63:vol,inst);
+   if(selected==="shifted"||selected==="together")strike(t+i*s+d[i]/1000,selected==="together"?vol*.63:vol,inst);
+ }
+}
+function scheduler(){
+ if(!playing||!A)return;
+ while(nextBeat<A.currentTime+.17){
+   scheduleBeat(nextBeat,beatIndex,barIndex);
+   nextBeat+=beatSec();beatIndex++;
+   if(beatIndex>=Number($("meter").value)){beatIndex=0;barIndex++;}
+ }
+}
+function start(){
+ createAudio();if(!A)return;
+ A.resume().then(function(){
+  if(playing)return;
+  playing=true;runToken++;beatIndex=0;barIndex=0;stateBpm=bpm();
+  nextBeat=A.currentTime+.09;
+  scheduler();timer=setInterval(scheduler,24);
+  $("play").textContent="♫ Tocando";
+  status("Reproduzindo · A/B: reto no primeiro compasso, deslocado no segundo.");
+ });
+}
+function stop(){
+ playing=false;runToken++;clearInterval(timer);timer=null;
+ if(A){ // Interrompe também os eventos previamente agendados.
+  var old=master;var newMaster=A.createGain();newMaster.gain.value=.85;
+  patternGain.disconnect();metroGain.disconnect();surdoGain.disconnect();
+  patternGain.connect(newMaster);metroGain.connect(newMaster);surdoGain.connect(newMaster);newMaster.connect(A.destination);
+  old.disconnect();master=newMaster;
+ }
+ $("play").textContent="▶ Tocar";status("Parado. Toque em Tocar ou Ouvir para continuar.");
+ highlight={straight:-1,shifted:-1};
+}
+function preview(which){
+ stop();createAudio();if(!A)return;
+ A.resume().then(function(){
+  var t=A.currentTime+.09,beats=Number($("meter").value)*2;
+  var inst=$("instrument").value,d=off(),v=accents(),bs=beatSec(),unit=bs/4;
+  for(var b=0;b<beats;b++){
+    if($("metronome").checked)metronome(t+b*bs,b%Number($("meter").value)===0);
+    if($("surdo").checked)surdo(t+b*bs,b%Number($("meter").value));
+    for(var i=0;i<4;i++)strike(t+b*bs+i*unit+(which==="shifted"?d[i]/1000:0),.35*v[i],inst);
+  }
+  status("Prévia de dois compassos: "+(which==="straight"?"reto":"deslocado")+".");
+ });
+}
+function setOffsets(v){v.forEach(function(x,i){$("ms"+i).value=x;});refresh();}
+function setAccents(v){v.forEach(function(x,i){$("accent"+i).value=x;});refresh();}
+function changeMode(x){
+ mode=x;document.querySelectorAll("#modes button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.mode===x));});
+ if(playing)status("Reproduzindo · modo "+({straight:"reto",shifted:"deslocado",together:"simultâneo",alternate:"A/B alternado"}[x])+".");
+ refresh();
+}
+function refresh(){
+ var d=off(),v=accents(),unit=60000/bpm()/4,bm=unit*4;
+ for(var i=0;i<4;i++){
+  $("msout"+i).textContent=signed(d[i])+" ms";
+  $("accentout"+i).textContent=Math.round(v[i]*100)+"%";
+ }
+ var svg=$("timeline"),s="";
+ var X=function(ms){return 55+ms/bm*600;};
+ s+='<rect x="0" y="0" width="710" height="245" rx="8" fill="#fff"/>';
+ s+='<text x="15" y="26" font-size="17" font-weight="900" fill="#171716">RETO</text>';
+ s+='<text x="15" y="142" font-size="17" font-weight="900" fill="#007d69">DESLOCADO</text>';
+ s+='<line x1="55" y1="80" x2="655" y2="80" stroke="#171716" stroke-width="2"/>';
+ s+='<line x1="55" y1="185" x2="655" y2="185" stroke="#171716" stroke-width="2"/>';
+ for(var n=0;n<5;n++){
+  var x=X(n*unit).toFixed(2);
+  s+='<line x1="'+x+'" y1="56" x2="'+x+'" y2="207" stroke="#c9c9c5" stroke-dasharray="3 6"/>';
+  s+='<text x="'+x+'" y="234" font-size="12" text-anchor="middle" fill="#686861">'+Math.round(n*unit)+'</text>';
+ }
+ s+='<text x="656" y="234" font-size="11" fill="#686861">ms</text>';
+ for(var j=0;j<4;j++){
+  var x0=X(j*unit).toFixed(2),x1=X(j*unit+d[j]).toFixed(2);
+  s+='<circle cx="'+x0+'" cy="80" r="14" fill="#2966d6"/>';
+  s+='<text x="'+x0+'" y="85" fill="white" font-size="13" font-weight="900" text-anchor="middle">'+(j+1)+'</text>';
+  s+='<circle cx="'+x0+'" cy="185" r="18" fill="none" stroke="#aaa" stroke-dasharray="4 4" stroke-width="2"/>';
+  if(d[j]!==0)s+='<path d="M'+x0+' 160 L'+x1+' 160" fill="none" stroke="'+(j===1?"#2966d6":"#e65034")+'" stroke-width="2"/>';
+  s+='<circle cx="'+x1+'" cy="185" r="'+Math.max(8,Math.min(21,13+v[j]*4)).toFixed(1)+'" fill="'+(j===0?"#007d69":j===1?"#2966d6":"#e65034")+'"/>';
+  s+='<text x="'+x1+'" y="190" font-size="13" font-weight="900" text-anchor="middle" fill="#fff">'+(j+1)+'</text>';
+  s+='<text x="'+x1+'" y="153" font-size="12" font-weight="800" text-anchor="middle" fill="#333">'+signed(d[j])+'</text>';
+ }
+ s+='<line id="cursor" x1="55" y1="40" x2="55" y2="209" stroke="#007d69" stroke-width="3" opacity="0"/>';
+ svg.innerHTML=s;
+ var shift=d.map(function(x,i){return i*unit+x;});
+ var intervals=[shift[1]-shift[0],shift[2]-shift[1],shift[3]-shift[2],bm-shift[3]+d[0]];
+ $("intervals").innerHTML=intervals.map(function(val,i){var delta=val-unit;return "<tr><td>"+(["1ª → 2ª","2ª → 3ª","3ª → 4ª","4ª → próximo pulso"][i])+"</td><td>"+unit.toFixed(1)+" ms</td><td>"+val.toFixed(1)+" ms</td><td>"+signed(Number(delta.toFixed(1)))+" ms</td></tr>";}).join("");
+ $("timingSummary").textContent="Posições deslocadas: "+shift.map(function(x){return x.toFixed(1);}).join(" · ")+" ms  |  1 pulso = "+bm.toFixed(1)+" ms";
+ if(intervals.some(function(a){return a<=0;}))$("timingSummary").textContent+="  ⚠ Alguns ataques cruzaram de ordem: reduza os deslocamentos ou o BPM.";
+ updateVolume();
+}
+function animate(){
+ if(playing&&A){
+  var beat=beatSec(),p=(A.currentTime-(nextBeat-beat))/beat;
+  p=(p%1+1)%1;
+  var c=$("cursor");
+  if(c){var x=55+p*600;c.setAttribute("x1",x.toFixed(2));c.setAttribute("x2",x.toFixed(2));c.setAttribute("opacity","1");}
+ }
+ requestAnimationFrame(animate);
+}
+$("play").addEventListener("click",function(){if(playing)stop();else start();});
+$("stop").addEventListener("click",stop);
+$("hearStraight").addEventListener("click",function(){preview("straight");});
+$("hearShifted").addEventListener("click",function(){preview("shifted");});
+document.querySelectorAll("#modes button").forEach(function(b){b.addEventListener("click",function(){changeMode(b.dataset.mode);});});
+for(var i=0;i<4;i++)(function(i){
+ $("ms"+i).addEventListener("input",refresh);$("accent"+i).addEventListener("input",refresh);
+})(i);
+["volume","metroVolume","surdoVolume"].forEach(function(id){$(id).addEventListener("input",updateVolume);});
+["bpm","meter","instrument","metronome","surdo"].forEach(function(id){$(id).addEventListener("change",function(){
+ if(id==="bpm")$("bpm").value=bpm();
+ if(playing&&(id==="bpm"||id==="meter")){stop();start();}
+ refresh();
+});});
+$("presetReel").addEventListener("click",function(){setOffsets([0,12,-20,-20]);});
+$("presetSoft").addEventListener("click",function(){setOffsets([0,8,-10,-10]);});
+$("presetZero").addEventListener("click",function(){setOffsets([0,0,0,0]);});
+$("resetAccents").addEventListener("click",function(){setAccents([100,100,100,100]);});
+document.addEventListener("visibilitychange",function(){if(document.hidden&&playing)stop();});
+refresh();requestAnimationFrame(animate);
+})();
+</script>
+</body></html>
