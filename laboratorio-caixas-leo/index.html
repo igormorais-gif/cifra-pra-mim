@@ -46,6 +46,10 @@
 .micropresets{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 2px}
 .micro-ruler{display:flex;gap:8px;margin-top:7px;font-size:11px;flex-wrap:wrap;color:#c8c8cd;align-items:center}
 .micro-ruler b{font-variant-numeric:tabular-nums;color:#f2c453}
+.microlevel{display:flex;flex-wrap:wrap;align-items:center;gap:7px 12px;padding:10px 0 3px;color:#ececf0;font-size:12px}
+.microlevel label{font-weight:800}.microlevel output{color:#f2c453;font-variant-numeric:tabular-nums}
+.microlevel input{width:145px;max-width:45vw;height:21px;accent-color:#f2c453;touch-action:pan-x}
+.microlevel .microtest{border:1px solid #f2c453;background:#353028;color:#f2c453;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:800;min-height:37px}
 @media(max-width:500px){.microtools{padding:9px 8px}.microgrid{grid-template-columns:1fr}.micromodes{width:100%}.micromodes button{flex:1;padding:9px 6px}.microslot output{font-size:11px}}
 </style></head><body><main class="shell"><div class="eyebrow">LABORATÓRIO DE CAIXAS · LEVADA DA MOCIDADE</div><h1>Caixa da Mocidade</h1><p class="sub">Pegada tradicional · samples de caixa acústica · 2/4</p><section class="panel">
 <div class="tempo-board"><div class="tempo-head"><span>POSIÇÕES · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="55" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
@@ -58,7 +62,12 @@
     </div>
   </div>
   <div class="micro-ruler"><span>Grade: <b>0 ms</b></span><span>Reel: <b>0 · +12 · −20 · −20 ms</b> por tempo</span></div>
-  <p class="microhint">O som repete sem reiniciar entre os dois compassos. A/B alterna uma frase reta e outra deslocada. Mesmos samples, acentos e manulação do laboratório original.</p>
+  <div class="microlevel">
+    <label for="ghostLevel">Golpes leves: <output id="ghostLevelVal" for="ghostLevel">43%</output></label>
+    <input id="ghostLevel" type="range" min="20" max="65" value="43" step="1" aria-label="Ganho dos golpes não acentuados">
+    <button type="button" class="microtest" id="microEvident">Ouvir diferença mais evidente</button>
+  </div>
+  <p class="microhint">A/B compara uma frase reta e outra deslocada sem interromper o loop. O botão de diferença evidente aplica um exagero experimental (+25/−35/−35 ms) para treinamento auditivo, não uma medida da Mocidade.</p>
   <details class="microdetails">
     <summary>Editar os 16 golpes · quatro grupos de semicolcheias</summary>
     <div class="micropresets"><button type="button" id="microReel">Padrão do Reel</button><button type="button" id="microSoft">Suave</button><button type="button" id="microZero">Reto (0 ms)</button></div>
@@ -136,6 +145,7 @@ let bpm=103, syncMs=0, ctx=null, samples=null, running=false, loading=false, raf
 let origin=0, phaseOnPause=0, nextIndex=0, currentActive=-1;
 let scheduled=[];
 let microMode='shifted',microOffsets=Array.from({length:4},()=>[0,12,-20,-20]).flat(),loopParts=[];
+let ghostLevel=.43; // antes .34: toques não acentuados ligeiramente mais presentes
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const tick=()=>60/bpm/4;
 E('meter').innerHTML=[0,1].map(bar=>
@@ -226,7 +236,7 @@ function renderLoopBuffers(){
   const speed=1+[0,.008,-.009,.004][k%4];
   const trim=sample.offset*inputRate,voiceStart=Math.round((i*unit+activeOffset(i))*rate);
   const max=Math.min(Math.ceil(.42*rate),Math.floor((input.length-trim)/inputRate/speed*rate));
-  const vol=isAccent?.86:.34,decayStart=isAccent?.15:.075,decayTime=isAccent?.068:.045;
+  const vol=isAccent?.86:ghostLevel,decayStart=isAccent?.15:.075,decayTime=isAccent?.068:.045;
   for(let p=0;p<max;p++){
    const samplePos=trim+p*inputRate/rate*speed,at=Math.floor(samplePos),fraction=samplePos-at;
    if(at+1>=input.length)break;
@@ -336,7 +346,7 @@ function strike(i,when){
   /* Firme x toque próximo à pele; diferença criada pela amostra e ganho,
      nunca por um acento automático de compasso. */
   const gain=ctx.createGain();
-  const volume=isAccent?.86:.34;
+  const volume=isAccent?.86:ghostLevel;
   src.playbackRate.value=1+[0,.008,-.009,.004][i%4];
   gain.gain.setValueAtTime(volume,when);
   gain.gain.setTargetAtTime(.0001,when+(isAccent?.15:.075),isAccent?.068:.045);
@@ -466,6 +476,15 @@ document.querySelectorAll('[data-micro]').forEach(button=>{
 E('microReel').addEventListener('click',()=>applyMicroPreset([0,12,-20,-20]));
 E('microSoft').addEventListener('click',()=>applyMicroPreset([0,6,-10,-10]));
 E('microZero').addEventListener('click',()=>applyMicroPreset([0,0,0,0]));
+E('microEvident').addEventListener('click',()=>{
+ applyMicroPreset([0,25,-35,-35]);
+ setMicroMode('ab');
+});
+E('ghostLevel').addEventListener('input',event=>{
+ ghostLevel=Number(event.target.value)/100;
+ E('ghostLevelVal').textContent=Math.round(ghostLevel*100)+'%';
+});
+E('ghostLevel').addEventListener('change',()=>{if(running)launchLoop();});
 renderMicroControls();
 
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&running)render();});
