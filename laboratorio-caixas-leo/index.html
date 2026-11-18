@@ -23,8 +23,50 @@
 .playhead-track{height:3px;background:#37383e;border-radius:3px;margin-top:9px;overflow:hidden}
 .playhead-fill{height:100%;width:0%;background:#f2c453;will-change:width}.sync-adjust{margin-top:9px;color:#bcbcc2;font-size:11px}.sync-adjust summary{cursor:pointer;width:max-content;list-style:none;text-decoration:underline;text-decoration-color:#62636a;text-underline-offset:3px}.sync-adjust summary::-webkit-details-marker{display:none}.sync-controls{display:flex;align-items:center;gap:10px;margin-top:8px}.sync-controls input{flex:1;accent-color:#f2c453;min-width:80px}.sync-controls output{min-width:45px;text-align:right;font-variant-numeric:tabular-nums}
 @media(max-width:450px){.tempo-board{padding:9px 8px 10px}.measure{gap:1px}.step{min-height:43px}.step .count{font-size:17px}.step .stroke{font-size:8px}.bpm-box{gap:5px}}
+
+
+/* Microtiming integrado à caixa: compacto, sem ocultar a animação original. */
+.microtools{background:#191a1f;padding:11px 12px;border-top:1px solid #414248;border-bottom:1px solid #414248}
+.microtop{display:flex;gap:7px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.microlabel{font-size:11px;color:#f2c453;font-weight:900;letter-spacing:.07em}
+.micromodes{display:flex;gap:5px;flex-wrap:wrap}
+.micromodes button,.micropresets button{border:1px solid #51535b;color:#ececef;background:#2c2d35;border-radius:8px;padding:8px 11px;font-size:12px;min-height:38px;font-weight:750;cursor:pointer}
+.micromodes button[aria-pressed="true"]{background:#f2c453;color:#171717;border-color:#f2c453}
+.microhint{margin:6px 0 0;font-size:11px;color:#b4b5ba;line-height:1.45}
+.microdetails{margin-top:9px;border-top:1px solid #34353a;padding-top:8px}
+.microdetails summary{color:#e5e5e8;font-size:12px;font-weight:800;cursor:pointer;min-height:32px;user-select:none}
+.microgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:7px 0 11px}
+.microgroup{border:1px solid #42444b;border-radius:10px;padding:9px;background:#24252c;min-width:0}
+.microgroup h3{margin:0 0 7px;color:#f1f1f4;font-size:12px}
+.microslots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.microslot{min-width:0;text-align:center;font-size:10px;color:#c6c6cc}
+.microslot strong{display:block;color:#fff;font-size:11px}
+.microslot output{display:block;font-variant-numeric:tabular-nums;font-size:10px;color:#f2c453}
+.microslot input{width:100%;min-width:0;accent-color:#f2c453;touch-action:pan-x}
+.micropresets{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 2px}
+.micro-ruler{display:flex;gap:8px;margin-top:7px;font-size:11px;flex-wrap:wrap;color:#c8c8cd;align-items:center}
+.micro-ruler b{font-variant-numeric:tabular-nums;color:#f2c453}
+@media(max-width:500px){.microtools{padding:9px 8px}.microgrid{grid-template-columns:1fr}.micromodes{width:100%}.micromodes button{flex:1;padding:9px 6px}.microslot output{font-size:11px}}
 </style></head><body><main class="shell"><div class="eyebrow">LABORATÓRIO DE CAIXAS · LEVADA DA MOCIDADE</div><h1>Caixa da Mocidade</h1><p class="sub">Pegada tradicional · samples de caixa acústica · 2/4</p><section class="panel">
 <div class="tempo-board"><div class="tempo-head"><span>POSIÇÕES · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="55" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
+<section class="microtools" aria-label="Microtiming aplicado à caixa da Mocidade">
+  <div class="microtop"><strong class="microlabel">MICROTIMING · LOOP CONTÍNUO</strong>
+    <div class="micromodes" role="group" aria-label="Comparar o ritmo">
+      <button type="button" data-micro="straight" aria-pressed="false">Reto</button>
+      <button type="button" data-micro="shifted" aria-pressed="true">Deslocado</button>
+      <button type="button" data-micro="ab" aria-pressed="false">A/B</button>
+    </div>
+  </div>
+  <div class="micro-ruler"><span>Grade: <b>0 ms</b></span><span>Reel: <b>0 · +12 · −20 · −20 ms</b> por tempo</span></div>
+  <p class="microhint">O som repete sem reiniciar entre os dois compassos. A/B alterna uma frase reta e outra deslocada. Mesmos samples, acentos e manulação do laboratório original.</p>
+  <details class="microdetails">
+    <summary>Editar os 16 golpes · quatro grupos de semicolcheias</summary>
+    <div class="micropresets"><button type="button" id="microReel">Padrão do Reel</button><button type="button" id="microSoft">Suave</button><button type="button" id="microZero">Reto (0 ms)</button></div>
+    <div class="microgrid" id="microSliders"></div>
+    <p class="microhint">Valores positivos atrasam e negativos adiantam. Os quatro tempos de semínima formam dois compassos em 2/4. Os valores do Reel são experimentais, não medições da bateria da Mocidade.</p>
+  </details>
+</section>
+
 <svg class="stage" viewBox="0 0 690 620" role="img" aria-label="Caixa vista de cima com duas baquetas tocadas em movimento independente">
 <defs><radialGradient id="skin" cx="48%" cy="41%" r="69%"><stop stop-color="#f8f6ee"/><stop offset=".73" stop-color="#e5e4de"/><stop offset="1" stop-color="#a7a9ad"/></radialGradient><linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9dca5"/><stop offset=".35" stop-color="#e0b973"/><stop offset=".78" stop-color="#bd8649"/><stop offset="1" stop-color="#8b5c30"/></linearGradient><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e5e7e9"/><stop offset=".44" stop-color="#757c85"/><stop offset=".7" stop-color="#c9cdd1"/><stop offset="1" stop-color="#535963"/></linearGradient><filter id="drop" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter><filter id="stickShadow"><feGaussianBlur stdDeviation="3"/></filter></defs>
 <rect width="690" height="620" fill="#111216"/><ellipse cx="345" cy="315" rx="266" ry="263" fill="#050506" opacity=".72" filter="url(#drop)"/>
@@ -71,7 +113,7 @@
 <circle id="impactRightRing" cx="405" cy="326" r="10" fill="none" stroke="#ffe7aa" stroke-width="4"/>
 <circle cx="405" cy="326" r="7" fill="#fff1bd"/>
 </g>
-</svg><div class="bar"><button id="play" class="btn">▶ Reproduzir</button><button id="reset" class="btn alt" aria-label="Reiniciar">↺</button></div><div id="status" class="status" aria-live="polite">Samples de caixa · cada batida corresponde a um contato da baqueta</div></section><p class="foot">Exercício com samples de caixa acústica: notas fracas e acentos em camadas distintas. Áudio, posições e baquetas seguem os mesmos 16 ataques. Amostras: Virtuosity Drums (CC0).</p></main>
+</svg><div class="bar"><button id="play" class="btn">▶ Reproduzir</button><button id="reset" class="btn alt" aria-label="Reiniciar">↺</button></div><div id="status" class="status" aria-live="polite">Samples de caixa · cada batida corresponde a um contato da baqueta</div></section><p class="foot">Exercício com samples de caixa acústica: notas fracas e acentos em camadas distintas. Áudio, posições e baquetas seguem os mesmos 16 ataques. Microtiming experimental com loop sample-accurate sem silêncio no retorno do último ao primeiro golpe. Amostras: Virtuosity Drums (CC0).</p></main>
 <script src="../src/essencia-audio-boot.js?v=20261113-b"></script>
 <script>
 'use strict';
@@ -93,6 +135,7 @@ const bpmSlider=E('bpm'), bpmValue=E('bpmValue'), syncSlider=E('sync'), syncValu
 let bpm=103, syncMs=0, ctx=null, samples=null, running=false, loading=false, raf=0, timer=0;
 let origin=0, phaseOnPause=0, nextIndex=0, currentActive=-1;
 let scheduled=[];
+let microMode='shifted',microOffsets=Array.from({length:4},()=>[0,12,-20,-20]).flat(),loopParts=[];
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const tick=()=>60/bpm/4;
 E('meter').innerHTML=[0,1].map(bar=>
@@ -141,8 +184,17 @@ function outputClock(){
   return ctx.currentTime-clamp((ctx.baseLatency||.015)+(ctx.outputLatency||.02),0,.2);
 }
 function phaseAt(clock){
-  const x=(clock-origin)/tick();
-  return (x%16+16)%16;
+ const step=tick(),total=16*step,absolute=clock-origin,phrase=Math.floor(absolute/total);
+ let local=((absolute%total)+total)%total;
+ const shifted=microMode==='shifted'||(microMode==='ab'&&((phrase%2+2)%2)===1);
+ if(!shifted)return local/step;
+ const off=(i)=>microOffsets[i%16]/1000;
+ if(local<off(0))local+=total;
+ for(let i=0;i<16;i++){
+   const start=i*step+off(i),end=(i+1)*step+off(i+1);
+   if(local>=start&&local<end)return (i+(local-start)/(end-start))%16;
+ }
+ return ((local/step)%16+16)%16;
 }
 function phase(audible=false){
   if(!running||!ctx)return phaseOnPause;
@@ -150,7 +202,128 @@ function phase(audible=false){
   if(clock<origin)return 0;
   return phaseAt(clock);
 }
+
+/* LOOP SEM COSTURA: o sample gravado e os golpes do pulso são renderizados em
+   buffers periódicos de 16 ou 32 semicolcheias. Web Audio repete as amostras no
+   próprio relógio de áudio (AudioBufferSourceNode.loop=true), sem setInterval. */
+function loopStepCount(){return microMode==='ab'?32:16;}
+function loopAbsolutePhase(){
+ if(!ctx)return phaseOnPause;
+ const n=loopStepCount(),x=(ctx.currentTime-origin)/tick();
+ return (x%n+n)%n;
+}
+function activeOffset(step){
+ if(microMode==='straight'||(microMode==='ab'&&step<16))return 0;
+ return microOffsets[step%16]/1000;
+}
+function renderLoopBuffers(){
+ const rate=ctx.sampleRate,steps=loopStepCount(),unit=tick(),frames=Math.max(1,Math.round(steps*unit*rate));
+ const drum=ctx.createBuffer(1,frames,rate),data=drum.getChannelData(0);
+ const click=ctx.createBuffer(1,frames,rate),pulse=click.getChannelData(0);
+ for(let i=0;i<steps;i++){
+  const k=i%16,isAccent=ACCENT[k],sample=isAccent?samples.accent:samples.ghost;
+  const input=sample.buffer.getChannelData(0),inputRate=sample.buffer.sampleRate;
+  const speed=1+[0,.008,-.009,.004][k%4];
+  const trim=sample.offset*inputRate,voiceStart=Math.round((i*unit+activeOffset(i))*rate);
+  const max=Math.min(Math.ceil(.42*rate),Math.floor((input.length-trim)/inputRate/speed*rate));
+  const vol=isAccent?.86:.34,decayStart=isAccent?.15:.075,decayTime=isAccent?.068:.045;
+  for(let p=0;p<max;p++){
+   const samplePos=trim+p*inputRate/rate*speed,at=Math.floor(samplePos),fraction=samplePos-at;
+   if(at+1>=input.length)break;
+   const t=p/rate,env=t<=decayStart?vol:vol*Math.exp(-(t-decayStart)/decayTime);
+   const v=(input[at]*(1-fraction)+input[at+1]*fraction)*env;
+   const dest=((voiceStart+p)%frames+frames)%frames;
+   data[dest]+=v;
+  }
+ }
+ if(typeof pulseOn!=='undefined'){
+  for(let i=0;i<steps;i+=4){
+   const first=i%16===0,base=Math.round(i*unit*rate),len=Math.round(.048*rate);
+   for(let p=0;p<len;p++){
+    const t=p/rate,peak=first?.115:.072;
+    const env=t<.002?peak*(t/.002):peak*Math.exp(-(t-.002)/.009);
+    const freq=first?1320:940;
+    const v=Math.sin(2*Math.PI*freq*t)*env;
+    pulse[(base+p)%frames]+=v;
+   }
+  }
+ }
+ // Proteção contra distorção ao somar caudas de golpes na virada do ciclo.
+ let peak=0;for(let i=0;i<frames;i++)peak=Math.max(peak,Math.abs(data[i]));
+ if(peak>.9){const factor=.9/peak;for(let i=0;i<frames;i++)data[i]*=factor;}
+ return {drum,click,seconds:frames/rate};
+}
+function launchLoop(){
+ if(!ctx||!samples||!running)return;
+ const buffers=renderLoopBuffers();
+ const when=ctx.currentTime+.09;
+ const offset=((when-origin)%buffers.seconds+buffers.seconds)%buffers.seconds;
+ const old=loopParts;
+ loopParts=[];
+ const launch=function(buffer,bus){
+  if(!bus)return;
+  const source=ctx.createBufferSource(),gain=ctx.createGain();
+  source.buffer=buffer;source.loop=true;source.loopStart=0;source.loopEnd=buffer.duration;
+  source.connect(gain);gain.connect(bus);
+  gain.gain.setValueAtTime(0,when);
+  gain.gain.linearRampToValueAtTime(1,when+.028);
+  source.start(when,offset);
+  source.onended=()=>{try{source.disconnect();gain.disconnect();}catch(_e){}};
+  loopParts.push({source,gain});
+ };
+ launch(buffers.drum,typeof drumBus!=='undefined'&&drumBus?drumBus:ctx.destination);
+ if(typeof pulseOn!=='undefined')launch(buffers.click,pulseBus);
+ for(const part of old){
+  try{
+   part.gain.gain.cancelScheduledValues(when);
+   part.gain.gain.setValueAtTime(1,when);
+   part.gain.gain.linearRampToValueAtTime(.0001,when+.028);
+   part.source.stop(when+.045);
+  }catch(_e){}
+ }
+}
+function stopLoop(){
+ for(const part of loopParts){try{part.source.stop()}catch(_e){}}
+ loopParts=[];
+}
+function setMicroMode(next){
+ microMode=next;
+ document.querySelectorAll('[data-micro]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.micro===next)));
+ if(running)launchLoop();
+ microStatus();
+}
+function microStatus(){
+ if(running)status.textContent='LOOP contínuo · '+({straight:'reto',shifted:'microtiming',ab:'comparação A/B'}[microMode])+' · 16 golpes sem pausa na virada';
+}
+function renderMicroControls(){
+ const groups=E('microSliders');groups.textContent='';
+ for(let b=0;b<4;b++){
+  const card=document.createElement('section');card.className='microgroup';
+  const title=document.createElement('h3');title.textContent=(b<2?'1º':'2º')+' compasso · tempo '+(b%2+1);card.appendChild(title);
+  const slots=document.createElement('div');slots.className='microslots';
+  for(let n=0;n<4;n++){
+   const i=b*4+n,field=document.createElement('label');field.className='microslot';
+   const num=document.createElement('strong');num.textContent=STROKE[i]+' · '+(n+1)+'ª';
+   const val=document.createElement('output');val.id='microValue'+i;val.textContent=(microOffsets[i]>0?'+':'')+microOffsets[i]+' ms';
+   const slider=document.createElement('input');slider.type='range';slider.min='-40';slider.max='40';slider.step='1';slider.value=String(microOffsets[i]);
+   slider.id='micro'+i;slider.setAttribute('aria-label','Deslocamento do golpe '+(i+1)+' em milissegundos');
+   slider.addEventListener('input',()=>{
+     microOffsets[i]=Number(slider.value);val.textContent=(microOffsets[i]>0?'+':'')+microOffsets[i]+' ms';
+   });
+   slider.addEventListener('change',()=>{if(running)launchLoop();});
+   field.append(num,val,slider);slots.appendChild(field);
+  }
+  card.appendChild(slots);groups.appendChild(card);
+ }
+}
+function applyMicroPreset(pattern){
+ for(let b=0;b<4;b++)for(let i=0;i<4;i++)microOffsets[b*4+i]=pattern[i];
+ renderMicroControls();
+ if(running)launchLoop();
+}
+
 function stopVoices(){
+  stopLoop();
   for(const voice of scheduled){try{voice.stop()}catch(_e){}try{voice.disconnect()}catch(_e){}}
   scheduled=[];
 }
@@ -190,16 +363,10 @@ function stopClock(){
 function setBpm(value){
   const next=clamp(Math.round(Number(value)||103),55,160);
   if(next===bpm)return;
-  let current=0;
-  if(running&&ctx)current=phase(false);
+  const oldTick=tick(),phaseBefore=running&&ctx?(ctx.currentTime-origin)/oldTick:phaseOnPause;
   bpm=next;bpmSlider.value=String(bpm);bpmValue.textContent=String(bpm);
-  if(running&&ctx){
-    /* Reagenda o grid inteiro em andamento novo, sem playbackRate no sample. */
-    stopVoices();
-    origin=ctx.currentTime+.055-current*tick();
-    nextIndex=Math.ceil(current-.0001);
-    schedule();
-  }
+  if(running&&ctx){origin=ctx.currentTime-phaseBefore*tick();launchLoop();microStatus();}
+  else status.textContent='Andamento atualizado · pronto para tocar';
   render();
 }
 bpmSlider.addEventListener('input',()=>setBpm(bpmSlider.value));
@@ -268,7 +435,7 @@ async function start(){
     running=true;
     origin=ctx.currentTime+.075-phaseOnPause*tick();
     nextIndex=Math.ceil(phaseOnPause-.000001);
-    schedule();timer=setInterval(schedule,22);
+    launchLoop();
     play.textContent='❚❚ Pausar';
     status.textContent='Sample de caixa · 16 ataques sincronizados';
     render();
@@ -279,7 +446,7 @@ async function start(){
 }
 play.addEventListener('click',()=>{
   if(!running){start();return;}
-  phaseOnPause=phase(false);
+  phaseOnPause=loopAbsolutePhase();
   running=false;stopClock();
   play.textContent='▶ Reproduzir';
   status.textContent='Pausado · samples de caixa';
@@ -291,6 +458,15 @@ reset.addEventListener('click',()=>{
   status.textContent='Reiniciado · pronto para reproduzir';
   render();
 });
+
+document.querySelectorAll('[data-micro]').forEach(button=>{
+ button.addEventListener('click',()=>setMicroMode(button.dataset.micro));
+});
+E('microReel').addEventListener('click',()=>applyMicroPreset([0,12,-20,-20]));
+E('microSoft').addEventListener('click',()=>applyMicroPreset([0,6,-10,-10]));
+E('microZero').addEventListener('click',()=>applyMicroPreset([0,0,0,0]));
+renderMicroControls();
+
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&running)render();});
 render();
 
