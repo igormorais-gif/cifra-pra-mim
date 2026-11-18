@@ -253,10 +253,11 @@ function renderLoopBuffers(){
  if(peak>.9){const factor=.9/peak;for(let i=0;i<frames;i++)data[i]*=factor;}
  return {drum,click,seconds:frames/rate};
 }
-function launchLoop(){
+function launchLoop(startAtPhrase=false){
  if(!ctx||!samples||!running)return;
  const buffers=renderLoopBuffers();
  const when=ctx.currentTime+.09;
+ if(startAtPhrase)origin=when-phaseOnPause*tick();
  const offset=((when-origin)%buffers.seconds+buffers.seconds)%buffers.seconds;
  const old=loopParts;
  loopParts=[];
@@ -435,7 +436,7 @@ async function start(){
     running=true;
     origin=ctx.currentTime+.075-phaseOnPause*tick();
     nextIndex=Math.ceil(phaseOnPause-.000001);
-    launchLoop();
+    launchLoop(true);
     play.textContent='❚❚ Pausar';
     status.textContent='Sample de caixa · 16 ataques sincronizados';
     render();
