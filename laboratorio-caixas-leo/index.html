@@ -394,10 +394,13 @@ function point(side,ph){
   const crest=Math.pow(Math.sin(Math.PI*segment),.76);
   const prev=Math.floor((ph-offset)/2)*2+offset;
   const next=prev+2;
-  const hi=ACCENT[(next%16+16)%16]||ACCENT[(prev%16+16)%16];
-  const lift=crest*(hi?171:127);
+  // A mão prepara o PRÓXIMO golpe: acento marcado = preparação elevada.
+  // Não levantar a mão por causa de um acento que já passou.
+  const strong=ACCENT[(next%16+16)%16];
+  const lift=crest*(strong?262:48);
   const tipX=left?285:405,tipY=326-lift;
-  const gripX=left?168:522, gripY=518-lift*.28;
+  // Subida real do punho junto da baqueta, sem esticar visualmente o cabo.
+  const gripX=left?168:522, gripY=518-crest*(strong?218:24);
   return {tipX,tipY,gripX,gripY,lift};
 }
 function drawStick(side,p){
