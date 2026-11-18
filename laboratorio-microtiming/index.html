@@ -77,8 +77,15 @@ footer{padding:16px 0 28px;color:var(--muted);font-size:12px}
 <button class="btn" id="stop" type="button">■ Parar</button>
 <button class="btn" id="hearStraight" type="button">Ouvir reto</button>
 <button class="btn green" id="hearShifted" type="button">Ouvir deslocado</button>
+<button class="btn" id="testSound" type="button">🔊 Testar som</button>
 </div>
 <p id="status" role="status" aria-live="polite">Toque em Tocar para ativar o áudio.</p>
+<div id="audioFallback" style="border-top:1px solid var(--line);margin-top:13px;padding-top:13px">
+ <p style="font-size:13px;font-weight:800;margin:0 0 6px">Player compatível com iPhone (WAV)</p>
+ <p class="sub" style="margin:0 0 7px">Se o som não sair nos botões acima, toque em Reproduzir no player abaixo. Ele usa áudio WAV gerado localmente, sem depender do Web Audio.</p>
+ <audio id="wavPlayer" controls playsinline loop preload="auto" style="display:block;width:100%;height:48px" aria-label="Reprodução do exercício em WAV"></audio>
+ <div class="row" style="margin-top:8px"><button class="btn" type="button" id="updateWav">Atualizar áudio WAV</button><span class="sub" id="wavStatus">Áudio pronto para gerar.</span></div>
+</div>
 <div class="legend"><span><i class="key" style="background:#2966d6"></i>Referência reta</span><span><i class="key" style="background:#e65034"></i>Ataques deslocados</span><span><i class="key" style="background:#171716"></i>Pulso</span></div>
 </section>
 <section class="panel">
@@ -232,14 +239,15 @@ function scheduler(){
 }
 function start(){
  createAudio();if(!A)return;
- A.resume().then(function(){
+ var resumed=A.resume(); // A ativação é disparada diretamente pelo toque do usuário no iOS.
+ resumed.then(function(){
   if(playing)return;
   playing=true;runToken++;beatIndex=0;barIndex=0;stateBpm=bpm();
   nextBeat=A.currentTime+.09;
   scheduler();timer=setInterval(scheduler,24);
   $("play").textContent="♫ Tocando";
-  status("Reproduzindo · A/B: reto no primeiro compasso, deslocado no segundo.");
- });
+  status("Reproduzindo · A/B: reto no primeiro compasso, deslocado no segundo. Contexto de áudio: "+A.state+".");
+ }).catch(function(e){status("O navegador bloqueou Web Audio ("+e.message+"). Use o player WAV abaixo ou abra no Safari.");});
 }
 function stop(){
  playing=false;runToken++;clearInterval(timer);timer=null;
@@ -263,16 +271,90 @@ function preview(which){
     for(var i=0;i<4;i++)strike(t+b*bs+i*unit+(which==="shifted"?d[i]/1000:0),.35*v[i],inst);
   }
   status("Prévia de dois compassos: "+(which==="straight"?"reto":"deslocado")+".");
- });
+ }).catch(function(e){status("Áudio bloqueado ("+e.message+"). Use o player WAV abaixo.");});
 }
-function setOffsets(v){v.forEach(function(x,i){$("ms"+i).value=x;});refresh();}
-function setAccents(v){v.forEach(function(x,i){$("accent"+i).value=x;});refresh();}
+
+/* Plano B iOS: WAV de 16 bits gerado localmente e reproduzido pelo elemento HTMLAudioElement.
+   Não depende de WebAudio, da API de síntese ou de arquivos externos. */
+var wavUrl=null,wavDirty=true;
+function buildWav(){
+ var sr=22050, b=beatSec(), beats=Number($("meter").value), bars=2;
+ var duration=b*beats*bars, samples=new Float32Array(Math.ceil(sr*duration));
+ var offsets=off(),acc=accents(),instr=$("instrument").value;
+ function hit(t,amp,kind,freq){
+  var start=Math.round(t*sr);if(start<0||start>=samples.length)return;
+  var length=Math.min(Math.round(sr*(kind==="surdo"?.19:kind==="shaker"?.085:.065)),samples.length-start);
+  for(var n=0;n<length;n++){
+   var u=n/sr,env=Math.exp(-u/(kind==="surdo"?.07:kind==="shaker"?.025:.017));
+   var seed=((n*1664525+1013904223)>>>0)/4294967295*2-1;
+   var wave;
+   if(kind==="surdo")wave=.88*Math.sin(2*Math.PI*(95*u-16*u*u))+.12*seed;
+   else if(kind==="click")wave=.65*Math.sin(2*Math.PI*(freq||1750)*u)+.35*seed;
+   else if(kind==="wood")wave=.8*Math.sin(2*Math.PI*(950*u-2600*u*u))+.2*seed;
+   else if(kind==="palma")wave=seed;
+   else if(kind==="shaker")wave=seed*Math.sin(2*Math.PI*6200*u);
+   else if(kind==="agogo")wave=.7*Math.sin(2*Math.PI*780*u)+.3*Math.sin(2*Math.PI*1240*u);
+   else wave=.56*Math.sin(2*Math.PI*(1750*u-1200*u*u))+.44*seed;
+   samples[start+n]+=amp*env*wave;
+  }
+ }
+ var activeMode=mode;
+ for(var bar=0;bar<bars;bar++){
+   var active=activeMode==="alternate"?(bar%2===0?"straight":"shifted"):activeMode;
+   for(var j=0;j<beats;j++){
+    var base=(bar*beats+j)*b;
+    if($("metronome").checked)hit(base,(j===0?.36:.20)*Number($("metroVolume").value)/100,"click",j===0?1800:1300);
+    if($("surdo").checked)hit(base,(j===1?.57:.34)*Number($("surdoVolume").value)/100,"surdo");
+    for(var k=0;k<4;k++){
+     var amp=.38*acc[k]*Number($("volume").value)/100;
+     if(active==="straight"||active==="together")hit(base+k*b/4,active==="together"?amp*.65:amp,instr);
+     if(active==="shifted"||active==="together")hit(base+k*b/4+offsets[k]/1000,active==="together"?amp*.65:amp,instr);
+    }
+   }
+ }
+ var buffer=new ArrayBuffer(44+samples.length*2),dv=new DataView(buffer);
+ function put4(p,str){for(var i=0;i<4;i++)dv.setUint8(p+i,str.charCodeAt(i));}
+ put4(0,"RIFF");dv.setUint32(4,36+samples.length*2,true);put4(8,"WAVE");
+ put4(12,"fmt ");dv.setUint32(16,16,true);dv.setUint16(20,1,true);
+ dv.setUint16(22,1,true);dv.setUint32(24,sr,true);dv.setUint32(28,sr*2,true);
+ dv.setUint16(32,2,true);dv.setUint16(34,16,true);
+ put4(36,"data");dv.setUint32(40,samples.length*2,true);
+ for(var x=0;x<samples.length;x++){
+   var y=Math.max(-1,Math.min(1,samples[x]*1.65));
+   dv.setInt16(44+x*2,Math.round(y*(y<0?32768:32767)),true);
+ }
+ return new Blob([buffer],{type:"audio/wav"});
+}
+function updateWav(){
+ try{
+  var a=$("wavPlayer"),isPlaying=!a.paused;
+  var blob=buildWav(),nextUrl=URL.createObjectURL(blob),old=wavUrl;
+  wavUrl=nextUrl;wavDirty=false;a.src=nextUrl;a.load();
+  if(old)URL.revokeObjectURL(old);
+  $("wavStatus").textContent="WAV gerado · "+(blob.size/1024).toFixed(0)+" KB · "+bpm()+" BPM. Toque ▶ no player.";
+  if(isPlaying)status("Novo WAV gerado: toque ▶ para ouvir com os ajustes atuais.");
+ }catch(err){$("wavStatus").textContent="Erro ao gerar WAV: "+err.message;}
+}
+function testSound(){
+ createAudio();
+ if(!A){status("Web Audio indisponível. Use o player WAV.");return;}
+ var t=A.currentTime+.025;
+ // Agendar um tom audível dentro do gesto de toque, antes da promise de resume.
+ tone(t,880,.55,.28,master,"sine");
+ A.resume().then(function(){
+  status("Teste de 880 Hz agendado. Estado do navegador: "+A.state+". Se não ouvir, use o player WAV ou abra no Safari.");
+ }).catch(function(e){status("Som bloqueado: "+e.message+". Use o player WAV.");});
+}
+
+function setOffsets(v){v.forEach(function(x,i){$("ms"+i).value=x;});refresh();updateWav();}
+function setAccents(v){v.forEach(function(x,i){$("accent"+i).value=x;});refresh();updateWav();}
 function changeMode(x){
  mode=x;document.querySelectorAll("#modes button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.mode===x));});
  if(playing)status("Reproduzindo · modo "+({straight:"reto",shifted:"deslocado",together:"simultâneo",alternate:"A/B alternado"}[x])+".");
- refresh();
+ refresh();updateWav();
 }
 function refresh(){
+ wavDirty=true;
  var d=off(),v=accents(),unit=60000/bpm()/4,bm=unit*4;
  for(var i=0;i<4;i++){
   $("msout"+i).textContent=signed(d[i])+" ms";
@@ -323,22 +405,25 @@ $("play").addEventListener("click",function(){if(playing)stop();else start();});
 $("stop").addEventListener("click",stop);
 $("hearStraight").addEventListener("click",function(){preview("straight");});
 $("hearShifted").addEventListener("click",function(){preview("shifted");});
+$("testSound").addEventListener("click",testSound);
+$("updateWav").addEventListener("click",updateWav);
 document.querySelectorAll("#modes button").forEach(function(b){b.addEventListener("click",function(){changeMode(b.dataset.mode);});});
 for(var i=0;i<4;i++)(function(i){
  $("ms"+i).addEventListener("input",refresh);$("accent"+i).addEventListener("input",refresh);
+ $("ms"+i).addEventListener("change",updateWav);$("accent"+i).addEventListener("change",updateWav);
 })(i);
-["volume","metroVolume","surdoVolume"].forEach(function(id){$(id).addEventListener("input",updateVolume);});
+["volume","metroVolume","surdoVolume"].forEach(function(id){$(id).addEventListener("input",function(){updateVolume();wavDirty=true;});$(id).addEventListener("change",updateWav);});
 ["bpm","meter","instrument","metronome","surdo"].forEach(function(id){$(id).addEventListener("change",function(){
  if(id==="bpm")$("bpm").value=bpm();
  if(playing&&(id==="bpm"||id==="meter")){stop();start();}
- refresh();
+ refresh();updateWav();
 });});
 $("presetReel").addEventListener("click",function(){setOffsets([0,12,-20,-20]);});
 $("presetSoft").addEventListener("click",function(){setOffsets([0,8,-10,-10]);});
 $("presetZero").addEventListener("click",function(){setOffsets([0,0,0,0]);});
 $("resetAccents").addEventListener("click",function(){setAccents([100,100,100,100]);});
 document.addEventListener("visibilitychange",function(){if(document.hidden&&playing)stop();});
-refresh();requestAnimationFrame(animate);
+refresh();updateWav();requestAnimationFrame(animate);
 })();
 </script>
 </body></html>
