@@ -106,6 +106,11 @@
 
 .micro-kick select{background:#303239;color:#f6f3eb;border:1px solid #696b75;border-radius:8px;padding:7px 10px;min-height:38px;font:inherit;font-size:12px;font-weight:800;max-width:100%;cursor:pointer}
 .micro-kick .timbre-label{font-weight:750;color:#dddde4}
+.roll-level{padding:10px 12px 7px;background:#272930;border-top:1px solid #41444c;color:#e7e7ee;font-size:12px}
+.roll-level label{display:flex;gap:12px;align-items:center;justify-content:space-between;font-weight:800}
+.roll-level output{font-variant-numeric:tabular-nums;color:#f2c453}
+.roll-level input{width:100%;height:22px;accent-color:#f2c453}
+.roll-level .source{color:#b7bbc4;font-size:10px;line-height:1.45;margin:5px 0 0}
 </style></head><body><main class="shell"><div class="eyebrow">LABORATÓRIO DE CAIXAS · LEVADA DA MOCIDADE</div><h1>Caixa da Mocidade</h1><p class="sub">Pegada tradicional · samples de caixa acústica · 2/4</p><section class="panel">
 <div class="tempo-board"><div class="tempo-head"><span>POSIÇÕES · 2/4</span><div class="bpm-box"><button id="bpmDown" type="button" aria-label="Diminuir 5 BPM">−</button><label for="bpm"><output id="bpmValue">103</output> BPM</label><button id="bpmUp" type="button" aria-label="Aumentar 5 BPM">+</button></div></div><input id="bpm" type="range" min="55" max="160" step="1" value="103" aria-label="Andamento em BPM"><div class="meter" id="meter" aria-label="Dois compassos com oito subdivisões cada"></div><div class="playhead-track"><div id="playhead" class="playhead-fill"></div></div><details class="sync-adjust"><summary>Ajuste fino da sincronia</summary><div class="sync-controls"><span>Imagem</span><input id="sync" aria-label="Ajuste visual de sincronia" type="range" min="-150" max="150" value="0" step="5"><output id="syncValue">0 ms</output></div></details></div>
 
@@ -140,7 +145,13 @@
     </label>
     <span class="microhint">1º seco · 2º encorpado · madeira audível no celular</span>
   </div>
-  <div class="micro-ruler"><span>Grade: <b>0 ms</b></span><span>Reel: <b>0 · +12 · −20 · −20 ms</b> por tempo</span></div>
+  <div class="roll-level">
+ <label for="rollLevel">Volume exclusivo da rufada (Ilha) <output id="rollLevelValue">130%</output></label>
+ <input id="rollLevel" aria-label="Volume da rufada CRRRR" type="range" min="40" max="220" value="130" step="5">
+ <p class="source" id="rollSourceStatus">Preparado para tentar uma gravação real CC0 durante a reprodução.</p>
+ <p class="source">Amostra externa: Iwan Sounds and DIY / Wikimedia Commons, CC0; há fallback local se indisponível.</p>
+ </div>
+ <div class="micro-ruler"><span>Grade: <b>0 ms</b></span><span>Reel: <b>0 · +12 · −20 · −20 ms</b> por tempo</span></div>
   <div class="microlevel">
     <label for="ghostLevel">Golpes leves: <output id="ghostLevelVal" for="ghostLevel">62%</output></label>
     <input id="ghostLevel" type="range" min="20" max="80" value="62" step="1" aria-label="Ganho dos golpes não acentuados">
@@ -262,6 +273,7 @@ let scheduled=[];
 let microMode='shifted',microOffsets=Array.from({length:4},()=>[0,12,-20,-20]).flat(),loopParts=[];
 let ghostLevel=.62; // QUI/TI equilibrados; CO da Ilha preserva dinamica relativa
 let kickOn=true,kickLevel=.45,kickTone='both',kickBus=null;
+let rollLevel=1.30,rollSample=null;
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const tick=()=>60/bpm/4;
 function renderPatternMeter(){
@@ -825,6 +837,11 @@ document.querySelectorAll('[data-micro]').forEach(button=>{
 E('microReel').addEventListener('click',()=>applyMicroPreset([0,12,-20,-20]));
 E('microSoft').addEventListener('click',()=>applyMicroPreset([0,6,-10,-10]));
 E('microZero').addEventListener('click',()=>applyMicroPreset([0,0,0,0]));
+E('rollLevel').addEventListener('input',event=>{
+ rollLevel=Number(event.target.value)/100;
+ E('rollLevelValue').textContent=Math.round(rollLevel*100)+'%';
+});
+E('rollLevel').addEventListener('change',()=>{if(running&&rhythmKind==='ilha')launchLoop();});
 E('ghostLevel').addEventListener('input',event=>{
  ghostLevel=Number(event.target.value)/100;
  E('ghostLevelVal').textContent=Math.round(ghostLevel*100)+'%';
