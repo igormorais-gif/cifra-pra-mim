@@ -418,7 +418,7 @@ function updateArrivalTimeline(){
    const timing=E('arrivalTiming'+i),dot=E('arrivalDot'+i);
    const sign=ms>0?'+':ms<0?'−':'';
    const label=(ms<0?'← ':'')+sign+Math.abs(ms)+' ms'+(ms>0?' →':'');
-   timing.textContent=label;timing.style.left=left;timing.style.setProperty('--note-color',arrivalColors[syllable]);
+   timing.textContent=label;timing.style.left='50%';timing.style.setProperty('--note-color',arrivalColors[syllable]);
    dot.style.left=left;dot.style.setProperty('--note-color',arrivalColors[syllable]);
    dot.title=syllable+' · '+(ms>=0?'+':'')+ms+' ms';
    E('arrivalSyllable'+i).textContent=syllable;
