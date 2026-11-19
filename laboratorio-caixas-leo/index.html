@@ -422,7 +422,9 @@ function renderLoopBuffers(){
   if(rhythmKind==='ilha'&&syllable==='CRRRR'){
    // A rufada dura duas semicolcheias, e a posicao 14 e sustentacao.
    // Sem tiros separados. Finaliza ligeiramente antes do CO seguinte.
-   addBuzzRoll(start,Math.max(.085,2*unit-.012),ISLAND_VELOCITY[13]);
+   // Microtiming pode adiantar o CO: a rufada deve terminar ANTES dele.
+   const coTime=(i+2)*unit+activeOffset(i+2);
+   addBuzzRoll(start,Math.max(.065,coTime-start-.014),ISLAND_VELOCITY[13]);
    continue;
   }
   const kind=DYNAMIC[k],sample=(kind==='accent'||kind==='secondary')?samples.accent:samples.ghost;
