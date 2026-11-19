@@ -170,6 +170,9 @@
 .step.roll-tail .stroke{color:#ead183}
 .arrival-dot[aria-hidden="true"]{opacity:0}
 .arrival-syllable{font-size:11px}
+
+.micro-kick select{background:#303239;color:#f6f3eb;border:1px solid #696b75;border-radius:8px;padding:7px 10px;min-height:38px;font:inherit;font-size:12px;font-weight:800;max-width:100%;cursor:pointer}
+.micro-kick .timbre-label{font-weight:750;color:#dddde4}
 </style></head><body><main class="shell"><div class="eyebrow">LABORATÓRIO DE CAIXAS · MOCIDADE INDEPENDENTE DE PADRE MIGUEL</div><h1>Caixa da Mocidade Independente de Padre Miguel</h1><p class="sub">Pegada tradicional · samples de caixa acústica · 2/4</p><section class="panel">
 <div class="transport" role="group" aria-label="Controles do laboratório">
   <button id="play" class="btn transport-play" type="button" aria-label="Reproduzir" title="Reproduzir">▶</button>
@@ -217,7 +220,14 @@
     <label for="kickToggle"><input type="checkbox" id="kickToggle" checked> 🥁 Clique bumbo</label>
     <label for="kickVolume">Volume <output id="kickVolumeValue" for="kickVolume">45%</output></label>
     <input type="range" min="0" max="100" value="45" step="1" id="kickVolume" aria-label="Volume do clique bumbo">
-    <span class="microhint">1º seco · 2º encorpado · mesmo relógio da caixa</span>
+    <label for="kickTimbre" class="timbre-label">Timbre
+      <select id="kickTimbre" aria-label="Timbre do clique de tempo">
+        <option value="both" selected>Grave + Madeira</option>
+        <option value="wood">Madeira (agudo)</option>
+        <option value="low">Bumbo grave</option>
+      </select>
+    </label>
+    <span class="microhint">1º seco · 2º encorpado · madeira audível no celular</span>
   </div>
   <div class="micro-ruler"><span>Grade: <b>0 ms</b></span><span>Reel: <b>0 · +12 · −20 · −20 ms</b> por tempo</span></div>
   <div class="microlevel">
@@ -340,7 +350,7 @@ let origin=0, phaseOnPause=0, nextIndex=0, currentActive=-1;
 let scheduled=[];
 let microMode='shifted',microOffsets=Array.from({length:4},()=>[0,12,-20,-20]).flat(),loopParts=[];
 let ghostLevel=.62; // QUI/TI equilibrados; CO da Ilha preserva dinamica relativa
-let kickOn=true,kickLevel=.45,kickBus=null;
+let kickOn=true,kickLevel=.45,kickTone='both',kickBus=null;
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const tick=()=>60/bpm/4;
 function renderPatternMeter(){
@@ -439,6 +449,46 @@ function renderLoopBuffers(){
  const drum=ctx.createBuffer(1,frames,rate),data=drum.getChannelData(0);
  const click=ctx.createBuffer(1,frames,rate),pulse=click.getChannelData(0);
  const bass=ctx.createBuffer(1,frames,rate),kick=bass.getChannelData(0);
+ function addBuzzRoll(start,duration,velocity){
+  // Rufada prensada: um gesto CONTINUO, nao uma sequencia de 4 ghost notes.
+  // Usa a textura real da amostra da caixa como material + ruido de esteira
+  // e microrebotes que se sobrepoem dentro de uma unica envoltoria.
+  const src=samples.ghost.buffer.getChannelData(0),sr=samples.ghost.buffer.sampleRate;
+  const trim=Math.floor(samples.ghost.offset*sr),begin=Math.round(start*rate);
+  const n=Math.max(1,Math.round(duration*rate)),last=Math.max(1,src.length-trim-2);
+  let seed=0x5a17c1,hi=0,lo=0,sh=0;
+  // press rolls: rebotes pequenos e assimetricos, sem voltar a altura do ataque.
+  const rebounds=[.008,.052,.105,.166,.234,.312,.397,.490,.592,.700,.817,.93];
+  const smRate=1-Math.exp(-2*Math.PI*7500/rate);
+  const hpRate=1-Math.exp(-2*Math.PI*920/rate);
+  const attackLength=.006,releaseLength=Math.min(.048,duration*.22);
+  const peakAmp=Math.min(.39,.21+.17*velocity);
+  for(let p=0;p<n;p++){
+   const t=p/rate,u=t/duration;
+   // A rufada termina antes do CO seguinte: sem cauda invadindo a proxima nota.
+   const onset=Math.min(1,t/attackLength);
+   const release=Math.min(1,(duration-t)/releaseLength);
+   const globalEnv=onset*release*(.88-.36*u);
+   // 12 pequenas oscilacoes da pressao da baqueta, nao 12 ataques isolados.
+   let pulse=.24;
+   for(let a=0;a<rebounds.length;a++){
+    const z=(u-rebounds[a])/(.018+.008*u);
+    pulse+=.11*Math.exp(-.5*z*z)*(1-.38*u);
+   }
+   // Amostra de caixa em movimento: do trecho de esteira, nao so do transiente.
+   const within=((t+.016)%(.086)),pos=trim+Math.floor(within*sr);
+   const sample=src[Math.min(src.length-1,pos)];
+   seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;
+   const noise=(seed>>>0)/2147483648-1;
+   hi+=smRate*(noise-hi);lo+=hpRate*(hi-lo);sh+=.18*(sample-sh);
+   const wire=hi-lo;
+   const body=(sh*.53+wire*.64);
+   const dest=((begin+p)%frames+frames)%frames;
+   data[dest]+=body*peakAmp*globalEnv*(.73+pulse);
+  }
+  // O primeiro contato da mao ancora o rufo, evitando textura sem articulacao.
+  addSample(samples.ghost,start,.105+.035*velocity,'roll',Math.min(.082,duration*.32));
+ }
  function addSample(which,startTime,vol,kind,cap){
   const input=which.buffer.getChannelData(0),inputRate=which.buffer.sampleRate;
   const trim=which.offset*inputRate,speed=1;
@@ -467,29 +517,48 @@ function renderLoopBuffers(){
   const k=i%16,syllable=STROKE[k],start=i*unit+activeOffset(i);
   if(!syllable)continue; // Ilha: 14ª posição sustenta a rufada, sem novo golpe.
   if(rhythmKind==='ilha'&&syllable==='CRRRR'){
-   // Transcrição antiga: rufada de mão direita com extensão de uma colcheia.
-   const length=2*unit,spacing=Math.min(.065,length/4),velocity=ISLAND_VELOCITY[13];
-   for(let offset=0;offset<length-.01;offset+=spacing){
-    const vol=.62*velocity*.29*(1-.2*offset/length);
-    addSample(samples.ghost,start+offset,vol,'roll',Math.min(.092,spacing*.92));
-   }
+   // A rufada dura duas semicolcheias, e a posicao 14 e sustentacao.
+   // Sem tiros separados. Finaliza ligeiramente antes do CO seguinte.
+   addBuzzRoll(start,Math.max(.085,2*unit-.012),ISLAND_VELOCITY[13]);
    continue;
   }
   const kind=DYNAMIC[k],sample=(kind==='accent'||kind==='secondary')?samples.accent:samples.ghost;
   addSample(sample,start,accentGain(k),kind);
  }
- // Bumbo sintético de referencia em dois tempos: 1 seco, 2 mais encorpado.
- // Uso de duas parciais melhora a audibilidade no alto-falante do celular.
+ // Duas vozes independentes no mesmo relogio: bumbo subgrave e bloco de madeira.
+ // Madeira tem energia em 700-2400 Hz para o alto-falante do celular.
  for(let i=0;i<steps;i+=4){
   const second=(Math.floor(i/4)%2)===1,base=Math.round(i*unit*rate);
-  const duration=second?.185:.106,amp=second?.60:.36;
-  for(let p=0;p<Math.round(duration*rate);p++){
-   const t=p/rate,env=Math.exp(-t/(second?.061:.036));
-   const phase=2*Math.PI*((second?105:118)*t-(second?170:195)*t*t/2);
-   const fundamental=Math.sin(phase),harmonic=Math.sin(2*phase)*.29;
-   const click=Math.sin(2*Math.PI*265*t)*.11*Math.exp(-t/.007);
-   const onset=Math.min(1,t/.002);
-   kick[(base+p)%frames]+=amp*onset*env*(.76*fundamental+harmonic+click);
+  const wantLow=kickTone==='low'||kickTone==='both';
+  const wantWood=kickTone==='wood'||kickTone==='both';
+  const lowAmp=kickTone==='both'?.72:1;
+  const woodAmp=kickTone==='both'?.76:1;
+  if(wantLow){
+   const duration=second?.175:.105,amp=(second?.58:.36)*lowAmp;
+   for(let p=0;p<Math.round(duration*rate);p++){
+    const t=p/rate,env=Math.exp(-t/(second?.058:.036));
+    const phase=2*Math.PI*((second?107:121)*t-(second?160:185)*t*t/2);
+    const fundamental=Math.sin(phase),harmonic=Math.sin(2*phase)*.27;
+    const transient=Math.sin(2*Math.PI*260*t)*.1*Math.exp(-t/.006);
+    const onset=Math.min(1,t/.0015);
+    kick[(base+p)%frames]+=amp*onset*env*(.77*fundamental+harmonic+transient);
+   }
+  }
+  if(wantWood){
+   let seed=0x5ed12+i*173,noiseHP=0;
+   const length=Math.round(.070*rate);
+   for(let p=0;p<length;p++){
+    const t=p/rate,env=Math.exp(-t/(second?.017:.012));
+    // Tom de madeira afinado no medio-agudo, com transiente porcussivo curto.
+    const phase=2*Math.PI*(second?725:835)*t;
+    const woodTone=Math.sin(phase)*.50+Math.sin(phase*1.47)*.25+Math.sin(phase*2.23)*.15;
+    seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;
+    const noise=(seed>>>0)/2147483648-1;
+    noiseHP+=.12*(noise-noiseHP);
+    const tick=noiseHP*.37*Math.exp(-t/.007);
+    const onset=Math.min(1,t/.0009);
+    kick[(base+p)%frames]+=(second?.59:.45)*woodAmp*env*onset*(woodTone+tick);
+   }
   }
  }
  if(typeof pulseOn!=='undefined'){
@@ -925,6 +994,10 @@ function setKickGain(){
  if(kickBus&&ctx)kickBus.gain.setTargetAtTime(kickOn?kickLevel:0,ctx.currentTime,.015);
 }
 E('kickToggle').addEventListener('change',event=>{kickOn=event.target.checked;setKickGain();});
+E('kickTimbre').addEventListener('change',event=>{
+ kickTone=event.target.value;
+ if(running)launchLoop();
+});
 E('kickVolume').addEventListener('input',event=>{
  kickLevel=Number(event.target.value)/100;
  E('kickVolumeValue').textContent=Math.round(kickLevel*100)+'%';
