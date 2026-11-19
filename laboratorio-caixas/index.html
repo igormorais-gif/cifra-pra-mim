@@ -506,6 +506,25 @@ function renderLoopBuffers(){
  const drum=ctx.createBuffer(1,frames,rate),data=drum.getChannelData(0);
  const click=ctx.createBuffer(1,frames,rate),pulse=click.getChannelData(0);
  const bass=ctx.createBuffer(1,frames,rate),kick=bass.getChannelData(0);
+
+ function addRecordedRoll(start,duration){
+  if(!rollSample)return false;
+  const input=rollSample.data;
+  const count=Math.max(2,Math.round(duration*rate));
+  const begin=Math.round(start*rate);
+  for(let p=0;p<count;p++){
+   const t=p/rate;
+   const index=p/(count-1)*(input.length-1);
+   const ix=Math.floor(index),fraction=index-ix;
+   const value=input[ix]*(1-fraction)+input[Math.min(ix+1,input.length-1)]*fraction;
+   const attack=Math.sin(Math.PI/2*Math.min(1,t/.007));
+   const release=Math.sin(Math.PI/2*Math.min(1,(duration-t)/.023));
+   const amplitude=rollLevel*attack*Math.max(0,release);
+   data[((begin+p)%frames+frames)%frames]+=value*amplitude;
+  }
+  return true;
+ }
+
  function addBuzzRoll(start,duration,velocity){
   // Rufada prensada feita apenas com a propria gravacao acustica da caixa.
   // Microrebotes sobrepostos e suavizados: sem ruido sintetico e sem "tatata".
@@ -519,7 +538,7 @@ function renderLoopBuffers(){
   const count=Math.ceil(duration*rate),smooth=1-Math.exp(-2*Math.PI*5350/rate);
   const offsets=[.004,.009,.015,.021,.013,.019,.011,.025,.017];
   const rates=[1,.986,1.018,1.004,.976,1.012,.996,1.025,.992];
-  const gain=.57*(.80+.20*velocity);
+  const gain=.57*(.80+.20*velocity)*rollLevel*2.65;
   let filtered=0;
   for(let p=0;p<count;p++){
    const t=p/rate,u=t/duration;
@@ -573,7 +592,8 @@ function renderLoopBuffers(){
    // Sem tiros separados. Finaliza ligeiramente antes do CO seguinte.
    // Microtiming pode adiantar o CO: a rufada deve terminar ANTES dele.
    const coTime=(i+2)*unit+activeOffset(i+2);
-   addBuzzRoll(start,Math.max(.065,coTime-start-.014),ISLAND_VELOCITY[13]);
+   const len=Math.max(.065,coTime-start-.014);
+   if(!addRecordedRoll(start,len))addBuzzRoll(start,len,ISLAND_VELOCITY[13]);
    continue;
   }
   const kind=DYNAMIC[k],sample=(kind==='accent'||kind==='secondary')?samples.accent:samples.ghost;
