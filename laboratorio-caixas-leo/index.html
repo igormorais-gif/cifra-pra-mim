@@ -358,44 +358,39 @@ function renderLoopBuffers(){
  const click=ctx.createBuffer(1,frames,rate),pulse=click.getChannelData(0);
  const bass=ctx.createBuffer(1,frames,rate),kick=bass.getChannelData(0);
  function addBuzzRoll(start,duration,velocity){
-  // Rufada prensada: um gesto CONTINUO, nao uma sequencia de 4 ghost notes.
-  // Usa a textura real da amostra da caixa como material + ruido de esteira
-  // e microrebotes que se sobrepoem dentro de uma unica envoltoria.
-  const src=samples.ghost.buffer.getChannelData(0),sr=samples.ghost.buffer.sampleRate;
-  const trim=Math.floor(samples.ghost.offset*sr),begin=Math.round(start*rate);
-  const n=Math.max(1,Math.round(duration*rate)),last=Math.max(1,src.length-trim-2);
-  let seed=0x5a17c1,hi=0,lo=0,sh=0;
-  // press rolls: rebotes pequenos e assimetricos, sem voltar a altura do ataque.
-  const rebounds=[.008,.052,.105,.166,.234,.312,.397,.490,.592,.700,.817,.93];
-  const smRate=1-Math.exp(-2*Math.PI*7500/rate);
-  const hpRate=1-Math.exp(-2*Math.PI*920/rate);
-  const attackLength=.006,releaseLength=Math.min(.048,duration*.22);
-  const peakAmp=Math.min(.39,.21+.17*velocity);
-  for(let p=0;p<n;p++){
+  // Rufada prensada feita apenas com a propria gravacao acustica da caixa.
+  // Microrebotes sobrepostos e suavizados: sem ruido sintetico e sem "tatata".
+  const begin=Math.round(start*rate),base=samples.ghost.buffer;
+  const source=base.getChannelData(0),sr=base.sampleRate;
+  const initial=Math.floor(samples.ghost.offset*sr);
+  if(source.length-initial<=3)return;
+  const touches=[0,.097,.205,.312,.431,.552,.674,.793,.885];
+  const velocities=[.77,.89,.95,1,.97,.91,.83,.73,.58];
+  const grainLength=Math.min(.076,Math.max(.047,duration*.255));
+  const count=Math.ceil(duration*rate),smooth=1-Math.exp(-2*Math.PI*5350/rate);
+  const offsets=[.004,.009,.015,.021,.013,.019,.011,.025,.017];
+  const rates=[1,.986,1.018,1.004,.976,1.012,.996,1.025,.992];
+  const gain=.57*(.80+.20*velocity);
+  let filtered=0;
+  for(let p=0;p<count;p++){
    const t=p/rate,u=t/duration;
-   // A rufada termina antes do CO seguinte: sem cauda invadindo a proxima nota.
-   const onset=Math.min(1,t/attackLength);
-   const release=Math.min(1,(duration-t)/releaseLength);
-   const globalEnv=onset*release*(.88-.36*u);
-   // 12 pequenas oscilacoes da pressao da baqueta, nao 12 ataques isolados.
-   let pulse=.24;
-   for(let a=0;a<rebounds.length;a++){
-    const z=(u-rebounds[a])/(.018+.008*u);
-    pulse+=.11*Math.exp(-.5*z*z)*(1-.38*u);
+   const opening=Math.sin(.5*Math.PI*Math.min(1,t/.013));
+   const closing=Math.sin(.5*Math.PI*Math.min(1,(duration-t)/.038));
+   const phraseEnv=Math.max(0,opening*closing*(.88+.12*Math.sin(Math.PI*u)));
+   let sum=0;
+   for(let g=0;g<touches.length;g++){
+    const local=t-touches[g]*duration;
+    if(local<0||local>=grainLength)continue;
+    const w=Math.sin(Math.PI*local/grainLength);
+    const at=initial+(offsets[g]+local*rates[g])*sr;
+    const ix=Math.floor(at);
+    if(ix+1>=source.length)continue;
+    const frac=at-ix,v=source[ix]*(1-frac)+source[ix+1]*frac;
+    sum+=v*w*w*velocities[g];
    }
-   // Amostra de caixa em movimento: do trecho de esteira, nao so do transiente.
-   const within=((t+.016)%(.086)),pos=trim+Math.floor(within*sr);
-   const sample=src[Math.min(src.length-1,pos)];
-   seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;
-   const noise=(seed>>>0)/2147483648-1;
-   hi+=smRate*(noise-hi);lo+=hpRate*(hi-lo);sh+=.18*(sample-sh);
-   const wire=hi-lo;
-   const body=(sh*.53+wire*.64);
-   const dest=((begin+p)%frames+frames)%frames;
-   data[dest]+=body*peakAmp*globalEnv*(.73+pulse);
+   filtered+=smooth*(sum-filtered);
+   data[((begin+p)%frames+frames)%frames]+=filtered*gain*phraseEnv;
   }
-  // O primeiro contato da mao ancora o rufo, evitando textura sem articulacao.
-  addSample(samples.ghost,start,.105+.035*velocity,'roll',Math.min(.082,duration*.32));
  }
  function addSample(which,startTime,vol,kind,cap){
   const input=which.buffer.getChannelData(0),inputRate=which.buffer.sampleRate;
