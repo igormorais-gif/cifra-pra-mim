@@ -456,7 +456,7 @@ async function ensureAudio(){
     ctx.decodeAudioData(bufferFromBase64(SAMPLE_ACCENT_B64))
   ]);
   samples={ghost:{buffer:ghost,offset:trimOffset(ghost)},accent:{buffer:accent,offset:trimOffset(accent)}};
-  await loadAcousticRoll();
+  loadAcousticRoll().then(()=>{if(running&&rhythmKind==='ilha')launchLoop();});
 }
 function outputClock(){
   if(!ctx)return 0;
