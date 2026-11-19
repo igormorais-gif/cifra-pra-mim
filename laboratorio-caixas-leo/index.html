@@ -111,11 +111,10 @@
   </div>
   <div class="micro-ruler"><span>Grade: <b>0 ms</b></span><span>Reel: <b>0 · +12 · −20 · −20 ms</b> por tempo</span></div>
   <div class="microlevel">
-    <label for="ghostLevel">Golpes leves: <output id="ghostLevelVal" for="ghostLevel">56%</output></label>
-    <input id="ghostLevel" type="range" min="20" max="75" value="56" step="1" aria-label="Ganho dos golpes não acentuados">
-    <button type="button" class="microtest" id="microEvident">Ouvir diferença mais evidente</button>
+    <label for="ghostLevel">Golpes leves: <output id="ghostLevelVal" for="ghostLevel">62%</output></label>
+    <input id="ghostLevel" type="range" min="20" max="80" value="62" step="1" aria-label="Ganho dos golpes não acentuados">
   </div>
-  <p class="microhint">A/B compara uma frase reta e outra deslocada sem interromper o loop. O botão de diferença evidente aplica um exagero experimental (+25/−35/−35 ms) para treinamento auditivo, não uma medida da Mocidade.</p>
+  <p class="microhint">A/B compara uma frase reta e outra deslocada sem interromper o loop. Para voltar ao padrão original, use “Padrão do Reel” nos controles abaixo. Os deslocamentos são experimentais, não medições da Mocidade.</p>
   <details class="microdetails">
     <summary>Editar os 16 golpes · quatro grupos de semicolcheias</summary>
     <div class="micropresets"><button type="button" id="microReel">Padrão do Reel</button><button type="button" id="microSoft">Suave</button><button type="button" id="microZero">Reto (0 ms)</button></div>
@@ -205,7 +204,7 @@ let rhythmKind='mocidade';
 let STROKE=RHYTHMS.mocidade.slice();
 let SIDE=STROKE.map(s=>(s==='TA'||s==='TI')?'R':'L');
 let ACCENT=STROKE.map(s=>s==='TA'||s==='CA');
-function accentGain(syllable){return syllable==='TA' ? .86 : syllable==='CA' ? .76 : ghostLevel;}
+function accentGain(syllable){return syllable==='TA' ? .80 : syllable==='CA' ? .74 : ghostLevel;}
 const POSITIONS=['1','e','&','a','2','e','&','a'];
 const E=id=>document.getElementById(id);
 const play=E('play'), reset=E('reset'), status=E('status');
@@ -214,7 +213,7 @@ let bpm=103, syncMs=0, ctx=null, samples=null, running=false, loading=false, raf
 let origin=0, phaseOnPause=0, nextIndex=0, currentActive=-1;
 let scheduled=[];
 let microMode='shifted',microOffsets=Array.from({length:4},()=>[0,12,-20,-20]).flat(),loopParts=[];
-let ghostLevel=.56; // QUI e TI mais presentes para evidenciar a distribuicao temporal
+let ghostLevel=.62; // QUI e TI mais equilibrados em relacao a TA e CA
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const tick=()=>60/bpm/4;
 function renderPatternMeter(){
@@ -308,13 +307,30 @@ function renderLoopBuffers(){
   const input=sample.buffer.getChannelData(0),inputRate=sample.buffer.sampleRate;
   const speed=1+[0,.008,-.009,.004][k%4];
   const trim=sample.offset*inputRate,voiceStart=Math.round((i*unit+activeOffset(i))*rate);
-  const max=Math.min(Math.ceil(.42*rate),Math.floor((input.length-trim)/inputRate/speed*rate));
-  const vol=accentGain(STROKE[k]),decayStart=isAccent?.15:.075,decayTime=isAccent?.068:.045;
+  // TA/CA: menos rigidos e mais curtos, mas sem destruir o transiente do sample.
+  // Um fade-in de 2 ms amacia o ataque; cauda menor preserva o groove.
+  const syllable=STROKE[k],strong=syllable==='TA'||syllable==='CA';
+  const duration=strong?.195:.150;
+  const max=Math.min(Math.ceil(duration*rate),Math.floor((input.length-trim)/inputRate/speed*rate));
+  const vol=accentGain(syllable);
+  const hold=syllable==='TA'?.098:syllable==='CA'?.092:.066;
+  const decay=strong?.023:.030;
+  const attack=strong?.0023:.0010;
+  let smoothed=0;
+  // Filtragem leve de agudos da caixa acentuada para tirar a aspereza.
+  const cutoff=strong?7600:11000;
+  const alpha=1-Math.exp(-2*Math.PI*cutoff/rate);
   for(let p=0;p<max;p++){
    const samplePos=trim+p*inputRate/rate*speed,at=Math.floor(samplePos),fraction=samplePos-at;
    if(at+1>=input.length)break;
-   const t=p/rate,env=t<=decayStart?vol:vol*Math.exp(-(t-decayStart)/decayTime);
-   const v=(input[at]*(1-fraction)+input[at+1]*fraction)*env;
+   const t=p/rate;
+   const onset=t<attack ? Math.sin(Math.PI*.5*t/attack) : 1;
+   // A queda exponencial e a janela final garantem encerramento suave, sem click.
+   const tail=t<=hold?1:Math.exp(-(t-hold)/decay);
+   const fadeEnd=Math.min(1,(duration-t)/.012);
+   const raw=input[at]*(1-fraction)+input[at+1]*fraction;
+   smoothed+=alpha*(raw-smoothed);
+   const v=smoothed*vol*onset*tail*Math.max(0,fadeEnd);
    const dest=((voiceStart+p)%frames+frames)%frames;
    data[dest]+=v;
   }
@@ -532,11 +548,14 @@ function strike(i,when){
   const volume=accentGain(STROKE[i%16]);
   src.playbackRate.value=1+[0,.008,-.009,.004][i%4];
   gain.gain.setValueAtTime(volume,when);
-  gain.gain.setTargetAtTime(.0001,when+(isAccent?.15:.075),isAccent?.068:.045);
+  const strong=STROKE[i%16]==='TA'||STROKE[i%16]==='CA';
+  gain.gain.setValueAtTime(.0001,when);
+  gain.gain.linearRampToValueAtTime(volume,when+(strong?.0023:.0010));
+  gain.gain.setTargetAtTime(.0001,when+(strong?.098:.066),strong?.023:.030);
   src.connect(gain);
   gain.connect(ctx.destination);
   src.start(when,sample.offset);
-  src.stop(when+.42);
+  src.stop(when+.20);
   scheduled.push(src);
   src.onended=()=>{const k=scheduled.indexOf(src);if(k!==-1)scheduled.splice(k,1);src.disconnect();gain.disconnect();};
 }
@@ -663,10 +682,6 @@ document.querySelectorAll('[data-micro]').forEach(button=>{
 E('microReel').addEventListener('click',()=>applyMicroPreset([0,12,-20,-20]));
 E('microSoft').addEventListener('click',()=>applyMicroPreset([0,6,-10,-10]));
 E('microZero').addEventListener('click',()=>applyMicroPreset([0,0,0,0]));
-E('microEvident').addEventListener('click',()=>{
- applyMicroPreset([0,25,-35,-35]);
- setMicroMode('ab');
-});
 E('ghostLevel').addEventListener('input',event=>{
  ghostLevel=Number(event.target.value)/100;
  E('ghostLevelVal').textContent=Math.round(ghostLevel*100)+'%';
