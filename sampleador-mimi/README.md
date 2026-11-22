@@ -2,16 +2,20 @@
 
 Endereço no Hub: https://igormorais-gif.github.io/cifra-pra-mim/sampleador-mimi/
 
-## Interface atual (22/11/2026)
+## Interface atual — beat em primeiro plano
 
-- A identidade visível foi simplificada para **Sampleador MIMI — Estúdio musical**. A antiga frase **“O laboratório musical do Nilo”** não aparece mais.
-- **01 — Escolha o tom:** E6, Eb6, D6, Db6, C6, B6, Bb6, A6 e G#6.
-- **02 — Toque as sílabas:** IH, ON, MI e MI com nomes de notas pequenos embaixo, incluindo a diferença de oitavas. E6 = **Mi5, Mi4, Ré♯5, Dó♯5**. Os rótulos acompanham o acorde selecionado.
-- O antigo painel visual **03 / Teclado lo-fi PAD** saiu. Apenas a chave **PAD ligado** aparece ao lado dos botões de voz, com a configuração de timbre, volume, voicing 6–3–5 e cauda preservadas no estado salvo do navegador. Quando ligado, o pad acompanha o IH.
-- **03 — Viva a harmonia:** vozes adicionais.
-- **04 — Monte sua bateria:** bumbo, caixa, prato e beat.
-- Os antigos painéis 06 e 07 continuam ausentes; o editor de 16 passos está dentro de **Editar batida e andamento** (recolhido).
-- **“Eu já estou pronta”** continua removido da interface e dos recursos do beat.
+O **montador de BEAT agora aparece aberto e em destaque imediatamente depois dos botões IH, ON, MI, MI**, antes da harmonia e dos controles de bateria. É o item **03 / Monte seu BEAT** e não fica escondido em “Editar batida e andamento”.
+
+A grade de 16 semicolcheias está visível imediatamente. É possível criar e apagar passos para as quatro sílabas e para bumbo, caixa e prato, alongar as notas manualmente, ajustar o BPM (50–220) com o ritmo tocando, trocar os acordes ao vivo e usar os padrões predefinidos. A duração inicial de uma nota continua sendo uma semicolcheia.
+
+A ordem dos painéis visíveis agora é:
+- 01 — Escolha o tom
+- 02 — Toque as sílabas, com notas pequenas abaixo dos botões e liga/desliga do PAD
+- 03 — Monte seu BEAT: grade aberta, BPM, Play e edição das notas
+- 04 — Viva a harmonia
+- 05 — Sons da bateria
+
+O PAD continua ativo apenas quando marcado, com configurações sonoras preservadas sem painel separado. “Eu já estou pronta” permanece fora do aplicativo. O texto “Laboratório musical do Nilo” e a rampa de aceleração foram retirados.
 
 ## Beat e BPM
 
