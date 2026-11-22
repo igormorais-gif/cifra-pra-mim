@@ -110,11 +110,26 @@
 .lip-face[data-mouth="n"]{background-position:100% 100%}
 @media(max-width:700px){.mimi-avatar{width:78px;height:78px;min-width:78px;border-width:1px}.hero{align-items:center}.hero h1{margin:9px 0}}
 @media(prefers-reduced-motion:reduce){.mimi-avatar{transition:none}}
-</style></head>
+</style><link rel="stylesheet" href="./assets/studio-panorama.css?v=20261122-1"></head>
 <body><div class="wrap">
-<header class="top"><span class="stamp">ESTÚDIO DE BRINCAR • VOL. 01</span><a href="../laboratorio.html">← Voltar ao Hub</a></header>
-<section class="hero"><div><span class="sub">Estúdio musical interativo</span><h1>MI<span>MI!</span></h1><p>Quatro sílabas, bateria e harmonia. Troque os acordes enquanto o beat toca.</p></div><div class="mimi-avatar" id="lipAvatar" aria-hidden="true"><div id="lipFace" class="lip-face" data-mouth="idle"></div></div></section>
-<section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span><span class="pitch-caption" id="pitch0">Mi5</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span><span class="pitch-caption" id="pitch1">Mi4</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span><span class="pitch-caption" id="pitch2">Ré♯5</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span><span class="pitch-caption" id="pitch3">Dó♯5</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label><span id="padToggleMount" class="pad-toggle-mount"></span></div><p class="soft" style="margin:9px 0 3px">🎙️ Voz original com reforço suave de afinação, sem efeito robótico. A afinação é reforçada discretamente, sem processar a fala até ficar robótica. No roll, só sustenta quando você alonga a nota.</p>
+<header class="top"><span class="stamp">MIMI • PLAYGROUND SONORO</span><a href="../laboratorio.html">← Voltar ao Hub</a></header><aside class="orientation-hint" role="note">↻ Melhor experiência: gire o celular para a horizontal. Na vertical tudo continua funcionando.</aside>
+<section class="hero">
+<div class="hero-copy"><span class="sub">Vozes • harmonia • ritmo</span><h1>MI<span>MI!</span></h1><p>Monte seu groove, cante com o personagem e mude de acorde em tempo real.</p></div>
+<div class="mimi-avatar" id="lipAvatar" aria-label="Rosto animado acompanhando as sílabas" role="img">
+ <div id="lipFace" class="lip-face" data-mouth="idle"></div>
+ <svg id="lipMouth" class="lip-mouth" data-mouth="idle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <g transform="translate(52 68)">
+   <g class="viseme viseme-idle"><path d="M-10 0 Q0 3 10 0 Q0 7 -10 0Z" fill="#9c4c62"/><path d="M-9 0 Q0 2 9 0" fill="none" stroke="#572d40" stroke-width="1.2" stroke-linecap="round"/></g>
+   <g class="viseme viseme-ih"><path d="M-14 0 Q-10 -6 0 -5 Q10 -6 14 0 Q12 8 0 8 Q-12 8 -14 0Z" fill="#b56b80"/><ellipse cx="0" cy="1" rx="11.5" ry="4.8" fill="#502537"/><path d="M-10 -2.5 Q0 -4 10 -2.5 L9 0.5 Q0 2 -9 0.5Z" fill="#e7d5ca"/></g>
+   <g class="viseme viseme-on"><path d="M-7 0 C-8 -14 8 -14 7 0 C9 14 -9 14 -7 0Z" fill="#ba6b7e"/><ellipse cx="0" cy="0" rx="4.9" ry="8" fill="#452337"/><path d="M-5 -6 Q0 -10 5 -6" fill="none" stroke="#de93a1" stroke-width="1.5" stroke-linecap="round"/></g>
+   <g class="viseme viseme-m"><path d="M-10 0 Q-5 -2 0 -1 Q5 -2 10 0 Q0 5 -10 0Z" fill="#9f5869"/><path d="M-9 0 Q0 1 9 0" fill="none" stroke="#522b3b" stroke-width="1.5" stroke-linecap="round"/></g>
+   <g class="viseme viseme-i"><path d="M-13 0 Q-10 -5 0 -5 Q10 -5 13 0 Q10 7 0 8 Q-10 7 -13 0Z" fill="#b66b7e"/><ellipse cx="0" cy="1" rx="10.2" ry="4.3" fill="#4e2738"/><path d="M-8.8 -1.8 Q0 -3.6 8.8 -1.8 L7.7 1 Q0 2 -7.7 1Z" fill="#ead9ce"/></g>
+   <g class="viseme viseme-n"><path d="M-9 0 Q0 -3 9 0 Q0 7 -9 0Z" fill="#a45a6b"/><path d="M-6 0 Q0 2 6 0" fill="none" stroke="#552b3b" stroke-width="2" stroke-linecap="round"/></g>
+  </g>
+ </svg><span class="avatar-led">AO VIVO</span>
+</div>
+</section>
+<section class="panel voice-studio" id="voiceStudio" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span><span class="pitch-caption" id="pitch0">Mi5</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span><span class="pitch-caption" id="pitch1">Mi4</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span><span class="pitch-caption" id="pitch2">Ré♯5</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span><span class="pitch-caption" id="pitch3">Dó♯5</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label><span id="padToggleMount" class="pad-toggle-mount"></span></div><p class="soft" style="margin:9px 0 3px">🎙️ Voz original com reforço suave de afinação, sem efeito robótico. A afinação é reforçada discretamente, sem processar a fala até ficar robótica. No roll, só sustenta quando você alonga a nota.</p>
 <div id="studioPitches" hidden></div>
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 <section class="panel beat-feature" id="beatFeature" aria-label="Montador de BEAT">
@@ -311,6 +326,7 @@ function setLip(mouth){
  lipCurrent=mouth;
  const face=$('lipFace'),frame=$('lipAvatar');
  if(face)face.dataset.mouth=mouth;
+ const lips=$('lipMouth');if(lips)lips.dataset.mouth=mouth;
  if(frame)frame.classList.toggle('speaking',mouth!=='idle');
 }
 function animateLip(){
