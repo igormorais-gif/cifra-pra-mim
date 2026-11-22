@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#19172b"><meta name="description" content="Sampleador MIMI: brinquedo musical do Nilo, com a voz original, harmonia e bateria.">
+<meta name="theme-color" content="#19172b"><meta name="description" content="Sampleador MIMI: piano roll com duracao de notas, harmonias de voces, bateria e aceleramento.">
 <title>Sampleador MIMI — Estúdio do Nilo</title>
 <style>
 :root{--bg:#171529;--panel:#25233b;--paper:#fff9ee;--muted:#aeadc2;--ink:#171529;--yellow:#ffdf6f;--blue:#75dcff;--pink:#ffa3c5;--green:#b2efaa;--outline:#77718b;--radius:20px}
@@ -36,25 +36,68 @@
 .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:13px 0}.controls>label{display:flex;gap:10px;align-items:center;font-size:.8rem;min-width:160px;flex:1}.controls input[type=range]{width:100%;accent-color:var(--yellow)}.controls output{font-weight:850;min-width:35px;text-align:right}.check{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;cursor:pointer}.check input{accent-color:var(--yellow);width:18px;height:18px}.soft{color:#b9b4cb;font-size:.8rem}.upload{border:1px dashed #7b7499;padding:16px;border-radius:14px;background:#312c49;margin-top:15px}.upload label{display:inline-flex;align-items:center;gap:9px;background:#e9e0fa;color:#171529;padding:10px 14px;border-radius:11px;font-weight:850;cursor:pointer}.upload input[type=file]{display:none}.upload p{margin:10px 0 0;font-size:.8rem;color:#c9c2dd}.technical{margin-top:16px}.technical summary{cursor:pointer;font-weight:850}.cutbox{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.cutbox label{color:#d8d2e8;font-size:.75rem}.cutbox input{display:block;width:100%;margin-top:4px;background:#352f4d;border:1px solid #776e92;border-radius:8px;color:white;padding:8px 6px;font-size:.88rem}.note{margin-top:18px;color:#aaa4bd;font-size:.78rem;max-width:880px}.foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:25px;font-size:.77rem;color:#9690ac}.foot a{color:#cbc7dd}@media(max-width:700px){.wrap{padding:20px 13px 55px}.hero{padding:18px 5px 16px}.sticker{width:80px;height:80px;font-size:1.08rem}.panel{padding:15px}.tone{min-height:54px;font-size:.88rem}.tones{grid-template-columns:repeat(5,minmax(0,1fr))}.voicepads{gap:8px}.voicepad{min-height:112px;border-radius:15px;font-size:2.7rem}.columns{grid-template-columns:1fr}.cutbox{grid-template-columns:repeat(2,1fr)}.actions .btn{flex-grow:1}.bar-title h2{font-size:1.05rem}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto;transition:none!important}}
 .columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.columns>.panel,.seq-scroll,.rampbox{min-width:0}.seq-scroll{width:100%;max-width:100%}
 @media(max-width:700px){.columns{grid-template-columns:minmax(0,1fr)}.panel{max-width:100%}.rampbox{padding:12px}.seq-scroll{max-width:100%}}
+
+/* MIMI MIDI: notas que crescem na grade, com alca de arrastar */
+.beatgrid .note-cell{border:1px solid #fff9ee44;min-width:0;z-index:1;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;overflow:visible;position:relative;text-align:center;color:#1e1630}
+.beatgrid .note-cell strong{pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.78rem}
+.beatgrid .note-cell .resize-handle{position:absolute;right:-4px;top:4px;bottom:4px;width:13px;border-radius:5px;background:#201c3e65;border:2px solid #ffffff9c;cursor:ew-resize;touch-action:none;z-index:4}
+.beatgrid .note-cell.selected{outline:3px solid var(--paper);outline-offset:1px;z-index:3}
+.beatgrid .note-cell .length-badge{font-size:.67rem;opacity:.78;pointer-events:none}
+.beatgrid .empty-step{height:44px;background:#34314b}
+.beatgrid .empty-step:hover{border-color:#b8b0dc;background:#443e61}
+.beatgrid .note-cell[data-track="0"]{background:var(--yellow)}
+.beatgrid .note-cell[data-track="1"]{background:var(--blue)}
+.beatgrid .note-cell[data-track="2"]{background:var(--pink)}
+.beatgrid .note-cell[data-track="3"]{background:var(--green)}
+.note-edit{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:13px 0;padding:12px;background:#302a49;border:1px solid #6e628d;border-radius:13px}
+.note-edit strong{color:var(--yellow)}
+.note-edit .mini{border:1px solid #847aab;padding:9px 12px;background:#46405f;color:white;border-radius:9px;font-weight:850;min-height:42px}
+.note-edit .mini:disabled{opacity:.35;cursor:not-allowed}
+.note-edit select,.harm-fields select{background:#3d3554;color:white;border:1px solid #897da4;border-radius:9px;padding:10px;min-width:100px;max-width:100%}
+.note-edit .remove{background:#59334b}
+.note-edit output{font-weight:900;min-width:85px;text-align:center}
+.note-hint{color:#dad4e7;font-size:.82rem}
+.harmony-panel{margin-top:16px}
+.harm-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
+.harm-fields label{display:grid;gap:7px;font-size:.84rem;color:#d9d1e9;font-weight:750}
+.harm-presets{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}
+.harm-presets button{font-size:.86rem;min-height:40px}
+.harm-example{font-size:.95rem;color:#ffdf6f;line-height:1.6;min-height:1.6em;margin:12px 0}
+@media(max-width:700px){.note-edit{padding:10px;gap:7px}.note-edit .mini{padding:9px}.harm-fields{grid-template-columns:1fr 1fr}.beatgrid .note-cell .length-badge{display:none}}
 </style></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">ESTÚDIO DE BRINCAR • VOL. 01</span><a href="../laboratorio.html">← Voltar ao Hub</a></header>
 <section class="hero"><div><span class="sub">O laboratório musical do Nilo</span><h1>MI<span>MI!</span></h1><p>Uma voz de verdade, oito gravações e um beat para construir do seu jeito — e acelerar!</p></div><div class="sticker" aria-hidden="true">IH<br>ON<br>MI MI</div></section>
 <section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label></div><p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
-<div class="columns"><section class="panel"><div class="bar-title"><h2>03 / Monte sua bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Macia</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div></section>
-<section class="panel" id="sequencer"><div class="bar-title"><h2>04 / Construa o BEAT</h2><span class="sub">16 passos · 4 tempos · voz + bateria</span></div>
-<p class="seq-help">Escolha um tom lá em cima. Pinte os passos de <strong>IH • ON • MI • MI</strong> e também os de bumbo, caixa e prato. Cada voz guarda a altura escolhida — dá para fazer melodias cromáticas!</p>
+
+<section class="panel harmony-panel" id="harmonia" aria-label="Harmonizador de MIMIs">
+ <div class="bar-title"><h2>03 / Viva a harmonia! 🎶</h2><label class="check"><input id="mimisOn" type="checkbox" checked> Outros MIMIs ligados</label></div>
+ <p class="seq-help">A voz original continua no centro. Crie até <b>duas vozes adicionais</b> usando outras tomadas do MIMI, quando possível. As terças respeitam a escala maior do tom selecionado.</p>
+ <div class="harm-presets"><button class="btn secondary" type="button" data-hpreset="solo">Solo</button><button class="btn secondary" type="button" data-hpreset="trio">Trio de MIMIs</button><button class="btn secondary" type="button" data-hpreset="up">Terça acima</button><button class="btn secondary" type="button" data-hpreset="down">Terça abaixo</button><button class="btn secondary" type="button" data-hpreset="open">Quintas abertas</button></div>
+ <div class="harm-fields"><label>MIMI 2 · voz adicional A<select id="harmA"><option value="off">Desligada</option><option value="thirdUp" selected>Terça diatônica acima</option><option value="thirdDown">Terça diatônica abaixo</option><option value="fourthUp">Quarta acima</option><option value="fourthDown">Quarta abaixo</option><option value="fifthUp">Quinta diatônica acima</option><option value="fifthDown">Quinta diatônica abaixo</option><option value="sixthUp">Sexta diatônica acima</option><option value="sixthDown">Sexta diatônica abaixo</option><option value="octaveUp">Oitava acima</option><option value="octaveDown">Oitava abaixo</option></select></label>
+ <label>MIMI 3 · voz adicional B<select id="harmB"><option value="off">Desligada</option><option value="thirdUp">Terça diatônica acima</option><option value="thirdDown" selected>Terça diatônica abaixo</option><option value="fourthUp">Quarta acima</option><option value="fourthDown">Quarta abaixo</option><option value="fifthUp">Quinta acima</option><option value="fifthDown">Quinta abaixo</option><option value="sixthUp">Sexta acima</option><option value="sixthDown">Sexta abaixo</option><option value="octaveUp">Oitava acima</option><option value="octaveDown">Oitava abaixo</option></select></label></div>
+ <p id="harmExample" class="harm-example" aria-live="polite">E6 · IH: E / G# / C#</p>
+ <div class="controls"><label>Volume dos MIMIs <input id="vharmony" type="range" min="0" max="100" value="55"><output id="vharmonyout">55%</output></label><label>Abertura estéreo <input id="hwidth" type="range" min="0" max="100" value="38"><output id="hwidthout">38%</output></label></div>
+ <p class="soft">Terças e quintas mudam com a sílaba: E→G♯/C♯, D♯→F♯/B, C♯→E/A. O alongamento usa pequenas repetições suavizadas do trecho vocal (sustain granular): a altura não desce ao aumentar a duração. Sons muito esticados ou transpostos podem soar artificiais.</p>
+</section>
+<div class="columns"><section class="panel"><div class="bar-title"><h2>04 / Monte sua bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Macia</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div></section>
+<section class="panel" id="sequencer"><div class="bar-title"><h2>05 / Construa o BEAT · piano roll</h2><span class="sub">16 passos · 4 tempos · voz + bateria</span></div>
+<p class="seq-help">Escolha um tom lá em cima. Pinte as notas <strong>IH • ON • MI • MI</strong> e estique pela alça à direita, como num MIDI. Cada bloco guarda seu próprio tom, sua duração e acompanha as vozes harmonizadas. A bateria continua em passos.</p>
 <div class="rhythm-info"><span><strong id="nowbpm">95 BPM</strong> <span class="sub" id="barcounter">· compasso 1</span></span><span class="sub">1 e &amp; a · 2 e &amp; a · 3 e &amp; a · 4 e &amp; a</span></div>
 <div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
+<div class="note-edit" id="noteEditor"><span class="note-hint" id="noteInfo">Toque um bloco de voz para editar sua nota.</span>
+  <button class="mini" type="button" id="noteMinus" aria-label="Encurtar uma semicolcheia">−</button><output id="noteLenOut">2 passos</output><button class="mini" type="button" id="notePlus" aria-label="Alongar uma semicolcheia">+</button>
+  <button class="mini" type="button" id="notePitch">Usar tom selecionado</button><button class="mini remove" type="button" id="noteDelete">Apagar nota</button>
+</div><div class="note-edit"><label for="drawlen" class="note-hint">Tamanho inicial de uma nova nota</label><select id="drawlen"><option value="1">1/16 · 1 passo</option><option value="2" selected>1/8 · 2 passos</option><option value="3">3 passos</option><option value="4">1/4 · 4 passos</option><option value="6">6 passos</option><option value="8">1/2 · 8 passos</option><option value="12">12 passos</option><option value="16">1 compasso · 16 passos</option></select></div>
 <div class="rampbox"><div class="bar-title"><h3>🚀 Acelerar a brincadeira</h3><label class="check"><input id="accelerate" type="checkbox" checked> Aceleramento ligado</label></div>
 <div class="ramp-fields"><label>Começar em <span><output id="bpmout">95</output> BPM</span><input id="bpm" type="range" min="50" max="220" step="1" value="95"></label><label>Chegar a <span><output id="targetout">175</output> BPM</span><input id="targetbpm" type="range" min="60" max="240" step="1" value="175"></label><label>Em quantos compassos?<select id="rampbars"><option value="2">2 compassos</option><option value="4">4 compassos</option><option value="8" selected>8 compassos</option><option value="16">16 compassos</option><option value="32">32 compassos</option></select></label></div>
 <p id="rampinfo" class="ramp-result">95 → 175 BPM em 8 compassos; depois mantém 175 BPM.</p>
-<label class="check"><input id="shortvoice" type="checkbox"> Voz curtinha (evitar embolar em velocidades altas)</label></div>
+<label class="check"><input id="shortvoice" type="checkbox"> Voz curtinha (staccato: encurta ate notas desenhadas longas)</label></div>
 <div class="controls"><label>Swing <input id="swing" type="range" min="0" max="40" value="0"><output id="swingout">0%</output></label></div>
 <div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><button id="resetbeat" class="btn secondary" type="button">Padrão MIMI</button><button id="syncbeat" class="btn secondary" type="button">Síncope!</button><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div>
 <label class="check" style="margin-top:12px"><input id="beatchord" type="checkbox"> Tocar acorde de sexta no início de cada compasso</label>
-<p class="soft">O BPM acelera progressivamente a cada passo, sem mudar a afinação das vozes. Quando chega à meta, continua no BPM final. A composição fica salva neste navegador.</p></section></div>
-<section class="panel" style="margin-top:16px"><div class="bar-title"><h2>05 / Banco de gravações</h2><span class="sub">Áudio 149 · 8 frases originais</span></div><div class="upload"><label for="upload">🎙️ Importar a gravação 149<input type="file" id="upload" accept="audio/*,.m4a"></label><p>Se a voz não carregar automaticamente, importe uma vez a gravação 149. O arquivo fica salvo apenas neste navegador (sem enviar a servidores). Os cortes já estão preparados.</p></div><details class="technical"><summary>Ajuste fino dos quatro recortes da tomada selecionada</summary><div id="cutbox" class="cutbox"></div><p class="soft">Valores em segundos do arquivo original. Ajustes preservam o arquivo de origem. Para a nona opção, o áudio da oitava tomada é reproduzido um semitom abaixo.</p><button type="button" id="resetcuts" class="btn secondary">Restaurar os cortes</button></details></section>
+<p class="soft">O BPM acelera sem alterar a afinação. A duração de cada nota acompanha o andamento, com ataque e sustentação independentes. Clique numa nota para ajustar sua duração, altere o tom ou arraste sua borda direita. A composição é salva no navegador.</p></section></div>
+<section class="panel" style="margin-top:16px"><div class="bar-title"><h2>06 / Banco de gravações</h2><span class="sub">Áudio 149 · 8 frases originais</span></div><div class="upload"><label for="upload">🎙️ Importar a gravação 149<input type="file" id="upload" accept="audio/*,.m4a"></label><p>Se a voz não carregar automaticamente, importe uma vez a gravação 149. O arquivo fica salvo apenas neste navegador (sem enviar a servidores). Os cortes já estão preparados.</p></div><details class="technical"><summary>Ajuste fino dos quatro recortes da tomada selecionada</summary><div id="cutbox" class="cutbox"></div><p class="soft">Valores em segundos do arquivo original. Ajustes preservam o arquivo de origem. Para a nona opção, o áudio da oitava tomada é reproduzido um semitom abaixo.</p><button type="button" id="resetcuts" class="btn secondary">Restaurar os cortes</button></details></section>
 <p class="note">* O preset G#6 é uma transposição de um semitom da oitava tomada, pois a gravação 149 contém oito frases completas (E6 → A6 seria oito posições). Os nomes dos acordes são centros harmônicos propostos, não laudos de afinação da voz. A reprodução natural preserva as diferenças de entonação e articulação do registro. Para afinação absoluta, seria necessária revisão musical adicional.</p>
 <footer class="foot"><span>Sampleador MIMI · uma brincadeira musical para Nilo</span><span>Feito com a voz original · <a href="https://github.com/igormorais-gif/cifra-pra-mim">Cifra pra Mim</a></span></footer></div>
 <script>
@@ -71,20 +114,85 @@ const ORIGINAL_CUTS=[
  [[13.90,14.17],[14.23,14.51],[14.86,15.10],[15.10,15.35]]];
 const CHORDS=['E6','Eb6','D6','Db6','C6','B6','Bb6','A6','G#6'];
 const ROOTS=[52,51,50,49,48,47,46,45,44];
-const DBNAME='mimi-nilo-v1', DBKEY='gravacao149', SEQKEY='mimi-sequencer-v2';
+const DBNAME='mimi-nilo-v1', DBKEY='gravacao149', SEQKEY='mimi-sequencer-v3', LEGACY_SEQKEY='mimi-sequencer-v2';
 let ctx, voiceBuffer=null, selectedTone=0, cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice())),playing=[],noiseBuffer=null;
 let beatRunning=false,beatTimer=0,stepIndex=0,nextBeat=0,visualTimers=new Set(),runId=0,sequenceStartBpm=95,sequenceTargetBpm=175,sequenceRampBars=8,sequenceSwing=0,sequenceAccelerate=true;
 const $=id=>document.getElementById(id);
 const STEPS=16, LABELS=['IH','ON','MI 1','MI 2','BUMBO','CAIXA','PRATO'];
 const pattern=Array.from({length:7},()=>Array(STEPS).fill(0));
-const pitches=Array(STEPS).fill(0);
+const pitches=Array(STEPS).fill(0); // compatibilidade com composicoes anteriores
+const notePitches=Array.from({length:4},()=>Array(STEPS).fill(0));
+const noteLengths=Array.from({length:4},()=>Array(STEPS).fill(1));
+let selectedNote=null, defaultNoteLength=2, isResizing=false;
+const MAJOR=[0,2,4,5,7,9,11], DEGREE=[0,0,6,5], ORIGINAL_OFFSETS=[24,12,23,21];
+const INTERVALS={off:0,thirdUp:2,thirdDown:-2,fourthUp:3,fourthDown:-3,fifthUp:4,fifthDown:-4,sixthUp:5,sixthDown:-5,octaveUp:7,octaveDown:-7};
 function status(s,kind='ready'){$('status').textContent=s;$('status').dataset.status=kind;}
 function getAudio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();}if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx;}
 function level(id){return Math.pow(Number($(id).value)/100,1.5);}
 function clipPlay(start,end,at,rate=1,button=null,gate=Infinity){let c=getAudio();if(!voiceBuffer){status('Para tocar a voz, importe a gravação 149 no quadro inferior.','error');return;}let a=Math.max(0,Math.min(start,voiceBuffer.duration)),b=Math.max(a,Math.min(end,voiceBuffer.duration));if(b-a<.035)return;const src=c.createBufferSource(),gain=c.createGain();src.buffer=voiceBuffer;src.playbackRate.value=rate;src.connect(gain).connect(c.destination);const d=Math.min((b-a)/rate,gate),fade=Math.min(.014,d/4),v=level('vvoice')*.84;gain.gain.setValueAtTime(.0001,at);gain.gain.linearRampToValueAtTime(v,at+fade);gain.gain.setValueAtTime(v,at+Math.max(fade,d-.019));gain.gain.linearRampToValueAtTime(.0001,at+d);src.start(at,a,Math.min(b-a,d*rate));src.stop(at+d+.012);playing.push(src);src.onended=()=>{playing=playing.filter(p=>p!==src);};if(button){button.classList.add('active');setTimeout(()=>button.classList.remove('active'),Math.max(110,d*800));}}
 function tune(tone=selectedTone){return tone===8?{index:7,rate:Math.pow(2,-1/12)}:{index:tone,rate:1};}
-function syllable(n,at,tone=selectedTone,gate=Infinity){const {index,rate}=tune(tone);const [a,b]=cuts[index][n];clipPlay(a,b,at,rate,document.querySelector('[data-syl="'+n+'"]'),gate);}
-function whole(at){const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);}
+// Terças DIATONICAS: a estrutura nao substitui o acorde; escolhe graus da escala maior.
+function semitonesAtDegree(d){return MAJOR[((d%7)+7)%7]+12*Math.floor(d/7);}
+function intervalSemitones(syl,type){if(!type||type==='off')return 0;const steps=INTERVALS[type];return semitonesAtDegree(DEGREE[syl]+steps)-semitonesAtDegree(DEGREE[syl]);}
+function voiceSource(tone,syl,offset){ // prioriza uma outra tomada REAL no mesmo grau da silaba
+ const wanted=tone-offset,source=Math.max(0,Math.min(7,wanted));
+ const [a,b]=cuts[source][syl];return {a,b,rate:Math.pow(2,(source-wanted)/12),real:source===wanted};
+}
+function panOutput(c,pan){if(typeof c.createStereoPanner!=='function')return c.destination;const p=c.createStereoPanner();p.pan.value=Math.max(-.95,Math.min(.95,pan));p.connect(c.destination);return p;}
+function registerSource(src){playing.push(src);src.onended=()=>{const j=playing.indexOf(src);if(j>=0)playing.splice(j,1);};}
+function noteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=null){
+ const c=getAudio();if(!voiceBuffer){status('Voz nao carregada. Use o banco de gravacoes para importar o audio 149.','error');return;}
+ const {a,b,rate}=voiceSource(tone,syl,semitones),sampleLen=(b-a)/rate;
+ if(sampleLen<.04)return;
+ const dur=Number.isFinite(gate)?Math.min(5.8,Math.max(.045,gate)):sampleLen;
+ const volume=Math.max(.0001,level('vvoice')*.75*amp),out=panOutput(c,pan);
+ function source(offset,time,sourceLen,attack,release,gainScale=1){
+  const span=sourceLen/rate;
+  if(span<.015)return;
+  const src=c.createBufferSource(),gain=c.createGain();src.buffer=voiceBuffer;src.playbackRate.value=rate;
+  const stop=time+span,attackEnd=time+Math.min(attack,span*.47),releaseStart=Math.max(attackEnd,stop-release);
+  gain.gain.setValueAtTime(.0001,time);gain.gain.linearRampToValueAtTime(Math.max(.0002,volume*gainScale),attackEnd);
+  gain.gain.setValueAtTime(Math.max(.0002,volume*gainScale),releaseStart);gain.gain.linearRampToValueAtTime(.0001,stop);
+  src.connect(gain).connect(out);src.start(time,offset,sourceLen);src.stop(stop+.01);registerSource(src);
+ }
+ // Duracoes curtas sao cortadas por gate, sem mudar a velocidade nem a altura.
+ if(dur<=sampleLen+.018){const actual=Math.min(dur,sampleLen);source(a,at,actual*rate,.008,Math.min(.025,actual*.35));}
+ else {
+  // Ataque original + janelas de sustain sobrepostas. O grao repete a parte vocal,
+  // preservando a frequencia central enquanto o gate MIDI alonga a silaba.
+  const attack=Math.min(.12,sampleLen*.52,dur*.26);
+  source(a,at,attack*rate,.009,Math.min(.036,attack*.38),1);
+  const grain=Math.min(.13,Math.max(.042,sampleLen*.35));
+  const hop=grain*.5,start=at+Math.max(0,attack-.025),end=at+dur;
+  const maxOffset=Math.max(0,(b-a)-grain*rate-.004);
+  const middle=a+Math.min(maxOffset,Math.max(.012,(b-a-grain*rate)*.49));
+  for(let t=start,k=0;t<end-.016&&k<210;t+=hop,k++){
+   const actual=Math.min(grain,end-t);if(actual<.015)break;
+   const shift=Math.sin(k*1.8)*Math.min(.012,maxOffset*.15);
+   const offset=Math.max(a,Math.min(a+maxOffset,middle+shift));
+   source(offset,t,actual*rate,actual*.47,actual*.47,.78);
+  }
+ }
+ if(button){const ms=Math.max(70,(at-c.currentTime+Math.min(dur,.4))*1000);button.classList.add('active');setTimeout(()=>button.classList.remove('active'),ms);}
+}
+function playHarmony(syl,at,tone,gate){if(!$('mimisOn').checked)return;
+ const volume=level('vharmony')*.69,wide=Number($('hwidth').value)/100*.74;
+ ['harmA','harmB'].forEach((id,i)=>{const mode=$(id).value;if(mode==='off')return;
+ noteSample(syl,tone,at,gate,intervalSemitones(syl,mode),volume,i===0?-wide:wide);
+ });
+}
+function syllable(n,at,tone=selectedTone,gate=Infinity){noteSample(n,tone,at,gate,0,1,0,document.querySelector('[data-syl="'+n+'"]'));playHarmony(n,at,tone,gate);}
+function whole(at){const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);
+ if(!$('mimisOn').checked)return;
+ const anchor=s[0][0];s.forEach(([start,end],n)=>playHarmony(n,at+(start-anchor)/rate,selectedTone,(end-start)/rate));
+}
+function noteName(midi,flat){let names=flat?['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B']:['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[((midi%12)+12)%12];}
+function harmonyExample(){if(!$('harmExample'))return;const tone=selectedTone,syl=selectedNote?selectedNote.tr:0,flat=/b/.test(CHORDS[tone])||tone===8;
+ const note=ROOTS[tone]+ORIGINAL_OFFSETS[syl],base=noteName(note,flat);
+ const extras=$('mimisOn').checked?['harmA','harmB'].map(id=>$(id).value).filter(x=>x!=='off').map(x=>noteName(note+intervalSemitones(syl,x),flat)):[];
+ $('harmExample').textContent=CHORDS[tone]+' · '+['IH','ON','MI 1','MI 2'][syl]+': '+[base,...extras].join(' + ')+(extras.length?' (exemplo diatonico)':' (solo)');
+ $('vharmonyout').textContent=$('vharmony').value+'%';$('hwidthout').textContent=$('hwidth').value+'%';
+}
 function hz(midi){return 440*Math.pow(2,(midi-69)/12);}
 function chord(at,tone=selectedTone){const c=getAudio(),root=ROOTS[tone],v=level('vchord');if(v<=0)return;[root,root+4,root+7,root+9].forEach((midi,i)=>{const o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),out=c.createGain();o.type='triangle';o2.type='sine';o.frequency.value=hz(midi);o2.frequency.value=hz(midi)*2;const t=at+i*.012;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.092*v,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+1.25);out.gain.value=.55;o.connect(g).connect(c.destination);o2.connect(out).connect(g);o.start(t);o2.start(t);o.stop(t+1.27);o2.stop(t+1.27);});}
 function flash(d){const b=document.querySelector('[data-drum="'+d+'"]');if(b){b.classList.add('active');setTimeout(()=>b.classList.remove('active'),95);}}
@@ -96,43 +204,100 @@ function drum(name,at,flashNow=false){getAudio();const v=level('vdrum');if(flash
  if(name==='snare'){const style=$('snarestyle').value;if(style==='rim'){envOsc(720,450,at,.055,.24*v,'triangle');noise(at,.045,.14*v,2400);}else{const snap=style==='snap';noise(at,snap?.13:.11,(snap?.28:.21)*v,snap?1300:790);envOsc(195,158,at,.085,.13*v,'triangle');}}
  if(name==='hat'){const style=$('hatstyle').value;noise(at,style==='open'?.33:(style==='light'?.06:.095),(style==='light'?.09:.13)*v,style==='open'?4900:6800);}}
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
-function selectTone(index){selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));renderCuts();saveSequence();}
-function defaultPattern(){pattern.forEach(row=>row.fill(0));pitches.fill(0);
- [0,4,8,12].forEach((step,i)=>pattern[i][step]=1);
+function selectTone(index){selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));renderCuts();harmonyExample();saveSequence();}
+function defaultPattern(){pattern.forEach(row=>row.fill(0));pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));selectedNote=null;
+ [0,4,8,12].forEach((step,i)=>{pattern[i][step]=1;noteLengths[i][step]=2;});
  [0,8].forEach(j=>pattern[4][j]=1);[4,12].forEach(j=>pattern[5][j]=1);
  for(let j=0;j<STEPS;j+=2)pattern[6][j]=1;
 }
 function syncopatedPattern(){defaultPattern();for(let i=0;i<4;i++)pattern[i].fill(0);
- [[0,0],[1,3],[2,7],[3,10],[0,14]].forEach(([i,j],k)=>{pattern[i][j]=1;pitches[j]=[0,1,2,3,4][k];});
+ [[0,0],[1,3],[2,7],[3,10],[0,14]].forEach(([i,j],k)=>{pattern[i][j]=1;notePitches[i][j]=[0,1,2,3,4][k];noteLengths[i][j]=i===0?2:3;});
  [2,6,10,14].forEach(j=>pattern[6][j]=1);
 }
-function clearPattern(){pattern.forEach(row=>row.fill(0));}
-function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,pitches,bpm:$('bpm').value,target:$('targetbpm').value,rampbars:$('rampbars').value,accelerate:$('accelerate').checked,swing:$('swing').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone}));}catch{}}
-function restoreSequence(){let saved;try{saved=JSON.parse(localStorage.getItem(SEQKEY)||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
+function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
+function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,bpm:$('bpm').value,target:$('targetbpm').value,rampbars:$('rampbars').value,accelerate:$('accelerate').checked,swing:$('swing').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value}));}catch{}}
+function restoreSequence(){let saved;try{saved=JSON.parse(localStorage.getItem(SEQKEY)||localStorage.getItem(LEGACY_SEQKEY)||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
  for(let i=0;i<7;i++)for(let j=0;j<STEPS;j++)pattern[i][j]=Number(saved.pattern[i][j])?1:0;
- if(Array.isArray(saved.pitches)&&saved.pitches.length===STEPS)for(let j=0;j<STEPS;j++)pitches[j]=Math.min(8,Math.max(0,Math.round(Number(saved.pitches[j])||0)));
- for(const [id,value,min,max] of [['bpm',saved.bpm,50,220],['targetbpm',saved.target,60,240],['swing',saved.swing,0,40]]){if(value!=null)$(id).value=String(Math.min(max,Math.max(min,Number(value)||min)));}
+ for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++){
+  const old=Array.isArray(saved.pitches)?saved.pitches[j]:0;
+  const p=Array.isArray(saved.notePitches?.[tr])?saved.notePitches[tr][j]:old;
+  notePitches[tr][j]=Math.min(8,Math.max(0,Math.round(Number(p)||0)));
+  noteLengths[tr][j]=Array.isArray(saved.noteLengths?.[tr])?Math.min(16-j,Math.max(1,Math.round(Number(saved.noteLengths[tr][j])||1))):1;
+ }
+ // Migracao: encurta notas sobrepostas para nunca cobrir o inicio de outra.
+ for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++)if(pattern[tr][j])noteLengths[tr][j]=Math.min(noteLengths[tr][j],maxLength(tr,j));
+ for(const [id,value,min,max] of [['bpm',saved.bpm,50,220],['targetbpm',saved.target,60,240],['swing',saved.swing,0,40],['vharmony',saved.vharmony,0,100],['hwidth',saved.hwidth,0,100]]){if(value!=null)$(id).value=String(Math.min(max,Math.max(min,Number(value)||min)));}
  if([2,4,8,16,32].includes(Number(saved.rampbars)))$('rampbars').value=String(saved.rampbars);
- for(const id of ['accelerate','shortvoice','beatchord'])if(typeof saved[id]==='boolean')$(id).checked=saved[id];
+ for(const id of ['accelerate','shortvoice','beatchord','mimisOn'])if(typeof saved[id]==='boolean')$(id).checked=saved[id];
+ for(const id of ['harmA','harmB'])if(typeof saved[id]==='string'&&Object.hasOwn(INTERVALS,saved[id]))$(id).value=saved[id];
+ if([1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
+ defaultNoteLength=Number($('drawlen').value);
  return Number.isInteger(saved.tone)&&saved.tone>=0&&saved.tone<=8?saved.tone:0;
 }
-function buildGrid(){const container=$('beatgrid');container.innerHTML='';const cap=document.createElement('span');cap.className='trname';cap.textContent='PISTAS';container.append(cap);
- for(let j=0;j<STEPS;j++){const hd=document.createElement('span');hd.className='seq-head'+(j%4===0?' down':'');hd.dataset.step=j;hd.textContent=(j%4===0?String(j/4+1):['','e','&','a'][j%4]);container.append(hd);}
- pattern.forEach((row,tr)=>{const label=document.createElement('span');label.className='trname'+(tr<4?' voice-name':'');label.textContent=LABELS[tr];container.append(label);
- row.forEach((value,j)=>{const b=document.createElement('button');b.type='button';b.className='step';b.dataset.track=tr;b.dataset.step=j;
- b.onclick=()=>{if(tr<4){if(pattern[tr][j]&&pitches[j]===selectedTone){pattern[tr][j]=0;}else{pattern[tr][j]=1;pitches[j]=selectedTone;}}else pattern[tr][j]^=1;repaint();saveSequence();};container.append(b);});});repaint();}
-function repaint(){document.querySelectorAll('.step').forEach(b=>{const tr=+b.dataset.track,j=+b.dataset.step,active=!!pattern[tr][j];b.setAttribute('aria-pressed',String(active));b.textContent=active&&tr<4?CHORDS[pitches[j]].replace('6',''):(active?'●':'');b.setAttribute('aria-label',LABELS[tr]+' no passo '+(j+1)+(tr<4?', tom '+CHORDS[pitches[j]]:'')+(active?', ativo':', desligado'));b.title=LABELS[tr]+' · passo '+(j+1)+(tr<4?' · '+CHORDS[pitches[j]]:'');});}
-function visual(j,bar,bpm){document.querySelectorAll('.step,.seq-head').forEach(el=>el.classList.toggle('playing',+el.dataset.step===j));$('nowbpm').textContent=Math.round(bpm)+' BPM';$('barcounter').textContent='· compasso '+bar;}
+function maxLength(tr,j){let k=j+1;while(k<STEPS&&!pattern[tr][k])k++;return Math.min(STEPS-j,k-j);}
+function noteAt(tr,step){for(let j=step;j>=0;j--)if(pattern[tr][j]&&step<j+noteLengths[tr][j])return j;return -1;}
+function selectNote(tr,step){selectedNote={tr,step};repaint();updateNoteEditor();harmonyExample();}
+function updateNoteEditor(){const n=selectedNote,ok=n&&pattern[n.tr][n.step];
+ ['noteMinus','notePlus','notePitch','noteDelete'].forEach(id=>$(id).disabled=!ok);
+ if(!ok){$('noteInfo').textContent='Toque um bloco de voz para editar a nota.';$('noteLenOut').textContent='—';return;}
+ const len=noteLengths[n.tr][n.step],pitch=CHORDS[notePitches[n.tr][n.step]];
+ $('noteInfo').innerHTML='<strong>'+LABELS[n.tr]+'</strong> · passo '+(n.step+1)+' · '+pitch;
+ $('noteLenOut').textContent=len+' '+(len===1?'passo':'passos');
+ $('noteMinus').disabled=len<=1;$('notePlus').disabled=len>=maxLength(n.tr,n.step);
+ $('notePitch').textContent='Aplicar '+CHORDS[selectedTone];
+}
+function lengthSelected(delta){const n=selectedNote;if(!n||!pattern[n.tr][n.step])return;
+ noteLengths[n.tr][n.step]=Math.max(1,Math.min(maxLength(n.tr,n.step),noteLengths[n.tr][n.step]+delta));repaint();updateNoteEditor();saveSequence();}
+function dragHandle(handle,tr,j,ev){if(ev.button!=null&&ev.button!==0)return;ev.preventDefault();ev.stopPropagation();isResizing=true;
+ const grid=$('beatgrid'),start=handle.parentElement.getBoundingClientRect(),old=noteLengths[tr][j];
+ const stride=(start.width+5)/old,limit=maxLength(tr,j);let preview=old;
+ const move=e=>{e.preventDefault();preview=Math.min(limit,Math.max(1,Math.round((e.clientX-start.left+stride*.18)/stride)));handle.parentElement.style.gridColumn=(j+2)+' / span '+preview;};
+ const end=e=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',end);window.removeEventListener('pointercancel',end);noteLengths[tr][j]=preview;isResizing=false;selectedNote={tr,step:j};repaint();updateNoteEditor();saveSequence();};
+ window.addEventListener('pointermove',move,{passive:false});window.addEventListener('pointerup',end,{once:true});window.addEventListener('pointercancel',end,{once:true});
+}
+function buildGrid(){const g=$('beatgrid');g.innerHTML='';
+ const headLabel=document.createElement('span');headLabel.className='trname';headLabel.style.gridRow='1';headLabel.style.gridColumn='1';headLabel.textContent='PISTAS';g.append(headLabel);
+ for(let j=0;j<STEPS;j++){const hd=document.createElement('span');hd.className='seq-head'+(j%4===0?' down':'');hd.dataset.step=j;hd.style.gridRow='1';hd.style.gridColumn=String(j+2);hd.textContent=(j%4===0?String(j/4+1):['','e','&','a'][j%4]);g.append(hd);}
+ for(let tr=0;tr<7;tr++){
+  const lab=document.createElement('span');lab.className='trname'+(tr<4?' voice-name':'');lab.textContent=LABELS[tr];lab.style.gridColumn='1';lab.style.gridRow=String(tr+2);g.append(lab);
+  for(let j=0;j<STEPS;j++){
+   const btn=document.createElement('button');btn.type='button';btn.dataset.track=tr;btn.dataset.step=j;btn.style.gridRow=String(tr+2);
+   if(tr<4&&pattern[tr][j]){
+    const noteStep=j;
+    const len=Math.min(maxLength(tr,j),noteLengths[tr][j]);noteLengths[tr][j]=len;
+    btn.className='step note-cell'+(selectedNote?.tr===tr&&selectedNote?.step===j?' selected':'');
+    btn.style.gridColumn=(j+2)+' / span '+len;
+    btn.setAttribute('aria-pressed','true');
+    btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1)+' '+CHORDS[notePitches[tr][j]]+' duracao '+len+' semicolcheias. Toque para selecionar.');
+    const strong=document.createElement('strong');strong.textContent=CHORDS[notePitches[tr][j]];btn.append(strong);
+    if(len>1){const small=document.createElement('span');small.className='length-badge';small.textContent=len+'×';btn.append(small);}
+    const handle=document.createElement('span');handle.className='resize-handle';handle.setAttribute('aria-hidden','true');handle.addEventListener('pointerdown',e=>dragHandle(handle,tr,noteStep,e));btn.append(handle);
+    btn.onclick=e=>{if(isResizing)return;selectNote(tr,noteStep);};g.append(btn);j+=len-1;
+   }else{
+    btn.style.gridColumn=String(j+2);
+    if(tr<4){btn.className='step empty-step';btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1)+' vazio. Tocar para criar nota.');
+     btn.onclick=()=>{if(isResizing)return;pattern[tr][j]=1;notePitches[tr][j]=selectedTone;noteLengths[tr][j]=Math.min(defaultNoteLength,maxLength(tr,j));selectedNote={tr,step:j};repaint();updateNoteEditor();harmonyExample();saveSequence();};
+    }else{btn.className='step';btn.dataset.drum='1';btn.setAttribute('aria-pressed',String(!!pattern[tr][j]));btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1));btn.textContent=pattern[tr][j]?'●':'';
+     btn.onclick=()=>{pattern[tr][j]^=1;repaint();saveSequence();};}
+    g.append(btn);
+   }
+  }
+ }
+}
+function repaint(){buildGrid();}
+function visual(j,bar,bpm){document.querySelectorAll('.step,.seq-head').forEach(el=>{const tr=Number(el.dataset.track),start=Number(el.dataset.step),len=tr<4&&pattern[tr]?.[start]?noteLengths[tr][start]:1;el.classList.toggle('playing',j>=start&&j<start+len);});$('nowbpm').textContent=Math.round(bpm)+' BPM';$('barcounter').textContent='· compasso '+bar;}
 function rampInfo(){const bpm=+$('bpm').value,target=+$('targetbpm').value,bars=+$('rampbars').value,on=$('accelerate').checked;
  $('bpmout').textContent=bpm;$('targetout').textContent=target;$('swingout').textContent=$('swing').value+'%';
  $('rampinfo').textContent=on?(bpm+' → '+target+' BPM em '+bars+' compassos; depois mantém '+target+' BPM.'):(bpm+' BPM constante (aceleramento desligado).');if(!beatRunning)$('nowbpm').textContent=bpm+' BPM';}
 function bpmAtStep(step){const fraction=sequenceAccelerate?Math.min(1,step/(sequenceRampBars*STEPS)):0;return sequenceStartBpm+(sequenceTargetBpm-sequenceStartBpm)*fraction;}
+function stepDuration(atStep){const bpm=bpmAtStep(atStep),swing=sequenceSwing/100;return 60/bpm/4*(atStep%2===0?1+swing:1-swing);}
+function noteGate(start,len){let seconds=0;for(let j=0;j<len;j++)seconds+=stepDuration(start+j);return Math.max(.052,seconds*.94);}
 function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
  while(nextBeat<c.currentTime+.12){const idx=stepIndex%STEPS,bar=Math.floor(stepIndex/STEPS)+1,bpm=bpmAtStep(stepIndex),swing=sequenceSwing/100;
  const base=60/bpm/4,duration=base*(idx%2===0?1+swing:1-swing),at=nextBeat;
- for(let tr=0;tr<4;tr++)if(pattern[tr][idx])syllable(tr,at,pitches[idx],$('shortvoice').checked?Math.max(.06,duration*.94):Infinity);
+ for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):noteGate(stepIndex,len);syllable(tr,at,notePitches[tr][idx],gate);}
  ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at);});
- if(idx===0&&$('beatchord').checked)chord(at,pitches[idx]);
+ if(idx===0&&$('beatchord').checked){const tone=pattern[0][idx]?notePitches[0][idx]:selectedTone;chord(at,tone);}
  const timer=setTimeout(()=>{visualTimers.delete(timer);if(beatRunning&&id===runId)visual(idx,bar,bpm);},Math.max(0,(at-c.currentTime)*1000));visualTimers.add(timer);
  stepIndex++;nextBeat+=duration;
  }
@@ -160,8 +325,16 @@ $('syncbeat').onclick=()=>{syncopatedPattern();repaint();saveSequence();};
 ['bpm','targetbpm','rampbars','accelerate','swing','shortvoice','beatchord'].forEach(id=>{
  $(id).addEventListener('input',()=>{rampInfo();saveSequence();});$(id).addEventListener('change',()=>{rampInfo();saveSequence();});
 });
+
+$('noteMinus').onclick=()=>lengthSelected(-1);$('notePlus').onclick=()=>lengthSelected(1);
+$('noteDelete').onclick=()=>{const n=selectedNote;if(!n)return;pattern[n.tr][n.step]=0;selectedNote=null;repaint();updateNoteEditor();saveSequence();};
+$('notePitch').onclick=()=>{const n=selectedNote;if(!n)return;notePitches[n.tr][n.step]=selectedTone;repaint();updateNoteEditor();saveSequence();};
+$('drawlen').onchange=e=>{defaultNoteLength=Number(e.target.value);saveSequence();};
+document.addEventListener('keydown',e=>{if((e.key==='Delete'||e.key==='Backspace')&&selectedNote&&!/input|select|textarea/i.test(e.target.tagName)){$('noteDelete').click();e.preventDefault();}});
+for(const id of ['mimisOn','harmA','harmB','vharmony','hwidth']){$(id).addEventListener('input',()=>{harmonyExample();saveSequence();});$(id).addEventListener('change',()=>{harmonyExample();saveSequence();});}
+document.querySelectorAll('[data-hpreset]').forEach(b=>{b.onclick=()=>{const presets={solo:[false,'off','off'],trio:[true,'thirdUp','thirdDown'],up:[true,'thirdUp','off'],down:[true,'thirdDown','off'],open:[true,'fifthUp','fifthDown']};const [on,a,z]=presets[b.dataset.hpreset];$('mimisOn').checked=on;$('harmA').value=a;$('harmB').value=z;harmonyExample();saveSequence();};});
 $('resetcuts').onclick=()=>{cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice()));renderCuts();};
 document.addEventListener('keydown',e=>{if(e.repeat||/input|select|textarea/i.test(e.target.tagName))return;const map={'1':0,'2':1,'3':2,'4':3};if(map[e.key]!=null)syllable(map[e.key],getAudio().currentTime+.01);else if(e.code==='Space'){e.preventDefault();whole(getAudio().currentTime+.01);}});
-buildTones();const lastTone=restoreSequence();buildGrid();selectTone(lastTone);rampInfo();startup();
+buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();startup();
 })();
 </script><script type="text/plain" id="audio-inline"></script></body></html>
