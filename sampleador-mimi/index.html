@@ -64,18 +64,31 @@
 .harm-presets button{font-size:.86rem;min-height:40px}
 .harm-example{font-size:.95rem;color:#ffdf6f;line-height:1.6;min-height:1.6em;margin:12px 0}
 @media(max-width:700px){.note-edit{padding:10px;gap:7px}.note-edit .mini{padding:9px}.harm-fields{grid-template-columns:1fr 1fr}.beatgrid .note-cell .length-badge{display:none}}
+
+.studio-box{margin:15px 0 10px;background:#302b47;border:1px solid #71668a;border-radius:14px;padding:13px 16px;display:grid;gap:8px}
+.studio-box .check{font-size:.93rem;font-weight:800}
+.studio-status{color:#b8e8b5;font-size:.82rem;line-height:1.45}
+.studio-pitches{font-size:.83rem;color:#d5cee8;line-height:1.6}
+.studio-box .check input{flex-shrink:0}
 </style></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">ESTÚDIO DE BRINCAR • VOL. 01</span><a href="../laboratorio.html">← Voltar ao Hub</a></header>
-<section class="hero"><div><span class="sub">O laboratório musical do Nilo</span><h1>MI<span>MI!</span></h1><p>Uma voz de verdade, oito gravações e um beat para construir do seu jeito — e acelerar!</p></div><div class="sticker" aria-hidden="true">IH<br>ON<br>MI MI</div></section>
-<section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label></div><p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
+<section class="hero"><div><span class="sub">O laboratório musical do Nilo</span><h1>MI<span>MI!</span></h1><p>Uma voz de verdade em oito atuações, 32 sílabas afinadas e um beat para construir e harmonizar!</p></div><div class="sticker" aria-hidden="true">IH<br>ON<br>MI MI</div></section>
+<section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label></div><div class="studio-box" aria-label="Afinação e timbre da voz">
+<label class="check"><input type="checkbox" id="studioMode" checked> 🎯 Afinação de estúdio · 32 atuações separadas</label>
+<label class="check"><input type="checkbox" id="tonalLayer"> Camada tonal discreta (reforça a nota, sem recantar a sílaba)</label>
+<div class="studio-pitches" id="studioPitches">Primeiro tom: <b>IH = Mi5</b> · <b>ON = Mi4</b> · <b>MI = Ré♯5</b> · <b>MI = Dó♯5</b></div>
+<div class="studio-status" id="studioStatus" role="status">Carregando as 32 sílabas afinadas…</div>
+<div class="soft">No MIDI: a consoante toca uma vez; o alongamento mantém só a vogal. Desligue o modo estúdio para comparar com a gravação sem correção.</div>
+</div>
+<p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 
 <section class="panel harmony-panel" id="harmonia" aria-label="Harmonizador de MIMIs">
  <div class="bar-title"><h2>03 / Viva a harmonia! 🎶</h2><label class="check"><input id="mimisOn" type="checkbox" checked> Outros MIMIs ligados</label></div>
  <p class="seq-help">A voz original continua no centro. Crie até <b>duas vozes adicionais</b> usando outras tomadas do MIMI, quando possível. As terças respeitam a escala maior do tom selecionado.</p>
  <div class="harm-presets"><button class="btn secondary" type="button" data-hpreset="solo">Solo</button><button class="btn secondary" type="button" data-hpreset="trio">Trio de MIMIs</button><button class="btn secondary" type="button" data-hpreset="up">Terça acima</button><button class="btn secondary" type="button" data-hpreset="down">Terça abaixo</button><button class="btn secondary" type="button" data-hpreset="open">Quintas abertas</button></div>
  <div class="harm-fields"><label>MIMI 2 · voz adicional A<select id="harmA"><option value="off">Desligada</option><option value="thirdUp" selected>Terça diatônica acima</option><option value="thirdDown">Terça diatônica abaixo</option><option value="fourthUp">Quarta acima</option><option value="fourthDown">Quarta abaixo</option><option value="fifthUp">Quinta diatônica acima</option><option value="fifthDown">Quinta diatônica abaixo</option><option value="sixthUp">Sexta diatônica acima</option><option value="sixthDown">Sexta diatônica abaixo</option><option value="octaveUp">Oitava acima</option><option value="octaveDown">Oitava abaixo</option></select></label>
- <label>MIMI 3 · voz adicional B<select id="harmB"><option value="off">Desligada</option><option value="thirdUp">Terça diatônica acima</option><option value="thirdDown" selected>Terça diatônica abaixo</option><option value="fourthUp">Quarta acima</option><option value="fourthDown">Quarta abaixo</option><option value="fifthUp">Quinta acima</option><option value="fifthDown">Quinta abaixo</option><option value="sixthUp">Sexta acima</option><option value="sixthDown">Sexta abaixo</option><option value="octaveUp">Oitava acima</option><option value="octaveDown">Oitava abaixo</option></select></label></div>
+ <label>MIMI 3 · voz adicional B<select id="harmB"><option value="off">Desligada</option><option value="thirdUp">Terça diatônica acima</option><option value="thirdDown" selected>Terça diatônica abaixo</option><option value="fourthUp">Quarta acima</option><option value="fourthDown">Quarta abaixo</option><option value="fifthUp">Quinta diatônica acima</option><option value="fifthDown">Quinta diatônica abaixo</option><option value="sixthUp">Sexta diatônica acima</option><option value="sixthDown">Sexta diatônica abaixo</option><option value="octaveUp">Oitava acima</option><option value="octaveDown">Oitava abaixo</option></select></label></div>
  <p id="harmExample" class="harm-example" aria-live="polite">E6 · IH: E / G# / C#</p>
  <div class="controls"><label>Volume dos MIMIs <input id="vharmony" type="range" min="0" max="100" value="55"><output id="vharmonyout">55%</output></label><label>Abertura estéreo <input id="hwidth" type="range" min="0" max="100" value="38"><output id="hwidthout">38%</output></label></div>
  <p class="soft">Terças e quintas mudam com a sílaba: E→G♯/C♯, D♯→F♯/B, C♯→E/A. O alongamento usa pequenas repetições suavizadas do trecho vocal (sustain granular): a altura não desce ao aumentar a duração. Sons muito esticados ou transpostos podem soar artificiais.</p>
@@ -100,6 +113,7 @@
 <section class="panel" style="margin-top:16px"><div class="bar-title"><h2>06 / Banco de gravações</h2><span class="sub">Áudio 149 · 8 frases originais</span></div><div class="upload"><label for="upload">🎙️ Importar a gravação 149<input type="file" id="upload" accept="audio/*,.m4a"></label><p>Se a voz não carregar automaticamente, importe uma vez a gravação 149. O arquivo fica salvo apenas neste navegador (sem enviar a servidores). Os cortes já estão preparados.</p></div><details class="technical"><summary>Ajuste fino dos quatro recortes da tomada selecionada</summary><div id="cutbox" class="cutbox"></div><p class="soft">Valores em segundos do arquivo original. Ajustes preservam o arquivo de origem. Para a nona opção, o áudio da oitava tomada é reproduzido um semitom abaixo.</p><button type="button" id="resetcuts" class="btn secondary">Restaurar os cortes</button></details></section>
 <p class="note">* O preset G#6 é uma transposição de um semitom da oitava tomada, pois a gravação 149 contém oito frases completas (E6 → A6 seria oito posições). Os nomes dos acordes são centros harmônicos propostos, não laudos de afinação da voz. A reprodução natural preserva as diferenças de entonação e articulação do registro. Para afinação absoluta, seria necessária revisão musical adicional.</p>
 <footer class="foot"><span>Sampleador MIMI · uma brincadeira musical para Nilo</span><span>Feito com a voz original · <a href="https://github.com/igormorais-gif/cifra-pra-mim">Cifra pra Mim</a></span></footer></div>
+<script type="text/plain" id="audio-inline"></script><script type="text/plain" id="studio-inline"></script>
 <script>
 (()=>{'use strict';
 // Mapa de recortes feito a partir da análise de amplitude e ataques do áudio 149.
@@ -114,6 +128,8 @@ const ORIGINAL_CUTS=[
  [[13.90,14.17],[14.23,14.51],[14.86,15.10],[15.10,15.35]]];
 const CHORDS=['E6','Eb6','D6','Db6','C6','B6','Bb6','A6','G#6'];
 const ROOTS=[52,51,50,49,48,47,46,45,44];
+const STUDIO_ATLAS=[{"start":0.0,"end":1.48,"loopStart":0.684656,"loopEnd":1.018406,"midi":76,"consonantEnd":0.083906},{"start":1.52,"end":3.0,"loopStart":2.272688,"loopEnd":2.612188,"midi":64,"consonantEnd":1.642188},{"start":3.04,"end":4.52,"loopStart":3.773031,"loopEnd":4.127094,"midi":75,"consonantEnd":3.135719},{"start":4.56,"end":6.04,"loopStart":5.2855,"loopEnd":5.66175,"midi":73,"consonantEnd":4.6405},{"start":6.08,"end":7.56,"loopStart":6.771719,"loopEnd":7.109062,"midi":75,"consonantEnd":6.1645},{"start":7.6,"end":9.08,"loopStart":8.328938,"loopEnd":8.667219,"midi":63,"consonantEnd":7.720031},{"start":9.12,"end":10.6,"loopStart":9.843562,"loopEnd":10.212812,"midi":74,"consonantEnd":9.210562},{"start":10.64,"end":12.12,"loopStart":11.321156,"loopEnd":11.676469,"midi":72,"consonantEnd":10.728969},{"start":12.16,"end":13.64,"loopStart":12.844188,"loopEnd":13.175906,"midi":74,"consonantEnd":12.247094},{"start":13.68,"end":15.16,"loopStart":14.461812,"loopEnd":14.829406,"midi":62,"consonantEnd":13.849156},{"start":15.2,"end":16.68,"loopStart":15.910281,"loopEnd":16.285531,"midi":73,"consonantEnd":15.3005},{"start":16.72,"end":18.2,"loopStart":17.4335,"loopEnd":17.78,"midi":71,"consonantEnd":16.8175},{"start":18.24,"end":19.72,"loopStart":18.939437,"loopEnd":19.296625,"midi":73,"consonantEnd":18.344125},{"start":19.76,"end":21.24,"loopStart":20.503906,"loopEnd":20.850906,"midi":61,"consonantEnd":19.896656},{"start":21.28,"end":22.76,"loopStart":22.00825,"loopEnd":22.375188,"midi":72,"consonantEnd":21.396688},{"start":22.8,"end":24.28,"loopStart":23.506438,"loopEnd":23.869875,"midi":70,"consonantEnd":22.888594},{"start":24.32,"end":25.8,"loopStart":25.038969,"loopEnd":25.401156,"midi":72,"consonantEnd":24.42325},{"start":25.84,"end":27.32,"loopStart":26.631781,"loopEnd":26.998281,"midi":60,"consonantEnd":25.990406},{"start":27.36,"end":28.84,"loopStart":28.070312,"loopEnd":28.404062,"midi":71,"consonantEnd":27.469562},{"start":28.88,"end":30.36,"loopStart":29.573781,"loopEnd":29.943344,"midi":69,"consonantEnd":28.957844},{"start":30.4,"end":31.88,"loopStart":31.144406,"loopEnd":31.533094,"midi":71,"consonantEnd":30.496594},{"start":31.92,"end":33.4,"loopStart":32.690562,"loopEnd":33.05275,"midi":59,"consonantEnd":32.074844},{"start":33.44,"end":34.92,"loopStart":34.171437,"loopEnd":34.5185,"midi":70,"consonantEnd":33.554438},{"start":34.96,"end":36.44,"loopStart":35.676625,"loopEnd":36.042625,"midi":68,"consonantEnd":35.036125},{"start":36.48,"end":37.96,"loopStart":37.2055,"loopEnd":37.591562,"midi":70,"consonantEnd":36.562062},{"start":38.0,"end":39.48,"loopStart":38.723125,"loopEnd":39.100625,"midi":58,"consonantEnd":38.109688},{"start":39.52,"end":41.0,"loopStart":40.272219,"loopEnd":40.653594,"midi":69,"consonantEnd":39.636594},{"start":41.04,"end":42.52,"loopStart":41.704,"loopEnd":42.072,"midi":67,"consonantEnd":41.106},{"start":42.56,"end":44.04,"loopStart":43.248906,"loopEnd":43.578281,"midi":69,"consonantEnd":42.656031},{"start":44.08,"end":45.56,"loopStart":44.848469,"loopEnd":45.202469,"midi":57,"consonantEnd":44.199469},{"start":45.6,"end":47.08,"loopStart":46.318156,"loopEnd":46.654719,"midi":68,"consonantEnd":45.712344},{"start":47.12,"end":48.6,"loopStart":47.879062,"loopEnd":48.230312,"midi":66,"consonantEnd":47.246812}];
+let studioBuffer=null,studioReady=false;
 const DBNAME='mimi-nilo-v1', DBKEY='gravacao149', SEQKEY='mimi-sequencer-v3', LEGACY_SEQKEY='mimi-sequencer-v2';
 let ctx, voiceBuffer=null, selectedTone=0, cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice())),playing=[],noiseBuffer=null;
 let beatRunning=false,beatTimer=0,stepIndex=0,nextBeat=0,visualTimers=new Set(),runId=0,sequenceStartBpm=95,sequenceTargetBpm=175,sequenceRampBars=8,sequenceSwing=0,sequenceAccelerate=true;
@@ -140,7 +156,44 @@ function voiceSource(tone,syl,offset){ // prioriza uma outra tomada REAL no mesm
 }
 function panOutput(c,pan){if(typeof c.createStereoPanner!=='function')return c.destination;const p=c.createStereoPanner();p.pan.value=Math.max(-.95,Math.min(.95,pan));p.connect(c.destination);return p;}
 function registerSource(src){playing.push(src);src.onended=()=>{const j=playing.indexOf(src);if(j>=0)playing.splice(j,1);};}
+
+function tunedPreview(tone){
+ const arr=[76,64,75,73].map(m=>m-tone),names=['IH','ON','MI 1','MI 2'];
+ const text=arr.map((m,i)=>names[i]+': '+midiName(m)).join(' · ');
+ $('studioPitches').textContent=text;
+}
+function midiName(n){const names=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];
+ return names[((n%12)+12)%12]+(Math.floor(n/12)-1);}
+function exactTone(midi,at,seconds,vol,pan){
+ if(!$('tonalLayer').checked||vol<=.001)return;
+ const c=getAudio(),osc=c.createOscillator(),g=c.createGain();osc.type='sine';osc.frequency.setValueAtTime(hz(midi),at);
+ const duration=Math.max(.05,seconds),amplitude=.047*vol;
+ g.gain.setValueAtTime(.00001,at);g.gain.linearRampToValueAtTime(amplitude,at+Math.min(.06,duration*.25));
+ g.gain.setValueAtTime(amplitude,Math.max(at+.015,at+duration-.07));
+ g.gain.exponentialRampToValueAtTime(.00001,at+duration);
+ osc.connect(g).connect(panOutput(c,pan));osc.start(at);osc.stop(at+duration+.005);registerSource(osc);
+}
+function studioNoteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=null){
+ const c=getAudio();if(!studioBuffer)return;
+ // Cada tomada foi afinada individualmente; cada entrada tem seu proprio ataque e vogal.
+ // Somente em notas nao presentes no corpus se recorre a transposicao residual.
+ const wanted=tone-semitones,source=Math.max(0,Math.min(7,wanted));
+ const e=STUDIO_ATLAS[source*4+syl],rate=Math.pow(2,(source-wanted)/12);
+ const natural=(cuts[source][syl][1]-cuts[source][syl][0])/rate;
+ const duration=Number.isFinite(gate)?Math.min(6,Math.max(.045,gate)):natural;
+ const end=at+duration,rel=Math.min(.045,duration*.28),attack=Math.min(.012,duration*.20);
+ const src=c.createBufferSource(),g=c.createGain();src.buffer=studioBuffer;src.playbackRate.setValueAtTime(rate,at);
+ // Loop inteiramente no final da vogal, nunca no M nem no ataque do ON/IH.
+ src.loop=true;src.loopStart=e.loopStart;src.loopEnd=e.loopEnd;
+ const amount=Math.max(.0002,level('vvoice')*.76*amp);
+ g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(amount,at+attack);
+ g.gain.setValueAtTime(amount,Math.max(at+attack,end-rel));g.gain.linearRampToValueAtTime(.0001,end);
+ src.connect(g).connect(panOutput(c,pan));src.start(at,e.start);src.stop(end+.008);registerSource(src);
+ exactTone([76,64,75,73][syl]-tone+semitones,at,duration,amount*.8,pan);
+ if(button){button.classList.add('active');setTimeout(()=>button.classList.remove('active'),Math.max(75,(at-c.currentTime+Math.min(duration,.4))*1000));}
+}
 function noteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=null){
+ if($('studioMode')?.checked&&studioReady)return studioNoteSample(syl,tone,at,gate,semitones,amp,pan,button);
  const c=getAudio();if(!voiceBuffer){status('Voz nao carregada. Use o banco de gravacoes para importar o audio 149.','error');return;}
  const {a,b,rate}=voiceSource(tone,syl,semitones),sampleLen=(b-a)/rate;
  if(sampleLen<.04)return;
@@ -182,7 +235,12 @@ function playHarmony(syl,at,tone,gate){if(!$('mimisOn').checked)return;
  });
 }
 function syllable(n,at,tone=selectedTone,gate=Infinity){noteSample(n,tone,at,gate,0,1,0,document.querySelector('[data-syl="'+n+'"]'));playHarmony(n,at,tone,gate);}
-function whole(at){const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);
+function whole(at){
+ if($('studioMode').checked&&studioReady){
+  const {index,rate}=tune(),s=cuts[index],origin=s[0][0];
+  s.forEach(([a,b],n)=>syllable(n,at+(a-origin)/rate,selectedTone,(b-a)/rate));return;
+ }
+ const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);
  if(!$('mimisOn').checked)return;
  const anchor=s[0][0];s.forEach(([start,end],n)=>playHarmony(n,at+(start-anchor)/rate,selectedTone,(end-start)/rate));
 }
@@ -204,7 +262,7 @@ function drum(name,at,flashNow=false){getAudio();const v=level('vdrum');if(flash
  if(name==='snare'){const style=$('snarestyle').value;if(style==='rim'){envOsc(720,450,at,.055,.24*v,'triangle');noise(at,.045,.14*v,2400);}else{const snap=style==='snap';noise(at,snap?.13:.11,(snap?.28:.21)*v,snap?1300:790);envOsc(195,158,at,.085,.13*v,'triangle');}}
  if(name==='hat'){const style=$('hatstyle').value;noise(at,style==='open'?.33:(style==='light'?.06:.095),(style==='light'?.09:.13)*v,style==='open'?4900:6800);}}
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
-function selectTone(index){selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));renderCuts();harmonyExample();saveSequence();}
+function selectTone(index){selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));renderCuts();tunedPreview(index);harmonyExample();saveSequence();}
 function defaultPattern(){pattern.forEach(row=>row.fill(0));pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));selectedNote=null;
  [0,4,8,12].forEach((step,i)=>{pattern[i][step]=1;noteLengths[i][step]=2;});
  [0,8].forEach(j=>pattern[4][j]=1);[4,12].forEach(j=>pattern[5][j]=1);
@@ -314,8 +372,26 @@ async function savedPut(bytes){try{const conn=await db();await new Promise((reso
 async function loadAudio(bytes,from){try{let c=getAudio();const b=await c.decodeAudioData(bytes.slice(0));if(Math.abs(b.duration-16.96)>.85)throw Error('Esta versão foi recortada para a gravação 149 (~17 s). O áudio selecionado dura '+b.duration.toFixed(1)+' s.');voiceBuffer=b;status('✓ Voz original pronta · oito tomadas · '+from);return true;}catch(err){status('Não foi possível carregar: '+err.message,'error');return false;}}
 async function getEmbedded(){const s=document.querySelector('#audio-inline');if(!s||!s.textContent.trim())return null;const str=s.textContent.trim(),bytes=atob(str),v=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)v[i]=bytes.charCodeAt(i);return v.buffer;}
 async function startup(){const saved=await savedLoad();if(saved&&await loadAudio(saved,'salva neste aparelho'))return;try{const emb=await getEmbedded();if(emb&&await loadAudio(emb,'incluída no aplicativo'))return;}catch{}try{const r=await fetch('./assets/voz-original-149.m4a');if(r.ok){const bytes=await r.arrayBuffer();if(await loadAudio(bytes,'incluída no aplicativo'))return;}}catch{}status('Bateria pronta. Importe a gravação 149 para ativar as vozes.','error');}
+
+async function studioStartup(){
+ try{
+  let bytes=null;
+  const inline=document.querySelector('#studio-inline');
+  if(inline?.textContent.trim()){
+   const binary=atob(inline.textContent.trim()),arr=new Uint8Array(binary.length);
+   for(let i=0;i<binary.length;i++)arr[i]=binary.charCodeAt(i);bytes=arr.buffer;
+  }else{
+   const resp=await fetch('./assets/mimi-studio-sustain.ogg',{cache:'no-store'});
+   if(!resp.ok)throw new Error('arquivo indisponível');bytes=await resp.arrayBuffer();
+  }
+  studioBuffer=await getAudio().decodeAudioData(bytes);
+  if(studioBuffer.duration<48||studioBuffer.duration>51)throw new Error('banco incompleto');
+  studioReady=true;$('studioStatus').textContent='✓ 32 atuações afinadas prontas · sustain da vogal ativado';
+ }catch(err){studioReady=false;$('studioStatus').textContent='Banco afinado indisponível: '+err.message+'. Usando a voz original.';}
+}
 $('upload').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;status('Analisando o arquivo de voz…','loading');const bytes=await file.arrayBuffer();if(await loadAudio(bytes,'importada de '+file.name)){const ok=await savedPut(bytes);if(!ok)status('✓ Voz pronta! O navegador não permitiu salvar para a próxima visita.');}});
 document.querySelectorAll('[data-syl]').forEach(b=>{b.onclick=()=>syllable(+b.dataset.syl,getAudio().currentTime+.015);});
+$('studioMode').addEventListener('change',()=>{$('studioStatus').textContent=$('studioMode').checked?(studioReady?'✓ 32 atuações afinadas prontas':'Banco afinado não carregado'):'Modo original sem correção de pitch';});
 $('phrase').onclick=()=>{const now=getAudio().currentTime+.045;if($('harmonize').checked)chord(now);whole(now);};$('chord').onclick=()=>chord(getAudio().currentTime+.03);$('stop').onclick=stopAll;
 document.querySelectorAll('[data-drum]').forEach(b=>b.onclick=()=>drum(b.dataset.drum,getAudio().currentTime+.01,true));
 $('playbeat').onclick=toggleBeat;
@@ -335,6 +411,6 @@ for(const id of ['mimisOn','harmA','harmB','vharmony','hwidth']){$(id).addEventL
 document.querySelectorAll('[data-hpreset]').forEach(b=>{b.onclick=()=>{const presets={solo:[false,'off','off'],trio:[true,'thirdUp','thirdDown'],up:[true,'thirdUp','off'],down:[true,'thirdDown','off'],open:[true,'fifthUp','fifthDown']};const [on,a,z]=presets[b.dataset.hpreset];$('mimisOn').checked=on;$('harmA').value=a;$('harmB').value=z;harmonyExample();saveSequence();};});
 $('resetcuts').onclick=()=>{cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice()));renderCuts();};
 document.addEventListener('keydown',e=>{if(e.repeat||/input|select|textarea/i.test(e.target.tagName))return;const map={'1':0,'2':1,'3':2,'4':3};if(map[e.key]!=null)syllable(map[e.key],getAudio().currentTime+.01);else if(e.code==='Space'){e.preventDefault();whole(getAudio().currentTime+.01);}});
-buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();startup();
+buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();startup();studioStartup();
 })();
-</script><script type="text/plain" id="audio-inline"></script></body></html>
+</script></body></html>
