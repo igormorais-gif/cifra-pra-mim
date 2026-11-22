@@ -96,10 +96,24 @@
 .beat-feature .seq-scroll{margin-top:8px}
 .beat-feature .note-edit{margin-top:12px}
 @media(max-width:700px){.beat-feature{padding:16px 13px}.beat-feature .compact-live .actions .btn{flex-grow:1}.beat-feature>.bar-title h2{font-size:1.19rem}}
+
+/* Rosto discreto no canto superior: seis posições de boca da mesma imagem.
+   Cada troca de visema segue o mesmo relógio Web Audio dos samples. */
+.mimi-avatar{width:112px;height:112px;min-width:112px;flex-shrink:0;position:relative;overflow:hidden;border-radius:50%;background:#343047;border:2px solid #ffdf6f88;box-shadow:0 8px 18px #0504114a;transition:transform .10s ease-out,box-shadow .12s ease-out}
+.mimi-avatar.speaking{transform:translateY(-2px);box-shadow:0 0 0 3px #ffdf6f25,0 8px 19px #05041166}
+.lip-face{width:100%;height:100%;background-image:url('./assets/lipsync-rosto.webp');background-repeat:no-repeat;background-size:200% 300%;background-position:0 0;transform:scale(1.05);transform-origin:center}
+.lip-face[data-mouth="idle"]{background-position:0% 0%}
+.lip-face[data-mouth="ih"]{background-position:100% 0%}
+.lip-face[data-mouth="on"]{background-position:0% 50%}
+.lip-face[data-mouth="m"]{background-position:100% 50%}
+.lip-face[data-mouth="i"]{background-position:0% 100%}
+.lip-face[data-mouth="n"]{background-position:100% 100%}
+@media(max-width:700px){.mimi-avatar{width:78px;height:78px;min-width:78px;border-width:1px}.hero{align-items:center}.hero h1{margin:9px 0}}
+@media(prefers-reduced-motion:reduce){.mimi-avatar{transition:none}}
 </style></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">ESTÚDIO DE BRINCAR • VOL. 01</span><a href="../laboratorio.html">← Voltar ao Hub</a></header>
-<section class="hero"><div><span class="sub">Estúdio musical interativo</span><h1>MI<span>MI!</span></h1><p>Quatro sílabas, bateria e harmonia. Troque os acordes enquanto o beat toca.</p></div><div class="sticker" aria-hidden="true">IH<br>ON<br>MI MI</div></section>
+<section class="hero"><div><span class="sub">Estúdio musical interativo</span><h1>MI<span>MI!</span></h1><p>Quatro sílabas, bateria e harmonia. Troque os acordes enquanto o beat toca.</p></div><div class="mimi-avatar" id="lipAvatar" aria-hidden="true"><div id="lipFace" class="lip-face" data-mouth="idle"></div></div></section>
 <section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span><span class="pitch-caption" id="pitch0">Mi5</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span><span class="pitch-caption" id="pitch1">Mi4</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span><span class="pitch-caption" id="pitch2">Ré♯5</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span><span class="pitch-caption" id="pitch3">Dó♯5</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label><span id="padToggleMount" class="pad-toggle-mount"></span></div><p class="soft" style="margin:9px 0 3px">🎙️ Voz original com reforço suave de afinação, sem efeito robótico. A afinação é reforçada discretamente, sem processar a fala até ficar robótica. No roll, só sustenta quando você alonga a nota.</p>
 <div id="studioPitches" hidden></div>
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
@@ -288,9 +302,53 @@ function playHarmony(syl,at,tone,gate){if(!$('mimisOn').checked)return;
  noteSample(syl,tone,at,gate,intervalSemitones(syl,mode),volume,i===0?-wide:wide);
  });
 }
-function syllable(n,at,tone=selectedTone,gate=Infinity){noteSample(n,tone,at,gate,0,1,0,document.querySelector('[data-syl="'+n+'"]'));playHarmony(n,at,tone,gate);maybePadWithVoice(n,at,tone,gate);}
+
+// Visemas por sílaba, sincronizados em segundos de AudioContext — sem animação em loop cega.
+const lipEvents=[];
+let lipFrame=0, lipEventSerial=0, lipCurrent='idle';
+function setLip(mouth){
+ if(lipCurrent===mouth)return;
+ lipCurrent=mouth;
+ const face=$('lipFace'),frame=$('lipAvatar');
+ if(face)face.dataset.mouth=mouth;
+ if(frame)frame.classList.toggle('speaking',mouth!=='idle');
+}
+function animateLip(){
+ lipFrame=0;
+ if(!ctx){setLip('idle');lipEvents.length=0;return;}
+ const now=ctx.currentTime;
+ for(let i=lipEvents.length-1;i>=0;i--)if(lipEvents[i].end<now-.035)lipEvents.splice(i,1);
+ // Caso haja duas vozes simultâneas, priorize o ataque mais recente.
+ let active=null;
+ for(const e of lipEvents)if(e.at<=now&&now<e.end&&(!active||e.at>=active.at))active=e;
+ let mouth='idle';
+ if(active){
+  const elapsed=now-active.at, span=active.end-active.at, phase=span>0?elapsed/span:1;
+  if(active.syl===0)mouth='ih';
+  else if(active.syl===1)mouth=phase<.78?'on':'n';
+  else mouth=elapsed<Math.min(.075,span*.3)?'m':'i';
+ }
+ setLip(mouth);
+ if(lipEvents.length)lipFrame=requestAnimationFrame(animateLip);
+}
+function queueLip(syl,at,gate,tone){
+ if(!voiceBuffer||!$('lipFace'))return;
+ const item=voiceSource(tone,syl,0);
+ const natural=(item.b-item.a)/item.rate;
+ const span=Number.isFinite(gate)?Math.min(5.8,Math.max(.045,gate)):natural;
+ if(!Number.isFinite(span)||span<.025)return;
+ // O sustain mantém a vogal aberta; ataques de M não são repetidos.
+ lipEvents.push({syl,at:Math.max(at,getAudio().currentTime),end:Math.max(at,getAudio().currentTime)+span,id:++lipEventSerial});
+ if(!lipFrame)lipFrame=requestAnimationFrame(animateLip);
+}
+function stopLip(){
+ lipEvents.length=0;
+ if(lipFrame)cancelAnimationFrame(lipFrame);
+ lipFrame=0;setLip('idle');
+}
+function syllable(n,at,tone=selectedTone,gate=Infinity){noteSample(n,tone,at,gate,0,1,0,document.querySelector('[data-syl="'+n+'"]'));playHarmony(n,at,tone,gate);maybePadWithVoice(n,at,tone,gate);queueLip(n,at,gate,tone);}
 function whole(at){
- const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);maybePadWithVoice(0,at,selectedTone,1.5);
+ const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);maybePadWithVoice(0,at,selectedTone,1.5);if(voiceBuffer){const origin=s[0][0];s.forEach(([start,end],n)=>queueLip(n,at+(start-origin)/rate,(end-start)/rate,selectedTone));}
  if(!$('mimisOn').checked)return;
  const anchor=s[0][0];s.forEach(([start,end],n)=>playHarmony(n,at+(start-anchor)/rate,selectedTone,(end-start)/rate));
 }
@@ -550,7 +608,7 @@ function stopBeat(){beatRunning=false;runId++;clearInterval(beatTimer);for(const
 function toggleBeat(){getAudio();if(beatRunning){stopAll();return;}
  beatRunning=true;runId++;stepIndex=0;nextBeat=ctx.currentTime+.065;
  beatTimer=setInterval(tick,25);tick();$('playbeat').textContent='■ PARAR CRIAÇÃO';}
-function stopAll(){stopBeat();playing.forEach(s=>{try{s.stop()}catch{}});playing=[];stopPad();}
+function stopAll(){stopBeat();playing.forEach(s=>{try{s.stop()}catch{}});playing=[];stopPad();stopLip();}
 function renderCuts(){const k=tune().index;const el=$('cutbox');el.innerHTML='';cuts[k].forEach((range,i)=>{const l=document.createElement('label');l.textContent=['IH','ON','MI 1','MI 2'][i];const group=document.createElement('div');group.style.display='flex';group.style.gap='4px';range.forEach((n,j)=>{const inp=document.createElement('input');inp.type='number';inp.min='0';inp.max='30';inp.step='.01';inp.value=n.toFixed(2);inp.setAttribute('aria-label',l.textContent+(j===0?' início':' fim'));inp.onchange=()=>{const x=Number(inp.value);if(Number.isFinite(x)&&x>=0)cuts[k][i][j]=x;};group.append(inp);});l.append(group);el.append(l);});}
 function db(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window))return reject(Error('indisponível'));let req=indexedDB.open(DBNAME,1);req.onupgradeneeded=()=>req.result.createObjectStore('audios');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
 async function savedLoad(){try{const conn=await db();return await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readonly'),r=tx.objectStore('audios').get(DBKEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);tx.oncomplete=()=>conn.close();});}catch{return null;}}
