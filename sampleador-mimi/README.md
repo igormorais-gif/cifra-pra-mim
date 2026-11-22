@@ -1,25 +1,23 @@
-# Correção da frase “Eu já estou pronta” — 22/11/2026
+# SAMPLEADOR MIMI — versão simplificada com tom ao vivo
 
-**Correção principal:** a frase não é mais construída com os 45 fragmentos EU/JÁ/ESTOU/PRON/TA, que cortavam a última sílaba em algumas tomadas. As nove execuções completas foram novamente recortadas da gravação original `JA ESTOU PRONTA.m4a`, preservando começo, fim, dicção, duração interna e cauda do TA. Cada gravação corresponde a um tom E6, Eb6, D6, Db6, C6, B6, Bb6, A6 ou G#6. Nenhuma palavra é individualmente quantizada, e a afinação não é rigidamente modificada nesse novo banco.
+## Interface (22/11/2026)
 
-A prévia toca a tomada inteira em um elemento de áudio próprio. Cada célula lilás do beat aciona o mesmo arquivo completo por Web Audio, sem limite de tempo imposto pelo próximo passo nem recorte por palavra. Os nove M4A estão embutidos no `index.html` para evitar erro de carregamento de arquivo separado. O ritmo do beat regula apenas o início da frase.
+O MIMI apresenta cinco grupos: 01 escolha o acorde; 02 sílabas IH / ON / MI / MI; 03 teclado pad lo-fi 6–3–5; 04 harmonias vocais; 05 bateria e beat ao vivo.
 
-**Verificação técnica:** nove arquivos decodificados, de 1,8 a 2,32 segundos, com sinal na parte final das frases. Sintaxe JavaScript validada; reprodução ainda requer escuta final no iPhone do usuário.
+Os **antigos painéis 06 e 07 foram retirados**. O beat continua acessível no grupo 05, com controles de iniciar/parar, padrões e opção recolhida **Editar batida e andamento**, para quem quiser mexer nos 16 passos do piano roll. O banco de gravações e os controles de recorte não aparecem na interface; o áudio original 149 carrega automaticamente do próprio Hub.
 
----
+**“EU JÁ ESTOU PRONTA” foi retirada integralmente**: sem botão, pista, carregamento, samples embutidos ou arquivo de áudio específico no repositório. Composições anteriormente salvas continuam usando as outras sete pistas, mas a pista retirada não é restaurada.
 
-# MIMI — Voz natural, frase audível e beat
+## Mudança de acorde enquanto o beat toca
 
-## Atualização de 22/11/2026
+Toque **TOCAR CRIAÇÃO** no grupo 05 e escolha E6, Eb6, D6, Db6, C6, B6, Bb6, A6 ou G#6 no grupo 01. A seleção muda as próximas notas das quatro pistas vocais, as harmonias e o pad, sem reiniciar o transporte, a contagem de passos, o BPM nem a rampa de aceleração. A bateria permanece inalterada. Amostras já disparadas podem terminar naturalmente; o pad antigo é interrompido ao mudar o acorde para evitar choque harmônico.
 
-- Ouvindo **EU JÁ ESTOU PRONTA**: o botão manual usa o reprodutor de áudio nativo do navegador, com o arquivo M4A das nove tomadas embutido diretamente no HTML e também hospedado em `assets/eu-ja-estou-pronta-bank.m4a`. A prévia toca **a frase inteira de uma tomada**, sem remontar sílabas em ataques separados. Na pista do sequenciador, cada célula dispara a mesma frase de uma só vez.
-- **IH ON MI MI**: a interpretação original é a base. Retirados os botões de afinação processada e de camada tonal; fica apenas um reforço senoidal sutil e automático da nota central, sem alterar a prosódia, as formantes ou a velocidade da gravação. Isso é um reforço tonal leve, não autotune rígido.
-- **Piano roll**: as notas começam com uma semicolcheia e só se prolongam quando editadas.
-- **Pad lo-fi**: segue a formação discreta 6–3–5 já estabelecida, com reverb curto.
-- **iPhone**: o botão manual usa reprodução nativa para evitar depender exclusivamente de WebAudio e apresenta uma mensagem em caso de falha. Os testes em navegador desktop e em viewport de celular confirmaram reprodução e avanço do tempo; Safari físico ainda necessita de escuta.
+O modo de execução ao vivo dá prioridade ao tom atualmente escolhido. A posição, articulação e duração dos passos são mantidas, sem regravar ou alterar a afinação do áudio original. A seleção muda os próximos disparos, não retoca o que já está soando.
 
-## Acesso
+## Áudio
 
-Hub: https://igormorais-gif.github.io/cifra-pra-mim/sampleador-mimi/
+O aplicativo permanece com a gravação 149 para IH, ON e os dois MIs, e com o reforço tonal automático discreto; não reaparecem controles extras de pitching. O pad sintetizado segue a estrutura 6–3–5 em cada tom. Os oito registros originais são preservados; G#6 segue como transposição de A6.
 
-O projeto permanece no diretório `sampleador-mimi/`, dentro de `igormorais-gif/cifra-pra-mim`. O arquivo `assets/voz-original-149.m4a` e os bancos de voz anteriores permanecem preservados. A gravação vocal publicada é acessível publicamente no repositório e no Pages.
+A URL é https://igormorais-gif.github.io/cifra-pra-mim/sampleador-mimi/
+
+**Privacidade:** a gravação 149 continua pública no GitHub Pages.
