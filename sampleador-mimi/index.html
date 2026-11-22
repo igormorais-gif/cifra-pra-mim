@@ -87,24 +87,42 @@
 .pad-button{background:#d8b6f5;color:#292139}
 .pad-note{border-left:3px solid #d3aef3;padding:8px 12px;background:#39344d;border-radius:0 9px 9px 0;font-size:.82rem;color:#f1e9fc;margin:8px 0}
 @media(max-width:700px){.pad-fields{grid-template-columns:1fr}.pad-knobs{grid-template-columns:repeat(2,minmax(0,1fr))}.pad-panel .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.pad-panel .actions .pad-button{grid-column:1/-1}.pad-panel .actions .btn{width:100%;padding:12px 9px;min-height:50px;font-size:.89rem}}
+
+/* EU JÁ ESTOU PRONTA — célula vocal independente */
+.pronta-intro{margin:16px 0;background:linear-gradient(125deg,#3b2c51,#293854);border:1px solid #7865a1;border-radius:15px;padding:15px}
+.pronta-intro h3{margin:0 0 6px;font-size:1.08rem;color:#f8d8ff}
+.pronta-intro p{margin:6px 0;color:#ded6ed;font-size:.84rem;line-height:1.55}
+.pronta-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:11px}
+.pronta-actions .btn{font-size:.82rem;padding:11px 13px;min-height:42px}
+.pronta-actions label{display:flex;align-items:center;gap:7px;font-size:.8rem;min-width:140px;flex:1}
+.pronta-actions input[type=range]{width:110px;max-width:100%;accent-color:#ebc7ff}
+#prontaStatus{display:block;color:#d5c7ec;font-size:.78rem;margin-top:8px}
+.trname.pronta-name{color:#ecc5ff;white-space:normal;font-size:.62rem;line-height:1.14}
+.step[data-track="7"][aria-pressed=true]{background:#dda8ef;border-color:#ecc5ff;color:#23152a;font-size:.68rem;font-weight:900}
+.step[data-track="7"][aria-pressed=false]{background:#332741;border-color:#655178}
+.step[data-track="7"].playing{outline:3px solid #f4d6ff;outline-offset:1px}
+#prontaManual{background:#ecd2ff;color:#261733}
+@media(max-width:700px){.pronta-actions{align-items:stretch}.pronta-actions .btn{flex:1}.pronta-intro{padding:12px}.pronta-actions label{flex-basis:100%}}
+.pronta-upload{display:flex;align-items:center;gap:7px;color:#eee0f7;font-size:.79rem}
+.pronta-upload input{font-size:.72rem;max-width:175px;color:#eee0f7}
 </style></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">ESTÚDIO DE BRINCAR • VOL. 01</span><a href="../laboratorio.html">← Voltar ao Hub</a></header>
 <section class="hero"><div><span class="sub">O laboratório musical do Nilo</span><h1>MI<span>MI!</span></h1><p>Uma voz de verdade em oito atuações, 32 sílabas afinadas, harmonias e um PAD lo-fi reverberado para envolver cada IH!</p></div><div class="sticker" aria-hidden="true">IH<br>ON<br>MI MI</div></section>
-<section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label></div><div class="studio-box" aria-label="Afinação e timbre da voz">
-<label class="check"><input type="checkbox" id="studioMode" checked> 🎯 Afinação de estúdio · 32 atuações separadas</label>
+<section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="prontaManual" class="btn" type="button" title="Eu já estou pronta, na tonalidade selecionada">▶ EU JÁ ESTOU PRONTA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label></div><div class="studio-box" aria-label="Afinação e timbre da voz">
+<label class="check"><input type="checkbox" id="studioMode"> 🎙️ Afinação processada (opcional) · experimente também a voz natural</label>
 <label class="check"><input type="checkbox" id="tonalLayer"> Camada tonal discreta (reforça a nota, sem recantar a sílaba)</label>
 <div class="studio-pitches" id="studioPitches">Primeiro tom: <b>IH = Mi5</b> · <b>ON = Mi4</b> · <b>MI = Ré♯5</b> · <b>MI = Dó♯5</b></div>
 <div class="studio-status" id="studioStatus" role="status">Carregando as 32 sílabas afinadas…</div>
-<div class="soft">No MIDI: a consoante toca uma vez; o alongamento mantém só a vogal. Desligue o modo estúdio para comparar com a gravação sem correção.</div>
+<div class="soft">Voz natural é o padrão. A afinação processada é opcional e pode soar artificial; o alongamento da vogal só acontece quando você estica a nota.</div>
 </div>
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 
 
 <section class="panel pad-panel" id="padStudio" aria-label="Teclado pad lo-fi harmonico">
   <div class="bar-title"><h2>03 / 🎹 Teclado lo-fi · PAD de sexta</h2><label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD ligado</label></div>
-  <p class="seq-help">Um acorde de teclado macio que <strong>abraça o IH</strong> e continua soando em uma cauda reverberada, sem repetir nem modificar a voz do MIMI.</p>
-  <div class="pad-facts"><span id="padChord">E6 · Mi–Si–Dó♯–Sol♯</span><span>Som de teclado · síntese suave</span><span>Reverb independente</span></div>
+  <p class="seq-help">Um apoio discreto de teclado <strong>6–3–5</strong>, só no ataque do IH, com uma cauda curta. Não encobre a fala.</p>
+  <div class="pad-facts"><span id="padChord">E6 · Dó♯–Sol♯–Si (6–3–5)</span><span>Som de teclado · síntese suave</span><span>Reverb independente</span></div>
   <div class="pad-fields">
     <label for="padTrigger">Quando o PAD deve começar?
       <select id="padTrigger">
@@ -113,24 +131,24 @@
         <option value="manual">Somente ao tocar o botão PAD</option>
       </select>
     </label>
-    <label for="padVoicing">Distribuição das notas
-      <select id="padVoicing"><option value="wide" selected>Aberto e envolvente (1–5–6–3)</option><option value="close">Teclado próximo (1–3–5–6)</option><option value="air">Aéreo (1–6–3–5)</option></select>
+    <label for="padVoicing">Voicing fixo do pad
+      <select id="padVoicing"><option value="simple" selected>6–3–5 (sem fundamental)</option></select>
     </label>
   </div>
   <div class="pad-knobs">
-    <label for="padVolume">Volume <output id="padVolumeOut">42%</output><input id="padVolume" type="range" min="0" max="100" value="42"></label>
-    <label for="padAttack">Ataque / Bloom <output id="padAttackOut">0,35 s</output><input id="padAttack" type="range" min="5" max="140" value="35"></label>
-    <label for="padHold">Sustentação mínima <output id="padHoldOut">1,6 s</output><input id="padHold" type="range" min="4" max="50" value="16"></label>
-    <label for="padWet">Reverb / espaço <output id="padWetOut">60%</output><input id="padWet" type="range" min="0" max="100" value="60"></label>
-    <label for="padTail">Cauda reverberada <output id="padTailOut">4,5 s</output><input id="padTail" type="range" min="10" max="80" value="45"></label>
-    <label for="padWarmth">Calor lo-fi <output id="padWarmthOut">65%</output><input id="padWarmth" type="range" min="0" max="100" value="65"></label>
+    <label for="padVolume">Volume <output id="padVolumeOut">24%</output><input id="padVolume" type="range" min="0" max="100" value="24"></label>
+    <label for="padAttack">Ataque / Bloom <output id="padAttackOut">0,12 s</output><input id="padAttack" type="range" min="5" max="140" value="12"></label>
+    <label for="padHold">Sustentação mínima <output id="padHoldOut">0,6 s</output><input id="padHold" type="range" min="4" max="50" value="6"></label>
+    <label for="padWet">Reverb / espaço <output id="padWetOut">18%</output><input id="padWet" type="range" min="0" max="100" value="18"></label>
+    <label for="padTail">Cauda reverberada <output id="padTailOut">1,1 s</output><input id="padTail" type="range" min="10" max="80" value="11"></label>
+    <label for="padWarmth">Calor lo-fi <output id="padWarmthOut">55%</output><input id="padWarmth" type="range" min="0" max="100" value="55"></label>
   </div>
-  <div class="actions"><button type="button" class="btn pad-button" id="previewPad">▶ OUVIR PAD</button><button type="button" class="btn secondary" id="padPresetCloud">☁️ Nuvem de reverb</button><button type="button" class="btn secondary" id="padPresetSoft">◌ Suave e próximo</button></div>
-  <p class="pad-note" id="padHint" role="status">Em E6, o teclado toca Mi–Si–Dó♯–Sol♯ e deixa a cauda atravessar o ON. O timbre é sintetizado; as vozes continuam sendo as gravações reais.</p>
+  <div class="actions"><button type="button" class="btn pad-button" id="previewPad">▶ OUVIR PAD</button><button type="button" class="btn secondary" id="padPresetCloud">◌ Pad um pouco mais espaçoso</button><button type="button" class="btn secondary" id="padPresetSoft">◌ Suave e próximo</button></div>
+  <p class="pad-note" id="padHint" role="status">Em E6, o teclado toca Dó♯–Sol♯–Si (6–3–5) por um instante, com cauda curta. O timbre é sintetizado; as vozes continuam sendo as gravações reais.</p>
 </section>
 
 <section class="panel harmony-panel" id="harmonia" aria-label="Harmonizador de MIMIs">
- <div class="bar-title"><h2>04 / Viva a harmonia! 🎶</h2><label class="check"><input id="mimisOn" type="checkbox" checked> Outros MIMIs ligados</label></div>
+ <div class="bar-title"><h2>04 / Viva a harmonia! 🎶</h2><label class="check"><input id="mimisOn" type="checkbox"> Outros MIMIs ligados</label></div>
  <p class="seq-help">A voz original continua no centro. Crie até <b>duas vozes adicionais</b> usando outras tomadas do MIMI, quando possível. As terças respeitam a escala maior do tom selecionado.</p>
  <div class="harm-presets"><button class="btn secondary" type="button" data-hpreset="solo">Solo</button><button class="btn secondary" type="button" data-hpreset="trio">Trio de MIMIs</button><button class="btn secondary" type="button" data-hpreset="up">Terça acima</button><button class="btn secondary" type="button" data-hpreset="down">Terça abaixo</button><button class="btn secondary" type="button" data-hpreset="open">Quintas abertas</button></div>
  <div class="harm-fields"><label>MIMI 2 · voz adicional A<select id="harmA"><option value="off">Desligada</option><option value="thirdUp" selected>Terça diatônica acima</option><option value="thirdDown">Terça diatônica abaixo</option><option value="fourthUp">Quarta acima</option><option value="fourthDown">Quarta abaixo</option><option value="fifthUp">Quinta diatônica acima</option><option value="fifthDown">Quinta diatônica abaixo</option><option value="sixthUp">Sexta diatônica acima</option><option value="sixthDown">Sexta diatônica abaixo</option><option value="octaveUp">Oitava acima</option><option value="octaveDown">Oitava abaixo</option></select></label>
@@ -140,14 +158,21 @@
  <p class="soft">Terças e quintas mudam com a sílaba: E→G♯/C♯, D♯→F♯/B, C♯→E/A. O alongamento usa pequenas repetições suavizadas do trecho vocal (sustain granular): a altura não desce ao aumentar a duração. Sons muito esticados ou transpostos podem soar artificiais.</p>
 </section>
 <div class="columns"><section class="panel"><div class="bar-title"><h2>05 / Monte sua bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Macia</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div></section>
-<section class="panel" id="sequencer"><div class="bar-title"><h2>06 / Construa o BEAT · piano roll</h2><span class="sub">16 passos · 4 tempos · voz + bateria</span></div>
-<p class="seq-help">Escolha um tom lá em cima. Pinte as notas <strong>IH • ON • MI • MI</strong> e estique pela alça à direita, como num MIDI. Cada bloco guarda seu próprio tom, sua duração e acompanha as vozes harmonizadas. A bateria continua em passos.</p>
+<section class="panel" id="sequencer"><div class="bar-title"><h2>06 / Construa o BEAT · piano roll</h2><span class="sub">16 passos · 4 tempos · voz + bateria + frase</span></div>
+<p class="seq-help">Escolha um tom lá em cima. Pinte as notas <strong>IH • ON • MI • MI</strong>. Elas começam curtas (um passo); só alongam se você arrastar a alça ou usar +. Cada bloco guarda seu próprio tom, sua duração e acompanha as vozes harmonizadas. A bateria continua em passos.</p>
+<div class="pronta-intro" aria-label="Arpejador Eu já estou pronta">
+<h3>🎭 EU JÁ ESTOU PRONTA · 5–5–5–3–1</h3>
+<p><strong>Um quadradinho = a frase inteira!</strong> Clique na nova pista lilás da grade para colocar uma apresentação completa no tom selecionado. Nove interpretações cromáticas reais, de E6 a G#6; cada palavra foi afinada separadamente. O padrão rítmico segue a célula 2/4 da marchinha: <strong>EU (0) · JÁ (2) · ESTOU (4) · PRON (6) · TA (10)</strong>.</p>
+<div class="pronta-actions"><button id="insertPronta" class="btn secondary" type="button">+ Frase no início</button><button id="clearPronta" class="btn secondary" type="button">Apagar frases</button><label>Volume da frase <input id="prontaVolume" type="range" min="0" max="100" value="96" aria-label="Volume da frase Eu já estou pronta"></label></div>
+<span id="prontaStatus" aria-live="polite">Carregando o banco das nove frases…</span>
+<div class="pronta-actions"><button type="button" class="btn secondary" id="prontaRetry">↻ Recarregar voz</button><label class="pronta-upload">Ou importar gravação afinada<input type="file" id="prontaUpload" accept="audio/*,.m4a,.ogg"></label></div>
+</div>
 <div class="rhythm-info"><span><strong id="nowbpm">95 BPM</strong> <span class="sub" id="barcounter">· compasso 1</span></span><span class="sub">1 e &amp; a · 2 e &amp; a · 3 e &amp; a · 4 e &amp; a</span></div>
 <div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
 <div class="note-edit" id="noteEditor"><span class="note-hint" id="noteInfo">Toque um bloco de voz para editar sua nota.</span>
-  <button class="mini" type="button" id="noteMinus" aria-label="Encurtar uma semicolcheia">−</button><output id="noteLenOut">2 passos</output><button class="mini" type="button" id="notePlus" aria-label="Alongar uma semicolcheia">+</button>
-  <button class="mini" type="button" id="notePitch">Usar tom selecionado</button><button class="mini remove" type="button" id="noteDelete">Apagar nota</button>
-</div><div class="note-edit"><label for="drawlen" class="note-hint">Tamanho inicial de uma nova nota</label><select id="drawlen"><option value="1">1/16 · 1 passo</option><option value="2" selected>1/8 · 2 passos</option><option value="3">3 passos</option><option value="4">1/4 · 4 passos</option><option value="6">6 passos</option><option value="8">1/2 · 8 passos</option><option value="12">12 passos</option><option value="16">1 compasso · 16 passos</option></select></div>
+  <button class="mini" type="button" id="noteMinus" aria-label="Encurtar uma semicolcheia">−</button><output id="noteLenOut">1 passo</output><button class="mini" type="button" id="notePlus" aria-label="Alongar uma semicolcheia">+</button>
+  <button class="mini" type="button" id="notePitch">Usar tom selecionado</button><button class="mini" type="button" id="shortAllNotes">Todas curtas</button><button class="mini remove" type="button" id="noteDelete">Apagar nota</button>
+</div><div class="note-edit"><label for="drawlen" class="note-hint">Tamanho inicial de uma nova nota</label><select id="drawlen"><option value="1" selected>1/16 · 1 passo</option><option value="2">1/8 · 2 passos</option><option value="3">3 passos</option><option value="4">1/4 · 4 passos</option><option value="6">6 passos</option><option value="8">1/2 · 8 passos</option><option value="12">12 passos</option><option value="16">1 compasso · 16 passos</option></select></div>
 <div class="rampbox"><div class="bar-title"><h3>🚀 Acelerar a brincadeira</h3><label class="check"><input id="accelerate" type="checkbox" checked> Aceleramento ligado</label></div>
 <div class="ramp-fields"><label>Começar em <span><output id="bpmout">95</output> BPM</span><input id="bpm" type="range" min="50" max="220" step="1" value="95"></label><label>Chegar a <span><output id="targetout">175</output> BPM</span><input id="targetbpm" type="range" min="60" max="240" step="1" value="175"></label><label>Em quantos compassos?<select id="rampbars"><option value="2">2 compassos</option><option value="4">4 compassos</option><option value="8" selected>8 compassos</option><option value="16">16 compassos</option><option value="32">32 compassos</option></select></label></div>
 <p id="rampinfo" class="ramp-result">95 → 175 BPM em 8 compassos; depois mantém 175 BPM.</p>
@@ -155,11 +180,11 @@
 <div class="controls"><label>Swing <input id="swing" type="range" min="0" max="40" value="0"><output id="swingout">0%</output></label></div>
 <div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><button id="resetbeat" class="btn secondary" type="button">Padrão MIMI</button><button id="syncbeat" class="btn secondary" type="button">Síncope!</button><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div>
 <label class="check" style="margin-top:12px"><input id="beatchord" type="checkbox"> Tocar acorde de sexta no início de cada compasso</label>
-<p class="soft">O BPM acelera sem alterar a afinação. A duração de cada nota acompanha o andamento, com ataque e sustentação independentes. Clique numa nota para ajustar sua duração, altere o tom ou arraste sua borda direita. A composição é salva no navegador.</p></section></div>
+<p class="soft">O BPM acelera sem alterar a afinação. A duração de cada nota acompanha o andamento, com ataque e sustentação independentes. Clique numa nota para ajustar sua duração, altere o tom ou arraste sua borda direita. A nova pista lilás dispara a frase completa como <strong>uma única célula</strong>, no tom de cada quadradinho. A composição é salva no navegador.</p></section></div>
 <section class="panel" style="margin-top:16px"><div class="bar-title"><h2>07 / Banco de gravações</h2><span class="sub">Áudio 149 · 8 frases originais</span></div><div class="upload"><label for="upload">🎙️ Importar a gravação 149<input type="file" id="upload" accept="audio/*,.m4a"></label><p>Se a voz não carregar automaticamente, importe uma vez a gravação 149. O arquivo fica salvo apenas neste navegador (sem enviar a servidores). Os cortes já estão preparados.</p></div><details class="technical"><summary>Ajuste fino dos quatro recortes da tomada selecionada</summary><div id="cutbox" class="cutbox"></div><p class="soft">Valores em segundos do arquivo original. Ajustes preservam o arquivo de origem. Para a nona opção, o áudio da oitava tomada é reproduzido um semitom abaixo.</p><button type="button" id="resetcuts" class="btn secondary">Restaurar os cortes</button></details></section>
 <p class="note">* O preset G#6 é uma transposição de um semitom da oitava tomada, pois a gravação 149 contém oito frases completas (E6 → A6 seria oito posições). Os nomes dos acordes são centros harmônicos propostos, não laudos de afinação da voz. A reprodução natural preserva as diferenças de entonação e articulação do registro. Para afinação absoluta, seria necessária revisão musical adicional.</p>
 <footer class="foot"><span>Sampleador MIMI · uma brincadeira musical para Nilo</span><span>Feito com a voz original · <a href="https://github.com/igormorais-gif/cifra-pra-mim">Cifra pra Mim</a></span></footer></div>
-<script type="text/plain" id="audio-inline"></script><script type="text/plain" id="studio-inline"></script>
+<script type="text/plain" id="audio-inline"></script><script type="text/plain" id="studio-inline"></script><script type="text/plain" id="pronta-inline"></script>
 <script>
 (()=>{'use strict';
 // Mapa de recortes feito a partir da análise de amplitude e ataques do áudio 149.
@@ -176,16 +201,21 @@ const CHORDS=['E6','Eb6','D6','Db6','C6','B6','Bb6','A6','G#6'];
 const ROOTS=[52,51,50,49,48,47,46,45,44];
 const STUDIO_ATLAS=[{"start":0.0,"end":1.48,"loopStart":0.684656,"loopEnd":1.018406,"midi":76,"consonantEnd":0.083906},{"start":1.52,"end":3.0,"loopStart":2.272688,"loopEnd":2.612188,"midi":64,"consonantEnd":1.642188},{"start":3.04,"end":4.52,"loopStart":3.773031,"loopEnd":4.127094,"midi":75,"consonantEnd":3.135719},{"start":4.56,"end":6.04,"loopStart":5.2855,"loopEnd":5.66175,"midi":73,"consonantEnd":4.6405},{"start":6.08,"end":7.56,"loopStart":6.771719,"loopEnd":7.109062,"midi":75,"consonantEnd":6.1645},{"start":7.6,"end":9.08,"loopStart":8.328938,"loopEnd":8.667219,"midi":63,"consonantEnd":7.720031},{"start":9.12,"end":10.6,"loopStart":9.843562,"loopEnd":10.212812,"midi":74,"consonantEnd":9.210562},{"start":10.64,"end":12.12,"loopStart":11.321156,"loopEnd":11.676469,"midi":72,"consonantEnd":10.728969},{"start":12.16,"end":13.64,"loopStart":12.844188,"loopEnd":13.175906,"midi":74,"consonantEnd":12.247094},{"start":13.68,"end":15.16,"loopStart":14.461812,"loopEnd":14.829406,"midi":62,"consonantEnd":13.849156},{"start":15.2,"end":16.68,"loopStart":15.910281,"loopEnd":16.285531,"midi":73,"consonantEnd":15.3005},{"start":16.72,"end":18.2,"loopStart":17.4335,"loopEnd":17.78,"midi":71,"consonantEnd":16.8175},{"start":18.24,"end":19.72,"loopStart":18.939437,"loopEnd":19.296625,"midi":73,"consonantEnd":18.344125},{"start":19.76,"end":21.24,"loopStart":20.503906,"loopEnd":20.850906,"midi":61,"consonantEnd":19.896656},{"start":21.28,"end":22.76,"loopStart":22.00825,"loopEnd":22.375188,"midi":72,"consonantEnd":21.396688},{"start":22.8,"end":24.28,"loopStart":23.506438,"loopEnd":23.869875,"midi":70,"consonantEnd":22.888594},{"start":24.32,"end":25.8,"loopStart":25.038969,"loopEnd":25.401156,"midi":72,"consonantEnd":24.42325},{"start":25.84,"end":27.32,"loopStart":26.631781,"loopEnd":26.998281,"midi":60,"consonantEnd":25.990406},{"start":27.36,"end":28.84,"loopStart":28.070312,"loopEnd":28.404062,"midi":71,"consonantEnd":27.469562},{"start":28.88,"end":30.36,"loopStart":29.573781,"loopEnd":29.943344,"midi":69,"consonantEnd":28.957844},{"start":30.4,"end":31.88,"loopStart":31.144406,"loopEnd":31.533094,"midi":71,"consonantEnd":30.496594},{"start":31.92,"end":33.4,"loopStart":32.690562,"loopEnd":33.05275,"midi":59,"consonantEnd":32.074844},{"start":33.44,"end":34.92,"loopStart":34.171437,"loopEnd":34.5185,"midi":70,"consonantEnd":33.554438},{"start":34.96,"end":36.44,"loopStart":35.676625,"loopEnd":36.042625,"midi":68,"consonantEnd":35.036125},{"start":36.48,"end":37.96,"loopStart":37.2055,"loopEnd":37.591562,"midi":70,"consonantEnd":36.562062},{"start":38.0,"end":39.48,"loopStart":38.723125,"loopEnd":39.100625,"midi":58,"consonantEnd":38.109688},{"start":39.52,"end":41.0,"loopStart":40.272219,"loopEnd":40.653594,"midi":69,"consonantEnd":39.636594},{"start":41.04,"end":42.52,"loopStart":41.704,"loopEnd":42.072,"midi":67,"consonantEnd":41.106},{"start":42.56,"end":44.04,"loopStart":43.248906,"loopEnd":43.578281,"midi":69,"consonantEnd":42.656031},{"start":44.08,"end":45.56,"loopStart":44.848469,"loopEnd":45.202469,"midi":57,"consonantEnd":44.199469},{"start":45.6,"end":47.08,"loopStart":46.318156,"loopEnd":46.654719,"midi":68,"consonantEnd":45.712344},{"start":47.12,"end":48.6,"loopStart":47.879062,"loopEnd":48.230312,"midi":66,"consonantEnd":47.246812}];
 let studioBuffer=null,studioReady=false;
-const DBNAME='mimi-nilo-v1', DBKEY='gravacao149', SEQKEY='mimi-sequencer-v3', LEGACY_SEQKEY='mimi-sequencer-v2';
+const DBNAME='mimi-nilo-v1', DBKEY='gravacao149', SEQKEY='mimi-sequencer-v4', LEGACY_SEQKEY='mimi-sequencer-v3';
 let ctx, voiceBuffer=null, selectedTone=0, cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice())),playing=[],noiseBuffer=null;
 let beatRunning=false,beatTimer=0,stepIndex=0,nextBeat=0,visualTimers=new Set(),runId=0,sequenceStartBpm=95,sequenceTargetBpm=175,sequenceRampBars=8,sequenceSwing=0,sequenceAccelerate=true;
+const PRONTA_WORDS=[[[0.0,0.22998],[0.28494,0.24],[0.57991,0.21002],[0.8449,0.45002],[1.34989,0.24998]],[[1.65483,0.26005],[1.96984,0.28],[2.30481,0.26998],[2.62975,0.48],[3.16472,0.26998]],[[3.48966,0.26005],[3.80467,0.28998],[4.14961,0.26],[4.46458,0.54],[5.05955,0.31002]],[[5.42453,0.24],[5.7195,0.26],[6.03447,0.2],[6.28943,0.46998],[6.81438,0.26]],[[7.12934,0.25995],[7.44426,0.22004],[7.71927,0.18998],[7.96422,0.50998],[8.52916,0.28]],[[8.86413,0.25002],[9.16912,0.22998],[9.45406,0.26],[9.76902,0.5],[10.32399,0.33002]],[[10.70898,0.24],[11.00395,0.26005],[11.31896,0.25995],[11.63388,0.54004],[12.22889,0.36]],[[12.64386,0.24998],[12.9488,0.32],[13.32376,0.28],[13.65873,0.67002],[14.38372,0.32]],[[14.75868,0.3],[15.11365,0.29002],[15.45864,0.41996],[15.93356,0.67002],[16.65855,0.36]]];
+const PRONTA_RHYTHM=[0,2,4,6,10];
+const PRONTA_NAMES=['EU','JÁ','ESTOU','PRON','TA'];
+let prontaBuffer=null,prontaReady=false;
+const prontaPattern=Array(16).fill(0),prontaPitches=Array(16).fill(0);
 const $=id=>document.getElementById(id);
-const STEPS=16, LABELS=['IH','ON','MI 1','MI 2','BUMBO','CAIXA','PRATO'];
+const STEPS=16, LABELS=['IH','ON','MI 1','MI 2','BUMBO','CAIXA','PRATO','EU JÁ ESTOU PRONTA'];
 const pattern=Array.from({length:7},()=>Array(STEPS).fill(0));
 const pitches=Array(STEPS).fill(0); // compatibilidade com composicoes anteriores
 const notePitches=Array.from({length:4},()=>Array(STEPS).fill(0));
 const noteLengths=Array.from({length:4},()=>Array(STEPS).fill(1));
-let selectedNote=null, defaultNoteLength=2, isResizing=false;
+let selectedNote=null, defaultNoteLength=1, isResizing=false;
 const MAJOR=[0,2,4,5,7,9,11], DEGREE=[0,0,6,5], ORIGINAL_OFFSETS=[24,12,23,21];
 const INTERVALS={off:0,thirdUp:2,thirdDown:-2,fourthUp:3,fourthDown:-3,fifthUp:4,fifthDown:-4,sixthUp:5,sixthDown:-5,octaveUp:7,octaveDown:-7};
 function status(s,kind='ready'){$('status').textContent=s;$('status').dataset.status=kind;}
@@ -230,7 +260,7 @@ function studioNoteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,butt
  const end=at+duration,rel=Math.min(.045,duration*.28),attack=Math.min(.012,duration*.20);
  const src=c.createBufferSource(),g=c.createGain();src.buffer=studioBuffer;src.playbackRate.setValueAtTime(rate,at);
  // Loop inteiramente no final da vogal, nunca no M nem no ataque do ON/IH.
- src.loop=true;src.loopStart=e.loopStart;src.loopEnd=e.loopEnd;
+ src.loop=duration>natural+.06;src.loopStart=e.loopStart;src.loopEnd=e.loopEnd;
  const amount=Math.max(.0002,level('vvoice')*.76*amp);
  g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(amount,at+attack);
  g.gain.setValueAtTime(amount,Math.max(at+attack,end-rel));g.gain.linearRampToValueAtTime(.0001,end);
@@ -301,13 +331,12 @@ function hz(midi){return 440*Math.pow(2,(midi-69)/12);}
 
 // Teclado lo-fi pad, independente da voz: E6 -> E3,B3,C#4,G#4.
 let padGraph=null;
-const activePadNotes=[];
+const activePadNotes=[];let lastAutomaticPadAt=-100;
 const PAD_NAMES=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];
 function padNoteName(m){return PAD_NAMES[(m+120)%12];}
 function padMidiNotes(tone){
  const root=ROOTS[Math.max(0,Math.min(8,tone))];
- const voicing=$('padVoicing').value;
- const intervals=voicing==='close'?[0,4,7,9]:voicing==='air'?[0,9,16,19]:[0,7,9,16];
+ const intervals=[9,16,19]; // apenas 6–3–5, sem dobrar a fundamental
  return intervals.map(i=>root+i);
 }
 function padLabel(tone){return CHORDS[tone]+' · '+padMidiNotes(tone).map(padNoteName).join('–');}
@@ -317,7 +346,7 @@ function padReadouts(){
  $('padChord').textContent=padLabel(selectedTone);
  const mode=$('padTrigger').value;
  $('padHint').textContent=mode==='ih'
-  ?'No IH, o PAD envolve a nota e sua cauda atravessa o ON. Cada IH do beat usa o acorde correspondente à sua tomada; a voz não é modificada.'
+  ?'No IH, o PAD faz um apoio rápido 6–3–5 na altura da tomada, sem prolongar desnecessariamente. A voz não é modificada.'
   :mode==='bar'?'O PAD começa no primeiro passo de cada compasso do beat, seguindo o tom escolhido para aquele compasso. No modo manual, use OUVIR PAD.'
   :'O PAD só toca quando você aperta OUVIR PAD, sem disparos automáticos na voz ou no beat.';
 }
@@ -344,9 +373,9 @@ function ensurePadGraph(){
  const c=getAudio(),tail=+$('padTail').value/10;
  if(padGraph&&padGraph.tail===tail&&padGraph.ctx===c)return padGraph;
  // Ao mudar o tamanho da cauda, a resposta antiga continua ate acabar.
- const master=c.createGain();master.gain.value=.85;master.connect(c.destination);
+ const master=c.createGain();master.gain.value=.78;master.connect(c.destination);
  const convolver=c.createConvolver();convolver.normalize=true;convolver.buffer=buildPadImpulse(c,tail);
- const wet=c.createGain();wet.gain.value=.57;convolver.connect(wet).connect(master);
+ const wet=c.createGain();wet.gain.value=.35;convolver.connect(wet).connect(master);
  const graph={ctx:c,tail,master,convolver,wet};
  if(padGraph){const old=padGraph;setTimeout(()=>{try{old.master.disconnect();old.convolver.disconnect()}catch{}},Math.ceil((old.tail+2)*1000));}
  padGraph=graph;return graph;
@@ -354,12 +383,14 @@ function ensurePadGraph(){
 function playLofiPad(at,tone,gate=0,force=false){
  if(!force&&!$('padEnabled').checked)return;
  if(+$('padVolume').value<=0)return;
+ if(!force&&at-lastAutomaticPadAt<.42)return;
+ if(!force)lastAutomaticPadAt=at;
  const graph=ensurePadGraph(),c=graph.ctx;
  const start=Math.max(c.currentTime+.002,at),
   attack=+$('padAttack').value/100,
   minimum=+$('padHold').value/10,
-  hold=Math.min(9,Math.max(minimum,Number.isFinite(gate)?gate:0)),
-  release=Math.max(.65,Math.min(2.6,graph.tail*.48)),
+  hold=Math.min(1.15,Math.max(minimum,Math.min(.72,Number.isFinite(gate)?gate:0))),
+  release=Math.max(.14,Math.min(.38,graph.tail*.2)),
   end=start+hold+release,
   notes=padMidiNotes(tone),wet=+$('padWet').value/100,
   vol=Math.pow(+$('padVolume').value/100,1.55),
@@ -374,7 +405,7 @@ function playLofiPad(at,tone,gate=0,force=false){
   filter.frequency.setValueAtTime(Math.max(280,cutoff*.65),start);
   filter.frequency.linearRampToValueAtTime(cutoff,start+Math.min(.52,hold*.7));
   filter.frequency.setTargetAtTime(Math.max(320,cutoff*.72),start+hold*.58,.5);
-  const envelope=c.createGain(),amplitude=.071*vol*(i===0?1.05:.91);
+  const envelope=c.createGain(),amplitude=.062*vol*(i===0?1.0:.92);
   const attackTime=Math.min(attack,hold*.66);
   envelope.gain.setValueAtTime(.00001,start);
   envelope.gain.linearRampToValueAtTime(amplitude,start+Math.max(.025,attackTime));
@@ -382,8 +413,8 @@ function playLofiPad(at,tone,gate=0,force=false){
   envelope.gain.setTargetAtTime(.00001,start+hold,Math.max(.08,release*.18));
   envelope.gain.setValueAtTime(.00001,end);
   filter.connect(envelope);
-  const direct=c.createGain();direct.gain.value=.72-.26*wet;envelope.connect(direct).connect(graph.master);
-  if(wet>0){const send=c.createGain();send.gain.value=.36+wet*.92;envelope.connect(send).connect(graph.convolver);}
+  const direct=c.createGain();direct.gain.value=.84-.1*wet;envelope.connect(direct).connect(graph.master);
+  if(wet>0){const send=c.createGain();send.gain.value=wet*.65;envelope.connect(send).connect(graph.convolver);}
   for(const [type,mix,cents] of [['triangle',.84,-1.9],['sawtooth',.14,2.3]]){
    const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=frequency;o.detune.value=cents;
    g.gain.value=mix;o.connect(g).connect(filter);
@@ -416,37 +447,41 @@ function drum(name,at,flashNow=false){getAudio();const v=level('vdrum');if(flash
  if(name==='hat'){const style=$('hatstyle').value;noise(at,style==='open'?.33:(style==='light'?.06:.095),(style==='light'?.09:.13)*v,style==='open'?4900:6800);}}
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
 function selectTone(index){selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));renderCuts();tunedPreview(index);harmonyExample();padReadouts();saveSequence();}
-function defaultPattern(){pattern.forEach(row=>row.fill(0));pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));selectedNote=null;
- [0,4,8,12].forEach((step,i)=>{pattern[i][step]=1;noteLengths[i][step]=2;});
+function defaultPattern(){prontaPattern.fill(0);prontaPitches.fill(0);pattern.forEach(row=>row.fill(0));pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));selectedNote=null;
+ [0,4,8,12].forEach((step,i)=>{pattern[i][step]=1;noteLengths[i][step]=1;});
  [0,8].forEach(j=>pattern[4][j]=1);[4,12].forEach(j=>pattern[5][j]=1);
  for(let j=0;j<STEPS;j+=2)pattern[6][j]=1;
 }
 function syncopatedPattern(){defaultPattern();for(let i=0;i<4;i++)pattern[i].fill(0);
- [[0,0],[1,3],[2,7],[3,10],[0,14]].forEach(([i,j],k)=>{pattern[i][j]=1;notePitches[i][j]=[0,1,2,3,4][k];noteLengths[i][j]=i===0?2:3;});
+ [[0,0],[1,3],[2,7],[3,10],[0,14]].forEach(([i,j],k)=>{pattern[i][j]=1;notePitches[i][j]=[0,1,2,3,4][k];noteLengths[i][j]=1;});
  [2,6,10,14].forEach(j=>pattern[6][j]=1);
 }
-function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
-function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,bpm:$('bpm').value,target:$('targetbpm').value,rampbars:$('rampbars').value,accelerate:$('accelerate').checked,swing:$('swing').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
-function restoreSequence(){let saved;try{saved=JSON.parse(localStorage.getItem(SEQKEY)||localStorage.getItem(LEGACY_SEQKEY)||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
+function clearPattern(){prontaPattern.fill(0);pattern.forEach(row=>row.fill(0));selectedNote=null;}
+function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,bpm:$('bpm').value,target:$('targetbpm').value,rampbars:$('rampbars').value,accelerate:$('accelerate').checked,swing:$('swing').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value,prontaPattern,prontaPitches,prontaVolume:$('prontaVolume').value}));}catch{}}
+function restoreSequence(){let saved,legacy=false;try{const current=localStorage.getItem(SEQKEY);legacy=!current;saved=JSON.parse(current||localStorage.getItem(LEGACY_SEQKEY)||localStorage.getItem('mimi-sequencer-v2')||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
  for(let i=0;i<7;i++)for(let j=0;j<STEPS;j++)pattern[i][j]=Number(saved.pattern[i][j])?1:0;
+ if(Array.isArray(saved.prontaPattern)&&saved.prontaPattern.length===16)for(let j=0;j<16;j++)prontaPattern[j]=saved.prontaPattern[j]?1:0;
+ if(Array.isArray(saved.prontaPitches)&&saved.prontaPitches.length===16)for(let j=0;j<16;j++)prontaPitches[j]=Math.max(0,Math.min(8,Math.round(Number(saved.prontaPitches[j])||0)));
+ if(saved.prontaVolume!=null)$('prontaVolume').value=Math.max(0,Math.min(100,+saved.prontaVolume));
  for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++){
   const old=Array.isArray(saved.pitches)?saved.pitches[j]:0;
   const p=Array.isArray(saved.notePitches?.[tr])?saved.notePitches[tr][j]:old;
   notePitches[tr][j]=Math.min(8,Math.max(0,Math.round(Number(p)||0)));
-  noteLengths[tr][j]=Array.isArray(saved.noteLengths?.[tr])?Math.min(16-j,Math.max(1,Math.round(Number(saved.noteLengths[tr][j])||1))):1;
+  const previous=Array.isArray(saved.noteLengths?.[tr])?Math.min(16-j,Math.max(1,Math.round(Number(saved.noteLengths[tr][j])||1))):1;
+  noteLengths[tr][j]=legacy&&previous<=3?1:previous;
  }
  // Migracao: encurta notas sobrepostas para nunca cobrir o inicio de outra.
  for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++)if(pattern[tr][j])noteLengths[tr][j]=Math.min(noteLengths[tr][j],maxLength(tr,j));
  for(const [id,value,min,max] of [['bpm',saved.bpm,50,220],['targetbpm',saved.target,60,240],['swing',saved.swing,0,40],['vharmony',saved.vharmony,0,100],['hwidth',saved.hwidth,0,100]]){if(value!=null)$(id).value=String(Math.min(max,Math.max(min,Number(value)||min)));}
  if([2,4,8,16,32].includes(Number(saved.rampbars)))$('rampbars').value=String(saved.rampbars);
- for(const id of ['accelerate','shortvoice','beatchord','mimisOn'])if(typeof saved[id]==='boolean')$(id).checked=saved[id];
+ for(const id of ['accelerate','shortvoice','beatchord','mimisOn'])if(typeof saved[id]==='boolean'&&(!legacy||id!=='mimisOn'))$(id).checked=saved[id];
  for(const id of ['harmA','harmB'])if(typeof saved[id]==='string'&&Object.hasOwn(INTERVALS,saved[id]))$(id).value=saved[id];
  if(typeof saved.padEnabled==='boolean')$('padEnabled').checked=saved.padEnabled;
  for(const id of ['padTrigger','padVoicing'])if(typeof saved[id]==='string'&&Array.from($(id).options).some(o=>o.value===saved[id]))$(id).value=saved[id];
  for(const [id,min,max] of [['padVolume',0,100],['padAttack',5,140],['padHold',4,50],['padWet',0,100],['padTail',10,80],['padWarmth',0,100]]){
-  if(saved[id]!=null&&Number.isFinite(Number(saved[id])))$(id).value=String(Math.max(min,Math.min(max,Number(saved[id]))));
+  if(!legacy&&saved[id]!=null&&Number.isFinite(Number(saved[id])))$(id).value=String(Math.max(min,Math.min(max,Number(saved[id]))));
  }
- if([1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
+ if(!legacy&&[1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
  defaultNoteLength=Number($('drawlen').value);
  return Number.isInteger(saved.tone)&&saved.tone>=0&&saved.tone<=8?saved.tone:0;
 }
@@ -474,8 +509,20 @@ function dragHandle(handle,tr,j,ev){if(ev.button!=null&&ev.button!==0)return;ev.
 function buildGrid(){const g=$('beatgrid');g.innerHTML='';
  const headLabel=document.createElement('span');headLabel.className='trname';headLabel.style.gridRow='1';headLabel.style.gridColumn='1';headLabel.textContent='PISTAS';g.append(headLabel);
  for(let j=0;j<STEPS;j++){const hd=document.createElement('span');hd.className='seq-head'+(j%4===0?' down':'');hd.dataset.step=j;hd.style.gridRow='1';hd.style.gridColumn=String(j+2);hd.textContent=(j%4===0?String(j/4+1):['','e','&','a'][j%4]);g.append(hd);}
- for(let tr=0;tr<7;tr++){
+ for(let tr=0;tr<8;tr++){
   const lab=document.createElement('span');lab.className='trname'+(tr<4?' voice-name':'');lab.textContent=LABELS[tr];lab.style.gridColumn='1';lab.style.gridRow=String(tr+2);g.append(lab);
+  if(tr===7){lab.classList.add('pronta-name');
+   for(let j=0;j<STEPS;j++){
+    const cell=document.createElement('button');cell.className='step';cell.type='button';cell.dataset.track='7';cell.dataset.step=j;
+    cell.style.gridColumn=String(j+2);cell.style.gridRow=String(tr+2);
+    cell.setAttribute('aria-pressed',String(!!prontaPattern[j]));
+    cell.textContent=prontaPattern[j]?CHORDS[prontaPitches[j]].replace('6',''):'+';
+    cell.title='Frase EU JÁ ESTOU PRONTA · passo '+(j+1)+' · '+CHORDS[prontaPitches[j]];
+    cell.setAttribute('aria-label','EU JÁ ESTOU PRONTA · passo '+(j+1)+(prontaPattern[j]?', tom '+CHORDS[prontaPitches[j]]:' · inserir frase'));
+    cell.onclick=()=>{if(prontaPattern[j]&&prontaPitches[j]===selectedTone)prontaPattern[j]=0;else{prontaPattern[j]=1;prontaPitches[j]=selectedTone;}repaint();saveSequence();};
+    g.append(cell);
+   }continue;
+  }
   for(let j=0;j<STEPS;j++){
    const btn=document.createElement('button');btn.type='button';btn.dataset.track=tr;btn.dataset.step=j;btn.style.gridRow=String(tr+2);
    if(tr<4&&pattern[tr][j]){
@@ -508,12 +555,73 @@ function rampInfo(){const bpm=+$('bpm').value,target=+$('targetbpm').value,bars=
 function bpmAtStep(step){const fraction=sequenceAccelerate?Math.min(1,step/(sequenceRampBars*STEPS)):0;return sequenceStartBpm+(sequenceTargetBpm-sequenceStartBpm)*fraction;}
 function stepDuration(atStep){const bpm=bpmAtStep(atStep),swing=sequenceSwing/100;return 60/bpm/4*(atStep%2===0?1+swing:1-swing);}
 function noteGate(start,len){let seconds=0;for(let j=0;j<len;j++)seconds+=stepDuration(start+j);return Math.max(.052,seconds*.94);}
+
+// O som fica na altura correta: a velocidade do BEAT altera apenas os instantes de entrada,
+// não a velocidade de reprodução das palavras nem suas formantes.
+function playProntaCell(tone,at,globalStep=null){
+ if(!prontaReady||!prontaBuffer){$('prontaStatus').textContent='Banco da frase ainda não carregado. Abra o HTML autônomo ou verifique a conexão.';return;}
+ const c=getAudio(),volume=Math.pow(+$('prontaVolume').value/100,1.4)*.88;
+ if(volume<.001)return;
+ const index=Math.min(8,Math.max(0,Math.round(tone))),words=PRONTA_WORDS[index];
+ const phraseStep=globalStep==null?0:globalStep;
+ const schedulerStep=(n)=>{
+  let duration=0;
+  for(let j=0;j<n;j++)duration+=globalStep==null ? 60/Math.max(50,+$('bpm').value)/4 : stepDuration(phraseStep+j);
+  return duration;
+ };
+ for(let n=0;n<5;n++){
+  const info=words[n],when=at+schedulerStep(PRONTA_RHYTHM[n]);
+  const src=c.createBufferSource(),gain=c.createGain();src.buffer=prontaBuffer;
+  // Ataque/declamação da gravação permanece íntegro: sem looping de consoantes e sem time stretch.
+  const length=info[1],fade=Math.min(.012,length*.13);
+  gain.gain.setValueAtTime(.0001,when);
+  gain.gain.linearRampToValueAtTime(Math.max(.0002,volume),when+fade);
+  gain.gain.setValueAtTime(Math.max(.0002,volume),Math.max(when+fade,when+length-.023));
+  gain.gain.linearRampToValueAtTime(.0001,when+length);
+  src.connect(gain).connect(c.destination);src.start(when,info[0],length);src.stop(when+length+.015);
+  registerSource(src);
+ }
+ // Funciona com a opção existente de pad envolvendo o início do IH ou desta frase.
+ // A frase EU JÁ ESTOU PRONTA não dispara automaticamente o pad de IH.
+}
+const PRONTA_CACHE_KEY='gravacao-pronta-nove-tomadas';
+async function persistPronta(bytes){try{const conn=await db();await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readwrite');tx.objectStore('audios').put(bytes,PRONTA_CACHE_KEY);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});conn.close();return true;}catch{return false;}}
+async function cachedPronta(){try{const conn=await db();return await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readonly'),r=tx.objectStore('audios').get(PRONTA_CACHE_KEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);tx.oncomplete=()=>conn.close();});}catch{return null;}}
+async function loadProntaBytes(bytes,origin){
+ const audio=await getAudio().decodeAudioData(bytes.slice(0));
+ if(audio.duration<16||audio.duration>19)throw Error('O banco precisa ter nove tomadas (aproximadamente 17 s).');
+ prontaBuffer=audio;prontaReady=true;
+ $('prontaStatus').textContent='✓ EU JÁ ESTOU PRONTA pronta · nove tomadas · '+origin;
+ return true;
+}
+async function prontaStartup(){
+ prontaReady=false;prontaBuffer=null;
+ $('prontaStatus').textContent='Carregando as nove tomadas de EU JÁ ESTOU PRONTA…';
+ try{
+  const inline=$('pronta-inline');
+  if(inline?.textContent.trim()){
+   const binary=atob(inline.textContent.trim()),data=new Uint8Array(binary.length);
+   for(let i=0;i<data.length;i++)data[i]=binary.charCodeAt(i);
+   await loadProntaBytes(data.buffer,'incluída no app');return;
+  }
+  const cached=await cachedPronta();
+  if(cached){try{await loadProntaBytes(cached,'salva no navegador');return;}catch{}}
+  let problem=null;
+  for(const ext of ['m4a','ogg']){
+   try{const resp=await fetch('./assets/eu-ja-estou-pronta-bank.'+ext,{cache:'no-store'});
+    if(!resp.ok)throw Error('HTTP '+resp.status);
+    await loadProntaBytes(await resp.arrayBuffer(),'incluída no Hub');return;
+   }catch(e){problem=e;}
+  }
+  throw problem||Error('arquivo inacessível');
+ }catch(error){prontaReady=false;$('prontaStatus').textContent='Frase não carregou ('+error.message+'). Use Recarregar voz ou importe o arquivo M4A.';}
+}
 function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
  while(nextBeat<c.currentTime+.12){const idx=stepIndex%STEPS,bar=Math.floor(stepIndex/STEPS)+1,bpm=bpmAtStep(stepIndex),swing=sequenceSwing/100;
  const base=60/bpm/4,duration=base*(idx%2===0?1+swing:1-swing),at=nextBeat;
- for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):noteGate(stepIndex,len);syllable(tr,at,notePitches[tr][idx],gate);}
+ for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):(len>1?noteGate(stepIndex,len):Infinity);syllable(tr,at,notePitches[tr][idx],gate);}
  ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at);});
- document.dispatchEvent(new CustomEvent('mimi-pronta-beat-step',{detail:{index:idx,globalStep:stepIndex,at,bpm}}));
+ if(prontaPattern[idx])playProntaCell(prontaPitches[idx],at,stepIndex);
  if(idx===0&&$('beatchord').checked){const tone=pattern[0][idx]?notePitches[0][idx]:selectedTone;chord(at,tone);}
  if(idx===0&&$('padEnabled').checked&&$('padTrigger').value==='bar'){const tone=pattern[0][idx]?notePitches[0][idx]:selectedTone;playLofiPad(at,tone,60/bpm*3.4);}
  const timer=setTimeout(()=>{visualTimers.delete(timer);if(beatRunning&&id===runId)visual(idx,bar,bpm);},Math.max(0,(at-c.currentTime)*1000));visualTimers.add(timer);
@@ -555,14 +663,20 @@ async function studioStartup(){
    if(!studioBuffer)throw lastError||Error('audio indisponivel');
   }
   if(studioBuffer.duration<48||studioBuffer.duration>51)throw Error('banco incompleto');
-  studioReady=true;$('studioStatus').textContent='✓ 32 atuações afinadas prontas · sustain da vogal ativado';
+  studioReady=true;$('studioStatus').textContent='✓ Voz natural ativa · afinação processada disponível (opcional)';
  }catch(error){
   studioReady=false;$('studioStatus').textContent='Banco afinado indisponível: '+error.message+'. Usando a voz original.';
  }
 }
 $('upload').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;status('Analisando o arquivo de voz…','loading');const bytes=await file.arrayBuffer();if(await loadAudio(bytes,'importada de '+file.name)){const ok=await savedPut(bytes);if(!ok)status('✓ Voz pronta! O navegador não permitiu salvar para a próxima visita.');}});
 document.querySelectorAll('[data-syl]').forEach(b=>{b.onclick=()=>syllable(+b.dataset.syl,getAudio().currentTime+.015);});
-$('studioMode').addEventListener('change',()=>{$('studioStatus').textContent=$('studioMode').checked?(studioReady?'✓ 32 atuações afinadas prontas':'Banco afinado não carregado'):'Modo original sem correção de pitch';});
+$('studioMode').addEventListener('change',()=>{$('studioStatus').textContent=$('studioMode').checked?(studioReady?'Afinação processada ativada; compare com a voz natural':'Banco afinado não carregado'):'✓ Modo natural · interpretação original preservada';});
+$('prontaManual').onclick=()=>playProntaCell(selectedTone,getAudio().currentTime+.045);
+$('prontaRetry').onclick=prontaStartup;
+$('prontaUpload').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const bytes=await f.arrayBuffer();await loadProntaBytes(bytes,'importada de '+f.name);await persistPronta(bytes);}catch(error){$('prontaStatus').textContent='Arquivo da frase inválido: '+error.message;}};
+$('insertPronta').onclick=()=>{prontaPattern[0]=1;prontaPitches[0]=selectedTone;repaint();saveSequence();};
+$('clearPronta').onclick=()=>{prontaPattern.fill(0);repaint();saveSequence();};
+$('prontaVolume').addEventListener('input',saveSequence);
 $('phrase').onclick=()=>{const now=getAudio().currentTime+.045;if($('harmonize').checked)chord(now);whole(now);};$('chord').onclick=()=>chord(getAudio().currentTime+.03);$('stop').onclick=stopAll;
 document.querySelectorAll('[data-drum]').forEach(b=>b.onclick=()=>drum(b.dataset.drum,getAudio().currentTime+.01,true));
 $('playbeat').onclick=toggleBeat;
@@ -573,6 +687,7 @@ $('syncbeat').onclick=()=>{syncopatedPattern();repaint();saveSequence();};
  $(id).addEventListener('input',()=>{rampInfo();saveSequence();});$(id).addEventListener('change',()=>{rampInfo();saveSequence();});
 });
 
+$('shortAllNotes').onclick=()=>{for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++)if(pattern[tr][j])noteLengths[tr][j]=1;selectedNote=null;defaultNoteLength=1;$('drawlen').value='1';repaint();updateNoteEditor();saveSequence();};
 $('noteMinus').onclick=()=>lengthSelected(-1);$('notePlus').onclick=()=>lengthSelected(1);
 $('noteDelete').onclick=()=>{const n=selectedNote;if(!n)return;pattern[n.tr][n.step]=0;selectedNote=null;repaint();updateNoteEditor();saveSequence();};
 $('notePitch').onclick=()=>{const n=selectedNote;if(!n)return;notePitches[n.tr][n.step]=selectedTone;repaint();updateNoteEditor();saveSequence();};
@@ -587,11 +702,10 @@ for(const id of ['padEnabled','padTrigger','padVoicing','padVolume','padAttack',
  $(id).addEventListener('change',()=>{padReadouts();saveSequence();});
 }
 $('previewPad').onclick=()=>playLofiPad(getAudio().currentTime+.025,selectedTone,1.8,true);
-$('padPresetCloud').onclick=()=>{Object.assign($('padAttack'),{value:58});$('padHold').value=28;$('padWet').value=82;$('padTail').value=65;$('padWarmth').value=74;$('padVolume').value=44;$('padEnabled').checked=true;padReadouts();saveSequence();};
-$('padPresetSoft').onclick=()=>{$('padAttack').value=18;$('padHold').value=13;$('padWet').value=34;$('padTail').value=24;$('padWarmth').value=58;$('padVolume').value=43;$('padEnabled').checked=true;padReadouts();saveSequence();};
+$('padPresetCloud').onclick=()=>{Object.assign($('padAttack'),{value:24});$('padHold').value=9;$('padWet').value=32;$('padTail').value=20;$('padWarmth').value=62;$('padVolume').value=26;$('padEnabled').checked=true;padReadouts();saveSequence();};
+$('padPresetSoft').onclick=()=>{$('padAttack').value=12;$('padHold').value=6;$('padWet').value=15;$('padTail').value=11;$('padWarmth').value=55;$('padVolume').value=22;$('padEnabled').checked=true;padReadouts();saveSequence();};
 $('resetcuts').onclick=()=>{cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice()));renderCuts();};
 document.addEventListener('keydown',e=>{if(e.repeat||/input|select|textarea/i.test(e.target.tagName))return;const map={'1':0,'2':1,'3':2,'4':3};if(map[e.key]!=null)syllable(map[e.key],getAudio().currentTime+.01);else if(e.code==='Space'){e.preventDefault();whole(getAudio().currentTime+.01);}});
-window.mimiProntaCore={getAudio,stepDuration,playLofiPad,registerSource,selectedTone:()=>selectedTone};
-buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();padReadouts();startup();studioStartup();
+buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();padReadouts();startup();studioStartup();prontaStartup();
 })();
-</script><script src="./pronta-extension.js?v=1"></script></body></html>
+</script></body></html>
