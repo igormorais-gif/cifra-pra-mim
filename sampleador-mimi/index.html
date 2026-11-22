@@ -513,6 +513,7 @@ function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
  const base=60/bpm/4,duration=base*(idx%2===0?1+swing:1-swing),at=nextBeat;
  for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):noteGate(stepIndex,len);syllable(tr,at,notePitches[tr][idx],gate);}
  ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at);});
+ document.dispatchEvent(new CustomEvent('mimi-pronta-beat-step',{detail:{index:idx,globalStep:stepIndex,at,bpm}}));
  if(idx===0&&$('beatchord').checked){const tone=pattern[0][idx]?notePitches[0][idx]:selectedTone;chord(at,tone);}
  if(idx===0&&$('padEnabled').checked&&$('padTrigger').value==='bar'){const tone=pattern[0][idx]?notePitches[0][idx]:selectedTone;playLofiPad(at,tone,60/bpm*3.4);}
  const timer=setTimeout(()=>{visualTimers.delete(timer);if(beatRunning&&id===runId)visual(idx,bar,bpm);},Math.max(0,(at-c.currentTime)*1000));visualTimers.add(timer);
@@ -590,6 +591,7 @@ $('padPresetCloud').onclick=()=>{Object.assign($('padAttack'),{value:58});$('pad
 $('padPresetSoft').onclick=()=>{$('padAttack').value=18;$('padHold').value=13;$('padWet').value=34;$('padTail').value=24;$('padWarmth').value=58;$('padVolume').value=43;$('padEnabled').checked=true;padReadouts();saveSequence();};
 $('resetcuts').onclick=()=>{cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice()));renderCuts();};
 document.addEventListener('keydown',e=>{if(e.repeat||/input|select|textarea/i.test(e.target.tagName))return;const map={'1':0,'2':1,'3':2,'4':3};if(map[e.key]!=null)syllable(map[e.key],getAudio().currentTime+.01);else if(e.code==='Space'){e.preventDefault();whole(getAudio().currentTime+.01);}});
+window.mimiProntaCore={getAudio,stepDuration,playLofiPad,registerSource,selectedTone:()=>selectedTone};
 buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();padReadouts();startup();studioStartup();
 })();
-</script></body></html>
+</script><script src="./pronta-extension.js?v=1"></script></body></html>
