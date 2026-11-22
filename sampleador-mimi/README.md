@@ -1,3 +1,13 @@
+# Correção da frase “Eu já estou pronta” — 22/11/2026
+
+**Correção principal:** a frase não é mais construída com os 45 fragmentos EU/JÁ/ESTOU/PRON/TA, que cortavam a última sílaba em algumas tomadas. As nove execuções completas foram novamente recortadas da gravação original `JA ESTOU PRONTA.m4a`, preservando começo, fim, dicção, duração interna e cauda do TA. Cada gravação corresponde a um tom E6, Eb6, D6, Db6, C6, B6, Bb6, A6 ou G#6. Nenhuma palavra é individualmente quantizada, e a afinação não é rigidamente modificada nesse novo banco.
+
+A prévia toca a tomada inteira em um elemento de áudio próprio. Cada célula lilás do beat aciona o mesmo arquivo completo por Web Audio, sem limite de tempo imposto pelo próximo passo nem recorte por palavra. Os nove M4A estão embutidos no `index.html` para evitar erro de carregamento de arquivo separado. O ritmo do beat regula apenas o início da frase.
+
+**Verificação técnica:** nove arquivos decodificados, de 1,8 a 2,32 segundos, com sinal na parte final das frases. Sintaxe JavaScript validada; reprodução ainda requer escuta final no iPhone do usuário.
+
+---
+
 # MIMI — Voz natural, frase audível e beat
 
 ## Atualização de 22/11/2026
