@@ -184,7 +184,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 <section class="panel beat-feature" id="beatFeature" aria-label="Montador de BEAT">
  <div class="bar-title"><h2>03 / Monte seu BEAT</h2><span class="sub">16 passos · voz + bateria</span></div>
- <p class="seq-help">IH e ON entram como percussão vocal; <strong>MI 1 → MI 2</strong> formam um par de semicolcheias consecutivas em todas as levadas. Edite os quadradinhos e mude o acorde sem parar o beat.</p>
+ <p class="seq-help">O <strong>IH → ON → MI 1 → MI 2</strong> se repete a partir do tempo 3; os dois MIs ficam em semicolcheias consecutivas. Samba, funk e outros estilos alteram apenas bumbo, caixa e prato.</p>
  <div class="beat-catalog" role="group" aria-label="Catálogo de batidas">
  <label for="beatCatalog">CATÁLOGO DE BATIDAS</label>
  <select id="beatCatalog" aria-label="Escolha uma levada para o BEAT">
@@ -584,7 +584,25 @@ function selectTone(index){const changed=selectedTone!==index;selectedTone=index
 // Catálogo: 16 semicolcheias; pistas 0–3 são samples vocais usados como percussões.
 // Disposição vocal inicial: IH / ON em tempos separados, MI 1 imediatamente antes de MI 2.
 // Os gêneros musicais alteram APENAS bumbo, caixa e prato. Mudanças manuais das vozes persistem.
-const MIMI_VOCAL_BASE=[[0,8],[4,12],[6,14],[7,15]];
+// Primeira metade preservada. A partir do tempo 3, repetimos o motivo na mesma ordem.
+const MIMI_FIRST_HALF=[[0],[4],[6],[7]];
+const MIMI_SECOND_HALF=[[8],[12],[14],[15]];
+const MIMI_VOCAL_BASE=MIMI_FIRST_HALF.map((steps,tr)=>[...steps,...MIMI_SECOND_HALF[tr]]);
+const TIME3_LAYOUT_KEY='mimi-time3-layout-v1';
+function restoreTime3MotifOnce(){
+ // Atualiza só os oito passos finais das quatro pistas vocais no padrão salvo antigo.
+ try{if(localStorage.getItem(TIME3_LAYOUT_KEY)==='yes')return;}catch{}
+ for(let tr=0;tr<4;tr++){
+  for(let step=8;step<STEPS;step++){
+   pattern[tr][step]=0;
+   noteLengths[tr][step]=1;
+   notePitches[tr][step]=0;
+  }
+  for(const step of MIMI_SECOND_HALF[tr])pattern[tr][step]=1;
+ }
+ selectedNote=null;
+ try{localStorage.setItem(TIME3_LAYOUT_KEY,'yes');}catch{}
+}
 const BEAT_PRESETS={
  mimi:{info:'Pulsação básica do MIMI: bumbo, caixa e prato simples.',drums:[[0,8],[4,12],[0,2,4,6,8,10,12,14]]},
  samba:{info:'Samba estilizado em 2/4: caixa sincopada, bumbo com antecipações e prato subdividido.',drums:[[0,6,8,14],[0,3,4,7,8,11,12,15],[0,2,3,5,6,7,8,10,11,13,14,15]]},
@@ -616,6 +634,7 @@ function defaultPattern(){
  notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));
  MIMI_VOCAL_BASE.forEach((steps,tr)=>steps.forEach(step=>{pattern[tr][step]=1;}));
  selectedNote=null;
+ try{localStorage.setItem(TIME3_LAYOUT_KEY,'yes');}catch{}
  setBeatPreset('mimi',false);
 }
 function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
@@ -641,6 +660,7 @@ function restoreSequence(){let saved,legacy=false;try{const current=localStorage
  }
  if(!legacy&&[1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
  defaultNoteLength=Number($('drawlen').value);
+ restoreTime3MotifOnce();
  beatPresetId=BEAT_PRESETS[saved.beatPreset]?saved.beatPreset:'mimi';$('beatCatalog').value=beatPresetId;$('beatCatalogInfo').textContent=BEAT_PRESETS[beatPresetId].info;
  return Number.isInteger(saved.tone)&&saved.tone>=0&&saved.tone<=8?saved.tone:0;
 }
