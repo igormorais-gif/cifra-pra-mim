@@ -70,10 +70,27 @@
 .studio-status{color:#b8e8b5;font-size:.82rem;line-height:1.45}
 .studio-pitches{font-size:.83rem;color:#d5cee8;line-height:1.6}
 .studio-box .check input{flex-shrink:0}
+
+/* Pad de teclado lo-fi: instrumento harmonico separado das vozes originais. */
+.pad-panel{margin-top:16px;background:linear-gradient(125deg,#2e2c43 0%,#222738 100%);border-color:#80749a}
+.pad-panel .bar-title h2{font-size:1.25rem}
+.pad-on{font-size:.95rem;font-weight:850}
+.pad-facts{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:8px 0 15px}
+.pad-facts span{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1px solid #6c6581;background:#222033;border-radius:999px;font-size:.79rem;color:#f4e8cf}
+.pad-fields{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.pad-fields label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:750;color:#d8d3e7}
+.pad-fields select{border:1px solid #706a85;color:#f9f3ff;background:#36334c;border-radius:12px;padding:10px;min-height:44px}
+.pad-knobs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+.pad-knobs label{display:flex;flex-direction:column;gap:7px;font-size:.81rem;color:#ede8f8}
+.pad-knobs input{width:100%;accent-color:#cca5f8;min-width:0}
+.pad-knobs output{color:#e9d4ff;font-size:.8rem;font-weight:850}
+.pad-button{background:#d8b6f5;color:#292139}
+.pad-note{border-left:3px solid #d3aef3;padding:8px 12px;background:#39344d;border-radius:0 9px 9px 0;font-size:.82rem;color:#f1e9fc;margin:8px 0}
+@media(max-width:700px){.pad-fields{grid-template-columns:1fr}.pad-knobs{grid-template-columns:repeat(2,minmax(0,1fr))}.pad-panel .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.pad-panel .actions .pad-button{grid-column:1/-1}.pad-panel .actions .btn{width:100%;padding:12px 9px;min-height:50px;font-size:.89rem}}
 </style></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">ESTÚDIO DE BRINCAR • VOL. 01</span><a href="../laboratorio.html">← Voltar ao Hub</a></header>
-<section class="hero"><div><span class="sub">O laboratório musical do Nilo</span><h1>MI<span>MI!</span></h1><p>Uma voz de verdade em oito atuações, 32 sílabas afinadas e um beat para construir e harmonizar!</p></div><div class="sticker" aria-hidden="true">IH<br>ON<br>MI MI</div></section>
+<section class="hero"><div><span class="sub">O laboratório musical do Nilo</span><h1>MI<span>MI!</span></h1><p>Uma voz de verdade em oito atuações, 32 sílabas afinadas, harmonias e um PAD lo-fi reverberado para envolver cada IH!</p></div><div class="sticker" aria-hidden="true">IH<br>ON<br>MI MI</div></section>
 <section class="panel" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label></div><div class="studio-box" aria-label="Afinação e timbre da voz">
 <label class="check"><input type="checkbox" id="studioMode" checked> 🎯 Afinação de estúdio · 32 atuações separadas</label>
 <label class="check"><input type="checkbox" id="tonalLayer"> Camada tonal discreta (reforça a nota, sem recantar a sílaba)</label>
@@ -83,8 +100,37 @@
 </div>
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 
+
+<section class="panel pad-panel" id="padStudio" aria-label="Teclado pad lo-fi harmonico">
+  <div class="bar-title"><h2>03 / 🎹 Teclado lo-fi · PAD de sexta</h2><label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD ligado</label></div>
+  <p class="seq-help">Um acorde de teclado macio que <strong>abraça o IH</strong> e continua soando em uma cauda reverberada, sem repetir nem modificar a voz do MIMI.</p>
+  <div class="pad-facts"><span id="padChord">E6 · Mi–Si–Dó♯–Sol♯</span><span>Som de teclado · síntese suave</span><span>Reverb independente</span></div>
+  <div class="pad-fields">
+    <label for="padTrigger">Quando o PAD deve começar?
+      <select id="padTrigger">
+        <option value="ih" selected>A cada IH — acompanha o tom da nota</option>
+        <option value="bar">No começo de cada compasso do beat</option>
+        <option value="manual">Somente ao tocar o botão PAD</option>
+      </select>
+    </label>
+    <label for="padVoicing">Distribuição das notas
+      <select id="padVoicing"><option value="wide" selected>Aberto e envolvente (1–5–6–3)</option><option value="close">Teclado próximo (1–3–5–6)</option><option value="air">Aéreo (5–6–3–1)</option></select>
+    </label>
+  </div>
+  <div class="pad-knobs">
+    <label for="padVolume">Volume <output id="padVolumeOut">42%</output><input id="padVolume" type="range" min="0" max="100" value="42"></label>
+    <label for="padAttack">Ataque / Bloom <output id="padAttackOut">0,35 s</output><input id="padAttack" type="range" min="5" max="140" value="35"></label>
+    <label for="padHold">Sustentação mínima <output id="padHoldOut">1,6 s</output><input id="padHold" type="range" min="4" max="50" value="16"></label>
+    <label for="padWet">Reverb / espaço <output id="padWetOut">60%</output><input id="padWet" type="range" min="0" max="100" value="60"></label>
+    <label for="padTail">Cauda reverberada <output id="padTailOut">4,5 s</output><input id="padTail" type="range" min="10" max="80" value="45"></label>
+    <label for="padWarmth">Calor lo-fi <output id="padWarmthOut">65%</output><input id="padWarmth" type="range" min="0" max="100" value="65"></label>
+  </div>
+  <div class="actions"><button type="button" class="btn pad-button" id="previewPad">▶ OUVIR PAD</button><button type="button" class="btn secondary" id="padPresetCloud">☁️ Nuvem de reverb</button><button type="button" class="btn secondary" id="padPresetSoft">◌ Suave e próximo</button></div>
+  <p class="pad-note" id="padHint" role="status">Em E6, o teclado toca Mi–Si–Dó♯–Sol♯ e deixa a cauda atravessar o ON. O timbre é sintetizado; as vozes continuam sendo as gravações reais.</p>
+</section>
+
 <section class="panel harmony-panel" id="harmonia" aria-label="Harmonizador de MIMIs">
- <div class="bar-title"><h2>03 / Viva a harmonia! 🎶</h2><label class="check"><input id="mimisOn" type="checkbox" checked> Outros MIMIs ligados</label></div>
+ <div class="bar-title"><h2>04 / Viva a harmonia! 🎶</h2><label class="check"><input id="mimisOn" type="checkbox" checked> Outros MIMIs ligados</label></div>
  <p class="seq-help">A voz original continua no centro. Crie até <b>duas vozes adicionais</b> usando outras tomadas do MIMI, quando possível. As terças respeitam a escala maior do tom selecionado.</p>
  <div class="harm-presets"><button class="btn secondary" type="button" data-hpreset="solo">Solo</button><button class="btn secondary" type="button" data-hpreset="trio">Trio de MIMIs</button><button class="btn secondary" type="button" data-hpreset="up">Terça acima</button><button class="btn secondary" type="button" data-hpreset="down">Terça abaixo</button><button class="btn secondary" type="button" data-hpreset="open">Quintas abertas</button></div>
  <div class="harm-fields"><label>MIMI 2 · voz adicional A<select id="harmA"><option value="off">Desligada</option><option value="thirdUp" selected>Terça diatônica acima</option><option value="thirdDown">Terça diatônica abaixo</option><option value="fourthUp">Quarta acima</option><option value="fourthDown">Quarta abaixo</option><option value="fifthUp">Quinta diatônica acima</option><option value="fifthDown">Quinta diatônica abaixo</option><option value="sixthUp">Sexta diatônica acima</option><option value="sixthDown">Sexta diatônica abaixo</option><option value="octaveUp">Oitava acima</option><option value="octaveDown">Oitava abaixo</option></select></label>
@@ -93,8 +139,8 @@
  <div class="controls"><label>Volume dos MIMIs <input id="vharmony" type="range" min="0" max="100" value="55"><output id="vharmonyout">55%</output></label><label>Abertura estéreo <input id="hwidth" type="range" min="0" max="100" value="38"><output id="hwidthout">38%</output></label></div>
  <p class="soft">Terças e quintas mudam com a sílaba: E→G♯/C♯, D♯→F♯/B, C♯→E/A. O alongamento usa pequenas repetições suavizadas do trecho vocal (sustain granular): a altura não desce ao aumentar a duração. Sons muito esticados ou transpostos podem soar artificiais.</p>
 </section>
-<div class="columns"><section class="panel"><div class="bar-title"><h2>04 / Monte sua bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Macia</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div></section>
-<section class="panel" id="sequencer"><div class="bar-title"><h2>05 / Construa o BEAT · piano roll</h2><span class="sub">16 passos · 4 tempos · voz + bateria</span></div>
+<div class="columns"><section class="panel"><div class="bar-title"><h2>05 / Monte sua bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Macia</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div></section>
+<section class="panel" id="sequencer"><div class="bar-title"><h2>06 / Construa o BEAT · piano roll</h2><span class="sub">16 passos · 4 tempos · voz + bateria</span></div>
 <p class="seq-help">Escolha um tom lá em cima. Pinte as notas <strong>IH • ON • MI • MI</strong> e estique pela alça à direita, como num MIDI. Cada bloco guarda seu próprio tom, sua duração e acompanha as vozes harmonizadas. A bateria continua em passos.</p>
 <div class="rhythm-info"><span><strong id="nowbpm">95 BPM</strong> <span class="sub" id="barcounter">· compasso 1</span></span><span class="sub">1 e &amp; a · 2 e &amp; a · 3 e &amp; a · 4 e &amp; a</span></div>
 <div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
@@ -110,7 +156,7 @@
 <div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><button id="resetbeat" class="btn secondary" type="button">Padrão MIMI</button><button id="syncbeat" class="btn secondary" type="button">Síncope!</button><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div>
 <label class="check" style="margin-top:12px"><input id="beatchord" type="checkbox"> Tocar acorde de sexta no início de cada compasso</label>
 <p class="soft">O BPM acelera sem alterar a afinação. A duração de cada nota acompanha o andamento, com ataque e sustentação independentes. Clique numa nota para ajustar sua duração, altere o tom ou arraste sua borda direita. A composição é salva no navegador.</p></section></div>
-<section class="panel" style="margin-top:16px"><div class="bar-title"><h2>06 / Banco de gravações</h2><span class="sub">Áudio 149 · 8 frases originais</span></div><div class="upload"><label for="upload">🎙️ Importar a gravação 149<input type="file" id="upload" accept="audio/*,.m4a"></label><p>Se a voz não carregar automaticamente, importe uma vez a gravação 149. O arquivo fica salvo apenas neste navegador (sem enviar a servidores). Os cortes já estão preparados.</p></div><details class="technical"><summary>Ajuste fino dos quatro recortes da tomada selecionada</summary><div id="cutbox" class="cutbox"></div><p class="soft">Valores em segundos do arquivo original. Ajustes preservam o arquivo de origem. Para a nona opção, o áudio da oitava tomada é reproduzido um semitom abaixo.</p><button type="button" id="resetcuts" class="btn secondary">Restaurar os cortes</button></details></section>
+<section class="panel" style="margin-top:16px"><div class="bar-title"><h2>07 / Banco de gravações</h2><span class="sub">Áudio 149 · 8 frases originais</span></div><div class="upload"><label for="upload">🎙️ Importar a gravação 149<input type="file" id="upload" accept="audio/*,.m4a"></label><p>Se a voz não carregar automaticamente, importe uma vez a gravação 149. O arquivo fica salvo apenas neste navegador (sem enviar a servidores). Os cortes já estão preparados.</p></div><details class="technical"><summary>Ajuste fino dos quatro recortes da tomada selecionada</summary><div id="cutbox" class="cutbox"></div><p class="soft">Valores em segundos do arquivo original. Ajustes preservam o arquivo de origem. Para a nona opção, o áudio da oitava tomada é reproduzido um semitom abaixo.</p><button type="button" id="resetcuts" class="btn secondary">Restaurar os cortes</button></details></section>
 <p class="note">* O preset G#6 é uma transposição de um semitom da oitava tomada, pois a gravação 149 contém oito frases completas (E6 → A6 seria oito posições). Os nomes dos acordes são centros harmônicos propostos, não laudos de afinação da voz. A reprodução natural preserva as diferenças de entonação e articulação do registro. Para afinação absoluta, seria necessária revisão musical adicional.</p>
 <footer class="foot"><span>Sampleador MIMI · uma brincadeira musical para Nilo</span><span>Feito com a voz original · <a href="https://github.com/igormorais-gif/cifra-pra-mim">Cifra pra Mim</a></span></footer></div>
 <script type="text/plain" id="audio-inline"></script><script type="text/plain" id="studio-inline"></script>
@@ -234,13 +280,13 @@ function playHarmony(syl,at,tone,gate){if(!$('mimisOn').checked)return;
  noteSample(syl,tone,at,gate,intervalSemitones(syl,mode),volume,i===0?-wide:wide);
  });
 }
-function syllable(n,at,tone=selectedTone,gate=Infinity){noteSample(n,tone,at,gate,0,1,0,document.querySelector('[data-syl="'+n+'"]'));playHarmony(n,at,tone,gate);}
+function syllable(n,at,tone=selectedTone,gate=Infinity){noteSample(n,tone,at,gate,0,1,0,document.querySelector('[data-syl="'+n+'"]'));playHarmony(n,at,tone,gate);maybePadWithVoice(n,at,tone,gate);}
 function whole(at){
  if($('studioMode').checked&&studioReady){
   const {index,rate}=tune(),s=cuts[index],origin=s[0][0];
   s.forEach(([a,b],n)=>syllable(n,at+(a-origin)/rate,selectedTone,(b-a)/rate));return;
  }
- const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);
+ const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);maybePadWithVoice(0,at,selectedTone,1.5);
  if(!$('mimisOn').checked)return;
  const anchor=s[0][0];s.forEach(([start,end],n)=>playHarmony(n,at+(start-anchor)/rate,selectedTone,(end-start)/rate));
 }
@@ -252,6 +298,113 @@ function harmonyExample(){if(!$('harmExample'))return;const tone=selectedTone,sy
  $('vharmonyout').textContent=$('vharmony').value+'%';$('hwidthout').textContent=$('hwidth').value+'%';
 }
 function hz(midi){return 440*Math.pow(2,(midi-69)/12);}
+
+// Teclado lo-fi pad, independente da voz: E6 -> E3,B3,C#4,G#4.
+let padGraph=null;
+const activePadNotes=[];
+const PAD_NAMES=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];
+function padNoteName(m){return PAD_NAMES[(m+120)%12];}
+function padMidiNotes(tone){
+ const root=ROOTS[Math.max(0,Math.min(8,tone))];
+ const voicing=$('padVoicing').value;
+ const intervals=voicing==='close'?[0,4,7,9]:voicing==='air'?[7,9,16,19]:[0,7,9,16];
+ return intervals.map(i=>root+i);
+}
+function padLabel(tone){return CHORDS[tone]+' · '+padMidiNotes(tone).map(padNoteName).join('–');}
+function padReadouts(){
+ const values={padVolume:$('padVolume').value+'%',padAttack:(+$('padAttack').value/100).toFixed(2).replace('.',',')+' s',padHold:(+$('padHold').value/10).toFixed(1).replace('.',',')+' s',padWet:$('padWet').value+'%',padTail:(+$('padTail').value/10).toFixed(1).replace('.',',')+' s',padWarmth:$('padWarmth').value+'%'};
+ for(const [id,val] of Object.entries(values))$(id+'Out').textContent=val;
+ $('padChord').textContent=padLabel(selectedTone);
+ const mode=$('padTrigger').value;
+ $('padHint').textContent=mode==='ih'
+  ?'No IH, o PAD envolve a nota e sua cauda atravessa o ON. Cada IH do beat usa o acorde correspondente à sua tomada; a voz não é modificada.'
+  :mode==='bar'?'O PAD começa no primeiro passo de cada compasso do beat, seguindo o tom escolhido para aquele compasso. No modo manual, use OUVIR PAD.'
+  :'O PAD só toca quando você aperta OUVIR PAD, sem disparos automáticos na voz ou no beat.';
+}
+function buildPadImpulse(c,seconds){
+ const length=Math.max(1,Math.floor(c.sampleRate*seconds));
+ const b=c.createBuffer(2,length,c.sampleRate);
+ for(let channel=0;channel<2;channel++){
+  const dst=b.getChannelData(channel);let lp=0;
+  for(let i=0;i<length;i++){
+   const t=i/length;
+   const white=(Math.random()*2-1);
+   lp=.65*lp+.35*white;
+   const env=Math.pow(1-t,2.1)*(.90+.10*Math.sin(i*.013+channel));
+   dst[i]=lp*env*(i<Math.floor(.021*c.sampleRate)?0:1);
+  }
+  for(const delay of [.036,.071,.114,.176]){
+   const index=Math.round((delay+channel*.007)*c.sampleRate);
+   if(index<length)dst[index]+=0.14*Math.exp(-delay);
+  }
+ }
+ return b;
+}
+function ensurePadGraph(){
+ const c=getAudio(),tail=+$('padTail').value/10;
+ if(padGraph&&padGraph.tail===tail&&padGraph.ctx===c)return padGraph;
+ // Ao mudar o tamanho da cauda, a resposta antiga continua ate acabar.
+ const master=c.createGain();master.gain.value=.85;master.connect(c.destination);
+ const convolver=c.createConvolver();convolver.normalize=true;convolver.buffer=buildPadImpulse(c,tail);
+ const wet=c.createGain();wet.gain.value=.57;convolver.connect(wet).connect(master);
+ const graph={ctx:c,tail,master,convolver,wet};
+ if(padGraph){const old=padGraph;setTimeout(()=>{try{old.master.disconnect();old.convolver.disconnect()}catch{}},Math.ceil((old.tail+2)*1000));}
+ padGraph=graph;return graph;
+}
+function playLofiPad(at,tone,gate=0,force=false){
+ if(!force&&!$('padEnabled').checked)return;
+ if(+$('padVolume').value<=0)return;
+ const graph=ensurePadGraph(),c=graph.ctx;
+ const start=Math.max(c.currentTime+.002,at),
+  attack=+$('padAttack').value/100,
+  minimum=+$('padHold').value/10,
+  hold=Math.min(9,Math.max(minimum,Number.isFinite(gate)?gate:0)),
+  release=Math.max(.65,Math.min(2.6,graph.tail*.48)),
+  end=start+hold+release,
+  notes=padMidiNotes(tone),wet=+$('padWet').value/100,
+  vol=Math.pow(+$('padVolume').value/100,1.55),
+  warmth=+$('padWarmth').value/100;
+ // Evita acumulo descontrolado caso o IH apareca varias vezes em um beat rapido.
+ while(activePadNotes.length>=5){const old=activePadNotes.shift();for(const osc of old.sources){try{osc.stop(Math.max(c.currentTime+.004,start))}catch{}}}
+ const sources=[];
+ notes.forEach((midi,i)=>{
+  const frequency=hz(midi),filter=c.createBiquadFilter();
+  filter.type='lowpass';filter.Q.value=.58;
+  const cutoff=3400-warmth*2700;
+  filter.frequency.setValueAtTime(Math.max(280,cutoff*.65),start);
+  filter.frequency.linearRampToValueAtTime(cutoff,start+Math.min(.52,hold*.7));
+  filter.frequency.setTargetAtTime(Math.max(320,cutoff*.72),start+hold*.58,.5);
+  const envelope=c.createGain(),amplitude=.071*vol*(i===0?1.05:.91);
+  const attackTime=Math.min(attack,hold*.66);
+  envelope.gain.setValueAtTime(.00001,start);
+  envelope.gain.linearRampToValueAtTime(amplitude,start+Math.max(.025,attackTime));
+  envelope.gain.setValueAtTime(amplitude,start+hold);
+  envelope.gain.setTargetAtTime(.00001,start+hold,Math.max(.08,release*.18));
+  envelope.gain.setValueAtTime(.00001,end);
+  filter.connect(envelope);
+  const direct=c.createGain();direct.gain.value=.72-.26*wet;envelope.connect(direct).connect(graph.master);
+  if(wet>0){const send=c.createGain();send.gain.value=.36+wet*.92;envelope.connect(send).connect(graph.convolver);}
+  for(const [type,mix,cents] of [['triangle',.84,-1.9],['sawtooth',.14,2.3]]){
+   const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=frequency;o.detune.value=cents;
+   g.gain.value=mix;o.connect(g).connect(filter);
+   o.start(start);o.stop(end+.02);sources.push(o);
+  }
+ });
+ const item={sources};activePadNotes.push(item);
+ sources[0].onended=()=>{const i=activePadNotes.indexOf(item);if(i>=0)activePadNotes.splice(i,1);};
+ return {notes:notes.map(padNoteName),at:start,duration:hold};
+}
+function maybePadWithVoice(syl,at,tone,gate){
+ if(syl===0&&$('padEnabled').checked&&$('padTrigger').value==='ih')playLofiPad(at,tone,gate);
+}
+function stopPad(){
+ for(const item of activePadNotes.splice(0)){for(const osc of item.sources){try{osc.stop()}catch{}}}
+ if(padGraph){const graph=padGraph;padGraph=null;
+  try{graph.master.gain.cancelScheduledValues(getAudio().currentTime);graph.master.gain.setTargetAtTime(0,getAudio().currentTime,.035);}catch{}
+  setTimeout(()=>{try{graph.master.disconnect();graph.convolver.disconnect()}catch{}},350);
+ }
+}
+
 function chord(at,tone=selectedTone){const c=getAudio(),root=ROOTS[tone],v=level('vchord');if(v<=0)return;[root,root+4,root+7,root+9].forEach((midi,i)=>{const o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),out=c.createGain();o.type='triangle';o2.type='sine';o.frequency.value=hz(midi);o2.frequency.value=hz(midi)*2;const t=at+i*.012;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.092*v,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+1.25);out.gain.value=.55;o.connect(g).connect(c.destination);o2.connect(out).connect(g);o.start(t);o2.start(t);o.stop(t+1.27);o2.stop(t+1.27);});}
 function flash(d){const b=document.querySelector('[data-drum="'+d+'"]');if(b){b.classList.add('active');setTimeout(()=>b.classList.remove('active'),95);}}
 function white(){if(noiseBuffer)return noiseBuffer;const c=getAudio();noiseBuffer=c.createBuffer(1,Math.ceil(c.sampleRate*1.5),c.sampleRate);let ch=noiseBuffer.getChannelData(0),last=0;for(let j=0;j<ch.length;j++){const raw=Math.random()*2-1;last=last*.18+raw*.82;ch[j]=last;}return noiseBuffer;}
@@ -262,7 +415,7 @@ function drum(name,at,flashNow=false){getAudio();const v=level('vdrum');if(flash
  if(name==='snare'){const style=$('snarestyle').value;if(style==='rim'){envOsc(720,450,at,.055,.24*v,'triangle');noise(at,.045,.14*v,2400);}else{const snap=style==='snap';noise(at,snap?.13:.11,(snap?.28:.21)*v,snap?1300:790);envOsc(195,158,at,.085,.13*v,'triangle');}}
  if(name==='hat'){const style=$('hatstyle').value;noise(at,style==='open'?.33:(style==='light'?.06:.095),(style==='light'?.09:.13)*v,style==='open'?4900:6800);}}
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
-function selectTone(index){selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));renderCuts();tunedPreview(index);harmonyExample();saveSequence();}
+function selectTone(index){selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));renderCuts();tunedPreview(index);harmonyExample();padReadouts();saveSequence();}
 function defaultPattern(){pattern.forEach(row=>row.fill(0));pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));selectedNote=null;
  [0,4,8,12].forEach((step,i)=>{pattern[i][step]=1;noteLengths[i][step]=2;});
  [0,8].forEach(j=>pattern[4][j]=1);[4,12].forEach(j=>pattern[5][j]=1);
@@ -273,7 +426,7 @@ function syncopatedPattern(){defaultPattern();for(let i=0;i<4;i++)pattern[i].fil
  [2,6,10,14].forEach(j=>pattern[6][j]=1);
 }
 function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
-function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,bpm:$('bpm').value,target:$('targetbpm').value,rampbars:$('rampbars').value,accelerate:$('accelerate').checked,swing:$('swing').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value}));}catch{}}
+function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,bpm:$('bpm').value,target:$('targetbpm').value,rampbars:$('rampbars').value,accelerate:$('accelerate').checked,swing:$('swing').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
 function restoreSequence(){let saved;try{saved=JSON.parse(localStorage.getItem(SEQKEY)||localStorage.getItem(LEGACY_SEQKEY)||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
  for(let i=0;i<7;i++)for(let j=0;j<STEPS;j++)pattern[i][j]=Number(saved.pattern[i][j])?1:0;
  for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++){
@@ -288,6 +441,11 @@ function restoreSequence(){let saved;try{saved=JSON.parse(localStorage.getItem(S
  if([2,4,8,16,32].includes(Number(saved.rampbars)))$('rampbars').value=String(saved.rampbars);
  for(const id of ['accelerate','shortvoice','beatchord','mimisOn'])if(typeof saved[id]==='boolean')$(id).checked=saved[id];
  for(const id of ['harmA','harmB'])if(typeof saved[id]==='string'&&Object.hasOwn(INTERVALS,saved[id]))$(id).value=saved[id];
+ if(typeof saved.padEnabled==='boolean')$('padEnabled').checked=saved.padEnabled;
+ for(const id of ['padTrigger','padVoicing'])if(typeof saved[id]==='string'&&Array.from($(id).options).some(o=>o.value===saved[id]))$(id).value=saved[id];
+ for(const [id,min,max] of [['padVolume',0,100],['padAttack',5,140],['padHold',4,50],['padWet',0,100],['padTail',10,80],['padWarmth',0,100]]){
+  if(saved[id]!=null&&Number.isFinite(Number(saved[id])))$(id).value=String(Math.max(min,Math.min(max,Number(saved[id]))));
+ }
  if([1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
  defaultNoteLength=Number($('drawlen').value);
  return Number.isInteger(saved.tone)&&saved.tone>=0&&saved.tone<=8?saved.tone:0;
@@ -356,6 +514,7 @@ function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
  for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):noteGate(stepIndex,len);syllable(tr,at,notePitches[tr][idx],gate);}
  ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at);});
  if(idx===0&&$('beatchord').checked){const tone=pattern[0][idx]?notePitches[0][idx]:selectedTone;chord(at,tone);}
+ if(idx===0&&$('padEnabled').checked&&$('padTrigger').value==='bar'){const tone=pattern[0][idx]?notePitches[0][idx]:selectedTone;playLofiPad(at,tone,60/bpm*3.4);}
  const timer=setTimeout(()=>{visualTimers.delete(timer);if(beatRunning&&id===runId)visual(idx,bar,bpm);},Math.max(0,(at-c.currentTime)*1000));visualTimers.add(timer);
  stepIndex++;nextBeat+=duration;
  }
@@ -364,7 +523,7 @@ function stopBeat(){beatRunning=false;runId++;clearInterval(beatTimer);for(const
 function toggleBeat(){getAudio();if(beatRunning){stopAll();return;}
  beatRunning=true;runId++;stepIndex=0;nextBeat=ctx.currentTime+.065;sequenceStartBpm=+$('bpm').value;sequenceTargetBpm=+$('targetbpm').value;sequenceRampBars=+$('rampbars').value;sequenceSwing=+$('swing').value;sequenceAccelerate=$('accelerate').checked;
  beatTimer=setInterval(tick,25);tick();$('playbeat').textContent='■ PARAR CRIAÇÃO';}
-function stopAll(){stopBeat();playing.forEach(s=>{try{s.stop()}catch{}});playing=[];}
+function stopAll(){stopBeat();playing.forEach(s=>{try{s.stop()}catch{}});playing=[];stopPad();}
 function renderCuts(){const k=tune().index;const el=$('cutbox');el.innerHTML='';cuts[k].forEach((range,i)=>{const l=document.createElement('label');l.textContent=['IH','ON','MI 1','MI 2'][i];const group=document.createElement('div');group.style.display='flex';group.style.gap='4px';range.forEach((n,j)=>{const inp=document.createElement('input');inp.type='number';inp.min='0';inp.max='30';inp.step='.01';inp.value=n.toFixed(2);inp.setAttribute('aria-label',l.textContent+(j===0?' início':' fim'));inp.onchange=()=>{const x=Number(inp.value);if(Number.isFinite(x)&&x>=0)cuts[k][i][j]=x;};group.append(inp);});l.append(group);el.append(l);});}
 function db(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window))return reject(Error('indisponível'));let req=indexedDB.open(DBNAME,1);req.onupgradeneeded=()=>req.result.createObjectStore('audios');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
 async function savedLoad(){try{const conn=await db();return await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readonly'),r=tx.objectStore('audios').get(DBKEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);tx.oncomplete=()=>conn.close();});}catch{return null;}}
@@ -420,8 +579,17 @@ $('drawlen').onchange=e=>{defaultNoteLength=Number(e.target.value);saveSequence(
 document.addEventListener('keydown',e=>{if((e.key==='Delete'||e.key==='Backspace')&&selectedNote&&!/input|select|textarea/i.test(e.target.tagName)){$('noteDelete').click();e.preventDefault();}});
 for(const id of ['mimisOn','harmA','harmB','vharmony','hwidth']){$(id).addEventListener('input',()=>{harmonyExample();saveSequence();});$(id).addEventListener('change',()=>{harmonyExample();saveSequence();});}
 document.querySelectorAll('[data-hpreset]').forEach(b=>{b.onclick=()=>{const presets={solo:[false,'off','off'],trio:[true,'thirdUp','thirdDown'],up:[true,'thirdUp','off'],down:[true,'thirdDown','off'],open:[true,'fifthUp','fifthDown']};const [on,a,z]=presets[b.dataset.hpreset];$('mimisOn').checked=on;$('harmA').value=a;$('harmB').value=z;harmonyExample();saveSequence();};});
+
+// A camada PAD tem seus proprios volumes, nao afetando a voz afinada ou seu loop de vogal.
+for(const id of ['padEnabled','padTrigger','padVoicing','padVolume','padAttack','padHold','padWet','padTail','padWarmth']){
+ $(id).addEventListener('input',()=>{padReadouts();saveSequence();});
+ $(id).addEventListener('change',()=>{padReadouts();saveSequence();});
+}
+$('previewPad').onclick=()=>playLofiPad(getAudio().currentTime+.025,selectedTone,1.8,true);
+$('padPresetCloud').onclick=()=>{Object.assign($('padAttack'),{value:58});$('padHold').value=28;$('padWet').value=82;$('padTail').value=65;$('padWarmth').value=74;$('padVolume').value=44;$('padEnabled').checked=true;padReadouts();saveSequence();};
+$('padPresetSoft').onclick=()=>{$('padAttack').value=18;$('padHold').value=13;$('padWet').value=34;$('padTail').value=24;$('padWarmth').value=58;$('padVolume').value=43;$('padEnabled').checked=true;padReadouts();saveSequence();};
 $('resetcuts').onclick=()=>{cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice()));renderCuts();};
 document.addEventListener('keydown',e=>{if(e.repeat||/input|select|textarea/i.test(e.target.tagName))return;const map={'1':0,'2':1,'3':2,'4':3};if(map[e.key]!=null)syllable(map[e.key],getAudio().currentTime+.01);else if(e.code==='Space'){e.preventDefault();whole(getAudio().currentTime+.01);}});
-buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();startup();studioStartup();
+buildTones();const lastTone=restoreSequence();buildGrid();updateNoteEditor();selectTone(lastTone);rampInfo();harmonyExample();padReadouts();startup();studioStartup();
 })();
 </script></body></html>
