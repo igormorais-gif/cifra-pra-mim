@@ -149,6 +149,16 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 .hero{box-shadow:none!important;border:1px solid #51475d!important;background:#29243f!important}
 .panel,.columns>.panel{box-shadow:none!important;border-color:#48465e!important}
 @media(max-width:739px){.mimi-avatar{border-radius:14px!important}.lip-face{border-radius:13px!important}}
+
+/* Catálogo ritmico com as quatro vozes funcionando como percussões extras */
+.beat-catalog{display:grid;grid-template-columns:minmax(130px,.65fr) minmax(160px,1fr);gap:7px 12px;align-items:center;margin:13px 0;padding:12px 14px;border-radius:13px;background:#282b48;border:1px solid #7a6aab}
+.beat-catalog label{color:#d5c5fa;font-size:.74rem;font-weight:850;letter-spacing:.06em}
+.beat-catalog select{min-height:44px;width:100%;border:1px solid #9b88d4;background:#3e355d;color:#fff6e9;border-radius:10px;padding:9px;font-weight:850}
+.beat-catalog-info{grid-column:1/-1;color:#d2d0e7;font-size:.76rem;line-height:1.4}
+.beatgrid .trname.voice-name{line-height:1.15}
+.beatgrid .track-pitch{display:block;margin-top:4px;color:#ffdc96;font-size:.63rem;font-weight:800}
+.beatgrid .note-cell strong{font-size:.66rem;letter-spacing:-.03em}
+@media(max-width:500px){.beat-catalog{grid-template-columns:1fr;gap:7px}.beat-catalog-info{grid-column:1}.beatgrid .note-cell strong{font-size:.63rem}}
 </style><link rel="stylesheet" href="./assets/studio-panorama.css?v=20261122-1"></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">MIMI • PLAYGROUND SONORO</span><a href="../laboratorio.html">← Voltar ao Hub</a></header><aside class="orientation-hint" role="note">↻ Melhor experiência: gire o celular para a horizontal. Na vertical tudo continua funcionando.</aside>
@@ -174,11 +184,26 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <section class="panel beat-feature" id="beatFeature" aria-label="Montador de BEAT">
  <div class="bar-title"><h2>03 / Monte seu BEAT</h2><span class="sub">16 passos · voz + bateria</span></div>
  <p class="seq-help">Crie seu ritmo agora: toque nos quadradinhos de <strong>IH, ON, MI, MI, bumbo, caixa e prato</strong>. Arraste as pontas das notas se quiser alongá-las. Troque o acorde enquanto toca, sem parar o groove.</p>
- <div class="compact-live" id="sequencer"><div class="bar-title" style="justify-content:flex-end;margin-bottom:6px"><span id="liveTone" class="sub" aria-live="polite">E6</span></div><div class="bpm-control"><label for="bpm">BPM <output id="bpmout">95</output></label><input id="bpm" type="range" min="50" max="220" step="1" value="95" aria-label="Andamento em BPM"></div><div class="rhythm-info"><span><strong id="nowbpm">95 BPM</strong> <span class="sub" id="barcounter">· compasso 1</span></span><span class="sub">1 e &amp; a · 2 e &amp; a · 3 e &amp; a · 4 e &amp; a</span></div>
-<div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><button id="resetbeat" class="btn secondary" type="button">Padrão MIMI</button><button id="syncbeat" class="btn secondary" type="button">Síncope!</button><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div><p class="soft">Troque os acordes acima enquanto o beat toca. O ritmo segue e todas as vozes e o pad mudam de tom nos próximos passos.</p><div class="beat-editor"><div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
+ <div class="beat-catalog" role="group" aria-label="Catálogo de batidas">
+ <label for="beatCatalog">CATÁLOGO DE BATIDAS</label>
+ <select id="beatCatalog" aria-label="Escolha uma levada para o BEAT">
+  <option value="mimi">MIMI clássico</option>
+  <option value="samba">Samba</option>
+  <option value="funk">Funk carioca</option>
+  <option value="hiphop">Hip-hop</option>
+  <option value="pop">Pop</option>
+  <option value="rock">Rock</option>
+  <option value="house">House</option>
+  <option value="reggae">Reggae</option>
+  <option value="bossa">Bossa nova</option>
+ </select>
+ <span id="beatCatalogInfo" class="beat-catalog-info">IH, ON e os dois MIs entram no groove junto da bateria.</span>
+</div>
+<div class="compact-live" id="sequencer"><div class="bar-title" style="justify-content:flex-end;margin-bottom:6px"><span id="liveTone" class="sub" aria-live="polite">E6</span></div><div class="bpm-control"><label for="bpm">BPM <output id="bpmout">95</output></label><input id="bpm" type="range" min="50" max="220" step="1" value="95" aria-label="Andamento em BPM"></div><div class="rhythm-info"><span><strong id="nowbpm">95 BPM</strong> <span class="sub" id="barcounter">· compasso 1</span></span><span class="sub">1 e &amp; a · 2 e &amp; a · 3 e &amp; a · 4 e &amp; a</span></div>
+<div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div><p class="soft">Troque os acordes acima enquanto o beat toca. O ritmo segue e todas as vozes e o pad mudam de tom nos próximos passos.</p><div class="beat-editor"><div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
 <div class="note-edit" id="noteEditor"><span class="note-hint" id="noteInfo">Toque um bloco de voz para editar sua nota.</span>
   <button class="mini" type="button" id="noteMinus" aria-label="Encurtar uma semicolcheia">−</button><output id="noteLenOut">1 passo</output><button class="mini" type="button" id="notePlus" aria-label="Alongar uma semicolcheia">+</button>
-  <button class="mini" type="button" id="notePitch">Usar tom selecionado</button><button class="mini" type="button" id="shortAllNotes">Todas curtas</button><button class="mini remove" type="button" id="noteDelete">Apagar nota</button>
+  <button class="mini" type="button" id="shortAllNotes">Todas curtas</button><button class="mini remove" type="button" id="noteDelete">Apagar nota</button>
 </div><div class="note-edit"><label for="drawlen" class="note-hint">Tamanho inicial de uma nova nota</label><select id="drawlen"><option value="1" selected>1/16 · 1 passo</option><option value="2">1/8 · 2 passos</option><option value="3">3 passos</option><option value="4">1/4 · 4 passos</option><option value="6">6 passos</option><option value="8">1/2 · 8 passos</option><option value="12">12 passos</option><option value="16">1 compasso · 16 passos</option></select></div>
 <label class="check" style="margin-top:10px"><input id="shortvoice" type="checkbox"> Voz curtinha</label>
 <label class="check" style="margin-top:12px"><input id="beatchord" type="checkbox"> Tocar acorde de sexta no início de cada compasso</label></div>
@@ -555,18 +580,33 @@ function showOnlyPadToggle(){
  $('padEnabled').addEventListener('change',()=>{if(!$('padEnabled').checked)stopPad();});
 }
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
-function selectTone(index){const changed=selectedTone!==index;selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));$('liveTone').textContent=CHORDS[index];if(beatRunning&&changed){stopPad();repaint();}renderCuts();tunedPreview(index);refreshPitchCaptions();harmonyExample();padReadouts();repaint();saveSequence();}
-function defaultPattern(){pattern.forEach(row=>row.fill(0));pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));selectedNote=null;
- [0,4,8,12].forEach((step,i)=>{pattern[i][step]=1;noteLengths[i][step]=1;});
- [0,8].forEach(j=>pattern[4][j]=1);[4,12].forEach(j=>pattern[5][j]=1);
- for(let j=0;j<STEPS;j+=2)pattern[6][j]=1;
+function selectTone(index){const changed=selectedTone!==index;selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));$('liveTone').textContent=CHORDS[index];if(beatRunning&&changed){stopPad();repaint();}renderCuts();tunedPreview(index);refreshPitchCaptions();harmonyExample();padReadouts();repaint();updateNoteEditor();saveSequence();}
+// Catálogo: 16 semicolcheias; pistas 0–3 são samples vocais usados como percussões.
+const BEAT_PRESETS={
+ mimi:{info:'Vozes em chamada e resposta; bumbo, caixa e prato marcam o pulso.',tracks:[[0,8],[4,12],[6,14],[7,15],[0,8],[4,12],[0,2,4,6,8,10,12,14]]},
+ samba:{info:'Samba estilizado: dois ciclos de 2/4, caixa sincopada e MIMIs entre os ataques.',tracks:[[1,9],[5,13],[7,15],[3,11],[0,6,8,14],[0,3,4,7,8,11,12,15],[0,2,3,5,6,7,8,10,11,13,14,15]]},
+ funk:{info:'Funk carioca estilizado: bumbo quebrado e MIMIs como respostas percussivas.',tracks:[[0,8],[5,13],[7,15],[3,11],[0,3,6,8,11,14],[4,12],[2,5,7,10,13,15]]},
+ hiphop:{info:'Hip-hop: caixa no contratempo, bateria espaçada e sílabas entre os tempos.',tracks:[[2,10],[6],[14],[15],[0,7,10],[4,12],[0,2,4,6,8,10,12,14]]},
+ pop:{info:'Pop: pulsação constante com pequenas respostas de IH, ON e MI.',tracks:[[0,8],[4,12],[6],[14],[0,4,8,12],[4,12],[0,2,4,6,8,10,12,14]]},
+ rock:{info:'Rock: bumbo e caixa bem definidos; voz entra nas brechas da bateria.',tracks:[[3,11],[7,15],[13],[14],[0,8,10],[4,12],[0,2,4,6,8,10,12,14]]},
+ house:{info:'House: bumbo em todos os tempos, prato no contratempo e MIMIs de apoio.',tracks:[[0,8],[6],[10],[14],[0,4,8,12],[4,12],[2,6,10,14]]},
+ reggae:{info:'Reggae estilizado: ênfase no terceiro tempo, com voz nos contratempos.',tracks:[[2,10],[6,14],[3],[11],[8],[8],[0,2,4,6,8,10,12,14]]},
+ bossa:{info:'Bossa nova estilizada: batida leve e síncopes vocais distribuídas.',tracks:[[1,9],[6,14],[11],[15],[0,8,12],[3,7,10,14],[0,2,4,6,8,10,12,14]]}
+};
+let beatPresetId='mimi';
+function setBeatPreset(id,save=true){
+ const preset=BEAT_PRESETS[id];if(!preset)return;
+ for(let tr=0;tr<7;tr++)pattern[tr].fill(0);
+ pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));
+ for(let tr=0;tr<7;tr++)for(const step of preset.tracks[tr])if(step>=0&&step<STEPS)pattern[tr][step]=1;
+ selectedNote=null;beatPresetId=id;
+ $('beatCatalog').value=id;$('beatCatalogInfo').textContent=preset.info;
+ repaint();updateNoteEditor();
+ if(save)saveSequence();
 }
-function syncopatedPattern(){defaultPattern();for(let i=0;i<4;i++)pattern[i].fill(0);
- [[0,0],[1,3],[2,7],[3,10],[0,14]].forEach(([i,j],k)=>{pattern[i][j]=1;notePitches[i][j]=[0,1,2,3,4][k];noteLengths[i][j]=1;});
- [2,6,10,14].forEach(j=>pattern[6][j]=1);
-}
+function defaultPattern(){setBeatPreset('mimi',false);}
 function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
-function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
+function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
 function restoreSequence(){let saved,legacy=false;try{const current=localStorage.getItem(SEQKEY);legacy=!current;saved=JSON.parse(current||localStorage.getItem(LEGACY_SEQKEY)||localStorage.getItem('mimi-sequencer-v2')||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
  for(let i=0;i<7;i++)for(let j=0;j<STEPS;j++)pattern[i][j]=Number(saved.pattern[i][j])?1:0;
  for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++){
@@ -588,19 +628,19 @@ function restoreSequence(){let saved,legacy=false;try{const current=localStorage
  }
  if(!legacy&&[1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
  defaultNoteLength=Number($('drawlen').value);
+ beatPresetId=BEAT_PRESETS[saved.beatPreset]?saved.beatPreset:'mimi';$('beatCatalog').value=beatPresetId;$('beatCatalogInfo').textContent=BEAT_PRESETS[beatPresetId].info;
  return Number.isInteger(saved.tone)&&saved.tone>=0&&saved.tone<=8?saved.tone:0;
 }
 function maxLength(tr,j){let k=j+1;while(k<STEPS&&!pattern[tr][k])k++;return Math.min(STEPS-j,k-j);}
 function noteAt(tr,step){for(let j=step;j>=0;j--)if(pattern[tr][j]&&step<j+noteLengths[tr][j])return j;return -1;}
 function selectNote(tr,step){selectedNote={tr,step};repaint();updateNoteEditor();harmonyExample();}
 function updateNoteEditor(){const n=selectedNote,ok=n&&pattern[n.tr][n.step];
- ['noteMinus','notePlus','notePitch','noteDelete'].forEach(id=>$(id).disabled=!ok);
+ ['noteMinus','notePlus','noteDelete'].forEach(id=>$(id).disabled=!ok);
  if(!ok){$('noteInfo').textContent='Toque um bloco de voz para editar a nota.';$('noteLenOut').textContent='—';return;}
- const len=noteLengths[n.tr][n.step],pitch=CHORDS[notePitches[n.tr][n.step]];
+ const len=noteLengths[n.tr][n.step],pitch=NOTE_LABELS[selectedTone][n.tr];
  $('noteInfo').innerHTML='<strong>'+LABELS[n.tr]+'</strong> · passo '+(n.step+1)+' · '+pitch;
  $('noteLenOut').textContent=len+' '+(len===1?'passo':'passos');
  $('noteMinus').disabled=len<=1;$('notePlus').disabled=len>=maxLength(n.tr,n.step);
- $('notePitch').textContent='Aplicar '+CHORDS[selectedTone];
 }
 function lengthSelected(delta){const n=selectedNote;if(!n||!pattern[n.tr][n.step])return;
  noteLengths[n.tr][n.step]=Math.max(1,Math.min(maxLength(n.tr,n.step),noteLengths[n.tr][n.step]+delta));repaint();updateNoteEditor();saveSequence();}
@@ -615,7 +655,7 @@ function buildGrid(){const g=$('beatgrid');g.innerHTML='';
  const headLabel=document.createElement('span');headLabel.className='trname';headLabel.style.gridRow='1';headLabel.style.gridColumn='1';headLabel.textContent='PISTAS';g.append(headLabel);
  for(let j=0;j<STEPS;j++){const hd=document.createElement('span');hd.className='seq-head'+(j%4===0?' down':'');hd.dataset.step=j;hd.style.gridRow='1';hd.style.gridColumn=String(j+2);hd.textContent=(j%4===0?String(j/4+1):['','e','&','a'][j%4]);g.append(hd);}
  for(let tr=0;tr<7;tr++){
-  const lab=document.createElement('span');lab.className='trname'+(tr<4?' voice-name':'');lab.textContent=LABELS[tr];lab.style.gridColumn='1';lab.style.gridRow=String(tr+2);g.append(lab);
+  const lab=document.createElement('span');lab.className='trname'+(tr<4?' voice-name':'');lab.textContent=LABELS[tr];if(tr<4){const note=document.createElement('small');note.className='track-pitch';note.textContent=NOTE_LABELS[selectedTone][tr];lab.append(note);}lab.style.gridColumn='1';lab.style.gridRow=String(tr+2);g.append(lab);
 
   for(let j=0;j<STEPS;j++){
    const btn=document.createElement('button');btn.type='button';btn.dataset.track=tr;btn.dataset.step=j;btn.style.gridRow=String(tr+2);
@@ -625,8 +665,8 @@ function buildGrid(){const g=$('beatgrid');g.innerHTML='';
     btn.className='step note-cell'+(selectedNote?.tr===tr&&selectedNote?.step===j?' selected':'');
     btn.style.gridColumn=(j+2)+' / span '+len;
     btn.setAttribute('aria-pressed','true');
-    btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1)+' '+CHORDS[notePitches[tr][j]]+' duracao '+len+' semicolcheias. Toque para selecionar.');
-    const strong=document.createElement('strong');strong.textContent=CHORDS[notePitches[tr][j]];btn.append(strong);
+    btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1)+' '+NOTE_LABELS[selectedTone][tr]+' duracao '+len+' semicolcheias. Toque para selecionar.');
+    const strong=document.createElement('strong');strong.textContent=NOTE_LABELS[selectedTone][tr];btn.append(strong);
     if(len>1){const small=document.createElement('span');small.className='length-badge';small.textContent=len+'×';btn.append(small);}
     const handle=document.createElement('span');handle.className='resize-handle';handle.setAttribute('aria-hidden','true');handle.addEventListener('pointerdown',e=>dragHandle(handle,tr,noteStep,e));btn.append(handle);
     btn.onclick=e=>{if(isResizing)return;selectNote(tr,noteStep);};g.append(btn);j+=len-1;
@@ -707,8 +747,7 @@ $('phrase').onclick=()=>{const now=getAudio().currentTime+.045;if($('harmonize')
 document.querySelectorAll('[data-drum]').forEach(b=>b.onclick=()=>drum(b.dataset.drum,getAudio().currentTime+.01,true));
 $('playbeat').onclick=toggleBeat;
 $('clearbeat').onclick=()=>{clearPattern();repaint();saveSequence();};
-$('resetbeat').onclick=()=>{defaultPattern();repaint();saveSequence();};
-$('syncbeat').onclick=()=>{syncopatedPattern();repaint();saveSequence();};
+$('beatCatalog').onchange=e=>setBeatPreset(e.target.value);
 ['bpm','shortvoice','beatchord'].forEach(id=>{
  $(id).addEventListener('input',()=>{updateBpm();saveSequence();});$(id).addEventListener('change',()=>{updateBpm();saveSequence();});
 });
@@ -716,7 +755,6 @@ $('syncbeat').onclick=()=>{syncopatedPattern();repaint();saveSequence();};
 $('shortAllNotes').onclick=()=>{for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++)if(pattern[tr][j])noteLengths[tr][j]=1;selectedNote=null;defaultNoteLength=1;$('drawlen').value='1';repaint();updateNoteEditor();saveSequence();};
 $('noteMinus').onclick=()=>lengthSelected(-1);$('notePlus').onclick=()=>lengthSelected(1);
 $('noteDelete').onclick=()=>{const n=selectedNote;if(!n)return;pattern[n.tr][n.step]=0;selectedNote=null;repaint();updateNoteEditor();saveSequence();};
-$('notePitch').onclick=()=>{const n=selectedNote;if(!n)return;notePitches[n.tr][n.step]=selectedTone;repaint();updateNoteEditor();saveSequence();};
 $('drawlen').onchange=e=>{defaultNoteLength=Number(e.target.value);saveSequence();};
 document.addEventListener('keydown',e=>{if((e.key==='Delete'||e.key==='Backspace')&&selectedNote&&!/input|select|textarea/i.test(e.target.tagName)){$('noteDelete').click();e.preventDefault();}});
 for(const id of ['mimisOn','harmA','harmB','vharmony','hwidth']){$(id).addEventListener('input',()=>{harmonyExample();saveSequence();});$(id).addEventListener('change',()=>{harmonyExample();saveSequence();});}
