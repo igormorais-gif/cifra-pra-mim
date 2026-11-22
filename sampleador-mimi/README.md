@@ -1,25 +1,39 @@
-# SAMPLEADOR MIMI — afinação de estúdio
+# SAMPLEADOR MIMI — Teclado Lo-fi Pad e reverb
 
-O MIMI usa 8 performances independentes do áudio 149. São 32 sílabas originais (8 × IH, ON, MI 1, MI 2), corrigidas individualmente por Praat/PSOLA. O original não foi sobrescrito.
+Versão do Hub: https://igormorais-gif.github.io/cifra-pra-mim/sampleador-mimi/
 
-## Notas previstas
+## Novo: acorde de teclado PAD
 
-Primeiro acorde: E6 (Mi com sexta). **IH: E5 / Mi5; ON: E4 / Mi4; MI 1: D#5 / Ré♯5; MI 2: C#5 / Dó♯5.** As 4 alturas descem um semitom a cada gravação: E6, Eb6, D6, Db6, C6, B6, Bb6 e A6. O G#6 continua derivado digitalmente do último arquivo, não é uma nona tomada real.
+Ative **PAD ligado** no painel “03 / Teclado lo-fi · PAD de sexta”.
+Escolha **Quando o PAD deve começar**:
+- **A cada IH:** acompanha o tom do IH manual ou de cada nota IH no piano roll. É o modo inicial.
+- **No começo de cada compasso do beat:** um acorde por compasso, seguindo o tom programado no primeiro IH do compasso ou o tom selecionado se não houver IH nesse passo.
+- **Somente ao tocar o botão PAD:** o sequenciador e as sílabas não acionam automaticamente o pad; use **OUVIR PAD** para experimentar.
 
-Acorreção foi gerada a partir de cada **performance individual**, não a partir de uma única gravação transposta para todas. O banco comprimido de áudio é `assets/mimi-studio-sustain.ogg`. O modo de estúdio é o padrão; desligar **Afinação de estúdio** permite comparar com o áudio original `assets/voz-original-149.m4a`.
+O PAD tem controles independentes de **volume**, **ataque/bloom**, **sustentação mínima**, **nível de reverb**, **duração da cauda reverberada** e **calor lo-fi**. Presets **Nuvem de reverb** e **Suave e próximo**. Há três distribuições:
 
-## Duração MIDI sem "MIMIMI"
+- Aberto e envolvente: 1–5–6–3 no registro do teclado. E6 = **Mi3–Si3–Dó♯4–Sol♯4**.
+- Próximo: 1–3–5–6. E6 = Mi3–Sol♯3–Si3–Dó♯4.
+- Aéreo: 5–6–3–1 na região médio-aguda. E6 = Si3–Dó♯4–Sol♯4–Si4.
 
-Cada nota tem um único ataque com consoante seguido de loop exclusivamente no trecho estável da **vogal final**. No MI a consoante M toca uma vez e apenas I continua: "Miiii". Os recortes de loop foram escolhidos para alinhar cruzamentos de zero/fase. O piano roll define o tempo de duração em semicolcheias, inclusive durante a rampa de BPM, sem alterar a altura original. Em alguns fonemas muito curtos ainda podem existir artefatos de loop e pequenas perdas de naturalidade.
+O acorde contém **1, 3, 5 e 6** em todas as formas. Não pressupõe que a mão direita deva ter quatro notas no método pedagógico geral — aqui o objetivo é construir uma cama sonora de teclado. Ao escolher outro tom, as notas do PAD são transpostas com a fundamental do acorde escolhido.
 
-## Harmonização
+### Como o som é produzido
 
-Até 3 vozes, com terças, quartas, quintas, sextas e oitavas diatônicas, incluindo intervalos abaixo e acima. No espaço das 8 gravações, o sistema escolhe a tomada individual correspondente já afinada. Fora da extensão disponível, é preciso transpor digitalmente a tomada mais próxima, o que pode mudar o timbre. Uma camada tonal senoidal opcional reforça a frequência, mas não regrava a sílaba; fica desligada por padrão para evitar batimentos.
+O PAD é sintetizado no navegador (triângulo + pequena camada dente-de-serra filtrada), com ataque gradual, filtro escuro, desafinação estéreo sutil e reverb de convolução com cauda controlável. Não é uma gravação de piano nem um sample vocal. O próprio MIMI continua preservado: 32 sílabas vocais corrigidas por tomada e sustain da vogal, sem alterar a voz com o reverb do pad.
 
-## Validação e limites
+O modo manual funciona mesmo com o pad desligado: **OUVIR PAD** faz prévia isolada. **PARAR TUDO** interrompe osciladores e a cauda. Evite volumes muito altos no iPhone.
 
-O mapa das 32 notas foi verificado por estimativa automatizada de F0. Na região de sustentação o desvio mediano ficou aproximadamente em 1 cent em relação à nota alvo, com desvios pontuais maiores. Isso é precisão de frequência, não certificação auditiva de timbre perfeito. A versão para iPhone deve ser escutada no próprio dispositivo; ao desativar o estúdio, permanece o áudio original como alternativa.
+Os controles do PAD ficam salvos localmente no navegador (quando esse recurso é permitido), juntamente com as notas, harmonias e andamento do beat. A nova versão conserva os padrões e seus formatos anteriores.
 
-Os arquivos de voz são públicos no GitHub/Pages. Ao disponibilizar a gravação de uma criança, considere a privacidade.
+### Conteúdo do pacote
 
-Endereço: https://igormorais-gif.github.io/cifra-pra-mim/sampleador-mimi/
+- `index.html`: aplicação web para colocar na pasta `sampleador-mimi/` do Hub.
+- `assets/voz-original-149.m4a`: gravação original 149.
+- `assets/mimi-studio-sustain.m4a` + `.ogg`: biblioteca vocal afinada com sustain de vogal, em formatos alternativos.
+- `assets/studio-atlas.json`: informações técnicas dos cortes.
+- `SAMPLEADOR-MIMI-LOFI-PAD-AUTONOMO.html`: aplicativo com a voz já incluída, para abrir individualmente num navegador compatível.
+
+### Privacidade
+
+A versão do Hub utiliza arquivos de uma gravação vocal infantil hospedados em repositório público. Isso significa que terceiros podem acessar e baixar esses áudios.
