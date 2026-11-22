@@ -37,3 +37,17 @@ Os controles do PAD ficam salvos localmente no navegador (quando esse recurso é
 ### Privacidade
 
 A versão do Hub utiliza arquivos de uma gravação vocal infantil hospedados em repositório público. Isso significa que terceiros podem acessar e baixar esses áudios.
+
+## Arpejador EU JÁ ESTOU PRONTA (9 tomadas, 5–5–5–3–1)
+
+A gravação fornecida pelo autor contém nove execuções cromáticas, de **E6 até G#6**. O banco corrigido contém 45 fragmentos: **EU, JÁ, ESTOU, PRON, TA**, cada um afinado individualmente. O motivo parte de **Si4–Si4–Si4–Sol#4–Mi4** (graus 5–5–5–3–1 em Mi maior), descendo um semitom a cada tomada. A célula usa ataques nas posições 0, 2, 4, 6, 10 da malha de 16 semicolcheias, formando um ciclo de dois compassos de 2/4, organizado como a referência de marchinha solicitada.
+
+A **pista lilás EU JÁ ESTOU PRONTA** permite colocar um único quadradinho para tocar a frase inteira. Cada quadradinho guarda seu próprio tom. O botão manual permite ouvir sem o beat. Na reprodução, o relógio muda os instantes de entrada das palavras, sem alterar a velocidade da gravação, de modo a priorizar a inteligibilidade. Em BPM muito alto, as palavras podem se sobrepor.
+
+**Situação do áudio no site:** a pista e os controles foram publicados, mas o banco processado da frase ainda **não está hospedado** no repositório. Baixe o pacote do projeto, extraia o arquivo assets/eu-ja-estou-pronta-bank.m4a e importe esse arquivo no campo da pista lilás **uma vez por dispositivo/navegador**. O aplicativo salva-o localmente no IndexedDB quando permitido. A versão HTML autônoma distribuída no pacote já inclui o banco e funciona sem importação. Quando esse arquivo for adicionado ao repositório, o app poderá carregá-lo automaticamente.
+
+A afinação usa análise de fundamental por fragmento e transposição com preservação de formantes. As inflexões vocais internas continuam naturais; a precisão não é absoluta durante glissandos. A gravação vocal original não foi substituída por voz gerada por IA.
+
+A referência musical consultada é a partitura de *Mamãe Eu Quero* da Casa do Choro (marcha em 2/4). O encaixe 0–2–4–6–10 é uma **adaptação de quantização** da nova frase, não uma transcrição certificada de cada ataque da gravação histórica.
+
+Privacidade: caso o banco vocal seja adicionado ao GitHub público, ele também se tornará publicamente acessível.
