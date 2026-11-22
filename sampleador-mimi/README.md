@@ -82,3 +82,11 @@ As quatro pistas vocais exibem **os nomes de notas do acorde selecionado** tanto
 A escolha de levada **não altera o BPM** e pode ser feita com o beat tocando; os próximos passos passam a seguir o novo padrão. A edição ou escolha de outra levada substitui as posições programadas no estado atual, mas a execução não reinicia.
 
 **Rosto/lip sync:** nenhuma modificação nessa parte foi feita nesta atualização. A reclamação sobre a boca continua pendente de um teste auditivo/visual real no iPhone e não deve ser considerada corrigida por esta alteração.
+
+## Lip sync e par MI–MI em semicolcheias (22/11/2026)
+
+O personagem passou a usar o banco de imagem **`assets/rosto-lipsync-v2.webp`**, com estados visuais realmente distintos para repouso, **IH**, **ON**, **M fechado** e **I aberto**. O SVG com uma boca desenhada por cima do rosto foi retirado para evitar a aparência de “bolinha branca e traço”. Tanto MI 1 quanto MI 2 acionam a mesma articulação: M fechado → I aberto, sem mexer no áudio. Os visemas continuam agendados pelo relógio de Web Audio junto dos disparos da voz, tanto manuais quanto no beat. O estado volta a repouso quando a nota termina ou quando o transporte é parado.
+
+**Todos os nove presets do catálogo agora garantem o par MI 1 → MI 2 com distância de exatamente uma semicolcheia** (passos vizinhos da grade de 16). O próprio aplicador de presets reforça essa regra para evitar variações inconsistentes nos próximos presets; a duração padrão é de um passo. O usuário continua livre para modificar o padrão depois, inclusive separar os MIs manualmente. Mudanças de BPM alteram a duração temporal entre os dois disparos, mas não sua distância de um passo. Padrões já salvos no navegador só recebem a nova disposição ao escolher novamente uma levada do catálogo, para não sobrescrever composições próprias.
+
+Testes automatizados confirmaram todos os pares do catálogo, estados de boca e renderização de quadros distintos num avatar de 112 px no Chromium. A verificação final de percepção e compatibilidade de áudio/vídeo em um iPhone físico continua pendente.
