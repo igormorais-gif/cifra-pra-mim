@@ -70,3 +70,15 @@ O ritmo do beat, as alterações de BPM, os padrões, a escolha de acorde e as h
 Recurso visual: `assets/lipsync-rosto.webp`. É uma animação 2D aproximada por visemas, não análise fonêmica quadro a quadro nem captura facial em vídeo. A precisão final da sincronização deve ser conferida auditivamente e visualmente no iPhone.
 
 **Privacidade:** o retrato recortado está publicado no repositório público junto à voz do projeto.
+
+## Catálogo de batidas e notas por acorde (novembro/2026)
+
+O montador de BEAT mantém **16 semicolcheias e sete pistas**. Agora tem um seletor de **nove levadas**: MIMI clássico, samba, funk carioca, hip-hop, pop, rock, house, reggae e bossa nova. As levadas são **padrões estilizados**, não reproduções exatas de grooves tradicionais. Ao selecionar uma levada, as pistas de bumbo, caixa, prato e as quatro vozes IH, ON, MI 1 e MI 2 recebem eventos juntos. Todas as sete pistas podem ser modificadas livremente depois, e o padrão selecionado é salvo localmente.
+
+As sílabas são **samples de percussão vocal adicional** e não exigem que o usuário toque a frase completa. Cada ocorrência é uma nota curta (um passo por padrão) que pode ser alongada pelo editor.
+
+As quatro pistas vocais exibem **os nomes de notas do acorde selecionado** tanto nos rótulos quanto dentro dos blocos do beat. O editor de duração também exibe a altura atual. Exemplo: E6 = Mi5 / Mi4 / Ré♯5 / Dó♯5; Bb6 = Si♭4 / Si♭3 / Lá4 / Sol4. Quando se escolhe outro acorde, os nomes de **todos os blocos vocais existentes** são atualizados sem apagar o ritmo ou reiniciar o transporte; o som também segue as tomadas correspondentes. O botão antigo “Aplicar tom selecionado” foi retirado porque seria redundante.
+
+A escolha de levada **não altera o BPM** e pode ser feita com o beat tocando; os próximos passos passam a seguir o novo padrão. A edição ou escolha de outra levada substitui as posições programadas no estado atual, mas a execução não reinicia.
+
+**Rosto/lip sync:** nenhuma modificação nessa parte foi feita nesta atualização. A reclamação sobre a boca continua pendente de um teste auditivo/visual real no iPhone e não deve ser considerada corrigida por esta alteração.
