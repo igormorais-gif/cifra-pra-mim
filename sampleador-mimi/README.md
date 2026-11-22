@@ -14,7 +14,7 @@ O PAD tem controles independentes de **volume**, **ataque/bloom**, **sustentaç�
 
 - Aberto e envolvente: 1–5–6–3 no registro do teclado. E6 = **Mi3–Si3–Dó♯4–Sol♯4**.
 - Próximo: 1–3–5–6. E6 = Mi3–Sol♯3–Si3–Dó♯4.
-- Aéreo: 5–6–3–1 na região médio-aguda. E6 = Si3–Dó♯4–Sol♯4–Si4.
+- Aéreo: 1–6–3–5, aberto na região médio-aguda. E6 = Mi3–Dó♯4–Sol♯4–Si4.
 
 O acorde contém **1, 3, 5 e 6** em todas as formas. Não pressupõe que a mão direita deva ter quatro notas no método pedagógico geral — aqui o objetivo é construir uma cama sonora de teclado. Ao escolher outro tom, as notas do PAD são transpostas com a fundamental do acorde escolhido.
 
