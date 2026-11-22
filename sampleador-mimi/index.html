@@ -639,7 +639,7 @@ function noteAt(tr,step){for(let j=step;j>=0;j--)if(pattern[tr][j]&&step<j+noteL
 function selectNote(tr,step){selectedNote={tr,step};repaint();updateNoteEditor();harmonyExample();}
 function updateNoteEditor(){const n=selectedNote,ok=n&&pattern[n.tr][n.step];
  ['noteMinus','notePlus','noteDelete'].forEach(id=>$(id).disabled=!ok);
- if(!ok){$('noteInfo').textContent='Toque um bloco de voz para editar a nota.';$('noteLenOut').textContent='—';return;}
+ if(!ok){$('noteInfo').textContent='Toque para criar/apagar; segure uma nota para editar a duração.';$('noteLenOut').textContent='—';return;}
  const len=noteLengths[n.tr][n.step],pitch=NOTE_LABELS[selectedTone][n.tr];
  $('noteInfo').innerHTML='<strong>'+LABELS[n.tr]+'</strong> · passo '+(n.step+1)+' · '+pitch;
  $('noteLenOut').textContent=len+' '+(len===1?'passo':'passos');
@@ -668,11 +668,31 @@ function buildGrid(){const g=$('beatgrid');g.innerHTML='';
     btn.className='step note-cell'+(selectedNote?.tr===tr&&selectedNote?.step===j?' selected':'');
     btn.style.gridColumn=(j+2)+' / span '+len;
     btn.setAttribute('aria-pressed','true');
-    btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1)+' '+NOTE_LABELS[selectedTone][tr]+' duracao '+len+' semicolcheias. Toque para selecionar.');
+    btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1)+' '+NOTE_LABELS[selectedTone][tr]+' duracao '+len+' semicolcheias. Toque novamente para apagar; pressione e segure para editar.');
     const strong=document.createElement('strong');strong.textContent=NOTE_LABELS[selectedTone][tr];btn.append(strong);
     if(len>1){const small=document.createElement('span');small.className='length-badge';small.textContent=len+'×';btn.append(small);}
     const handle=document.createElement('span');handle.className='resize-handle';handle.setAttribute('aria-hidden','true');handle.addEventListener('pointerdown',e=>dragHandle(handle,tr,noteStep,e));btn.append(handle);
-    btn.onclick=e=>{if(isResizing)return;selectNote(tr,noteStep);};g.append(btn);j+=len-1;
+    // Toque na nota existente = remover. Pressionar e segurar = selecionar para editar duração.
+    let holdTimer=null,longPressed=false;
+    const clearHold=()=>{if(holdTimer!==null){clearTimeout(holdTimer);holdTimer=null;}};
+    btn.addEventListener('pointerdown',e=>{
+     longPressed=false;
+     if(e.pointerType==='touch'||e.pointerType==='pen')holdTimer=setTimeout(()=>{
+      holdTimer=null;longPressed=true;selectNote(tr,noteStep);
+     },470);
+    });
+    btn.addEventListener('pointerup',clearHold);
+    btn.addEventListener('pointercancel',clearHold);
+    btn.addEventListener('pointerleave',clearHold);
+    btn.addEventListener('contextmenu',e=>{e.preventDefault();clearHold();longPressed=true;selectNote(tr,noteStep);});
+    btn.onclick=e=>{
+     if(isResizing||longPressed)return;
+     if(e.shiftKey||e.altKey){selectNote(tr,noteStep);return;}
+     pattern[tr][noteStep]=0;
+     noteLengths[tr][noteStep]=1;
+     if(selectedNote?.tr===tr&&selectedNote?.step===noteStep)selectedNote=null;
+     repaint();updateNoteEditor();harmonyExample();saveSequence();
+    };g.append(btn);j+=len-1;
    }else{
     btn.style.gridColumn=String(j+2);
     if(tr<4){btn.className='step empty-step';btn.setAttribute('aria-label',LABELS[tr]+' passo '+(j+1)+' vazio. Tocar para criar nota.');
