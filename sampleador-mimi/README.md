@@ -90,3 +90,11 @@ O personagem passou a usar o banco de imagem **`assets/rosto-lipsync-v2.webp`**,
 **Todos os nove presets do catálogo agora garantem o par MI 1 → MI 2 com distância de exatamente uma semicolcheia** (passos vizinhos da grade de 16). O próprio aplicador de presets reforça essa regra para evitar variações inconsistentes nos próximos presets; a duração padrão é de um passo. O usuário continua livre para modificar o padrão depois, inclusive separar os MIs manualmente. Mudanças de BPM alteram a duração temporal entre os dois disparos, mas não sua distância de um passo. Padrões já salvos no navegador só recebem a nova disposição ao escolher novamente uma levada do catálogo, para não sobrescrever composições próprias.
 
 Testes automatizados confirmaram todos os pares do catálogo, estados de boca e renderização de quadros distintos num avatar de 112 px no Chromium. A verificação final de percepção e compatibilidade de áudio/vídeo em um iPhone físico continua pendente.
+
+## Regra permanente das levadas (22/11/2026)
+
+A escolha de gênero no catálogo altera **somente as pistas de bateria (4, 5, 6): bumbo, caixa e prato**. As quatro pistas vocais **IH, ON, MI 1, MI 2** não são apagadas, reprogramadas ou alongadas ao selecionar samba, funk, hip-hop, pop, rock, house, reggae, bossa ou MIMI clássico. Qualquer edição manual de posição ou duração vocal continua preservada entre mudanças de gênero, inclusive durante a reprodução.
+
+Uma criação nova recebe a célula-base de 16 semicolcheias: IH nos passos 1 e 9, ON nos passos 5 e 13, MI 1 nos passos 7 e 15, MI 2 nos passos 8 e 16 (numeração humana 1–16). Assim cada par de MIs é consecutivo por uma semicolcheia. O BPM e a seleção de acordes continuam independentes.
+
+As levadas tradicionais aqui são estilizações simplificadas para três instrumentos de bateria, não transcrições históricas exatas. O catálogo descreve diferenças rítmicas na bateria, mantendo o vocal estável.
