@@ -98,3 +98,9 @@ A escolha de gênero no catálogo altera **somente as pistas de bateria (4, 5, 6
 Uma criação nova recebe a célula-base de 16 semicolcheias: IH nos passos 1 e 9, ON nos passos 5 e 13, MI 1 nos passos 7 e 15, MI 2 nos passos 8 e 16 (numeração humana 1–16). Assim cada par de MIs é consecutivo por uma semicolcheia. O BPM e a seleção de acordes continuam independentes.
 
 As levadas tradicionais aqui são estilizações simplificadas para três instrumentos de bateria, não transcrições históricas exatas. O catálogo descreve diferenças rítmicas na bateria, mantendo o vocal estável.
+
+## Motivo vocal do tempo 3 (atualização de 22/11/2026)
+
+A primeira metade do compasso continua com IH no passo 1, ON no passo 5, MI 1 no passo 7 e MI 2 no passo 8. A partir do **terceiro tempo**, a mesma ideia retorna: **IH no passo 9, ON no passo 13, MI 1 no passo 15 e MI 2 no passo 16**. Os dois MIs são consecutivos na resolução de semicolcheia.
+
+Para instalações que já tinham o sequenciador salvo, há uma migração única que reorganiza **somente as quatro pistas vocais na segunda metade**, preservando integralmente a primeira metade e as três pistas de bateria. As modificações vocais feitas depois dessa atualização continuam editáveis e não são sobrescritas ao selecionar outro gênero. O catálogo segue alterando somente bumbo, caixa e prato.
