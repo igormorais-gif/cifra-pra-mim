@@ -101,7 +101,7 @@
    Cada troca de visema segue o mesmo relógio Web Audio dos samples. */
 .mimi-avatar{width:112px;height:112px;min-width:112px;flex-shrink:0;position:relative;overflow:hidden;border-radius:50%;background:#343047;border:2px solid #ffdf6f88;box-shadow:0 8px 18px #0504114a;transition:transform .10s ease-out,box-shadow .12s ease-out}
 .mimi-avatar.speaking{transform:translateY(-2px);box-shadow:0 0 0 3px #ffdf6f25,0 8px 19px #05041166}
-.lip-face{width:100%;height:100%;background-image:url('./assets/lipsync-rosto.webp');background-repeat:no-repeat;background-size:200% 300%;background-position:0 0;transform:scale(1.05);transform-origin:center}
+.lip-face{width:100%;height:100%;background-image:url('./assets/rosto-lipsync-v2.webp');background-repeat:no-repeat;background-size:200% 300%;background-position:0 0;transform:scale(1.05);transform-origin:center}
 .lip-face[data-mouth="idle"]{background-position:0% 0%}
 .lip-face[data-mouth="ih"]{background-position:100% 0%}
 .lip-face[data-mouth="on"]{background-position:0% 50%}
@@ -118,7 +118,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 .hero{padding:18px 24px;min-height:135px;margin:12px 0 15px;background:linear-gradient(112deg,#3a2855,#2b2852 58%,#222c4c);border:1px solid #8f78b1aa;border-radius:22px;box-shadow:0 16px 32px #05061455;align-items:center;overflow:visible}
 .hero .sub{color:#dbc7ff;font-weight:900;font-size:.7rem;letter-spacing:.13em;text-transform:uppercase}.hero h1{font-size:clamp(3.1rem,6.3vw,5.5rem);margin:8px 0;letter-spacing:-.075em}.hero h1 span{color:var(--yellow)}.hero p{color:#e0d8ee;font-size:.89rem}
 .mimi-avatar{width:118px;height:118px;min-width:118px;position:relative;overflow:visible;border:3px solid #d9baf1;border-radius:24px;background:#29223a;box-shadow:0 6px 0 #161126,0 8px 24px #0b071e87}.mimi-avatar.speaking{transform:translateY(-1px) scale(1.025);box-shadow:0 0 0 4px #faca6a45,0 7px 20px #02040b90}
-.lip-face,.lip-face[data-mouth]{position:absolute;inset:0;width:100%;height:100%;background-image:url('./assets/lipsync-rosto.webp')!important;background-repeat:no-repeat;background-size:200% 300%!important;background-position:0% 0%!important;transform:none!important;border-radius:21px}
+.lip-face,.lip-face[data-mouth]{position:absolute;inset:0;width:100%;height:100%;background-image:url('./assets/rosto-lipsync-v2.webp')!important;background-repeat:no-repeat;background-size:200% 300%!important;background-position:0% 0%!important;transform:none!important;border-radius:21px}
 .lip-mouth{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;filter:drop-shadow(0 1px 1px #4b233b77)}.lip-mouth .viseme{opacity:0}.lip-mouth[data-mouth="idle"] .viseme-idle,.lip-mouth[data-mouth="ih"] .viseme-ih,.lip-mouth[data-mouth="on"] .viseme-on,.lip-mouth[data-mouth="m"] .viseme-m,.lip-mouth[data-mouth="i"] .viseme-i,.lip-mouth[data-mouth="n"] .viseme-n{opacity:1}
 .avatar-led{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#172343;color:#b6f5c0;border:1px solid #7cd8a0bb;border-radius:30px;font-size:.55rem;font-weight:900;padding:3px 9px;box-shadow:0 3px 9px #05051090}
 .orientation-hint{color:#e6d9ff;background:#38304c;border:1px solid #756599;border-radius:12px;padding:9px 11px;font-size:.75rem}
@@ -137,7 +137,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 /* Correção de produção: rosto legível e boca sincronizada, sem etiquetas nem halos. */
 .avatar-led{display:none!important}
 .mimi-avatar,.mimi-avatar.speaking{background:#2b263a!important;border:1px solid #5b526e!important;box-shadow:none!important;filter:none!important;overflow:hidden!important;border-radius:18px!important;transform:none!important}
-.lip-face,.lip-face[data-mouth]{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background-image:url('./assets/lipsync-rosto.webp')!important;background-repeat:no-repeat!important;background-size:200% 300%!important;background-position:0% 0%!important;transform:none!important;border-radius:17px!important}
+.lip-face,.lip-face[data-mouth]{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background-image:url('./assets/rosto-lipsync-v2.webp')!important;background-repeat:no-repeat!important;background-size:200% 300%!important;background-position:0% 0%!important;transform:none!important;border-radius:17px!important}
 .lip-mouth{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;filter:none!important;overflow:visible!important;pointer-events:none!important}
 .lip-mouth .viseme{opacity:0!important;visibility:hidden!important}
 .lip-mouth[data-mouth="idle"] .viseme-idle,
@@ -159,6 +159,16 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 .beatgrid .track-pitch{display:block;margin-top:4px;color:#ffdc96;font-size:.63rem;font-weight:800}
 .beatgrid .note-cell strong{font-size:.66rem;letter-spacing:-.03em}
 @media(max-width:500px){.beat-catalog{grid-template-columns:1fr;gap:7px}.beat-catalog-info{grid-column:1}.beatgrid .note-cell strong{font-size:.63rem}}
+
+/* Lip sync 2.0: a boca faz parte dos quadros da imagem, sem SVG nem bolinha branca. */
+.lip-mouth{display:none!important}
+.lip-face,.lip-face[data-mouth]{background-image:url('./assets/rosto-lipsync-v2.webp')!important;background-repeat:no-repeat!important;background-size:200% 300%!important;image-rendering:auto!important;transform:none!important}
+.lip-face[data-mouth="idle"]{background-position:0% 0%!important}
+.lip-face[data-mouth="ih"]{background-position:100% 0%!important}
+.lip-face[data-mouth="on"]{background-position:0% 50%!important}
+.lip-face[data-mouth="m"]{background-position:100% 50%!important}
+.lip-face[data-mouth="i"]{background-position:0% 100%!important}
+.lip-face[data-mouth="n"]{background-position:100% 100%!important}
 </style><link rel="stylesheet" href="./assets/studio-panorama.css?v=20261122-1"></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">MIMI • PLAYGROUND SONORO</span><a href="../laboratorio.html">← Voltar ao Hub</a></header><aside class="orientation-hint" role="note">↻ Melhor experiência: gire o celular para a horizontal. Na vertical tudo continua funcionando.</aside>
@@ -166,16 +176,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <div class="hero-copy"><span class="sub">Vozes • harmonia • ritmo</span><h1>MI<span>MI!</span></h1><p>Monte seu groove, cante com o personagem e mude de acorde em tempo real.</p></div>
 <div class="mimi-avatar" id="lipAvatar" aria-label="Rosto animado acompanhando as sílabas" role="img">
  <div id="lipFace" class="lip-face" data-mouth="idle"></div>
- <svg id="lipMouth" class="lip-mouth" data-mouth="idle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <g transform="translate(52 68)">
-   <g class="viseme viseme-idle"><path d="M-10 0 Q0 3 10 0 Q0 7 -10 0Z" fill="#9c4c62"/><path d="M-9 0 Q0 2 9 0" fill="none" stroke="#572d40" stroke-width="1.2" stroke-linecap="round"/></g>
-   <g class="viseme viseme-ih"><path d="M-14 0 Q-10 -6 0 -5 Q10 -6 14 0 Q12 8 0 8 Q-12 8 -14 0Z" fill="#b56b80"/><ellipse cx="0" cy="1" rx="11.5" ry="4.8" fill="#502537"/><path d="M-10 -2.5 Q0 -4 10 -2.5 L9 0.5 Q0 2 -9 0.5Z" fill="#e7d5ca"/></g>
-   <g class="viseme viseme-on"><path d="M-7 0 C-8 -14 8 -14 7 0 C9 14 -9 14 -7 0Z" fill="#ba6b7e"/><ellipse cx="0" cy="0" rx="4.9" ry="8" fill="#452337"/><path d="M-5 -6 Q0 -10 5 -6" fill="none" stroke="#de93a1" stroke-width="1.5" stroke-linecap="round"/></g>
-   <g class="viseme viseme-m"><path d="M-10 0 Q-5 -2 0 -1 Q5 -2 10 0 Q0 5 -10 0Z" fill="#9f5869"/><path d="M-9 0 Q0 1 9 0" fill="none" stroke="#522b3b" stroke-width="1.5" stroke-linecap="round"/></g>
-   <g class="viseme viseme-i"><path d="M-13 0 Q-10 -5 0 -5 Q10 -5 13 0 Q10 7 0 8 Q-10 7 -13 0Z" fill="#b66b7e"/><ellipse cx="0" cy="1" rx="10.2" ry="4.3" fill="#4e2738"/><path d="M-8.8 -1.8 Q0 -3.6 8.8 -1.8 L7.7 1 Q0 2 -7.7 1Z" fill="#ead9ce"/></g>
-   <g class="viseme viseme-n"><path d="M-9 0 Q0 -3 9 0 Q0 7 -9 0Z" fill="#a45a6b"/><path d="M-6 0 Q0 2 6 0" fill="none" stroke="#552b3b" stroke-width="2" stroke-linecap="round"/></g>
-  </g>
- </svg>
+ 
 </div>
 </section>
 <section class="panel voice-studio" id="voiceStudio" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span><span class="pitch-caption" id="pitch0">Mi5</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span><span class="pitch-caption" id="pitch1">Mi4</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span><span class="pitch-caption" id="pitch2">Ré♯5</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span><span class="pitch-caption" id="pitch3">Dó♯5</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label><span id="padToggleMount" class="pad-toggle-mount"></span></div><p class="soft" style="margin:9px 0 3px">🎙️ Voz original com reforço suave de afinação, sem efeito robótico. A afinação é reforçada discretamente, sem processar a fala até ficar robótica. No roll, só sustenta quando você alonga a nota.</p>
@@ -183,7 +184,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 <section class="panel beat-feature" id="beatFeature" aria-label="Montador de BEAT">
  <div class="bar-title"><h2>03 / Monte seu BEAT</h2><span class="sub">16 passos · voz + bateria</span></div>
- <p class="seq-help">Crie seu ritmo agora: toque nos quadradinhos de <strong>IH, ON, MI, MI, bumbo, caixa e prato</strong>. Arraste as pontas das notas se quiser alongá-las. Troque o acorde enquanto toca, sem parar o groove.</p>
+ <p class="seq-help">IH e ON entram como percussão vocal; <strong>MI 1 → MI 2</strong> formam um par de semicolcheias consecutivas em todas as levadas. Edite os quadradinhos e mude o acorde sem parar o beat.</p>
  <div class="beat-catalog" role="group" aria-label="Catálogo de batidas">
  <label for="beatCatalog">CATÁLOGO DE BATIDAS</label>
  <select id="beatCatalog" aria-label="Escolha uma levada para o BEAT">
@@ -386,18 +387,17 @@ function playHarmony(syl,at,tone,gate){if(!$('mimisOn').checked)return;
 const lipEvents=[];
 let lipFrame=0, lipEventSerial=0, lipCurrent='idle';
 // Lip sync: a única fonte de verdade são os disparos de voz do AudioContext.
-const LIP_MOUTHS=['idle','ih','on','m','i','n'];
+const LIP_MOUTHS=['idle','ih','on','m','i'];
 function setLip(mouth){
  const state=LIP_MOUTHS.includes(mouth)?mouth:'idle';
  lipCurrent=state;
- const face=$('lipFace'),mouthEl=$('lipMouth'),avatar=$('lipAvatar');
+ const face=$('lipFace'),avatar=$('lipAvatar');
  if(face)face.dataset.mouth=state;
- if(mouthEl)mouthEl.setAttribute('data-mouth',state);
  if(avatar)avatar.classList.toggle('speaking',state!=='idle');
 }
 function animateLip(){
  lipFrame=0;
- if(!ctx||!$('lipMouth')){lipEvents.length=0;setLip('idle');return;}
+ if(!ctx||!$('lipFace')){lipEvents.length=0;setLip('idle');return;}
  const now=ctx.currentTime;
  for(let i=lipEvents.length-1;i>=0;i--)if(lipEvents[i].end<now-.035)lipEvents.splice(i,1);
  let active=null;
@@ -406,14 +406,14 @@ function animateLip(){
  if(active){
   const age=now-active.at,length=active.end-active.at;
   if(active.syl===0)mouth='ih';
-  else if(active.syl===1)mouth=age<length*.82?'on':'n';
-  else mouth=age<Math.min(.055,length*.33)?'m':'i';
+  else if(active.syl===1)mouth=age<length*.90?'on':'idle';
+  else mouth=age<Math.min(.065,length*.36)?'m':'i';
  }
  setLip(mouth);
  if(lipEvents.length)lipFrame=requestAnimationFrame(animateLip);
 }
 function queueLip(syl,at,gate,tone){
- if(!voiceBuffer||!$('lipMouth'))return;
+ if(!voiceBuffer||!$('lipFace'))return;
  const item=voiceSource(tone,syl,0);
  const natural=(item.b-item.a)/item.rate;
  const span=Number.isFinite(gate)?Math.min(5.8,Math.max(.045,gate)):natural;
@@ -583,15 +583,15 @@ function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=doc
 function selectTone(index){const changed=selectedTone!==index;selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));$('liveTone').textContent=CHORDS[index];if(beatRunning&&changed){stopPad();repaint();}renderCuts();tunedPreview(index);refreshPitchCaptions();harmonyExample();padReadouts();repaint();updateNoteEditor();saveSequence();}
 // Catálogo: 16 semicolcheias; pistas 0–3 são samples vocais usados como percussões.
 const BEAT_PRESETS={
- mimi:{info:'Vozes em chamada e resposta; bumbo, caixa e prato marcam o pulso.',tracks:[[0,8],[4,12],[6,14],[7,15],[0,8],[4,12],[0,2,4,6,8,10,12,14]]},
- samba:{info:'Samba estilizado: dois ciclos de 2/4, caixa sincopada e MIMIs entre os ataques.',tracks:[[1,9],[5,13],[7,15],[3,11],[0,6,8,14],[0,3,4,7,8,11,12,15],[0,2,3,5,6,7,8,10,11,13,14,15]]},
- funk:{info:'Funk carioca estilizado: bumbo quebrado e MIMIs como respostas percussivas.',tracks:[[0,8],[5,13],[7,15],[3,11],[0,3,6,8,11,14],[4,12],[2,5,7,10,13,15]]},
- hiphop:{info:'Hip-hop: caixa no contratempo, bateria espaçada e sílabas entre os tempos.',tracks:[[2,10],[6],[14],[15],[0,7,10],[4,12],[0,2,4,6,8,10,12,14]]},
- pop:{info:'Pop: pulsação constante com pequenas respostas de IH, ON e MI.',tracks:[[0,8],[4,12],[6],[14],[0,4,8,12],[4,12],[0,2,4,6,8,10,12,14]]},
- rock:{info:'Rock: bumbo e caixa bem definidos; voz entra nas brechas da bateria.',tracks:[[3,11],[7,15],[13],[14],[0,8,10],[4,12],[0,2,4,6,8,10,12,14]]},
- house:{info:'House: bumbo em todos os tempos, prato no contratempo e MIMIs de apoio.',tracks:[[0,8],[6],[10],[14],[0,4,8,12],[4,12],[2,6,10,14]]},
- reggae:{info:'Reggae estilizado: ênfase no terceiro tempo, com voz nos contratempos.',tracks:[[2,10],[6,14],[3],[11],[8],[8],[0,2,4,6,8,10,12,14]]},
- bossa:{info:'Bossa nova estilizada: batida leve e síncopes vocais distribuídas.',tracks:[[1,9],[6,14],[11],[15],[0,8,12],[3,7,10,14],[0,2,4,6,8,10,12,14]]}
+ mimi:{info:'MIMI clássico: dois pares MI–MI seguidos de semicolcheia, com bumbo, caixa e prato.',tracks:[[0,8],[4,12],[6,14],[7,15],[0,8],[4,12],[0,2,4,6,8,10,12,14]]},
+ samba:{info:'Samba estilizado em 2/4: caixa sincopada e dois pares MI–MI consecutivos.',tracks:[[1,9],[5,13],[2,10],[3,11],[0,6,8,14],[0,3,4,7,8,11,12,15],[0,2,3,5,6,7,8,10,11,13,14,15]]},
+ funk:{info:'Funk carioca estilizado: bumbo quebrado, IH e ON nas respostas, dois MI–MI em semicolcheias.',tracks:[[0,8],[5,13],[6,14],[7,15],[0,3,6,8,11,14],[4,12],[2,5,7,10,13,15]]},
+ hiphop:{info:'Hip-hop: bateria espaçada, resposta vocal e MI 1 imediatamente seguido por MI 2.',tracks:[[2,10],[6],[13],[14],[0,7,10],[4,12],[0,2,4,6,8,10,12,14]]},
+ pop:{info:'Pop: pulso direto e dois MI–MI consecutivos no mesmo compasso.',tracks:[[0,8],[4,12],[6,14],[7,15],[0,4,8,12],[4,12],[0,2,4,6,8,10,12,14]]},
+ rock:{info:'Rock: bumbo e caixa definidos e um par MI–MI em semicolcheias consecutivas.',tracks:[[3,11],[7,15],[12],[13],[0,8,10],[4,12],[0,2,4,6,8,10,12,14]]},
+ house:{info:'House: quatro bumbos, pratos em contratempo e duas respostas MI–MI.',tracks:[[0,8],[6],[10,14],[11,15],[0,4,8,12],[4,12],[2,6,10,14]]},
+ reggae:{info:'Reggae estilizado: terceiro tempo forte e dois pares MI–MI consecutivos.',tracks:[[2,10],[6,14],[3,11],[4,12],[8],[8],[0,2,4,6,8,10,12,14]]},
+ bossa:{info:'Bossa nova estilizada: síncopes leves e dois pares MI–MI consecutivos.',tracks:[[1,9],[6,14],[10,14],[11,15],[0,8,12],[3,7,10,14],[0,2,4,6,8,10,12,14]]}
 };
 let beatPresetId='mimi';
 function setBeatPreset(id,save=true){
@@ -599,6 +599,9 @@ function setBeatPreset(id,save=true){
  for(let tr=0;tr<7;tr++)pattern[tr].fill(0);
  pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));
  for(let tr=0;tr<7;tr++)for(const step of preset.tracks[tr])if(step>=0&&step<STEPS)pattern[tr][step]=1;
+ // Em TODAS as levadas, MI 2 entra precisamente uma semicolcheia após MI 1.
+ pattern[3].fill(0);
+ for(let step=0;step<STEPS-1;step++)if(pattern[2][step])pattern[3][step+1]=1;
  selectedNote=null;beatPresetId=id;
  $('beatCatalog').value=id;$('beatCatalogInfo').textContent=preset.info;
  repaint();updateNoteEditor();
