@@ -30,3 +30,15 @@ A voz original 149 permanece no repositório. O G#6 continua derivado da última
 ## Disponibilidade e privacidade
 
 A atualização foi enviada ao branch principal do GitHub. A sincronização do GitHub Pages pode levar algum tempo. A gravação de voz disponibilizada pelo Pages está em um repositório público.
+
+## Rosto com lip sync (22/11/2026)
+
+O rosto enviado nesta conversa foi recortado para um pequeno avatar circular (112 px no desktop, 78 px no celular) no canto superior direito do cabeçalho. A arte contém seis estados: repouso, IH (abertura lateral), ON (lábios arredondados), M (fechamento), I (abertura lateral) e N (fechamento leve).
+
+A animação não é um GIF independente: `queueLip()` registra eventos quando cada sílaba da gravação 149 é agendada em `AudioContext.currentTime`, e `requestAnimationFrame` determina o visema correspondente pelo tempo real. Nos dois MI, o M aparece apenas no ataque; ao alongar a nota, a boca permanece na vogal I. A frase completa também registra os ataques das quatro sílabas. Bateria isolada, pad isolado e acordes sem voz não acionam a boca. O comando PARAR TUDO devolve a expressão ao repouso.
+
+O ritmo do beat, as alterações de BPM, os padrões, a escolha de acorde e as harmonias não foram modificados. O projeto preserva os quatro botões IH/ON/MI/MI e o sequenciador aberto.
+
+Recurso visual: `assets/lipsync-rosto.webp`. É uma animação 2D aproximada por visemas, não análise fonêmica quadro a quadro nem captura facial em vídeo. A precisão final da sincronização deve ser conferida auditivamente e visualmente no iPhone.
+
+**Privacidade:** o retrato recortado está publicado no repositório público junto à voz do projeto.
