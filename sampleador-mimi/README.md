@@ -1,4 +1,32 @@
-# SAMPLEADOR MIMI — Hub compacto e BPM manual
+# SAMPLEADOR MIMI — Visual panorâmico e lip sync (22/11/2026)
+
+**Hub:** https://igormorais-gif.github.io/cifra-pra-mim/sampleador-mimi/
+
+## Nova apresentação
+
+O MIMI passou a usar um visual panorâmico, inspirado no mockup escolhido, mas com os **mesmos componentes musicais já existentes**. Em telas horizontais de celular/tablet/desktop, a escolha de acordes e os quatro pads vocais ficam à esquerda e o **montador de BEAT de 16 passos aberto** fica à direita. Harmonia e sons de bateria ficam logo abaixo. Em celular vertical a página permanece funcional, com um aviso discreto sugerindo rotação; a orientação de tela não é forçada por código.
+
+A identidade visual nova está em `assets/studio-panorama.css`, carregada após os estilos anteriores, e não interfere nas rotinas de áudio.
+
+## Rosto e lip sync
+
+O retrato da imagem já autorizada permanece em `assets/lipsync-rosto.webp`. A boca agora é uma **sobreposição SVG sobre um único quadro do rosto**, com seis visemas distintos: repouso, IH, ON, fechamento M, vogal I, fechamento nasal N. Assim não depende do deslocamento de um spritesheet para trocar a boca e evita as antigas representações de círculo branco e linha. Os estados são trocados pelo mesmo agendamento de WebAudio usado pelos samples:
+
+- IH: abertura lateral enquanto a voz sustenta.
+- ON: lábios arredondados, fechando no fim.
+- MI: fechamento M inicial seguido de abertura I durante a sustentação; o M não se repete quando a nota é alongada.
+- Ao parar tudo: expressão volta ao repouso.
+
+O sistema é **lip sync 2D por visemas e tempos de disparo**, não acompanhamento automático de fonemas via reconhecimento de voz. A eficácia visual final precisa ser verificada num iPhone real.
+
+## Preservado
+
+Ajuste manual do BPM, mudança harmônica durante o beat, PAD 6–3–5 apenas com liga/desliga, nomes das notas abaixo dos quatro botões, recorte ajustado de Bb6, harmonias vocais e edição de duração no piano roll. A função “Eu já estou pronta” e o acelerador permanecem ausentes.
+
+**Privacidade:** o retrato e a gravação de voz continuam em um repositório público. Se desejar privacidade, será necessário mudar a hospedagem/visibilidade dos arquivos.
+
+---
+
 
 Endereço no Hub: https://igormorais-gif.github.io/cifra-pra-mim/sampleador-mimi/
 
