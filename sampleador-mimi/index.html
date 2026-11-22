@@ -375,19 +375,30 @@ async function startup(){const saved=await savedLoad();if(saved&&await loadAudio
 
 async function studioStartup(){
  try{
-  let bytes=null;
   const inline=document.querySelector('#studio-inline');
   if(inline?.textContent.trim()){
    const binary=atob(inline.textContent.trim()),arr=new Uint8Array(binary.length);
-   for(let i=0;i<binary.length;i++)arr[i]=binary.charCodeAt(i);bytes=arr.buffer;
+   for(let i=0;i<binary.length;i++)arr[i]=binary.charCodeAt(i);
+   studioBuffer=await getAudio().decodeAudioData(arr.buffer);
   }else{
-   const resp=await fetch('./assets/mimi-studio-sustain.ogg',{cache:'no-store'});
-   if(!resp.ok)throw new Error('arquivo indisponível');bytes=await resp.arrayBuffer();
+   // AAC para iOS, e Ogg/Opus como reserva em demais navegadores.
+   let lastError=null;
+   for(const ext of ['m4a','ogg']){
+    try{
+     const response=await fetch('./assets/mimi-studio-sustain.'+ext,{cache:'no-store'});
+     if(!response.ok)throw Error('HTTP '+response.status);
+     const decoded=await getAudio().decodeAudioData(await response.arrayBuffer());
+     if(decoded.duration<48||decoded.duration>51)throw Error('banco incompleto');
+     studioBuffer=decoded;break;
+    }catch(error){lastError=error;}
+   }
+   if(!studioBuffer)throw lastError||Error('audio indisponivel');
   }
-  studioBuffer=await getAudio().decodeAudioData(bytes);
-  if(studioBuffer.duration<48||studioBuffer.duration>51)throw new Error('banco incompleto');
+  if(studioBuffer.duration<48||studioBuffer.duration>51)throw Error('banco incompleto');
   studioReady=true;$('studioStatus').textContent='✓ 32 atuações afinadas prontas · sustain da vogal ativado';
- }catch(err){studioReady=false;$('studioStatus').textContent='Banco afinado indisponível: '+err.message+'. Usando a voz original.';}
+ }catch(error){
+  studioReady=false;$('studioStatus').textContent='Banco afinado indisponível: '+error.message+'. Usando a voz original.';
+ }
 }
 $('upload').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;status('Analisando o arquivo de voz…','loading');const bytes=await file.arrayBuffer();if(await loadAudio(bytes,'importada de '+file.name)){const ok=await savedPut(bytes);if(!ok)status('✓ Voz pronta! O navegador não permitiu salvar para a próxima visita.');}});
 document.querySelectorAll('[data-syl]').forEach(b=>{b.onclick=()=>syllable(+b.dataset.syl,getAudio().currentTime+.015);});
