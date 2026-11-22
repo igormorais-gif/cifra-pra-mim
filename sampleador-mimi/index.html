@@ -198,7 +198,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
   <option value="reggae">Reggae</option>
   <option value="bossa">Bossa nova</option>
  </select>
- <span id="beatCatalogInfo" class="beat-catalog-info">IH, ON e os dois MIs entram no groove junto da bateria.</span>
+ <span id="beatCatalogInfo" class="beat-catalog-info">O gênero altera só bumbo, caixa e prato. IH, ON, MI e MI ficam onde você os colocou.</span>
 </div>
 <div class="compact-live" id="sequencer"><div class="bar-title" style="justify-content:flex-end;margin-bottom:6px"><span id="liveTone" class="sub" aria-live="polite">E6</span></div><div class="bpm-control"><label for="bpm">BPM <output id="bpmout">95</output></label><input id="bpm" type="range" min="50" max="220" step="1" value="95" aria-label="Andamento em BPM"></div><div class="rhythm-info"><span><strong id="nowbpm">95 BPM</strong> <span class="sub" id="barcounter">· compasso 1</span></span><span class="sub">1 e &amp; a · 2 e &amp; a · 3 e &amp; a · 4 e &amp; a</span></div>
 <div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div><p class="soft">Troque os acordes acima enquanto o beat toca. O ritmo segue e todas as vozes e o pad mudam de tom nos próximos passos.</p><div class="beat-editor"><div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
@@ -582,32 +582,42 @@ function showOnlyPadToggle(){
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
 function selectTone(index){const changed=selectedTone!==index;selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));$('liveTone').textContent=CHORDS[index];if(beatRunning&&changed){stopPad();repaint();}renderCuts();tunedPreview(index);refreshPitchCaptions();harmonyExample();padReadouts();repaint();updateNoteEditor();saveSequence();}
 // Catálogo: 16 semicolcheias; pistas 0–3 são samples vocais usados como percussões.
+// Disposição vocal inicial: IH / ON em tempos separados, MI 1 imediatamente antes de MI 2.
+// Os gêneros musicais alteram APENAS bumbo, caixa e prato. Mudanças manuais das vozes persistem.
+const MIMI_VOCAL_BASE=[[0,8],[4,12],[6,14],[7,15]];
 const BEAT_PRESETS={
- mimi:{info:'MIMI clássico: dois pares MI–MI seguidos de semicolcheia, com bumbo, caixa e prato.',tracks:[[0,8],[4,12],[6,14],[7,15],[0,8],[4,12],[0,2,4,6,8,10,12,14]]},
- samba:{info:'Samba estilizado em 2/4: caixa sincopada e dois pares MI–MI consecutivos.',tracks:[[1,9],[5,13],[2,10],[3,11],[0,6,8,14],[0,3,4,7,8,11,12,15],[0,2,3,5,6,7,8,10,11,13,14,15]]},
- funk:{info:'Funk carioca estilizado: bumbo quebrado, IH e ON nas respostas, dois MI–MI em semicolcheias.',tracks:[[0,8],[5,13],[6,14],[7,15],[0,3,6,8,11,14],[4,12],[2,5,7,10,13,15]]},
- hiphop:{info:'Hip-hop: bateria espaçada, resposta vocal e MI 1 imediatamente seguido por MI 2.',tracks:[[2,10],[6],[13],[14],[0,7,10],[4,12],[0,2,4,6,8,10,12,14]]},
- pop:{info:'Pop: pulso direto e dois MI–MI consecutivos no mesmo compasso.',tracks:[[0,8],[4,12],[6,14],[7,15],[0,4,8,12],[4,12],[0,2,4,6,8,10,12,14]]},
- rock:{info:'Rock: bumbo e caixa definidos e um par MI–MI em semicolcheias consecutivas.',tracks:[[3,11],[7,15],[12],[13],[0,8,10],[4,12],[0,2,4,6,8,10,12,14]]},
- house:{info:'House: quatro bumbos, pratos em contratempo e duas respostas MI–MI.',tracks:[[0,8],[6],[10,14],[11,15],[0,4,8,12],[4,12],[2,6,10,14]]},
- reggae:{info:'Reggae estilizado: terceiro tempo forte e dois pares MI–MI consecutivos.',tracks:[[2,10],[6,14],[3,11],[4,12],[8],[8],[0,2,4,6,8,10,12,14]]},
- bossa:{info:'Bossa nova estilizada: síncopes leves e dois pares MI–MI consecutivos.',tracks:[[1,9],[6,14],[10,14],[11,15],[0,8,12],[3,7,10,14],[0,2,4,6,8,10,12,14]]}
+ mimi:{info:'Pulsação básica do MIMI: bumbo, caixa e prato simples.',drums:[[0,8],[4,12],[0,2,4,6,8,10,12,14]]},
+ samba:{info:'Samba estilizado em 2/4: caixa sincopada, bumbo com antecipações e prato subdividido.',drums:[[0,6,8,14],[0,3,4,7,8,11,12,15],[0,2,3,5,6,7,8,10,11,13,14,15]]},
+ funk:{info:'Funk carioca estilizado: bumbo quebrado, caixa firme e prato respondendo.',drums:[[0,3,6,8,11,14],[4,12],[2,5,7,10,13,15]]},
+ hiphop:{info:'Hip-hop: bumbo espaçado, caixa em 2 e 4, prato em colcheias.',drums:[[0,7,10],[4,12],[0,2,4,6,8,10,12,14]]},
+ pop:{info:'Pop: bumbo nos tempos, caixa em 2 e 4 e prato em colcheias.',drums:[[0,4,8,12],[4,12],[0,2,4,6,8,10,12,14]]},
+ rock:{info:'Rock: bumbo reforçado, caixa em 2 e 4 e prato marcando a pulsação.',drums:[[0,8,10],[4,12],[0,2,4,6,8,10,12,14]]},
+ house:{info:'House: bumbo em todos os tempos, caixa em 2 e 4 e prato no contratempo.',drums:[[0,4,8,12],[4,12],[2,6,10,14]]},
+ reggae:{info:'Reggae estilizado: bumbo e caixa no terceiro tempo, prato marcando os contratempos.',drums:[[8],[8],[0,2,4,6,8,10,12,14]]},
+ bossa:{info:'Bossa nova estilizada: baixo sincopado, aro/caixa leve e prato em colcheias.',drums:[[0,8,12],[3,7,10,14],[0,2,4,6,8,10,12,14]]}
 };
 let beatPresetId='mimi';
 function setBeatPreset(id,save=true){
  const preset=BEAT_PRESETS[id];if(!preset)return;
- for(let tr=0;tr<7;tr++)pattern[tr].fill(0);
- pitches.fill(0);notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));
- for(let tr=0;tr<7;tr++)for(const step of preset.tracks[tr])if(step>=0&&step<STEPS)pattern[tr][step]=1;
- // Em TODAS as levadas, MI 2 entra precisamente uma semicolcheia após MI 1.
- pattern[3].fill(0);
- for(let step=0;step<STEPS-1;step++)if(pattern[2][step])pattern[3][step+1]=1;
- selectedNote=null;beatPresetId=id;
- $('beatCatalog').value=id;$('beatCatalogInfo').textContent=preset.info;
+ // IMPORTANTE: não tocar nas quatro linhas vocais (0..3), suas durações e seus recortes.
+ for(let drum=0;drum<3;drum++){
+  const track=drum+4;pattern[track].fill(0);
+  for(const step of preset.drums[drum])if(step>=0&&step<STEPS)pattern[track][step]=1;
+ }
+ beatPresetId=id;
+ $('beatCatalog').value=id;
+ $('beatCatalogInfo').textContent=preset.info+' IH, ON, MI e MI não mudam de lugar.';
  repaint();updateNoteEditor();
  if(save)saveSequence();
 }
-function defaultPattern(){setBeatPreset('mimi',false);}
+function defaultPattern(){
+ // Apenas a primeira composição ganha este arranjo vocal de partida.
+ pattern.forEach(row=>row.fill(0));pitches.fill(0);
+ notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));
+ MIMI_VOCAL_BASE.forEach((steps,tr)=>steps.forEach(step=>{pattern[tr][step]=1;}));
+ selectedNote=null;
+ setBeatPreset('mimi',false);
+}
 function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
 function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
 function restoreSequence(){let saved,legacy=false;try{const current=localStorage.getItem(SEQKEY);legacy=!current;saved=JSON.parse(current||localStorage.getItem(LEGACY_SEQKEY)||localStorage.getItem('mimi-sequencer-v2')||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
