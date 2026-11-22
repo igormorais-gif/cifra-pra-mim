@@ -133,6 +133,22 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 @media(min-width:740px) and (max-height:500px){.wrap{padding:7px 12px 20px;gap:9px 11px}.hero{padding:10px 16px;min-height:80px;border-radius:15px}.hero h1{font-size:3.2rem;margin:4px 0}.hero p{font-size:.73rem;margin:4px 0}.mimi-avatar{width:72px;height:72px;min-width:72px;border-radius:17px}.lip-face{border-radius:14px}.voice-studio,.beat-feature{padding:13px}.voicepad{min-height:78px;font-size:2.35rem}.tones{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.tone{min-height:42px}}
 @media(max-width:739px){.wrap{padding:12px;display:flex;flex-direction:column;gap:11px}.top,.hero,.panel,.columns,.foot{width:100%}.hero{margin:0;padding:14px 15px;min-height:106px}.hero h1{font-size:3.5rem;margin:7px 0}.hero p{font-size:.75rem}.mimi-avatar{width:77px;height:77px;min-width:77px;border-radius:17px}.lip-face{border-radius:14px}.tones{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.tone{min-height:48px}.voicepad{font-size:2.5rem;min-height:100px}.panel{padding:15px}.harmony-panel{margin:0}}
 @media(max-width:739px) and (orientation:portrait){.orientation-hint{display:block}}
+
+/* Correção de produção: rosto legível e boca sincronizada, sem etiquetas nem halos. */
+.avatar-led{display:none!important}
+.mimi-avatar,.mimi-avatar.speaking{background:#2b263a!important;border:1px solid #5b526e!important;box-shadow:none!important;filter:none!important;overflow:hidden!important;border-radius:18px!important;transform:none!important}
+.lip-face,.lip-face[data-mouth]{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background-image:url('./assets/lipsync-rosto.webp')!important;background-repeat:no-repeat!important;background-size:200% 300%!important;background-position:0% 0%!important;transform:none!important;border-radius:17px!important}
+.lip-mouth{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;filter:none!important;overflow:visible!important;pointer-events:none!important}
+.lip-mouth .viseme{opacity:0!important;visibility:hidden!important}
+.lip-mouth[data-mouth="idle"] .viseme-idle,
+.lip-mouth[data-mouth="ih"] .viseme-ih,
+.lip-mouth[data-mouth="on"] .viseme-on,
+.lip-mouth[data-mouth="m"] .viseme-m,
+.lip-mouth[data-mouth="i"] .viseme-i,
+.lip-mouth[data-mouth="n"] .viseme-n{opacity:1!important;visibility:visible!important}
+.hero{box-shadow:none!important;border:1px solid #51475d!important;background:#29243f!important}
+.panel,.columns>.panel{box-shadow:none!important;border-color:#48465e!important}
+@media(max-width:739px){.mimi-avatar{border-radius:14px!important}.lip-face{border-radius:13px!important}}
 </style><link rel="stylesheet" href="./assets/studio-panorama.css?v=20261122-1"></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">MIMI • PLAYGROUND SONORO</span><a href="../laboratorio.html">← Voltar ao Hub</a></header><aside class="orientation-hint" role="note">↻ Melhor experiência: gire o celular para a horizontal. Na vertical tudo continua funcionando.</aside>
@@ -149,7 +165,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
    <g class="viseme viseme-i"><path d="M-13 0 Q-10 -5 0 -5 Q10 -5 13 0 Q10 7 0 8 Q-10 7 -13 0Z" fill="#b66b7e"/><ellipse cx="0" cy="1" rx="10.2" ry="4.3" fill="#4e2738"/><path d="M-8.8 -1.8 Q0 -3.6 8.8 -1.8 L7.7 1 Q0 2 -7.7 1Z" fill="#ead9ce"/></g>
    <g class="viseme viseme-n"><path d="M-9 0 Q0 -3 9 0 Q0 7 -9 0Z" fill="#a45a6b"/><path d="M-6 0 Q0 2 6 0" fill="none" stroke="#552b3b" stroke-width="2" stroke-linecap="round"/></g>
   </g>
- </svg><span class="avatar-led">AO VIVO</span>
+ </svg>
 </div>
 </section>
 <section class="panel voice-studio" id="voiceStudio" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span><span class="pitch-caption" id="pitch0">Mi5</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span><span class="pitch-caption" id="pitch1">Mi4</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span><span class="pitch-caption" id="pitch2">Ré♯5</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span><span class="pitch-caption" id="pitch3">Dó♯5</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label><span id="padToggleMount" class="pad-toggle-mount"></span></div><p class="soft" style="margin:9px 0 3px">🎙️ Voz original com reforço suave de afinação, sem efeito robótico. A afinação é reforçada discretamente, sem processar a fala até ficar robótica. No roll, só sustenta quando você alonga a nota.</p>
@@ -344,40 +360,42 @@ function playHarmony(syl,at,tone,gate){if(!$('mimisOn').checked)return;
 // Visemas por sílaba, sincronizados em segundos de AudioContext — sem animação em loop cega.
 const lipEvents=[];
 let lipFrame=0, lipEventSerial=0, lipCurrent='idle';
+// Lip sync: a única fonte de verdade são os disparos de voz do AudioContext.
+const LIP_MOUTHS=['idle','ih','on','m','i','n'];
 function setLip(mouth){
- if(lipCurrent===mouth)return;
- lipCurrent=mouth;
- const face=$('lipFace'),frame=$('lipAvatar');
- if(face)face.dataset.mouth=mouth;
- const lips=$('lipMouth');if(lips)lips.dataset.mouth=mouth;
- if(frame)frame.classList.toggle('speaking',mouth!=='idle');
+ const state=LIP_MOUTHS.includes(mouth)?mouth:'idle';
+ lipCurrent=state;
+ const face=$('lipFace'),mouthEl=$('lipMouth'),avatar=$('lipAvatar');
+ if(face)face.dataset.mouth=state;
+ if(mouthEl)mouthEl.setAttribute('data-mouth',state);
+ if(avatar)avatar.classList.toggle('speaking',state!=='idle');
 }
 function animateLip(){
  lipFrame=0;
- if(!ctx){setLip('idle');lipEvents.length=0;return;}
+ if(!ctx||!$('lipMouth')){lipEvents.length=0;setLip('idle');return;}
  const now=ctx.currentTime;
  for(let i=lipEvents.length-1;i>=0;i--)if(lipEvents[i].end<now-.035)lipEvents.splice(i,1);
- // Caso haja duas vozes simultâneas, priorize o ataque mais recente.
  let active=null;
  for(const e of lipEvents)if(e.at<=now&&now<e.end&&(!active||e.at>=active.at))active=e;
  let mouth='idle';
  if(active){
-  const elapsed=now-active.at, span=active.end-active.at, phase=span>0?elapsed/span:1;
+  const age=now-active.at,length=active.end-active.at;
   if(active.syl===0)mouth='ih';
-  else if(active.syl===1)mouth=phase<.78?'on':'n';
-  else mouth=elapsed<Math.min(.075,span*.3)?'m':'i';
+  else if(active.syl===1)mouth=age<length*.82?'on':'n';
+  else mouth=age<Math.min(.055,length*.33)?'m':'i';
  }
  setLip(mouth);
  if(lipEvents.length)lipFrame=requestAnimationFrame(animateLip);
 }
 function queueLip(syl,at,gate,tone){
- if(!voiceBuffer||!$('lipFace'))return;
+ if(!voiceBuffer||!$('lipMouth'))return;
  const item=voiceSource(tone,syl,0);
  const natural=(item.b-item.a)/item.rate;
  const span=Number.isFinite(gate)?Math.min(5.8,Math.max(.045,gate)):natural;
  if(!Number.isFinite(span)||span<.025)return;
- // O sustain mantém a vogal aberta; ataques de M não são repetidos.
- lipEvents.push({syl,at:Math.max(at,getAudio().currentTime),end:Math.max(at,getAudio().currentTime)+span,id:++lipEventSerial});
+ const now=getAudio().currentTime,start=Math.max(at,now);
+ lipEvents.push({syl,at:start,end:start+span,id:++lipEventSerial});
+ // Garante o primeiro desenho no momento do som, e continua seguindo o relógio do áudio.
  if(!lipFrame)lipFrame=requestAnimationFrame(animateLip);
 }
 function stopLip(){
