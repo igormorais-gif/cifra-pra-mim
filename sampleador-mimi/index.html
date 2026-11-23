@@ -453,6 +453,80 @@ function exactTone(midi,at,seconds,vol,pan,syl=0){
  g.gain.exponentialRampToValueAtTime(.00001,at+duration);
  osc.connect(g).connect(panOutput(c,pan,syl));osc.start(at);osc.stop(at+duration+.005);registerSource(osc);
 }
+
+/* TEXTURAS VOCAIS MIMI — 100% a partir das gravações originais.
+   Três tratamentos discretos, sem transposição, novos fonemas ou osciladores:
+   IH = dobramento filtrado ~19 ms; ON = calor harmônico filtrado;
+   MI 1/2 = reforço TRANSITÓRIO do M, sem rearticular a consoante.
+   A cópia recebe o MESMO AudioBufferSource do ataque original; nos gates
+   MIDI longos a camada acontece apenas uma vez e não nos grãos de sustain. */
+const MIMI_TEXTURES=[
+ {name:'IH / dobramento macio',kind:'double',hp:420,lp:4700,send:.115,pan:-.16,delay:.019},
+ {name:'ON / calor redondo',kind:'warm',hp:110,lp:1720,send:.145,pan:.02,delay:0},
+ {name:'MI 1 / ataque percussivo',kind:'transient',hp:340,lp:5300,send:.17,pan:-.04,delay:0,attackSpan:.062},
+ {name:'MI 2 / ataque percussivo',kind:'transient',hp:390,lp:5000,send:.145,pan:.04,delay:0,attackSpan:.057}
+];
+const MIMI_WARM_CURVE=Float32Array.from({length:1024},(_,i)=>{
+ const x=(i/1023)*2-1;
+ return Math.tanh(2.05*x)/Math.tanh(2.05);
+});
+function addVocalTexture(src,syl,at,duration,baseVolume){
+ if(!src||!Number.isFinite(duration)||duration<.022||baseVolume<=0)return;
+ const profile=MIMI_TEXTURES[syl];if(!profile)return;
+ const c=getAudio(),mix=ensurePopMix(),high=c.createBiquadFilter(),
+  low=c.createBiquadFilter(),send=c.createGain();
+ high.type='highpass';high.frequency.value=profile.hp;high.Q.value=.66;
+ low.type='lowpass';low.frequency.value=profile.lp;low.Q.value=.69;
+ src.connect(high);
+ let head=high;
+ if(profile.kind==='double'){
+  // O atraso é inferior ao limiar perceptivo de uma segunda sílaba.
+  const delay=c.createDelay(.07);delay.delayTime.value=profile.delay;
+  head.connect(delay);head=delay;
+ }else if(profile.kind==='warm'){
+  const pre=c.createGain(),drive=c.createWaveShaper();
+  pre.gain.value=1.30;drive.curve=MIMI_WARM_CURVE;drive.oversample='2x';
+  head.connect(pre).connect(drive);head=drive;
+ }else{
+  // Só o ataque de M; a vogal e a extensão MIDI seguem intactas.
+  const focus=c.createBiquadFilter();
+  focus.type='peaking';focus.frequency.value=syl===2?1050:1250;
+  focus.Q.value=.85;focus.gain.value=2.4;
+  head.connect(focus);head=focus;
+ }
+ head.connect(low).connect(send);
+ if(typeof c.createStereoPanner==='function'){
+  const pan=c.createStereoPanner();pan.pan.value=profile.pan;
+  send.connect(pan).connect(mix.vocalDry);
+ }else send.connect(mix.vocalDry);
+ const begin=at+(profile.delay||0);
+ const audible=profile.kind==='transient'?Math.min(duration,profile.attackSpan):duration;
+ const fadeIn=Math.min(.009,audible*.25),fadeOut=Math.min(.020,audible*.34);
+ const peak=Math.min(.17,Math.max(.0001,baseVolume*profile.send));
+ const tail=begin+audible;
+ send.gain.setValueAtTime(.00001,begin);
+ send.gain.linearRampToValueAtTime(peak,begin+fadeIn);
+ send.gain.setValueAtTime(peak,Math.max(begin+fadeIn,tail-fadeOut));
+ send.gain.linearRampToValueAtTime(.00001,tail);
+}
+function playPhraseTextures(at,tone){
+ // O botão de frase completa usa um único sample contínuo como voz principal.
+ // Somamos apenas os elementos TEXTURA das quatro sílabas, nos respectivos
+ // tempos originais, mantendo intactos espaços, pronúncia e ritmo da frase.
+ if(!voiceBuffer)return;
+ const c=getAudio(),take=tune(tone),parts=cuts[take.index],anchor=parts[0][0];
+ for(let syl=0;syl<4;syl++){
+  const [a,b]=parts[syl],duration=(b-a)/take.rate;
+  if(duration<.032)continue;
+  const time=at+(a-anchor)/take.rate;
+  const src=c.createBufferSource();src.buffer=voiceBuffer;
+  src.playbackRate.value=take.rate;
+  addVocalTexture(src,syl,time,duration,level('vvoice')*.84);
+  src.start(time,a,b-a);src.stop(time+duration+.025);
+  registerSource(src);
+ }
+}
+
 function studioNoteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=null){
  const c=getAudio();if(!studioBuffer)return;
  // Cada tomada foi afinada individualmente; cada entrada tem seu proprio ataque e vogal.
@@ -479,22 +553,26 @@ function noteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=nul
  if(sampleLen<.04)return;
  const dur=Number.isFinite(gate)?Math.min(5.8,Math.max(.045,gate)):sampleLen;
  const volume=Math.max(.0001,level('vvoice')*.75*amp*popVoiceGain(tone,syl,semitones)),out=panOutput(c,pan,syl);
- function source(offset,time,sourceLen,attack,release,gainScale=1){
+ function source(offset,time,sourceLen,attack,release,gainScale=1,textureAttack=false){
   const span=sourceLen/rate;
   if(span<.015)return;
   const src=c.createBufferSource(),gain=c.createGain();src.buffer=voiceBuffer;src.playbackRate.value=rate;
   const stop=time+span,attackEnd=time+Math.min(attack,span*.47),releaseStart=Math.max(attackEnd,stop-release);
   gain.gain.setValueAtTime(.0001,time);gain.gain.linearRampToValueAtTime(Math.max(.0002,volume*gainScale),attackEnd);
   gain.gain.setValueAtTime(Math.max(.0002,volume*gainScale),releaseStart);gain.gain.linearRampToValueAtTime(.0001,stop);
-  src.connect(gain).connect(out);src.start(time,offset,sourceLen);src.stop(stop+.01);registerSource(src);
+  src.connect(gain).connect(out);
+  if(textureAttack&&semitones===0&&Math.abs(pan)<.001){
+   addVocalTexture(src,syl,time,span,volume*gainScale);
+  }
+  src.start(time,offset,sourceLen);src.stop(stop+.024);registerSource(src);
  }
  // Duracoes curtas sao cortadas por gate, sem mudar a velocidade nem a altura.
- if(dur<=sampleLen+.018){const actual=Math.min(dur,sampleLen);source(a,at,actual*rate,.008,Math.min(.025,actual*.35));}
+ if(dur<=sampleLen+.018){const actual=Math.min(dur,sampleLen);source(a,at,actual*rate,.008,Math.min(.025,actual*.35),1,true);}
  else {
   // Ataque original + janelas de sustain sobrepostas. O grao repete a parte vocal,
   // preservando a frequencia central enquanto o gate MIDI alonga a silaba.
   const attack=Math.min(.12,sampleLen*.52,dur*.26);
-  source(a,at,attack*rate,.009,Math.min(.036,attack*.38),1);
+  source(a,at,attack*rate,.009,Math.min(.036,attack*.38),1,true);
   const grain=Math.min(.13,Math.max(.042,sampleLen*.35));
   const hop=grain*.5,start=at+Math.max(0,attack-.025),end=at+dur;
   const maxOffset=Math.max(0,(b-a)-grain*rate-.004);
@@ -570,7 +648,7 @@ function stopLip(){
 }
 function syllable(n,at,tone=selectedTone,gate=Infinity){noteSample(n,tone,at,gate,0,1,0,document.querySelector('[data-syl="'+n+'"]'));playHarmony(n,at,tone,gate);maybePadWithVoice(n,at,tone,gate);queueLip(n,at,gate,tone);}
 function whole(at){
- const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);maybePadWithVoice(0,at,selectedTone,1.5);if(voiceBuffer){const origin=s[0][0];s.forEach(([start,end],n)=>queueLip(n,at+(start-origin)/rate,(end-start)/rate,selectedTone));}
+ const {index,rate}=tune(),s=cuts[index];clipPlay(s[0][0],s[3][1],at,rate);playPhraseTextures(at,selectedTone);maybePadWithVoice(0,at,selectedTone,1.5);if(voiceBuffer){const origin=s[0][0];s.forEach(([start,end],n)=>queueLip(n,at+(start-origin)/rate,(end-start)/rate,selectedTone));}
  if(!$('mimisOn').checked)return;
  const anchor=s[0][0];s.forEach(([start,end],n)=>playHarmony(n,at+(start-anchor)/rate,selectedTone,(end-start)/rate));
 }
