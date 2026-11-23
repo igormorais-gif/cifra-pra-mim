@@ -416,6 +416,106 @@ function popVoiceGain(tone,syl,semitones=0){
  return vocalAutoTrims[source][syl]*(+$('mixV'+syl).value/100);
 }
 
+
+/* AFINAÇÃO DA VOZ HUMANA — áudio original 149, NÃO o acompanhamento.
+   A gravação 149 tem entradas como E6/IH em ~C#5 e E6/MI1 em ~C5.
+   Aplicamos PSOLA leve diretamente à VOGAL, preservando ataque,
+   duração, formantes aproximados e o micro-movimento natural de cada pulso.
+   O ajuste não modifica o oscilador de referência, guitarra, PAD ou baixo.
+   ON tem fundamental nasal instável: corrigir apenas diferenças moderadas
+   de classe de altura na oitava natural da voz (nunca forçar 12 semitons). */
+const MIMI_HUMAN_SOURCE_MIDI=[
+ [73.00,54.70,72.40,71.30],
+ [72.40,50.90,71.50,70.30],
+ [71.85,44.20,70.10,69.30],
+ [70.80,45.10,70.30,68.80],
+ [71.95,46.20,70.80,69.10],
+ [70.40,50.90,70.65,67.65],
+ [69.70,45.10,69.40,66.70],
+ [69.60,45.10,69.70,65.10]
+];
+const MIMI_VOWEL_ONSET=[.030,.051,.051,.052];
+let originalVoiceBuffer=null, humanTuningApplied=false;
+function pitchCorrectVowel(segment,sampleRate,inputMidi,outputMidi){
+ const N=segment.length,delta=outputMidi-inputMidi;
+ if(N<240||Math.abs(delta)<.12||Math.abs(delta)>3.6)return segment;
+ const sourceHz=440*Math.pow(2,(inputMidi-69)/12);
+ const targetHz=440*Math.pow(2,(outputMidi-69)/12);
+ const sourcePeriod=sampleRate/sourceHz,targetPeriod=sampleRate/targetHz;
+ const bandHi=Math.min(sampleRate*.46,sourceHz*1.65),bandLo=sourceHz*.53;
+ const ah=1-Math.exp(-2*Math.PI*bandHi/sampleRate);
+ const al=1-Math.exp(-2*Math.PI*bandLo/sampleRate);
+ const filtered=new Float32Array(N);
+ let slow=0,fast=0,maxAbs=0;
+ for(let i=0;i<N;i++){
+  fast+=ah*(segment[i]-fast);slow+=al*(segment[i]-slow);
+  const value=fast-slow;
+  filtered[i]=value;maxAbs=Math.max(maxAbs,Math.abs(value));
+ }
+ if(maxAbs<.001)return segment;
+ const separation=sourcePeriod*.66,threshold=maxAbs*.13,marks=[];
+ for(let i=2;i<N-2;i++){
+  if(filtered[i]<=filtered[i-1]||filtered[i]<filtered[i+1]||filtered[i]<threshold)continue;
+  if(!marks.length||i-marks[marks.length-1]>separation)marks.push(i);
+  else if(filtered[i]>filtered[marks[marks.length-1]])marks[marks.length-1]=i;
+ }
+ if(marks.length<5)return segment;
+ const half=Math.ceil(1.45*Math.max(sourcePeriod,targetPeriod));
+ if(half*3>N)return segment;
+ const window=new Float32Array(2*half+1);
+ for(let j=0;j<window.length;j++)window[j]=.5-.5*Math.cos(2*Math.PI*j/(window.length-1));
+ const out=new Float32Array(N),weight=new Float32Array(N);
+ let cursor=0,markIndex=0;
+ for(let t=half;t<N-half&&cursor<Math.ceil(N/targetPeriod)+5;cursor++){
+  while(markIndex+1<marks.length&&Math.abs(marks[markIndex+1]-t)<Math.abs(marks[markIndex]-t))markIndex++;
+  const m=marks[markIndex],z=Math.round(t);
+  const left=Math.max(-half,-m,-z),right=Math.min(half,N-1-m,N-1-z);
+  for(let j=left;j<=right;j++){
+   const w=window[j+half],at=z+j;
+   out[at]+=segment[m+j]*w;weight[at]+=w;
+  }
+  // Preserve a little of the original non-mechanical intonation.
+  const prior=marks[Math.max(0,markIndex-1)],next=marks[Math.min(marks.length-1,markIndex+1)];
+  const localPeriod=markIndex>0&&markIndex+1<marks.length?(next-prior)*.5:sourcePeriod;
+  const expression=Math.max(.94,Math.min(1.06,1+.16*(localPeriod/sourcePeriod-1)));
+  t+=targetPeriod*expression;
+ }
+ const edge=Math.max(1,Math.min(Math.floor(sampleRate*.018),Math.floor(N*.22)));
+ const corrected=new Float32Array(N);
+ for(let i=0;i<N;i++){
+  const blend=Math.min(1,i/edge,(N-1-i)/edge);
+  const value=weight[i]>.10?out[i]/weight[i]:segment[i];
+  corrected[i]=segment[i]*(1-blend)+value*blend;
+ }
+ return corrected;
+}
+function tuneHumanVoice(source){
+ const c=getAudio(),out=c.createBuffer(source.numberOfChannels,source.length,source.sampleRate),sr=source.sampleRate;
+ for(let ch=0;ch<source.numberOfChannels;ch++)out.copyToChannel(source.getChannelData(ch),ch);
+ let processed=0;
+ for(let take=0;take<8;take++)for(let syl=0;syl<4;syl++){
+  const [start,end]=cuts[take][syl],from=MIMI_HUMAN_SOURCE_MIDI[take][syl];
+  let target=[76,64,75,73][syl]-take;
+  if(syl===1){
+   // ON was spoken/sung far below the specified octave; correct the
+   // pitch class in its NATURAL low register, not an artificial octave leap.
+   target-=12*Math.round((target-from)/12);
+   if(Math.abs(target-from)>2.4)continue;
+  }
+  const margin=Math.min(MIMI_VOWEL_ONSET[syl],(end-start)*.36);
+  const fromFrame=Math.floor((start+margin)*sr),toFrame=Math.min(source.length,Math.floor((end-.012)*sr));
+  if(toFrame-fromFrame<240||Math.abs(target-from)<.12)continue;
+  for(let ch=0;ch<source.numberOfChannels;ch++){
+   const input=source.getChannelData(ch).subarray(fromFrame,toFrame);
+   const corrected=pitchCorrectVowel(input,sr,from,target);
+   out.getChannelData(ch).set(corrected,fromFrame);
+  }
+  processed++;
+ }
+ humanTuningApplied=processed>0;
+ return out;
+}
+
 function clipPlay(start,end,at,rate=1,button=null,gate=Infinity){let c=getAudio();if(!voiceBuffer){status('Para tocar a voz, importe a gravação 149 no quadro inferior.','error');return;}let a=Math.max(0,Math.min(start,voiceBuffer.duration)),b=Math.max(a,Math.min(end,voiceBuffer.duration));if(b-a<.035)return;const src=c.createBufferSource(),gain=c.createGain();src.buffer=voiceBuffer;src.playbackRate.value=rate;src.connect(gain).connect(panOutput(c,0,0));const d=Math.min((b-a)/rate,gate),fade=Math.min(.014,d/4),v=level('vvoice')*.84;gain.gain.setValueAtTime(.0001,at);gain.gain.linearRampToValueAtTime(v,at+fade);gain.gain.setValueAtTime(v,at+Math.max(fade,d-.019));gain.gain.linearRampToValueAtTime(.0001,at+d);src.start(at,a,Math.min(b-a,d*rate));src.stop(at+d+.012);playing.push(src);src.onended=()=>{playing=playing.filter(p=>p!==src);};if(button){button.classList.add('active');setTimeout(()=>button.classList.remove('active'),Math.max(110,d*800));}}
 function tune(tone=selectedTone){return tone===8?{index:7,rate:Math.pow(2,-1/12)}:{index:tone,rate:1};}
 // Terças DIATONICAS: a estrutura nao substitui o acorde; escolhe graus da escala maior.
@@ -1426,7 +1526,13 @@ function renderCuts(){const k=tune().index;const el=$('cutbox');el.innerHTML='';
 function db(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window))return reject(Error('indisponível'));let req=indexedDB.open(DBNAME,1);req.onupgradeneeded=()=>req.result.createObjectStore('audios');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
 async function savedLoad(){try{const conn=await db();return await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readonly'),r=tx.objectStore('audios').get(DBKEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);tx.oncomplete=()=>conn.close();});}catch{return null;}}
 async function savedPut(bytes){try{const conn=await db();await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readwrite');tx.objectStore('audios').put(bytes,DBKEY);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});conn.close();return true;}catch{return false;}}
-async function loadAudio(bytes,from){try{let c=getAudio();const b=await c.decodeAudioData(bytes.slice(0));if(Math.abs(b.duration-16.96)>.85)throw Error('Esta versão foi recortada para a gravação 149 (~17 s). O áudio selecionado dura '+b.duration.toFixed(1)+' s.');voiceBuffer=b;analyzeVocalTrims(b);status('✓ Voz original pronta · oito tomadas · '+from);return true;}catch(err){status('Não foi possível carregar: '+err.message,'error');return false;}}
+async function loadAudio(bytes,from){try{let c=getAudio();const b=await c.decodeAudioData(bytes.slice(0));if(Math.abs(b.duration-16.96)>.85)throw Error('Esta versão foi recortada para a gravação 149 (~17 s). O áudio selecionado dura '+b.duration.toFixed(1)+' s.');originalVoiceBuffer=b;
+  // Apenas o arquivo 149 original, conhecido, recebe a calibração medida.
+  // Se um usuário importar outra gravação, não aplicamos notas presumidas.
+  voiceBuffer=bytes.byteLength===151567?tuneHumanVoice(b):b;
+  if(bytes.byteLength!==151567)humanTuningApplied=false;
+  analyzeVocalTrims(voiceBuffer);
+  status('✓ Voz humana '+(humanTuningApplied?'com afinação de vogais ajustada':'original')+' · oito tomadas · '+from);return true;}catch(err){status('Não foi possível carregar: '+err.message,'error');return false;}}
 async function getEmbedded(){const s=document.querySelector('#audio-inline');if(!s||!s.textContent.trim())return null;const str=s.textContent.trim(),bytes=atob(str),v=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)v[i]=bytes.charCodeAt(i);return v.buffer;}
 async function startup(){const saved=await savedLoad();if(saved&&await loadAudio(saved,'salva neste aparelho'))return;try{const emb=await getEmbedded();if(emb&&await loadAudio(emb,'incluída no aplicativo'))return;}catch{}try{const r=await fetch('./assets/voz-original-149.m4a');if(r.ok){const bytes=await r.arrayBuffer();if(await loadAudio(bytes,'incluída no aplicativo'))return;}}catch{}status('Bateria pronta. Importe a gravação 149 para ativar as vozes.','error');}
 
