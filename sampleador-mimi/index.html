@@ -88,7 +88,10 @@
 .pad-note{border-left:3px solid #d3aef3;padding:8px 12px;background:#39344d;border-radius:0 9px 9px 0;font-size:.82rem;color:#f1e9fc;margin:8px 0}
 @media(max-width:700px){.pad-fields{grid-template-columns:1fr}.pad-knobs{grid-template-columns:repeat(2,minmax(0,1fr))}.pad-panel .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.pad-panel .actions .pad-button{grid-column:1/-1}.pad-panel .actions .btn{width:100%;padding:12px 9px;min-height:50px;font-size:.89rem}}
 
-.compact-live{margin-top:16px;border-top:1px solid #625b76;padding-top:14px}.compact-live .actions .btn{font-size:.88rem;min-height:46px;padding:12px 14px}.beat-options{margin-top:12px;border-top:1px solid #4c4563;padding:11px 0}.beat-options summary{cursor:pointer;font-weight:750;color:var(--blue);padding:8px 2px}.compact-live .rhythm-info{margin:8px 0 13px}.columns{grid-template-columns:1fr!important}.compact-live .seq-scroll{margin-top:14px}.pitch-caption{display:block;font-size:.66rem;line-height:1.15;letter-spacing:0;font-weight:700;opacity:.9;margin-top:7px}.pad-toggle-mount{display:inline-flex;align-items:center}#padStudio{display:none!important}.pad-small{font-size:.86rem;padding:6px 8px;border:1px solid #706987;border-radius:12px;background:#37334e}.bpm-control{display:flex;align-items:center;gap:15px;border:1px solid #676080;border-radius:14px;padding:11px 15px;margin:10px 0 14px;background:#302b46}.bpm-control label{min-width:100px;font-weight:850}.bpm-control output{color:var(--yellow);font-variant-numeric:tabular-nums}.bpm-control input{width:100%;accent-color:var(--yellow);touch-action:pan-y}
+.compact-live{margin-top:16px;border-top:1px solid #625b76;padding-top:14px}.compact-live .actions .btn{font-size:.88rem;min-height:46px;padding:12px 14px}.beat-options{margin-top:12px;border-top:1px solid #4c4563;padding:11px 0}.beat-options summary{cursor:pointer;font-weight:750;color:var(--blue);padding:8px 2px}.compact-live .rhythm-info{margin:8px 0 13px}.columns{grid-template-columns:1fr!important}.compact-live .seq-scroll{margin-top:14px}.pitch-caption{display:block;font-size:.66rem;line-height:1.15;letter-spacing:0;font-weight:700;opacity:.9;margin-top:7px}.pad-toggle-mount{display:inline-flex;align-items:center}#padStudio{display:none!important}.pad-small{font-size:.86rem;padding:6px 8px;border:1px solid #706987;border-radius:12px;background:#37334e}
+.bass-toggle{min-height:51px;padding:9px 12px;border:1px solid #817397;border-radius:12px;background:#37334e;font-weight:850;white-space:nowrap;gap:8px}
+.bass-toggle input{accent-color:var(--yellow);width:19px;height:19px}
+@media(max-width:700px){.beat-feature .actions .bass-toggle{flex:0 0 auto;justify-content:center}}.bpm-control{display:flex;align-items:center;gap:15px;border:1px solid #676080;border-radius:14px;padding:11px 15px;margin:10px 0 14px;background:#302b46}.bpm-control label{min-width:100px;font-weight:850}.bpm-control output{color:var(--yellow);font-variant-numeric:tabular-nums}.bpm-control input{width:100%;accent-color:var(--yellow);touch-action:pan-y}
 .beat-feature{margin-top:16px;border-color:#8a809b;padding-top:23px}
 .beat-feature>.bar-title h2{font-size:1.24rem}
 .beat-feature .compact-live{margin-top:10px;border-top:0;padding-top:3px}
@@ -225,7 +228,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
  <span id="beatCatalogInfo" class="beat-catalog-info">O gênero altera só bumbo, caixa e prato. IH, ON, MI e MI ficam onde você os colocou.</span>
 </div>
 <div class="compact-live" id="sequencer"><div class="bar-title" style="justify-content:flex-end;margin-bottom:6px"><span id="liveTone" class="sub" aria-live="polite">E6</span></div><div class="bpm-control"><label for="bpm">BPM <output id="bpmout">95</output></label><input id="bpm" type="range" min="50" max="220" step="1" value="95" aria-label="Andamento em BPM"></div><div class="rhythm-info"><span><strong id="nowbpm">95 BPM</strong> <span class="sub" id="barcounter">· compasso 1</span></span><span class="sub">1 e &amp; a · 2 e &amp; a · 3 e &amp; a · 4 e &amp; a</span></div>
-<div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div><p class="soft">Troque os acordes acima enquanto o beat toca. O ritmo segue e todas as vozes e o pad mudam de tom nos próximos passos.</p><div class="beat-editor"><div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
+<div class="actions"><button id="playbeat" class="btn primary" type="button">▶ TOCAR CRIAÇÃO</button><label class="check bass-toggle" for="bassEnabled"><input id="bassEnabled" type="checkbox" checked> Baixo</label><button id="clearbeat" class="btn secondary" type="button">Limpar grade</button></div><p class="soft">Troque os acordes acima enquanto o beat toca. O ritmo segue e todas as vozes e o pad mudam de tom nos próximos passos.</p><div class="beat-editor"><div class="seq-scroll" role="region" aria-label="Grade rolável de composição em 16 passos" tabindex="0"><div id="beatgrid" class="beatgrid" role="group" aria-label="Sequenciador de vozes e bateria"></div></div>
 <div class="note-edit" id="noteEditor"><span class="note-hint" id="noteInfo">Toque um bloco de voz para editar sua nota.</span>
   <button class="mini" type="button" id="noteMinus" aria-label="Encurtar uma semicolcheia">−</button><output id="noteLenOut">1 passo</output><button class="mini" type="button" id="notePlus" aria-label="Alongar uma semicolcheia">+</button>
   <button class="mini" type="button" id="shortAllNotes">Todas curtas</button><button class="mini remove" type="button" id="noteDelete">Apagar nota</button>
@@ -239,7 +242,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <!-- PAD: somente o checkbox é deslocado para perto dos botões vocais.
      Parâmetros legados seguem internos para não quebrar projetos já salvos. -->
 <section id="padStudio" hidden aria-hidden="true">
- <label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD + BAIXO</label>
+ <label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD</label>
  <span id="padChord">E6 · Dó♯–Sol♯–Si (6–3–5)</span>
  <span id="padHint"></span>
  <select id="padTrigger"><option value="ih" selected>Acompanha IH</option><option value="bar">Compasso</option><option value="manual">Manual</option></select>
@@ -609,7 +612,7 @@ function padReadouts(){
  const style=padGenreStyle();
  // O toggle é o único elemento visível; a descrição do timbre é acessível ao toque longo.
  const toggle=$('padEnabled');
- toggle.setAttribute('aria-label','PAD e baixo automáticos do gênero '+($('beatCatalog').selectedOptions[0]?.textContent||'Pop')+' · ligar ou desligar');
+ toggle.setAttribute('aria-label','PAD automático do gênero '+($('beatCatalog').selectedOptions[0]?.textContent||'Pop')+' · ligar ou desligar');
  const parent=toggle.closest('label');
  if(parent)parent.title='PAD 6–3–5 · '+style.name;
  $('padChord').textContent=padLabel(selectedTone);
@@ -766,7 +769,7 @@ function ensureBassGraph(){
  return bassGraph;
 }
 function kickDucksBass(at){
- if(!$('padEnabled').checked)return;
+ if(!$('bassEnabled').checked)return;
  const c=getAudio(),p=bassStyle(),gain=ensureBassGraph().duck.gain;
  const t=Math.max(c.currentTime+.003,at),before=Math.max(c.currentTime+.002,t-.002);
  gain.cancelScheduledValues(before);
@@ -775,7 +778,7 @@ function kickDucksBass(at){
  gain.linearRampToValueAtTime(1,t+(beatPresetId==='house'?.17:.115));
 }
 function playBass(at,midi,velocity=1,preview=false){
- if(!$('padEnabled').checked)return;
+ if(!$('bassEnabled').checked)return;
  const style=bassStyle(),c=getAudio(),bus=ensureBassGraph();
  const t=Math.max(c.currentTime+.003,at);
  const stepSeconds=60/Math.max(50,Number($('bpm').value)||95)/4;
@@ -815,8 +818,8 @@ function playBass(at,midi,velocity=1,preview=false){
  return {midi,genre:beatPresetId,at:t,duration:hold};
 }
 function bassPreview(at,tone){
- // Demonstração breve 1–5, inclusive no primeiro gesto de ligar o PAD.
- if(!$('padEnabled').checked)return;
+ // Demonstração breve 1–5 quando o baixo está ligado, independentemente do PAD.
+ if(!$('bassEnabled').checked)return;
  const beat=60/Math.max(50,Number($('bpm').value)||95);
  playBass(at,bassMidi(tone,false),.78,true);
  playBass(at+beat*.50,bassMidi(tone,true),.57,true);
@@ -837,7 +840,6 @@ function maybePadWithVoice(syl,at,tone,gate){
  if(syl===0&&$('padEnabled').checked&&$('padTrigger').value==='ih')playLofiPad(at,tone,gate);
 }
 function stopPad(){
- stopBass();
  for(const item of activePadNotes.splice(0)){for(const osc of item.sources){try{osc.stop()}catch{}}}
  if(padGraph){const graph=padGraph;padGraph=null;
   try{graph.master.gain.cancelScheduledValues(getAudio().currentTime);graph.master.gain.setTargetAtTime(0,getAudio().currentTime,.035);}catch{}
@@ -1119,15 +1121,21 @@ function showOnlyPadToggle(){
  // O PAD sempre acompanha o IH. Os parâmetros sonoros permanecem guardados.
  $('padTrigger').value='ih';
  $('padEnabled').addEventListener('change',()=>{
-  if(!$('padEnabled').checked){stopPad();return;}
-  // Escuta de confirmação no próprio gesto de ligar, sem controles extras.
+  if(!$('padEnabled').checked){stopPad();saveSequence();return;}
+  // Escuta de confirmação no próprio gesto de ligar o PAD.
   const c=getAudio();
   lastAutomaticPadAt=-100;
   playLofiPad(c.currentTime+.04,selectedTone,0,true);
+  saveSequence();
+ });
+ $('bassEnabled').addEventListener('change',()=>{
+  if(!$('bassEnabled').checked){stopBass();}
+  else if(!beatRunning){const c=getAudio();bassPreview(c.currentTime+.04,selectedTone);}
+  saveSequence();
  });
 }
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
-function selectTone(index){const changed=selectedTone!==index;selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));$('liveTone').textContent=CHORDS[index];if(beatRunning&&changed){stopPad();repaint();}renderCuts();tunedPreview(index);refreshPitchCaptions();harmonyExample();padReadouts();repaint();updateNoteEditor();saveSequence();}
+function selectTone(index){const changed=selectedTone!==index;selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));$('liveTone').textContent=CHORDS[index];if(beatRunning&&changed){stopPad();stopBass();repaint();}renderCuts();tunedPreview(index);refreshPitchCaptions();harmonyExample();padReadouts();repaint();updateNoteEditor();saveSequence();}
 // Catálogo: 16 semicolcheias; pistas 0–3 são samples vocais usados como percussões.
 // Disposição vocal inicial: IH / ON em tempos separados, MI 1 imediatamente antes de MI 2.
 // Os gêneros musicais alteram APENAS bumbo, caixa e prato. Mudanças manuais das vozes persistem.
@@ -1196,7 +1204,7 @@ function defaultPattern(){
  setBeatPreset('pop',false);
 }
 function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
-function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,mix:Object.fromEntries(Object.keys(POP_DEFAULTS).map(id=>[id,+$(id).value])),bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
+function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,mix:Object.fromEntries(Object.keys(POP_DEFAULTS).map(id=>[id,+$(id).value])),bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,bassEnabled:$('bassEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
 function restoreSequence(){let saved,legacy=false;try{const current=localStorage.getItem(SEQKEY);legacy=!current;saved=JSON.parse(current||localStorage.getItem(LEGACY_SEQKEY)||localStorage.getItem('mimi-sequencer-v2')||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
  for(let i=0;i<7;i++)for(let j=0;j<STEPS;j++)pattern[i][j]=Number(saved.pattern[i][j])?1:0;
  // Compatibilidade: se o navegador salvou o antigo A/B, recuperar apenas a
@@ -1218,6 +1226,7 @@ function restoreSequence(){let saved,legacy=false;try{const current=localStorage
  for(const id of ['shortvoice','beatchord','mimisOn'])if(typeof saved[id]==='boolean'&&(!legacy||id!=='mimisOn'))$(id).checked=saved[id];
  for(const id of ['harmA','harmB'])if(typeof saved[id]==='string'&&Object.hasOwn(INTERVALS,saved[id]))$(id).value=saved[id];
  if(typeof saved.padEnabled==='boolean')$('padEnabled').checked=saved.padEnabled;
+ if(typeof saved.bassEnabled==='boolean')$('bassEnabled').checked=saved.bassEnabled;
  for(const id of ['padTrigger','padVoicing'])if(typeof saved[id]==='string'&&Array.from($(id).options).some(o=>o.value===saved[id]))$(id).value=saved[id];
  for(const [id,min,max] of [['padVolume',0,100],['padAttack',5,140],['padHold',4,50],['padWet',0,100],['padTail',10,80],['padWarmth',0,100]]){
   if(!legacy&&saved[id]!=null&&Number.isFinite(Number(saved[id])))$(id).value=String(Math.max(min,Math.min(max,Number(saved[id]))));
@@ -1320,7 +1329,7 @@ function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
    drum(name,at,false,idx,bar);
   }
  });
- if($('padEnabled').checked){
+ if($('bassEnabled').checked){
   const bass=bassEvent(idx,bar);
   if(bass)playBass(at,bass.midi,bass.velocity,false);
  }
@@ -1334,7 +1343,7 @@ function stopBeat(){beatRunning=false;runId++;clearInterval(beatTimer);for(const
 function toggleBeat(){getAudio();if(beatRunning){stopAll();return;}
  beatRunning=true;runId++;stepIndex=0;nextBeat=ctx.currentTime+.065;
  beatTimer=setInterval(tick,25);tick();$('playbeat').textContent='■ PARAR CRIAÇÃO';}
-function stopAll(){stopBeat();playing.forEach(s=>{try{s.stop()}catch{}});playing=[];stopPad();stopLip();}
+function stopAll(){stopBeat();playing.forEach(s=>{try{s.stop()}catch{}});playing=[];stopPad();stopBass();stopLip();}
 function renderCuts(){const k=tune().index;const el=$('cutbox');el.innerHTML='';cuts[k].forEach((range,i)=>{const l=document.createElement('label');l.textContent=['IH','ON','MI 1','MI 2'][i];const group=document.createElement('div');group.style.display='flex';group.style.gap='4px';range.forEach((n,j)=>{const inp=document.createElement('input');inp.type='number';inp.min='0';inp.max='30';inp.step='.01';inp.value=n.toFixed(2);inp.setAttribute('aria-label',l.textContent+(j===0?' início':' fim'));inp.onchange=()=>{const x=Number(inp.value);if(Number.isFinite(x)&&x>=0)cuts[k][i][j]=x;};group.append(inp);});l.append(group);el.append(l);});}
 function db(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window))return reject(Error('indisponível'));let req=indexedDB.open(DBNAME,1);req.onupgradeneeded=()=>req.result.createObjectStore('audios');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
 async function savedLoad(){try{const conn=await db();return await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readonly'),r=tx.objectStore('audios').get(DBKEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);tx.oncomplete=()=>conn.close();});}catch{return null;}}
