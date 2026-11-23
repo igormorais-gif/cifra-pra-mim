@@ -239,7 +239,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <!-- PAD: somente o checkbox é deslocado para perto dos botões vocais.
      Parâmetros legados seguem internos para não quebrar projetos já salvos. -->
 <section id="padStudio" hidden aria-hidden="true">
- <label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD ligado</label>
+ <label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD + BAIXO</label>
  <span id="padChord">E6 · Dó♯–Sol♯–Si (6–3–5)</span>
  <span id="padHint"></span>
  <select id="padTrigger"><option value="ih" selected>Acompanha IH</option><option value="bar">Compasso</option><option value="manual">Manual</option></select>
@@ -609,7 +609,7 @@ function padReadouts(){
  const style=padGenreStyle();
  // O toggle é o único elemento visível; a descrição do timbre é acessível ao toque longo.
  const toggle=$('padEnabled');
- toggle.setAttribute('aria-label','PAD '+style.name+' do gênero '+($('beatCatalog').selectedOptions[0]?.textContent||'Pop')+' · ligar ou desligar');
+ toggle.setAttribute('aria-label','PAD e baixo automáticos do gênero '+($('beatCatalog').selectedOptions[0]?.textContent||'Pop')+' · ligar ou desligar');
  const parent=toggle.closest('label');
  if(parent)parent.title='PAD 6–3–5 · '+style.name;
  $('padChord').textContent=padLabel(selectedTone);
@@ -766,8 +766,8 @@ function ensureBassGraph(){
  return bassGraph;
 }
 function kickDucksBass(at){
- if(!$('padEnabled').checked||!bassGraph)return;
- const c=getAudio(),p=bassStyle(),gain=bassGraph.duck.gain;
+ if(!$('padEnabled').checked)return;
+ const c=getAudio(),p=bassStyle(),gain=ensureBassGraph().duck.gain;
  const t=Math.max(c.currentTime+.003,at),before=Math.max(c.currentTime+.002,t-.002);
  gain.cancelScheduledValues(before);
  gain.setValueAtTime(1,before);
@@ -815,9 +815,11 @@ function playBass(at,midi,velocity=1,preview=false){
  return {midi,genre:beatPresetId,at:t,duration:hold};
 }
 function bassPreview(at,tone){
- // Escuta ligada/desligada do PAD ou IH avulso: uma fundamental e uma quinta curta.
+ // Demonstração breve 1–5, inclusive no primeiro gesto de ligar o PAD.
  if(!$('padEnabled').checked)return;
- playBass(at,bassMidi(tone,false),.82,true);
+ const beat=60/Math.max(50,Number($('bpm').value)||95);
+ playBass(at,bassMidi(tone,false),.78,true);
+ playBass(at+beat*.50,bassMidi(tone,true),.57,true);
 }
 function stopBass(){
  const c=bassGraph?.ctx;
