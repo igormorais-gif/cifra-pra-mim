@@ -678,9 +678,10 @@ function playLofiPad(at,tone,gate=0,force=false){
    const on=pulse+i*style.stagger;
    const frequency=hz(midi),filter=c.createBiquadFilter(),envelope=c.createGain();
    filter.type='lowpass';filter.Q.value=.60;
+   const filterRise=Math.max(.012,Math.min(hold*.44,.14));
    filter.frequency.setValueAtTime(style.low,on);
-   filter.frequency.linearRampToValueAtTime(style.cutoff,on+Math.max(.018,Math.min(hold*.65,.20)));
-   filter.frequency.setTargetAtTime(Math.max(320,style.cutoff*.75),on+hold*.6,.12);
+   filter.frequency.linearRampToValueAtTime(style.cutoff,on+filterRise);
+   filter.frequency.setTargetAtTime(Math.max(320,style.cutoff*.75),on+Math.max(filterRise+.005,hold*.74),.12);
    const amplitude=.062*volume*(i===0?1:.91)/(style.offsets.length>1?1.10:1);
    const end=on+hold+release,attack=Math.max(.004,Math.min(style.attack,hold*.66));
    envelope.gain.setValueAtTime(.00001,on);
@@ -705,7 +706,7 @@ function playLofiPad(at,tone,gate=0,force=false){
  }
  const item={sources};
  activePadNotes.push(item);
- if(sources.length)sources[0].onended=()=>{
+ if(sources.length)sources[sources.length-1].onended=()=>{
   const idx=activePadNotes.indexOf(item);if(idx>=0)activePadNotes.splice(idx,1);
  };
  return {notes:notes.map(padNoteName),at:start,duration:style.hold,genre:beatPresetId,voiceCount:sources.length};
