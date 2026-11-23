@@ -79,8 +79,8 @@ body{background:radial-gradient(850px 480px at 12% -12%,#46346e90,transparent 80
 .drumpad .emoji{font-size:1.5rem}
 .foot{margin:20px 0 0;opacity:.75}
 @media(min-width:740px){
-.wrap{display:grid;grid-template-columns:minmax(290px,.88fr) minmax(0,1.42fr);grid-template-areas:'top top' 'hero hero' 'voice beat' 'harmony drums' 'footer footer';gap:14px 17px;align-items:start}
-.top{grid-area:top}.hero{grid-area:hero;margin:0}.voice-studio{grid-area:voice;min-width:0}.beat-feature{grid-area:beat;min-width:0;margin:0}.harmony-panel{grid-area:harmony;margin:0;min-width:0}.columns{grid-area:drums;min-width:0}.foot{grid-area:footer;margin:3px 0 0}
+.wrap{display:grid;grid-template-columns:minmax(290px,.88fr) minmax(0,1.42fr);grid-template-areas:'top top' 'hero hero' 'voice beat' 'harmony harmony' 'footer footer';gap:14px 17px;align-items:start}
+.top{grid-area:top}.hero{grid-area:hero;margin:0}.voice-studio{grid-area:voice;min-width:0}.beat-feature{grid-area:beat;min-width:0;margin:0}.harmony-panel{grid-area:harmony;margin:0;min-width:0}.foot{grid-area:footer;margin:3px 0 0}
 .voice-studio,.beat-feature,.harmony-panel,.columns>.panel{padding:18px}
 }
 @media(min-width:1150px){.wrap{grid-template-columns:minmax(370px,.85fr) minmax(0,1.55fr)}.tones{grid-template-columns:repeat(5,minmax(0,1fr))}.voicepads{margin:14px 0 17px}.voicepad{min-height:130px;font-size:3.5rem}}
