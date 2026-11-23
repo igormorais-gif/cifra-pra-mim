@@ -164,3 +164,17 @@ Direção sonora dos kits: MIMI clássico (limpo e equilibrado), samba (surdo/ca
 As variações de dinâmica e microtiming dos nove gêneros continuam ativas, e todos os eventos passam pelo barramento de bateria e pela proteção de picos do master. O sample anterior `caixa-pop-encorpada.wav` e os antigos sintetizadores permanecem como fallback. Na seleção antiga da caixa, a opção padrão aparece agora como **Kit do gênero**; variantes manuais de aro, seco, madeira etc. atuam como colorações sem quebrar a seleção automática.
 
 **Não houve mudanças** na grade única de 16 passos, no padrão fixo IH (passos 1,11), ON (5,13), MI 1 (7), MI 2 (8), no BPM manual, nas harmonias ou na mixagem vocal. Não foram adicionados novos controles à interface. A correspondência dos 27 offsets foi testada por simulação de Web Audio; escuta em caixa de som real/iOS ainda é uma etapa de avaliação artística.
+
+## Humanização timbrística automática dos oito gêneros (23/11/2026)
+
+A bateria passa a ter **três articulações sonoras por peça** — `accent` (forte), `normal` (média) e `ghost` (leve) — para bumbo, caixa e prato. Essas articulações não são apenas variações do controle de volume: o navegador **pré-renderiza buffers distintos de áudio** para cada combinação de kit, instrumento e articulação, a partir dos one-shots originais de `assets/kits/mimi-kits-9x3-v1.wav`. São 81 buffers em memória contando o kit MIMI legado interno (9 × 3 × 3), dos quais 72 correspondem aos oito estilos visíveis.
+
+- **Acento:** ataque mais nítido, espectro com mais presença e cauda preservada.
+- **Médio:** ataque atenuado, corpo mais arredondado, sustentação moderada.
+- **Ghost:** execução curta e mais filtrada; nas caixas, parte da textura vem do sample interno de aro (reggae), distinguindo a articulação de uma simples redução de volume. O bumbo leve perde parte do subgrave e o prato leve tem decaimento menor.
+
+A escolha de articulação depende da **posição rítmica e do gênero**: caixa em contratempos síncopados do samba, aro/escovinha mais leve na bossa, dinâmica dos bumbos secundários e alternância entre toques fortes e fracos dos pratos. Há um ciclo determinístico de quatro compassos com pequenas variações de velocidade e microtiming controlado; não são criadas notas novas, não se altera a grade, e nenhum elemento depende de sorteios aleatórios.
+
+**Preservado:** IH/ON/MI/MI com suas notas e durações, seleção harmônica, MIDI/piano roll de 16 passos, mixagem pop interna aprovada, BPM, oito estilos, ausência do A/B e ausência de mixadores extras. Se os buffers humanizados não puderem ser preparados, o banco anterior permanece como fallback.
+
+**Testes concluídos:** sintaxe JavaScript; renderização simulada de 81 buffers distintos; três variantes com ataque/espectro/duração diferentes; 144 acionamentos simulados pelo motor Web Audio, cobrindo oito gêneros, três instrumentos e acentos distintos. A avaliação de naturalidade no Safari/iPhone e na caixa de som continua sendo uma verificação auditiva, não certificada por esses testes.
