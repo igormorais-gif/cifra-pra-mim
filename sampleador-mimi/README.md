@@ -128,3 +128,21 @@ A caixa padrão agora usa o arquivo original `assets/caixa-pop-encorpada.wav`, u
 O one-shot é roteado ao barramento de bateria e pelo compressor de proteção do master, evitando bypass da mixagem aprovada. O volume geral de bateria continua independente. O padrão fixo IH (1,11), ON (5,13), MI 1 (7), MI 2 (8), os BPMs e o catálogo de gêneros não foram alterados.
 
 Esta é uma atualização de timbre e níveis de reprodução, não uma masterização final validada em caixa de som real.
+
+## Groove por gênero: caixa, bumbo e prato (22/11/2026)
+
+O BEAT agora aplica nove perfis **internos** de bateria (MIMI clássico, samba, funk carioca, hip-hop, pop, rock, house, reggae e bossa nova) sem abrir controles de mixagem. O mesmo sample `caixa-pop-encorpada.wav` continua sendo a base, mas recebe EQ e compressão específicos em cada ritmo: passa-altas e low-pass, ajustes de corpo em 195 Hz, definição em 2,65 kHz, cauda entre 120 e 340 ms, envelopes curtos e compressão transitória de aproximadamente 2,3:1. Bumbo e prato recebem variações de volume/acento e pequenos deslocamentos de timing **determinísticos**, sem alterar o BPM.
+
+- **MIMI clássico:** caixa pop equilibrada; bumbo e prato neutros.
+- **Samba:** caixa curta, brilhante e com ataques fantasmas menos fortes; maior subdivisão e articulação no prato.
+- **Funk carioca:** caixa contundente e grave-médio presente; bumbo forte e prato sincopado.
+- **Hip-hop:** caixa mais cheia, escura e um pouco atrasada (14 ms); bumbo pesado e chimbal discreto.
+- **Pop:** caixa seca, definida e controlada.
+- **Rock:** maior sustentação e ataque da caixa, com bumbo firme.
+- **House:** caixa curta e estalada; bumbo em quatro tempos e prato destacado nos contratempos.
+- **Reggae:** caixa mais quente e ligeiramente atrasada; prato mais suave.
+- **Bossa nova:** caixa curta, leve e filtrada, com eventos fracos menos intensos e percussão de apoio discreta.
+
+Esses perfis são **interpretações estilizadas** sobre os sete canais existentes, não transcrições fielmente representativas de todas as variantes desses gêneros. Todos usam as mesmas posições programadas na grade (nenhuma nota nova é criada automaticamente além do preset já selecionado). A voz IH/ON/MI/MI permanece nos passos **IH 1 e 11, ON 5 e 13, MI 1 7 e MI 2 8**, reaplicados quando se troca de gênero. A mixagem vocal aprovada, o pad e os valores salvos do master não foram alterados.
+
+O código foi testado com nove perfis distintos e agendamento realista de eventos Web Audio; a percepção do groove, especialmente em caixas Bluetooth e Safari iOS, ainda requer escuta auditiva.
