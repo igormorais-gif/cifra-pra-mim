@@ -867,6 +867,12 @@ function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
 function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,mix:Object.fromEntries(Object.keys(POP_DEFAULTS).map(id=>[id,+$(id).value])),bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
 function restoreSequence(){let saved,legacy=false;try{const current=localStorage.getItem(SEQKEY);legacy=!current;saved=JSON.parse(current||localStorage.getItem(LEGACY_SEQKEY)||localStorage.getItem('mimi-sequencer-v2')||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
  for(let i=0;i<7;i++)for(let j=0;j<STEPS;j++)pattern[i][j]=Number(saved.pattern[i][j])?1:0;
+ // Compatibilidade: se o navegador salvou o antigo A/B, recuperar apenas a
+ // bateria A como grade única, preservando as quatro pistas vocais.
+ if(Array.isArray(saved.beatBanks?.A)&&saved.beatBanks.A.length===3&&saved.beatBanks.A.every(row=>Array.isArray(row)&&row.length===STEPS)){
+  for(let tr=0;tr<3;tr++)for(let step=0;step<STEPS;step++)
+   pattern[tr+4][step]=Number(saved.beatBanks.A[tr][step])?1:0;
+ }
  for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++){
   const old=Array.isArray(saved.pitches)?saved.pitches[j]:0;
   const p=Array.isArray(saved.notePitches?.[tr])?saved.notePitches[tr][j]:old;
