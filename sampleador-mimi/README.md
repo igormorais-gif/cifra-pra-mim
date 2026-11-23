@@ -152,3 +152,15 @@ O código foi testado com nove perfis distintos e agendamento realista de evento
 A pedido do usuário, as variações **A/B** e as **viradas automáticas** foram retiradas da interface e do agendamento. Voltou o **montador original de 16 passos**, com um único conjunto de pistas de voz e bateria, edição por toque e BPM manual. O catálogo de nove gêneros e os tratamentos sonoros de caixa, bumbo e prato continuam presentes. A cadeia de mixagem pop não foi alterada.
 
 Em navegadores que salvaram dados no formato antigo de A/B, o carregamento usa a grade de bateria **A** como ponto de partida, preservando as notas vocais e outros ajustes. Não são mostrados controles de A/B nem opções de virada.
+
+## Nove kits sonoros específicos por gênero (23/11/2026)
+
+A troca de estilo no catálogo agora seleciona automaticamente um **kit de áudio próprio**, não apenas uma regulagem do sample pop. Há **27 one-shots originais sintetizados** (bumbo, caixa e percussão aguda para cada um dos nove gêneros), armazenados em um único arquivo PCM WAV mono, 32 kHz e 16 bits:
+
+`assets/kits/mimi-kits-9x3-v1.wav` — duração total 12,69 s, 27 células consecutivas de 470 ms (ordem de gêneros: mimi, samba, funk, hiphop, pop, rock, house, reggae, bossa; ordem de instrumentos por gênero: kick, snare, hat). O player usa `AudioBufferSourceNode.start(at,offset,duration)` e carrega o banco com `decodeAudioData` apenas uma vez. Caso o banco ainda não esteja disponível, a bateria anterior funciona como reserva.
+
+Direção sonora dos kits: MIMI clássico (limpo e equilibrado), samba (surdo/caixa curta/percussão brilhante), funk carioca (kick marcado, caixa com ataque de clap e shaker), hip-hop (bumbo subgrave, caixa escura e prato empoeirado), pop (kick e caixa definidos, hi-hat nítido), rock (caixa mais aberta e prato brilhante), house (kick eletrônico, clap e prato mais longo), reggae (bumbo abafado, aro/caixa seca e prato suave) e bossa nova (baixo suave, caixa tipo rim/brush e shaker). Essas sonoridades são **sínteses estilizadas**, não gravações acústicas autênticas nem amostras licenciadas de terceiros.
+
+As variações de dinâmica e microtiming dos nove gêneros continuam ativas, e todos os eventos passam pelo barramento de bateria e pela proteção de picos do master. O sample anterior `caixa-pop-encorpada.wav` e os antigos sintetizadores permanecem como fallback. Na seleção antiga da caixa, a opção padrão aparece agora como **Kit do gênero**; variantes manuais de aro, seco, madeira etc. atuam como colorações sem quebrar a seleção automática.
+
+**Não houve mudanças** na grade única de 16 passos, no padrão fixo IH (passos 1,11), ON (5,13), MI 1 (7), MI 2 (8), no BPM manual, nas harmonias ou na mixagem vocal. Não foram adicionados novos controles à interface. A correspondência dos 27 offsets foi testada por simulação de Web Audio; escuta em caixa de som real/iOS ainda é uma etapa de avaliação artística.
