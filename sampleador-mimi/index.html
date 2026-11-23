@@ -169,6 +169,20 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 .lip-face[data-mouth="m"]{background-position:100% 50%!important}
 .lip-face[data-mouth="i"]{background-position:0% 100%!important}
 .lip-face[data-mouth="n"]{background-position:100% 100%!important}
+
+/* Mesa de mixagem pop discreta: recolhida por padrão para priorizar o BEAT. */
+.mix-pop{margin:12px 0 11px;border:1px solid #726a94;border-radius:13px;background:#222239;padding:8px 12px;color:#fff5e5}
+.mix-pop>summary{cursor:pointer;font-weight:850;color:#e8d6ff;padding:6px 2px;list-style-position:inside}
+.mix-pop>summary small{font-weight:650;color:#bfb4d6;margin-left:6px;font-size:.69rem}
+.mix-description,.mix-note{font-size:.72rem;color:#cac5dc;line-height:1.42;margin:11px 0}
+.mix-controls,.mix-voices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+.mix-controls label,.mix-voices label{display:block;font-size:.73rem;font-weight:750;color:#f3e9fa}
+.mix-controls output,.mix-voices output{float:right;font-size:.69rem;color:#e5cc91;font-variant-numeric:tabular-nums}
+.mix-controls input,.mix-voices input{display:block;width:100%;accent-color:#c7a8ff;margin:9px 0 2px;min-height:23px}
+.mix-mini-title{font-size:.75rem;font-weight:850;margin:11px 0 9px;border-top:1px solid #55506d;padding-top:11px}
+.mix-mini-title small{display:block;color:#bfb4d6;font-weight:500}
+#mixReset{margin-top:10px;border-color:#8f80af}
+@media(max-width:450px){.mix-controls,.mix-voices{grid-template-columns:1fr 1fr;gap:9px}.mix-pop>summary small{display:block;margin-left:0}}
 </style><link rel="stylesheet" href="./assets/studio-panorama.css?v=20261122-1"></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">MIMI • PLAYGROUND SONORO</span><a href="../laboratorio.html">← Voltar ao Hub</a></header><aside class="orientation-hint" role="note">↻ Melhor experiência: gire o celular para a horizontal. Na vertical tudo continua funcionando.</aside>
@@ -180,6 +194,25 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 </div>
 </section>
 <section class="panel voice-studio" id="voiceStudio" aria-label="Banco de vozes"><div class="bar-title"><h2>01 / Escolha o tom</h2><span id="toneInfo" class="sub">E6 · tomada original 01</span></div><div class="tones" id="tones"></div><div class="bar-title" style="margin:21px 0 0"><h2>02 / Toque as sílabas</h2><span class="sub">Use os dedos ou teclas 1–4</span></div><div id="voicepads" class="voicepads"><button class="voicepad" data-syl="0" type="button">IH<span class="smalltag">1</span><span class="pitch-caption" id="pitch0">Mi5</span></button><button class="voicepad" data-syl="1" type="button">ON<span class="smalltag">2</span><span class="pitch-caption" id="pitch1">Mi4</span></button><button class="voicepad" data-syl="2" type="button">MI<span class="smalltag">3</span><span class="pitch-caption" id="pitch2">Ré♯5</span></button><button class="voicepad" data-syl="3" type="button">MI<span class="smalltag">4</span><span class="pitch-caption" id="pitch3">Dó♯5</span></button></div><div class="actions"><button id="phrase" class="btn primary" type="button">▶ FRASE COMPLETA</button><button id="chord" class="btn secondary" type="button">♪ OUVIR ACORDE</button><button id="stop" class="btn secondary" type="button">■ PARAR TUDO</button><label class="check"><input type="checkbox" id="harmonize" checked> Harmonizar com sexta</label><span id="padToggleMount" class="pad-toggle-mount"></span></div><p class="soft" style="margin:9px 0 3px">🎙️ Voz original com reforço suave de afinação, sem efeito robótico. A afinação é reforçada discretamente, sem processar a fala até ficar robótica. No roll, só sustenta quando você alonga a nota.</p>
+<details class="mix-pop" id="mixPopPanel">
+ <summary>🎛 MIX POP <small>EQ · compressão · reverb · panorâmica</small></summary>
+ <p class="mix-description">Tratamento pronto para caixa de som: volumes equilibrados por tomada, voz central e dinâmica controlada. Ajustes opcionais.</p>
+ <div class="mix-controls">
+  <label>Presença / EQ <output id="mixEqOut">58%</output><input id="mixEq" type="range" min="0" max="100" value="58"></label>
+  <label>Compressão <output id="mixCompOut">64%</output><input id="mixComp" type="range" min="0" max="100" value="64"></label>
+  <label>Reverb vocal <output id="mixReverbOut">24%</output><input id="mixReverb" type="range" min="0" max="100" value="24"></label>
+  <label>Abertura / PAN <output id="mixWidthOut">30%</output><input id="mixWidth" type="range" min="0" max="100" value="30"></label>
+ </div>
+ <div class="mix-mini-title">Ajuste fino das quatro vozes <small>(com equilíbrio automático de volume)</small></div>
+ <div class="mix-voices">
+  <label>IH <output id="mixV0Out">0 dB</output><input id="mixV0" type="range" min="50" max="140" step="1" value="100"></label>
+  <label>ON <output id="mixV1Out">0 dB</output><input id="mixV1" type="range" min="50" max="140" step="1" value="100"></label>
+  <label>MI 1 <output id="mixV2Out">0 dB</output><input id="mixV2" type="range" min="50" max="140" step="1" value="100"></label>
+  <label>MI 2 <output id="mixV3Out">0 dB</output><input id="mixV3" type="range" min="50" max="140" step="1" value="100"></label>
+ </div>
+ <button type="button" class="mini" id="mixReset">Restaurar mix pop</button>
+ <p class="mix-note">O volume principal da voz continua disponível no painel da bateria. O reverb é compartilhado; o compressor trata cada sílaba individualmente, e a saída tem controle de picos.</p>
+</details>
 <div id="studioPitches" hidden></div>
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 <section class="panel beat-feature" id="beatFeature" aria-label="Montador de BEAT">
@@ -292,7 +325,103 @@ const INTERVALS={off:0,thirdUp:2,thirdDown:-2,fourthUp:3,fourthDown:-3,fifthUp:4
 function status(s,kind='ready'){$('status').textContent=s;$('status').dataset.status=kind;}
 function getAudio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();}if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx;}
 function level(id){return Math.pow(Number($(id).value)/100,1.5);}
-function clipPlay(start,end,at,rate=1,button=null,gate=Infinity){let c=getAudio();if(!voiceBuffer){status('Para tocar a voz, importe a gravação 149 no quadro inferior.','error');return;}let a=Math.max(0,Math.min(start,voiceBuffer.duration)),b=Math.max(a,Math.min(end,voiceBuffer.duration));if(b-a<.035)return;const src=c.createBufferSource(),gain=c.createGain();src.buffer=voiceBuffer;src.playbackRate.value=rate;src.connect(gain).connect(c.destination);const d=Math.min((b-a)/rate,gate),fade=Math.min(.014,d/4),v=level('vvoice')*.84;gain.gain.setValueAtTime(.0001,at);gain.gain.linearRampToValueAtTime(v,at+fade);gain.gain.setValueAtTime(v,at+Math.max(fade,d-.019));gain.gain.linearRampToValueAtTime(.0001,at+d);src.start(at,a,Math.min(b-a,d*rate));src.stop(at+d+.012);playing.push(src);src.onended=()=>{playing=playing.filter(p=>p!==src);};if(button){button.classList.add('active');setTimeout(()=>button.classList.remove('active'),Math.max(110,d*800));}}
+
+/* MIX POP: quatro canais de voz com EQ e compressor independentes, um reverb
+   compartilhado e proteção de picos no master. Nada altera o pitch do sample. */
+const POP_DEFAULTS={mixEq:58,mixComp:64,mixReverb:24,mixWidth:30,mixV0:100,mixV1:100,mixV2:100,mixV3:100};
+const POP_BASE_PAN=[-.105,.075,-.065,.085];
+let popMix=null;
+let vocalAutoTrims=Array.from({length:8},()=>Array(4).fill(1));
+function analyzeVocalTrims(b){
+ const ch=b.getChannelData(0),rate=b.sampleRate;
+ const loudness=[];
+ for(let take=0;take<8;take++){
+  const per=[];
+  for(let syl=0;syl<4;syl++){
+   const bounds=cuts[take][syl],lo=Math.max(0,Math.floor((bounds[0]+.015)*rate)),hi=Math.min(ch.length,Math.floor((bounds[1]-.010)*rate));
+   let sum=0,count=0;
+   for(let i=lo;i<hi;i+=3){sum+=ch[i]*ch[i];count++;}
+   const rms=count?Math.sqrt(sum/count):.045;
+   per.push(rms);if(rms>.007)loudness.push(rms);
+  }
+  vocalAutoTrims[take]=per;
+ }
+ const sorted=loudness.sort((a,b)=>a-b),median=sorted.length?sorted[Math.floor(sorted.length/2)]:.06;
+ for(let take=0;take<8;take++)for(let syl=0;syl<4;syl++){
+  const value=vocalAutoTrims[take][syl];
+  vocalAutoTrims[take][syl]=Math.max(.76,Math.min(1.34,median/Math.max(.01,value)));
+ }
+}
+function makeVocalReverb(c){
+ const size=Math.floor(c.sampleRate*1.05),buffer=c.createBuffer(2,size,c.sampleRate);
+ for(let ch=0;ch<2;ch++){
+  const data=buffer.getChannelData(ch);let low=0;
+  for(let i=0;i<size;i++){
+   const t=i/size;
+   low=low*.58+(Math.random()*2-1)*.42;
+   data[i]=low*Math.pow(1-t,2.15)*.22;
+  }
+ }
+ return buffer;
+}
+function ensurePopMix(){
+ const c=getAudio();
+ if(popMix&&popMix.ctx===c)return popMix;
+ const sum=c.createGain(),limiter=c.createDynamicsCompressor(),out=c.createGain();
+ sum.gain.value=.85;limiter.threshold.value=-8;limiter.knee.value=2;limiter.ratio.value=10;limiter.attack.value=.003;limiter.release.value=.11;
+ out.gain.value=.88;sum.connect(limiter).connect(out).connect(c.destination);
+ const drums=c.createGain(),instruments=c.createGain(),vocalDry=c.createGain();
+ drums.gain.value=.87;instruments.gain.value=.78;vocalDry.gain.value=.98;
+ drums.connect(sum);instruments.connect(sum);vocalDry.connect(sum);
+ const reverbSend=c.createGain(),pre=c.createDelay(.06),reverbHP=c.createBiquadFilter(),verb=c.createConvolver(),reverbLP=c.createBiquadFilter(),returnGain=c.createGain();
+ pre.delayTime.value=.019;
+ reverbHP.type='highpass';reverbHP.frequency.value=430;
+ reverbLP.type='lowpass';reverbLP.frequency.value=5600;
+ verb.buffer=makeVocalReverb(c);verb.normalize=true;
+ reverbSend.connect(pre).connect(reverbHP).connect(verb).connect(reverbLP).connect(returnGain).connect(sum);
+ const channels=[];
+ for(let syl=0;syl<4;syl++){
+  const input=c.createGain(),hp=c.createBiquadFilter(),lowMid=c.createBiquadFilter(),presence=c.createBiquadFilter(),air=c.createBiquadFilter(),comp=c.createDynamicsCompressor();
+  hp.type='highpass';hp.frequency.value=syl===1?95:120;hp.Q.value=.7;
+  lowMid.type='peaking';lowMid.frequency.value=380;lowMid.Q.value=.8;lowMid.gain.value=-2.0;
+  presence.type='peaking';presence.frequency.value=3000;presence.Q.value=.85;
+  air.type='highshelf';air.frequency.value=6900;air.gain.value=-.9;
+  comp.knee.value=11;comp.attack.value=.010;comp.release.value=.135;
+  input.connect(hp).connect(lowMid).connect(presence).connect(air).connect(comp);
+  comp.connect(vocalDry);comp.connect(reverbSend);
+  channels.push({input,hp,lowMid,presence,air,comp});
+ }
+ popMix={ctx:c,sum,limiter,out,drums,instruments,vocalDry,reverbSend,returnGain,channels};
+ updatePopMix();
+ return popMix;
+}
+function updatePopMix(){
+ for(const [id,value] of Object.entries(POP_DEFAULTS)){
+  const el=$(id);if(!el)continue;
+  const readout=$(id+'Out');
+  if(readout){
+   if(id.startsWith('mixV')){
+    const db=20*Math.log10(Math.max(.01,+el.value/100));
+    readout.textContent=(db>0?'+':'')+db.toFixed(1).replace('.',',')+' dB';
+   }else readout.textContent=el.value+'%';
+  }
+ }
+ if(!popMix)return;
+ const eq=+$('mixEq').value/100,comp=+$('mixComp').value/100,verb=+$('mixReverb').value/100;
+ popMix.returnGain.gain.setTargetAtTime(verb*.32,popMix.ctx.currentTime,.025);
+ for(const channel of popMix.channels){
+  channel.lowMid.gain.setTargetAtTime(-.8-eq*2.4,popMix.ctx.currentTime,.025);
+  channel.presence.gain.setTargetAtTime(.4+eq*3.3,popMix.ctx.currentTime,.025);
+  channel.comp.threshold.setTargetAtTime(-10-comp*19,popMix.ctx.currentTime,.025);
+  channel.comp.ratio.setTargetAtTime(1.7+comp*3.2,popMix.ctx.currentTime,.025);
+ }
+}
+function popVoiceGain(tone,syl,semitones=0){
+ const source=Math.max(0,Math.min(7,tone-semitones));
+ return vocalAutoTrims[source][syl]*(+$('mixV'+syl).value/100);
+}
+
+function clipPlay(start,end,at,rate=1,button=null,gate=Infinity){let c=getAudio();if(!voiceBuffer){status('Para tocar a voz, importe a gravação 149 no quadro inferior.','error');return;}let a=Math.max(0,Math.min(start,voiceBuffer.duration)),b=Math.max(a,Math.min(end,voiceBuffer.duration));if(b-a<.035)return;const src=c.createBufferSource(),gain=c.createGain();src.buffer=voiceBuffer;src.playbackRate.value=rate;src.connect(gain).connect(panOutput(c,0,0));const d=Math.min((b-a)/rate,gate),fade=Math.min(.014,d/4),v=level('vvoice')*.84;gain.gain.setValueAtTime(.0001,at);gain.gain.linearRampToValueAtTime(v,at+fade);gain.gain.setValueAtTime(v,at+Math.max(fade,d-.019));gain.gain.linearRampToValueAtTime(.0001,at+d);src.start(at,a,Math.min(b-a,d*rate));src.stop(at+d+.012);playing.push(src);src.onended=()=>{playing=playing.filter(p=>p!==src);};if(button){button.classList.add('active');setTimeout(()=>button.classList.remove('active'),Math.max(110,d*800));}}
 function tune(tone=selectedTone){return tone===8?{index:7,rate:Math.pow(2,-1/12)}:{index:tone,rate:1};}
 // Terças DIATONICAS: a estrutura nao substitui o acorde; escolhe graus da escala maior.
 function semitonesAtDegree(d){return MAJOR[((d%7)+7)%7]+12*Math.floor(d/7);}
@@ -301,7 +430,16 @@ function voiceSource(tone,syl,offset){ // prioriza uma outra tomada REAL no mesm
  const wanted=tone-offset,source=Math.max(0,Math.min(7,wanted));
  const [a,b]=cuts[source][syl];return {a,b,rate:Math.pow(2,(source-wanted)/12),real:source===wanted};
 }
-function panOutput(c,pan){if(typeof c.createStereoPanner!=='function')return c.destination;const p=c.createStereoPanner();p.pan.value=Math.max(-.95,Math.min(.95,pan));p.connect(c.destination);return p;}
+function panOutput(c,pan,syl=0){
+ const mix=ensurePopMix(),channel=mix.channels[Math.max(0,Math.min(3,syl))].input;
+ if(typeof c.createStereoPanner!=='function')return channel;
+ const p=c.createStereoPanner(),width=+$('mixWidth').value/100;
+ // Voz principal perto do centro; harmonias laterais mas mono-compatíveis.
+ const position=Math.abs(pan)<.001?POP_BASE_PAN[syl]*width/ .55:Math.max(-.40,Math.min(.40,pan*.56));
+ p.pan.value=Math.max(-.40,Math.min(.40,position));
+ p.connect(channel);
+ return p;
+}
 function registerSource(src){playing.push(src);src.onended=()=>{const j=playing.indexOf(src);if(j>=0)playing.splice(j,1);};}
 
 function tunedPreview(tone){
@@ -311,14 +449,14 @@ function tunedPreview(tone){
 }
 function midiName(n){const names=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];
  return names[((n%12)+12)%12]+(Math.floor(n/12)-1);}
-function exactTone(midi,at,seconds,vol,pan){
+function exactTone(midi,at,seconds,vol,pan,syl=0){
  if(vol<=.001)return;
  const c=getAudio(),osc=c.createOscillator(),g=c.createGain();osc.type='sine';osc.frequency.setValueAtTime(hz(midi),at);
  const duration=Math.max(.06,Math.min(seconds,0.65)),amplitude=.015*vol;
  g.gain.setValueAtTime(.00001,at);g.gain.linearRampToValueAtTime(amplitude,at+Math.min(.065,duration*.40));
  g.gain.setValueAtTime(amplitude,Math.max(at+.015,at+duration-.07));
  g.gain.exponentialRampToValueAtTime(.00001,at+duration);
- osc.connect(g).connect(panOutput(c,pan));osc.start(at);osc.stop(at+duration+.005);registerSource(osc);
+ osc.connect(g).connect(panOutput(c,pan,syl));osc.start(at);osc.stop(at+duration+.005);registerSource(osc);
 }
 function studioNoteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=null){
  const c=getAudio();if(!studioBuffer)return;
@@ -335,8 +473,8 @@ function studioNoteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,butt
  const amount=Math.max(.0002,level('vvoice')*.76*amp);
  g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(amount,at+attack);
  g.gain.setValueAtTime(amount,Math.max(at+attack,end-rel));g.gain.linearRampToValueAtTime(.0001,end);
- src.connect(g).connect(panOutput(c,pan));src.start(at,e.start);src.stop(end+.008);registerSource(src);
- exactTone([76,64,75,73][syl]-tone+semitones,at,duration,amount*.8,pan);
+ src.connect(g).connect(panOutput(c,pan,syl));src.start(at,e.start);src.stop(end+.008);registerSource(src);
+ exactTone([76,64,75,73][syl]-tone+semitones,at,duration,amount*.8,pan,syl);
  if(button){button.classList.add('active');setTimeout(()=>button.classList.remove('active'),Math.max(75,(at-c.currentTime+Math.min(duration,.4))*1000));}
 }
 function noteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=null){
@@ -345,7 +483,7 @@ function noteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=nul
  const {a,b,rate}=voiceSource(tone,syl,semitones),sampleLen=(b-a)/rate;
  if(sampleLen<.04)return;
  const dur=Number.isFinite(gate)?Math.min(5.8,Math.max(.045,gate)):sampleLen;
- const volume=Math.max(.0001,level('vvoice')*.75*amp),out=panOutput(c,pan);
+ const volume=Math.max(.0001,level('vvoice')*.75*amp*popVoiceGain(tone,syl,semitones)),out=panOutput(c,pan,syl);
  function source(offset,time,sourceLen,attack,release,gainScale=1){
   const span=sourceLen/rate;
   if(span<.015)return;
@@ -373,7 +511,7 @@ function noteSample(syl,tone,at,gate=Infinity,semitones=0,amp=1,pan=0,button=nul
    source(offset,t,actual*rate,actual*.47,actual*.47,.78);
   }
  }
- if(semitones===0)exactTone(ROOTS[tone]+ORIGINAL_OFFSETS[syl],at,Math.min(dur,sampleLen),volume,pan);
+ if(semitones===0)exactTone(ROOTS[tone]+ORIGINAL_OFFSETS[syl],at,Math.min(dur,sampleLen),volume,pan,syl);
  if(button){const ms=Math.max(70,(at-c.currentTime+Math.min(dur,.4))*1000);button.classList.add('active');setTimeout(()=>button.classList.remove('active'),ms);}
 }
 function playHarmony(syl,at,tone,gate){if(!$('mimisOn').checked)return;
@@ -487,7 +625,7 @@ function ensurePadGraph(){
  const c=getAudio(),tail=+$('padTail').value/10;
  if(padGraph&&padGraph.tail===tail&&padGraph.ctx===c)return padGraph;
  // Ao mudar o tamanho da cauda, a resposta antiga continua ate acabar.
- const master=c.createGain();master.gain.value=.78;master.connect(c.destination);
+ const master=c.createGain();master.gain.value=.78;master.connect(ensurePopMix().instruments);
  const convolver=c.createConvolver();convolver.normalize=true;convolver.buffer=buildPadImpulse(c,tail);
  const wet=c.createGain();wet.gain.value=.35;convolver.connect(wet).connect(master);
  const graph={ctx:c,tail,master,convolver,wet};
@@ -550,11 +688,11 @@ function stopPad(){
  }
 }
 
-function chord(at,tone=selectedTone){const c=getAudio(),root=ROOTS[tone],v=level('vchord');if(v<=0)return;[root,root+4,root+7,root+9].forEach((midi,i)=>{const o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),out=c.createGain();o.type='triangle';o2.type='sine';o.frequency.value=hz(midi);o2.frequency.value=hz(midi)*2;const t=at+i*.012;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.092*v,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+1.25);out.gain.value=.55;o.connect(g).connect(c.destination);o2.connect(out).connect(g);o.start(t);o2.start(t);o.stop(t+1.27);o2.stop(t+1.27);});}
+function chord(at,tone=selectedTone){const c=getAudio(),root=ROOTS[tone],v=level('vchord');if(v<=0)return;[root,root+4,root+7,root+9].forEach((midi,i)=>{const o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),out=c.createGain();o.type='triangle';o2.type='sine';o.frequency.value=hz(midi);o2.frequency.value=hz(midi)*2;const t=at+i*.012;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.092*v,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+1.25);out.gain.value=.55;o.connect(g).connect(ensurePopMix().instruments);o2.connect(out).connect(g);o.start(t);o2.start(t);o.stop(t+1.27);o2.stop(t+1.27);});}
 function flash(d){const b=document.querySelector('[data-drum="'+d+'"]');if(b){b.classList.add('active');setTimeout(()=>b.classList.remove('active'),95);}}
 function white(){if(noiseBuffer)return noiseBuffer;const c=getAudio();noiseBuffer=c.createBuffer(1,Math.ceil(c.sampleRate*1.5),c.sampleRate);let ch=noiseBuffer.getChannelData(0),last=0;for(let j=0;j<ch.length;j++){const raw=Math.random()*2-1;last=last*.18+raw*.82;ch[j]=last;}return noiseBuffer;}
-function envOsc(freq,endFreq,at,duration,volume,type='sine'){const c=getAudio(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,at);o.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),at+duration*.8);g.gain.setValueAtTime(Math.max(.0001,volume),at);g.gain.exponentialRampToValueAtTime(.0001,at+duration);o.connect(g).connect(c.destination);o.start(at);o.stop(at+duration+.008);}
-function noise(at,duration,volume,highpass){const c=getAudio(),src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=white();f.type='highpass';f.frequency.value=highpass;g.gain.setValueAtTime(Math.max(.0001,volume),at);g.gain.exponentialRampToValueAtTime(.0001,at+duration);src.connect(f).connect(g).connect(c.destination);src.start(at);src.stop(at+duration+.008);}
+function envOsc(freq,endFreq,at,duration,volume,type='sine'){const c=getAudio(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,at);o.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),at+duration*.8);g.gain.setValueAtTime(Math.max(.0001,volume),at);g.gain.exponentialRampToValueAtTime(.0001,at+duration);o.connect(g).connect(ensurePopMix().drums);o.start(at);o.stop(at+duration+.008);}
+function noise(at,duration,volume,highpass){const c=getAudio(),src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=white();f.type='highpass';f.frequency.value=highpass;g.gain.setValueAtTime(Math.max(.0001,volume),at);g.gain.exponentialRampToValueAtTime(.0001,at+duration);src.connect(f).connect(g).connect(ensurePopMix().drums);src.start(at);src.stop(at+duration+.008);}
 function drum(name,at,flashNow=false){getAudio();const v=level('vdrum');if(flashNow)flash(name);if(!v)return;
  if(name==='kick'){const style=$('kickstyle').value;if(style==='wood'){envOsc(660,250,at,.054,.23*v,'triangle');noise(at,.023,.13*v,1700);}else{const dry=style==='dry';envOsc(dry?125:142,46,at,dry?.14:.25,.76*v);noise(at,dry?.016:.027,.065*v,1900);}}
  if(name==='snare'){const style=$('snarestyle').value;if(style==='rim'){envOsc(720,450,at,.055,.24*v,'triangle');noise(at,.045,.14*v,2400);}else{const snap=style==='snap';noise(at,snap?.13:.11,(snap?.28:.21)*v,snap?1300:790);envOsc(195,158,at,.085,.13*v,'triangle');}}
@@ -639,7 +777,7 @@ function defaultPattern(){
  setBeatPreset('mimi',false);
 }
 function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
-function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
+function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,mix:Object.fromEntries(Object.keys(POP_DEFAULTS).map(id=>[id,+$(id).value])),bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
 function restoreSequence(){let saved,legacy=false;try{const current=localStorage.getItem(SEQKEY);legacy=!current;saved=JSON.parse(current||localStorage.getItem(LEGACY_SEQKEY)||localStorage.getItem('mimi-sequencer-v2')||'null');}catch{}if(!saved||!Array.isArray(saved.pattern)||saved.pattern.length!==7||!saved.pattern.every(a=>Array.isArray(a)&&a.length===STEPS)){defaultPattern();return 0;}
  for(let i=0;i<7;i++)for(let j=0;j<STEPS;j++)pattern[i][j]=Number(saved.pattern[i][j])?1:0;
  for(let tr=0;tr<4;tr++)for(let j=0;j<STEPS;j++){
@@ -658,6 +796,9 @@ function restoreSequence(){let saved,legacy=false;try{const current=localStorage
  for(const id of ['padTrigger','padVoicing'])if(typeof saved[id]==='string'&&Array.from($(id).options).some(o=>o.value===saved[id]))$(id).value=saved[id];
  for(const [id,min,max] of [['padVolume',0,100],['padAttack',5,140],['padHold',4,50],['padWet',0,100],['padTail',10,80],['padWarmth',0,100]]){
   if(!legacy&&saved[id]!=null&&Number.isFinite(Number(saved[id])))$(id).value=String(Math.max(min,Math.min(max,Number(saved[id]))));
+ }
+ if(saved.mix&&typeof saved.mix==='object')for(const [id,def] of Object.entries(POP_DEFAULTS)){
+  const n=Number(saved.mix[id]);if(Number.isFinite(n))$(id).value=String(Math.max(0,Math.min(id.startsWith('mixV')?140:100,n)));
  }
  if(!legacy&&[1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
  defaultNoteLength=Number($('drawlen').value);
@@ -764,7 +905,7 @@ function renderCuts(){const k=tune().index;const el=$('cutbox');el.innerHTML='';
 function db(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window))return reject(Error('indisponível'));let req=indexedDB.open(DBNAME,1);req.onupgradeneeded=()=>req.result.createObjectStore('audios');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
 async function savedLoad(){try{const conn=await db();return await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readonly'),r=tx.objectStore('audios').get(DBKEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);tx.oncomplete=()=>conn.close();});}catch{return null;}}
 async function savedPut(bytes){try{const conn=await db();await new Promise((resolve,reject)=>{const tx=conn.transaction('audios','readwrite');tx.objectStore('audios').put(bytes,DBKEY);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});conn.close();return true;}catch{return false;}}
-async function loadAudio(bytes,from){try{let c=getAudio();const b=await c.decodeAudioData(bytes.slice(0));if(Math.abs(b.duration-16.96)>.85)throw Error('Esta versão foi recortada para a gravação 149 (~17 s). O áudio selecionado dura '+b.duration.toFixed(1)+' s.');voiceBuffer=b;status('✓ Voz original pronta · oito tomadas · '+from);return true;}catch(err){status('Não foi possível carregar: '+err.message,'error');return false;}}
+async function loadAudio(bytes,from){try{let c=getAudio();const b=await c.decodeAudioData(bytes.slice(0));if(Math.abs(b.duration-16.96)>.85)throw Error('Esta versão foi recortada para a gravação 149 (~17 s). O áudio selecionado dura '+b.duration.toFixed(1)+' s.');voiceBuffer=b;analyzeVocalTrims(b);status('✓ Voz original pronta · oito tomadas · '+from);return true;}catch(err){status('Não foi possível carregar: '+err.message,'error');return false;}}
 async function getEmbedded(){const s=document.querySelector('#audio-inline');if(!s||!s.textContent.trim())return null;const str=s.textContent.trim(),bytes=atob(str),v=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)v[i]=bytes.charCodeAt(i);return v.buffer;}
 async function startup(){const saved=await savedLoad();if(saved&&await loadAudio(saved,'salva neste aparelho'))return;try{const emb=await getEmbedded();if(emb&&await loadAudio(emb,'incluída no aplicativo'))return;}catch{}try{const r=await fetch('./assets/voz-original-149.m4a');if(r.ok){const bytes=await r.arrayBuffer();if(await loadAudio(bytes,'incluída no aplicativo'))return;}}catch{}status('Bateria pronta. Importe a gravação 149 para ativar as vozes.','error');}
 
@@ -824,6 +965,8 @@ $('padPresetCloud').onclick=()=>{Object.assign($('padAttack'),{value:24});$('pad
 $('padPresetSoft').onclick=()=>{$('padAttack').value=12;$('padHold').value=6;$('padWet').value=15;$('padTail').value=11;$('padWarmth').value=55;$('padVolume').value=22;$('padEnabled').checked=true;padReadouts();saveSequence();};
 $('resetcuts').onclick=()=>{cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.slice()));renderCuts();};
 document.addEventListener('keydown',e=>{if(e.repeat||/input|select|textarea/i.test(e.target.tagName))return;const map={'1':0,'2':1,'3':2,'4':3};if(map[e.key]!=null)syllable(map[e.key],getAudio().currentTime+.01);else if(e.code==='Space'){e.preventDefault();whole(getAudio().currentTime+.01);}});
-buildTones();const lastTone=restoreSequence();showOnlyPadToggle();buildGrid();updateNoteEditor();selectTone(lastTone);updateBpm();harmonyExample();padReadouts();startup();
+for(const id of Object.keys(POP_DEFAULTS))$(id).addEventListener('input',()=>{updatePopMix();saveSequence();});
+$('mixReset').onclick=()=>{for(const [id,value] of Object.entries(POP_DEFAULTS))$(id).value=String(value);updatePopMix();saveSequence();};
+buildTones();const lastTone=restoreSequence();updatePopMix();showOnlyPadToggle();buildGrid();updateNoteEditor();selectTone(lastTone);updateBpm();harmonyExample();padReadouts();startup();
 })();
 </script></body></html>
