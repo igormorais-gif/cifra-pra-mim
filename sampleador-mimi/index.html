@@ -275,7 +275,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
  <div class="controls"><label>Volume dos MIMIs <input id="vharmony" type="range" min="0" max="100" value="55"><output id="vharmonyout">55%</output></label><label>Abertura estéreo <input id="hwidth" type="range" min="0" max="100" value="38"><output id="hwidthout">38%</output></label></div>
  <p class="soft">Terças e quintas mudam com a sílaba: E→G♯/C♯, D♯→F♯/B, C♯→E/A. O alongamento usa pequenas repetições suavizadas do trecho vocal (sustain granular): a altura não desce ao aumentar a duração. Sons muito esticados ou transpostos podem soar artificiais.</p>
 </section>
-<div class="columns"><section class="panel"><div class="bar-title"><h2>05 / Sons da bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Pop encorpada</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div><div hidden><input id="upload" type="file" accept="audio/*,.m4a"><div id="cutbox"></div><button id="resetcuts" type="button"></button><span id="studioStatus"></span></div></section></div>
+<div class="columns"><section class="panel"><div class="bar-title"><h2>05 / Sons da bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Kit do gênero</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div><div hidden><input id="upload" type="file" accept="audio/*,.m4a"><div id="cutbox"></div><button id="resetcuts" type="button"></button><span id="studioStatus"></span></div></section></div>
 <footer class="foot"><span>Sampleador MIMI · estúdio de brincar</span><span>Feito com a voz original · <a href="https://github.com/igormorais-gif/cifra-pra-mim">Cifra pra Mim</a></span></footer></div>
 <script type="text/plain" id="audio-inline"></script><script type="text/plain" id="studio-inline"></script>
 
@@ -788,17 +788,16 @@ function playGenreKitSample(name,at,step=-1){
  if(!drumKitBank)return false;
  const style=beatPresetId,genre=KIT_GENRES.indexOf(style),part=KIT_PARTS.indexOf(name);
  if(genre<0||part<0)return false;
- // As seleções manuais especiais continuam respeitadas como alternativas.
- if(name==='kick'&&$('kickstyle').value==='wood')return false;
- if(name==='snare'&&$('snarestyle').value==='rim'&&style!=='reggae'&&style!=='bossa')return false;
+ // O kit continua próprio do gênero, mesmo com uma coloração manual selecionada.
  const c=getAudio(),g=grooveParams(name,step),start=grooveTime(c,at,g.offset);
  const slotOffset=(genre*3+part)*KIT_SLOT;
  const src=c.createBufferSource(),hp=c.createBiquadFilter(),lp=c.createBiquadFilter(),
   comp=c.createDynamicsCompressor(),gain=c.createGain();
  src.buffer=drumKitBank;
  src.playbackRate.value=name==='hat'&&$('hatstyle').value==='open'?.84:1;
- hp.type='highpass';hp.frequency.value=name==='kick'?28:name==='snare'?70:2200;hp.Q.value=.7;
- lp.type='lowpass';lp.frequency.value=name==='kick'?5700:name==='snare'?11500:14000;lp.Q.value=.7;
+ const kickMode=$('kickstyle').value,snareMode=$('snarestyle').value;
+ hp.type='highpass';hp.frequency.value=name==='kick'?(kickMode==='wood'?180:28):name==='snare'?(snareMode==='rim'?380:70):2200;hp.Q.value=.7;
+ lp.type='lowpass';lp.frequency.value=name==='kick'?(kickMode==='wood'?3700:5700):name==='snare'?(snareMode==='rim'?5500:11500):14000;lp.Q.value=.7;
  comp.threshold.value=name==='snare'?-17:-10;
  comp.ratio.value=name==='snare'?2.4:1.3;
  comp.knee.value=8;comp.attack.value=.004;comp.release.value=.085;
@@ -809,7 +808,9 @@ function playGenreKitSample(name,at,step=-1){
  else amp*=.79;
  if(name==='hat'&&$('hatstyle').value==='light')amp*=.72;
  if(name==='snare'&&$('snarestyle').value==='snap')amp*=1.08;
+ if(name==='snare'&&$('snarestyle').value==='rim')amp*=.83;
  if(name==='kick'&&$('kickstyle').value==='dry')amp*=.90;
+ if(name==='kick'&&$('kickstyle').value==='wood')amp*=.74;
  // Segurar a dinâmica original e controlar apenas os picos.
  gain.gain.setValueAtTime(.0001,start);
  gain.gain.linearRampToValueAtTime(Math.max(.0002,amp),start+.002);
