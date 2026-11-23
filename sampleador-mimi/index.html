@@ -698,31 +698,85 @@ function loadPopSnare(){
   .catch(err=>{console.warn('Sample de caixa indisponível; usando fallback:',err.message);return null;});
  return popSnareLoading;
 }
-function playPopSnare(at,vol,style){
- const c=getAudio();
+
+/* Os 9 gêneros têm mix de bateria e acentuação próprios.
+   A execução é determinística, sem randomizar o loop ou alterar os samples vocais. */
+const GROOVE_STYLES={
+ mimi:{snare:{level:1.05,body:2.4,crack:2.2,hp:91,lp:10900,tail:.27,timing:0,strong:[4,12],ghost:[],ghostLevel:.78},kick:1,hat:.94,hatOdd:.87,hatMs:0,kickMs:0},
+ samba:{snare:{level:.96,body:1.1,crack:3,hp:122,lp:10500,tail:.18,timing:-4,strong:[4,12],ghost:[3,7,11,15],ghostLevel:.61},kick:1.06,hat:.90,hatOdd:.72,hatMs:5,kickMs:-3},
+ funk:{snare:{level:1.12,body:3,crack:3.7,hp:84,lp:11200,tail:.23,timing:2,strong:[4,12],ghost:[],ghostLevel:.80},kick:1.17,hat:.96,hatOdd:.82,hatMs:8,kickMs:0},
+ hiphop:{snare:{level:1.13,body:4.2,crack:1.4,hp:76,lp:7600,tail:.32,timing:14,strong:[4,12],ghost:[],ghostLevel:.72},kick:1.13,hat:.80,hatOdd:.69,hatMs:10,kickMs:-1},
+ pop:{snare:{level:1.13,body:2.1,crack:3.2,hp:95,lp:10800,tail:.25,timing:2,strong:[4,12],ghost:[],ghostLevel:.80},kick:1.04,hat:.91,hatOdd:.84,hatMs:3,kickMs:0},
+ rock:{snare:{level:1.20,body:3,crack:4.1,hp:84,lp:11500,tail:.34,timing:0,strong:[4,12],ghost:[],ghostLevel:.85},kick:1.08,hat:.94,hatOdd:.90,hatMs:1,kickMs:0},
+ house:{snare:{level:1.07,body:1.6,crack:4.3,hp:124,lp:11800,tail:.20,timing:1,strong:[4,12],ghost:[],ghostLevel:.80},kick:1.15,hat:1,hatOdd:.91,hatMs:5,kickMs:0},
+ reggae:{snare:{level:.98,body:3.3,crack:.9,hp:87,lp:7000,tail:.19,timing:9,strong:[8],ghost:[],ghostLevel:.73},kick:1.10,hat:.74,hatOdd:.82,hatMs:7,kickMs:1},
+ bossa:{snare:{level:.68,body:-1.9,crack:1.1,hp:200,lp:6900,tail:.12,timing:3,strong:[3,10],ghost:[7,14],ghostLevel:.65},kick:.79,hat:.67,hatOdd:.80,hatMs:5,kickMs:-2}
+};
+function grooveParams(name,step=-1){
+ const profile=GROOVE_STYLES[beatPresetId]||GROOVE_STYLES.mimi;
+ const valid=Number.isInteger(step)&&step>=0&&step<STEPS, snare=profile.snare;
+ let velocity=1,shiftMs=0;
+ if(name==='snare'){
+  if(valid)velocity=snare.strong.includes(step)?1.06:snare.ghost.includes(step)?snare.ghostLevel:.86;
+  shiftMs=snare.timing;
+ }else if(name==='kick'){
+  velocity=profile.kick*(valid&&(step===0||step===8)?1.04:.93);
+  shiftMs=profile.kickMs;
+ }else if(name==='hat'){
+  velocity=profile.hat*(valid&&step%2?profile.hatOdd:1);
+  if(valid&&step===0)velocity*=1.07;
+  shiftMs=profile.hatMs+(valid&&step%2?3:0);
+ }
+ return {velocity,offset:Math.max(-.014,Math.min(.018,shiftMs/1000)),snare};
+}
+function grooveTime(c,at,offset){return Math.max(c.currentTime+.002,at+offset);}
+
+function playPopSnare(at,vol,style,step=-1){
+ const c=getAudio(),g=grooveParams('snare',step),p=g.snare,start=grooveTime(c,at,g.offset);
  if(!popSnareBuffer){
-  // Fallback com ataque + corpo. O arquivo normalmente é carregado no startup.
-  envOsc(212,154,at,.126,.56*vol,'triangle');
-  noise(at,.15,.43*vol,920);
-  envOsc(680,360,at,.026,.09*vol,'triangle');
+  const v=vol*p.level*g.velocity;
+  envOsc(208,151,start,Math.min(.17,p.tail),.49*v,'triangle');
+  noise(start,.10,.34*v,p.hp*8);
+  envOsc(690,380,start,.020,.075*v,'triangle');
   return;
  }
- const src=c.createBufferSource(),hip=c.createBiquadFilter(),body=c.createBiquadFilter(),
-  crack=c.createBiquadFilter(),amp=c.createGain();
+ const src=c.createBufferSource(),hp=c.createBiquadFilter(),body=c.createBiquadFilter(),
+  crack=c.createBiquadFilter(),lp=c.createBiquadFilter(),comp=c.createDynamicsCompressor(),amp=c.createGain();
  src.buffer=popSnareBuffer;
- hip.type='highpass';hip.frequency.value=style==='snap'?128:86;hip.Q.value=.65;
- body.type='peaking';body.frequency.value=195;body.Q.value=1.1;body.gain.value=style==='snap'?.8:2.4;
- crack.type='peaking';crack.frequency.value=2650;crack.Q.value=.95;crack.gain.value=style==='snap'?3.8:2.3;
- amp.gain.value=vol*(style==='snap'?1.09:1.20);
- src.connect(hip).connect(body).connect(crack).connect(amp).connect(ensurePopMix().drums);
- src.start(at);src.stop(at+Math.min(popSnareBuffer.duration,.45)+.005);
- registerSource(src);
+ hp.type='highpass';hp.frequency.value=style==='snap'?Math.max(120,p.hp):p.hp;hp.Q.value=.7;
+ body.type='peaking';body.frequency.value=195;body.Q.value=1.1;body.gain.value=p.body+(style==='snap'?-1.3:0);
+ crack.type='peaking';crack.frequency.value=2650;crack.Q.value=.95;crack.gain.value=p.crack+(style==='snap'?1.3:0);
+ lp.type='lowpass';lp.frequency.value=p.lp;lp.Q.value=.58;
+ comp.threshold.value=-16;comp.ratio.value=2.3;comp.knee.value=6;comp.attack.value=.003;comp.release.value=.072;
+ const duration=Math.min(popSnareBuffer.duration,p.tail),attack=.002;
+ const peak=Math.max(.0002,vol*p.level*g.velocity*(style==='snap'?1.05:1.12));
+ amp.gain.setValueAtTime(.0001,start);
+ amp.gain.linearRampToValueAtTime(peak,start+attack);
+ amp.gain.setValueAtTime(peak,start+Math.max(attack,duration-.046));
+ amp.gain.exponentialRampToValueAtTime(.0001,start+duration);
+ src.connect(hp).connect(body).connect(crack).connect(lp).connect(comp).connect(amp).connect(ensurePopMix().drums);
+ src.start(start);src.stop(start+duration+.006);registerSource(src);
 }
-
-function drum(name,at,flashNow=false){getAudio();const v=level('vdrum');if(flashNow)flash(name);if(!v)return;
- if(name==='kick'){const style=$('kickstyle').value;if(style==='wood'){envOsc(660,250,at,.054,.23*v,'triangle');noise(at,.023,.13*v,1700);}else{const dry=style==='dry';envOsc(dry?125:142,46,at,dry?.14:.25,.76*v);noise(at,dry?.016:.027,.065*v,1900);}}
- if(name==='snare'){const style=$('snarestyle').value;if(style==='rim'){envOsc(720,450,at,.055,.24*v,'triangle');noise(at,.045,.14*v,2400);}else playPopSnare(at,v,style);}
- if(name==='hat'){const style=$('hatstyle').value;noise(at,style==='open'?.33:(style==='light'?.06:.095),(style==='light'?.09:.13)*v,style==='open'?4900:6800);}}
+function drum(name,at,flashNow=false,step=-1){
+ const c=getAudio(),v=level('vdrum');if(flashNow)flash(name);if(!v)return;
+ const g=grooveParams(name,step),t=grooveTime(c,at,g.offset);
+ if(name==='kick'){
+  const style=$('kickstyle').value,vol=v*g.velocity;
+  if(style==='wood'){envOsc(660,250,t,.054,.23*vol,'triangle');noise(t,.023,.13*vol,1700);}
+  else{const dry=style==='dry';envOsc(dry?125:142,46,t,dry?.14:.25,.76*vol);noise(t,dry?.016:.027,.065*vol,1900);}
+ }
+ if(name==='snare'){
+  const style=$('snarestyle').value;
+  if(style==='rim'){
+   const vol=v*g.snare.level*g.velocity;
+   envOsc(720,450,t,.053,.24*vol,'triangle');noise(t,.045,.14*vol,2400);
+  }else playPopSnare(at,v,style,step);
+ }
+ if(name==='hat'){
+  const style=$('hatstyle').value,vol=v*g.velocity;
+  noise(t,style==='open'?.33:(style==='light'?.06:.095),(style==='light'?.09:.13)*vol,style==='open'?4900:6800);
+ }
+}
 // Rótulos harmônicos: IH e ON são tônica em oitavas diferentes; MI 1 é 7 e MI 2 é 6.
 const NOTE_LABELS=[
  ['Mi5','Mi4','Ré♯5','Dó♯5'],
@@ -915,7 +969,7 @@ function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
  while(nextBeat<c.currentTime+.045){const idx=stepIndex%STEPS,bar=Math.floor(stepIndex/STEPS)+1,bpm=bpmAtStep();
  const duration=60/bpm/4,at=nextBeat;
  for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):(len>1?noteGate(stepIndex,len):Infinity);syllable(tr,at,selectedTone,gate);}
- ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at);});
+ ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at,false,idx);});
  if(idx===0&&$('beatchord').checked){const tone=selectedTone;chord(at,tone);}
  if(idx===0&&$('padEnabled').checked&&$('padTrigger').value==='bar'){const tone=selectedTone;playLofiPad(at,tone,60/bpm*3.4);}
  const timer=setTimeout(()=>{visualTimers.delete(timer);if(beatRunning&&id===runId)visual(idx,bar,bpm);},Math.max(0,(at-c.currentTime)*1000));visualTimers.add(timer);
