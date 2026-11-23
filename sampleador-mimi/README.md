@@ -238,3 +238,7 @@ No **ON**, cuja fundamental é baixa e pouco estável nas gravações, a correç
 **Testes:** a reprodução do buffer corrigido foi validada por processamento equivalente em Python sobre a gravação original: 24 trechos efetivamente processados, com desvio mediano pós-correção em torno de 0,02 semitom nas notas com altura estável. Teste de JavaScript/Web Audio confirmou que o ataque original é preservado, o sinal da vogal muda e o motor compila. Ainda é indispensável ouvir no iPhone e na caixa de som para avaliar os artefatos de mudança de altura, especialmente quando a correção ultrapassa dois semitons.
 
 Sem novos controles visíveis, sem mudanças de BPM, padrão rítmico ou acompanhamento instrumental.
+
+## Reversão da afinação vocal (23/11/2026)
+
+Por solicitação do usuário, a correção automática PSOLA das vogais foi **totalmente desfeita**. A gravação **voz-original-149.m4a** voltou a tocar sem alteração de pitch (salvo transposições já existentes para casos fora das tomadas). A seção anterior sobre PSOLA registra uma tentativa histórica e **não corresponde à versão atual**. Texturas vocais, mixagem, grooves, kits, PAD e baixo foram preservados.
