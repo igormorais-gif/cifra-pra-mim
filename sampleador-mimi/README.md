@@ -224,3 +224,17 @@ No **piano roll**, o efeito só é disparado com o ataque original da nota princ
 **Interface:** nenhum novo seletor, controle ou painel. Todos os gêneros, o PAD, o baixo independente, o BPM e a mixagem pop anterior continuam como estavam.
 
 **Validação técnica:** verificação da sintaxe do JS; nós Web Audio usados por cada perfil (delay apenas em IH; saturação apenas em ON); 12 cenários de disparo (quatro sílabas em nota curta, nota longa e harmonia), incluindo apenas um disparo de textura mesmo quando há dezenas de grãos no prolongamento. Qualidade auditiva final e compatibilidade com Safari iOS ainda requerem escuta real.
+
+## Correção suave da afinação da VOZ humana original 149 (23/11/2026)
+
+O usuário observou que a **voz original IH–ON–MI–MI** apresentava desafinações em relação à nota instrumental discreta que a dobra. A análise da gravação original `Nova Gravação 149.m4a` (16,96 s, 8 tomadas) confirmou, por exemplo, que em E6 o **IH** tinha fundamental predominante perto de 554 Hz (Dó♯5), embora o objetivo fosse 659 Hz (Mi5), e o **MI 1** perto de 538 Hz (Dó5), contra o objetivo de 622 Hz (Ré♯5). Portanto, reforçar o senoide instrumental não afinaria a fonte humana.
+
+O navegador agora aplica a **correção PSOLA somente à parte vocálica da própria voz original**, antes do sampler tocar. Os trechos de ataque e a consoante M continuam originais; a duração e o número de sílabas são mantidos. O algoritmo usa centros de pulsos detectados no sinal filtrado, reposicionamento temporal suave e crossfade nas bordas, preservando aproximadamente o timbre/formantes e um pouco da variação humana de altura. A nova camada de texturas (IH dobrado, ON quente, MI percussivo) se aplica ao resultado corrigido.
+
+**Segurança sonora:** o áudio 149 original é preservado na memória como `originalVoiceBuffer`; a correção é criada separadamente como `voiceBuffer` sem reescrever o arquivo. A calibração medida só é aplicada quando o arquivo corresponde ao tamanho conhecido da gravação 149 (151.567 bytes), para não afinar um arquivo de outra gravação usando medições indevidas. A nota instrumental de referência `exactTone`, os pads, a bateria e o baixo são preservados sem alteração.
+
+No **ON**, cuja fundamental é baixa e pouco estável nas gravações, a correção só atua se for moderada, escolhendo a mesma classe de altura na oitava natural da voz, em vez de forçar mecanicamente um salto de oitava. Algumas tomadas de ON não são corrigidas. Para obter todos os ON precisamente na oitava E4–A3 originalmente especificada, ainda pode ser necessária outra tomada cantada ou um processamento vocal especializado.
+
+**Testes:** a reprodução do buffer corrigido foi validada por processamento equivalente em Python sobre a gravação original: 24 trechos efetivamente processados, com desvio mediano pós-correção em torno de 0,02 semitom nas notas com altura estável. Teste de JavaScript/Web Audio confirmou que o ataque original é preservado, o sinal da vogal muda e o motor compila. Ainda é indispensável ouvir no iPhone e na caixa de som para avaliar os artefatos de mudança de altura, especialmente quando a correção ultrapassa dois semitons.
+
+Sem novos controles visíveis, sem mudanças de BPM, padrão rítmico ou acompanhamento instrumental.
