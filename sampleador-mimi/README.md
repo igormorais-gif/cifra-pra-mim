@@ -147,14 +147,8 @@ Esses perfis são **interpretações estilizadas** sobre os sete canais existent
 
 O código foi testado com nove perfis distintos e agendamento realista de eventos Web Audio; a percepção do groove, especialmente em caixas Bluetooth e Safari iOS, ainda requer escuta auditiva.
 
-## Variações A/B e viradas automáticas (23/11/2026)
+## Sequenciador único restaurado (23/11/2026)
 
-O painel **03 / Monte seu BEAT** ganhou dois botões discretos **A** e **B**, além do seletor **Virada: desligada / a cada 4 / a cada 8 compassos**. A grade de 16 passos segue aberta e editável.
+A pedido do usuário, as variações **A/B** e as **viradas automáticas** foram retiradas da interface e do agendamento. Voltou o **montador original de 16 passos**, com um único conjunto de pistas de voz e bateria, edição por toque e BPM manual. O catálogo de nove gêneros e os tratamentos sonoros de caixa, bumbo e prato continuam presentes. A cadeia de mixagem pop não foi alterada.
 
-- **A** inicia com a batida do gênero selecionado. **B** é gerada como uma variação específica de bumbo, caixa e prato desse gênero, com alguns ataques ou respostas adicionais; os nove gêneros possuem versões A e B diferentes. Ao editar a bateria da versão A ou B, cada edição fica guardada separadamente, inclusive no armazenamento local do navegador.
-- Os canais **IH (passos 1 e 11), ON (5 e 13), MI 1 (7), MI 2 (8)** continuam globais e compartilhados entre A e B. Mudar de A para B não duplica nem altera as vozes; escolher outro gênero restaura o motivo vocal original, conforme a regra anterior.
-- **Durante o playback**, apertar A ou B agenda a mudança **para o próximo compasso**. O transporte não reinicia, o BPM não muda e uma indicação discreta mostra qual beat está ativo e qual está aguardando. Parado, a seleção é imediata.
-- **Viradas:** o quarto tempo (semicolcheias 13–16) do último compasso do ciclo recebe um desenho de **caixa específico do gênero**. Por padrão há virada a cada quatro compassos, podendo mudar para oito ou desligar. O restante do groove, a harmonia e as vozes continuam tocando. A virada é uma sobreposição temporária do motor, **não reescreve as notas da grade** nem apaga a programação A/B.
-- Alterar o gênero atual reinicializa A e B para duas versões próprias do gênero (preservando a continuidade do transporte), mas as alterações manuais desses bancos permanecem quando se alterna entre eles **sem trocar o gênero**.
-
-A mixagem pop interna continua como antes, sem painel de efeitos. A troca A/B e as viradas foram verificadas por testes de lógica/sintaxe; a escuta real no Safari/iPhone ainda deve ser conferida.
+Em navegadores que salvaram dados no formato antigo de A/B, o carregamento usa a grade de bateria **A** como ponto de partida, preservando as notas vocais e outros ajustes. Não são mostrados controles de A/B nem opções de virada.
