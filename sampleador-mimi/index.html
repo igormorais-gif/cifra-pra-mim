@@ -780,6 +780,95 @@ const KIT_GENRES=['mimi','samba','funk','hiphop','pop','rock','house','reggae','
 const KIT_PARTS=['kick','snare','hat'];
 const KIT_SLOT=.47;
 let drumKitBank=null,drumKitPromise=null;
+
+/* HUMANIZAÇÃO TIMBRÍSTICA — 3 articulações físicas em memória por peça/kit.
+   Nada muda na voz ou na grade; cada batida usa ataques e caudas de áudio
+   diferentes, não meras repetições do mesmo one-shot com gain reduzido. */
+const DRUM_ARTICULATIONS=['accent','normal','ghost'];
+let articulatedKits=null;
+function articulacaoDaBatida(name,step=-1,bar=1){
+ const genre=GROOVE_STYLES[beatPresetId]||GROOVE_STYLES.pop;
+ const valid=Number.isInteger(step)&&step>=0&&step<STEPS;
+ const cycle=Math.max(0,Math.floor(bar)-1)%4;
+ let type='normal';
+ if(!valid)return {type:'accent',amp:1,rate:1,shift:0};
+ if(name==='snare'){
+  if(genre.snare.ghost.includes(step)||(!genre.snare.strong.includes(step)&&step%4!==0))type='ghost';
+  else if(genre.snare.strong.includes(step))type=(cycle===3&&step===12)?'normal':'accent';
+ }else if(name==='kick'){
+  type=step===0||step===8?'accent':(step%2===1?'ghost':'normal');
+ }else{
+  type=step%4===0?'accent':(step%2===0?'normal':'ghost');
+  // House tem os pratos no contratempo: os ataques 2 e 10 são principais.
+  if(beatPresetId==='house'&&step%8===2)type='accent';
+ }
+ // Roda 1–4 de maneira determinística: sem sorteio que quebre o loop.
+ const dynamics={accent:1,normal:.81,ghost:.51};
+ const smallWave=[1,.986,1.008,.991][(cycle+step)%4];
+ const rate=name==='hat'?smallWave:name==='snare'?(1+(smallWave-1)*.40):1+(smallWave-1)*.25;
+ return {type,amp:dynamics[type],rate,shift:([0,1,-1,1][(cycle+step)%4])/1000};
+}
+function gerarArticulacoesDoKit(original){
+ const audio=getAudio(),samples=original.getChannelData(0),rate=original.sampleRate;
+ const slotSize=Math.round(KIT_SLOT*rate),result={};
+ const rimOffset=(KIT_GENRES.indexOf('reggae')*KIT_PARTS.length+KIT_PARTS.indexOf('snare'))*slotSize;
+ for(let genreIndex=0;genreIndex<KIT_GENRES.length;genreIndex++){
+  const genre=KIT_GENRES[genreIndex],profile=GROOVE_STYLES[genre]||GROOVE_STYLES.pop;
+  result[genre]={};
+  for(let part=0;part<KIT_PARTS.length;part++){
+   const name=KIT_PARTS[part],offset=(genreIndex*3+part)*slotSize;
+   result[genre][name]={};
+   for(const mode of DRUM_ARTICULATIONS){
+    let duration;
+    if(name==='snare')duration=mode==='accent'?Math.min(.43,profile.snare.tail+.012):mode==='normal'?Math.min(.29,profile.snare.tail*.83):Math.min(.105,profile.snare.tail*.52);
+    else if(name==='kick')duration=mode==='accent'?.35:mode==='normal'?.245:.14;
+    else duration=mode==='accent'?Math.min(.24,genre==='house'?.22:.16):mode==='normal'?.105:.062;
+    duration=Math.max(.045,duration);
+    const count=Math.ceil(duration*rate),buffer=audio.createBuffer(1,count,rate),dst=buffer.getChannelData(0);
+    const cutoff=mode==='accent'?(name==='kick'?4100:9700):mode==='normal'?(name==='kick'?2900:5200):(name==='kick'?1500:name==='snare'?2300:4500);
+    const alpha=1-Math.exp(-2*Math.PI*cutoff/rate);
+    let low=0,bodyLow=0,peak=0,prev=0;
+    const bodyAlpha=1-Math.exp(-2*Math.PI*480/rate);
+    for(let n=0;n<count;n++){
+     const t=n/rate,source=samples[offset+n]||0;
+     low+=alpha*(source-low);bodyLow+=bodyAlpha*(source-bodyLow);
+     const high=source-low;
+     const rim=samples[rimOffset+n]||0;
+     let wave;
+     if(mode==='accent'){
+      // Ataque com mais borda espectral e corpo sustentado.
+      const transient=1+.43*Math.exp(-t/.013);
+      wave=(source*.91+high*.20+bodyLow*(name==='kick'?.22:.09))*transient;
+     }else if(mode==='normal'){
+      // Menos ataque, som mais redondo e cauda intermediária.
+      wave=low*.86+bodyLow*(name==='kick'?.19:.06)+source*.09;
+     }else if(name==='snare'){
+      // Ghost: corpo curto e sutil assinatura de aro, em vez do mesmo sample baixo.
+      wave=low*.31+rim*.24+(source-bodyLow)*.08;
+     }else if(name==='kick'){
+      // Toque leve com menos subgrave e estalo curto.
+      wave=(source-bodyLow)*.30+low*.24+bodyLow*.11;
+     }else{
+      // Prato fechado/leve com parte do espectro agudo filtrada.
+      wave=(low*.66+high*.07)*Math.exp(-t/.044);
+     }
+     const fadeIn=Math.min(1,t/.0011),remaining=duration-t;
+     const fadeOut=Math.min(1,Math.max(0,remaining/(mode==='accent'?.026:.017)));
+     const tail=mode==='accent'?1:Math.exp(-t/(mode==='normal'?.24:.11));
+     const value=wave*fadeIn*fadeOut*tail;
+     dst[n]=value;peak=Math.max(peak,Math.abs(value));
+    }
+    // Headroom sem normalizar ghosts para a mesma percepção dos acentos.
+    const ceiling=mode==='accent'?.83:mode==='normal'?.69:.50;
+    const scale=Math.min(2.3,ceiling/Math.max(.05,peak));
+    for(let n=0;n<count;n++)dst[n]=Math.max(-.98,Math.min(.98,dst[n]*scale));
+    result[genre][name][mode]=buffer;
+   }
+  }
+ }
+ return result;
+}
+
 function loadDrumKitBank(){
  if(drumKitPromise)return drumKitPromise;
  drumKitPromise=fetch('./assets/kits/mimi-kits-9x3-v1.wav?v=e23040',{cache:'force-cache'})
@@ -788,30 +877,37 @@ function loadDrumKitBank(){
   .then(decoded=>{
    // Verificar o manifesto: 27 segmentos de 470 ms.
    if(decoded.duration<KIT_GENRES.length*KIT_PARTS.length*KIT_SLOT-.04)throw Error('Banco de kits incompleto');
-   drumKitBank=decoded;return decoded;
+   drumKitBank=decoded;articulatedKits=gerarArticulacoesDoKit(decoded);return decoded;
   })
   .catch(err=>{console.warn('Kits de bateria indisponíveis; mantendo bateria anterior:',err.message);return null;});
  return drumKitPromise;
 }
-function playGenreKitSample(name,at,step=-1){
+
+function playGenreKitSample(name,at,step=-1,bar=1){
  if(!drumKitBank)return false;
  const style=beatPresetId,genre=KIT_GENRES.indexOf(style),part=KIT_PARTS.indexOf(name);
  if(genre<0||part<0)return false;
- // O kit continua próprio do gênero, mesmo com uma coloração manual selecionada.
- const c=getAudio(),g=grooveParams(name,step),start=grooveTime(c,at,g.offset);
- const slotOffset=(genre*3+part)*KIT_SLOT;
+ const c=getAudio(),g=grooveParams(name,step),art=articulacaoDaBatida(name,step,bar);
+ const start=grooveTime(c,at,g.offset+art.shift);
  const src=c.createBufferSource(),hp=c.createBiquadFilter(),lp=c.createBiquadFilter(),
   comp=c.createDynamicsCompressor(),gain=c.createGain();
- src.buffer=drumKitBank;
- src.playbackRate.value=name==='hat'&&$('hatstyle').value==='open'?.84:1;
+ const variant=articulatedKits?.[style]?.[name]?.[art.type];
+ if(variant){
+  src.buffer=variant;
+  src.playbackRate.value=art.rate*(name==='hat'&&$('hatstyle').value==='open'?.92:1);
+ }else{
+  // A versão antiga do banco continua tocável se não for possível renderizar.
+  src.buffer=drumKitBank;
+  src.playbackRate.value=art.rate*(name==='hat'&&$('hatstyle').value==='open'?.84:1);
+ }
  const kickMode=$('kickstyle').value,snareMode=$('snarestyle').value;
  hp.type='highpass';hp.frequency.value=name==='kick'?(kickMode==='wood'?180:28):name==='snare'?(snareMode==='rim'?380:70):2200;hp.Q.value=.7;
  lp.type='lowpass';lp.frequency.value=name==='kick'?(kickMode==='wood'?3700:5700):name==='snare'?(snareMode==='rim'?5500:11500):14000;lp.Q.value=.7;
  comp.threshold.value=name==='snare'?-17:-10;
  comp.ratio.value=name==='snare'?2.4:1.3;
  comp.knee.value=8;comp.attack.value=.004;comp.release.value=.085;
- const p=GROOVE_STYLES[style]||GROOVE_STYLES.mimi;
- let amp=level('vdrum')*g.velocity;
+ const p=GROOVE_STYLES[style]||GROOVE_STYLES.pop;
+ let amp=level('vdrum')*g.velocity*art.amp;
  if(name==='kick')amp*=1.13;
  else if(name==='snare')amp*=1.18*p.snare.level;
  else amp*=.79;
@@ -820,22 +916,23 @@ function playGenreKitSample(name,at,step=-1){
  if(name==='snare'&&$('snarestyle').value==='rim')amp*=.83;
  if(name==='kick'&&$('kickstyle').value==='dry')amp*=.90;
  if(name==='kick'&&$('kickstyle').value==='wood')amp*=.74;
- // Segurar a dinâmica original e controlar apenas os picos.
+ const attack=.0025,peak=Math.max(.0002,amp);
+ const sourceDuration=variant?variant.duration:KIT_SLOT-.013;
+ const realDuration=sourceDuration/src.playbackRate.value;
  gain.gain.setValueAtTime(.0001,start);
- gain.gain.linearRampToValueAtTime(Math.max(.0002,amp),start+.002);
- const sourceDuration=KIT_SLOT-.013,realSeconds=sourceDuration/src.playbackRate.value;
- gain.gain.setValueAtTime(Math.max(.0002,amp),start+Math.max(.003,realSeconds-.013));
- gain.gain.exponentialRampToValueAtTime(.0001,start+realSeconds);
+ gain.gain.linearRampToValueAtTime(peak,start+attack);
+ gain.gain.setValueAtTime(peak,start+Math.max(attack,realDuration-.015));
+ gain.gain.exponentialRampToValueAtTime(.0001,start+realDuration);
  src.connect(hp).connect(lp).connect(comp).connect(gain).connect(ensurePopMix().drums);
- src.start(start,slotOffset,sourceDuration);
- src.stop(start+realSeconds+.005);
+ if(variant)src.start(start,0,sourceDuration);
+ else src.start(start,(genre*3+part)*KIT_SLOT,sourceDuration);
+ src.stop(start+realDuration+.005);
  registerSource(src);
  return true;
 }
-
-function drum(name,at,flashNow=false,step=-1){
+function drum(name,at,flashNow=false,step=-1,bar=1){
  const c=getAudio(),v=level('vdrum');if(flashNow)flash(name);if(!v)return;
- if(playGenreKitSample(name,at,step))return;
+ if(playGenreKitSample(name,at,step,bar))return;
  const g=grooveParams(name,step),t=grooveTime(c,at,g.offset);
  if(name==='kick'){
   const style=$('kickstyle').value,vol=v*g.velocity;
@@ -1052,7 +1149,7 @@ function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
  while(nextBeat<c.currentTime+.045){const idx=stepIndex%STEPS,bar=Math.floor(stepIndex/STEPS)+1,bpm=bpmAtStep();
  const duration=60/bpm/4,at=nextBeat;
  for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):(len>1?noteGate(stepIndex,len):Infinity);syllable(tr,at,selectedTone,gate);}
- ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at,false,idx);});
+ ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at,false,idx,bar);});
  if(idx===0&&$('beatchord').checked){const tone=selectedTone;chord(at,tone);}
  if(idx===0&&$('padEnabled').checked&&$('padTrigger').value==='bar'){const tone=selectedTone;playLofiPad(at,tone,60/bpm*3.4);}
  const timer=setTimeout(()=>{visualTimers.delete(timer);if(beatRunning&&id===runId)visual(idx,bar,bpm);},Math.max(0,(at-c.currentTime)*1000));visualTimers.add(timer);
