@@ -184,7 +184,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 <section class="panel beat-feature" id="beatFeature" aria-label="Montador de BEAT">
  <div class="bar-title"><h2>03 / Monte seu BEAT</h2><span class="sub">16 passos · voz + bateria</span></div>
- <p class="seq-help">O <strong>IH → ON → MI 1 → MI 2</strong> se repete a partir do tempo 3; os dois MIs ficam em semicolcheias consecutivas. Samba, funk e outros estilos alteram apenas bumbo, caixa e prato.</p>
+ <p class="seq-help">O <strong>IH → ON → MI 1 → MI 2</strong> se repete a partir do tempo 3. Após <strong>Limpar grade</strong>, escolha uma levada para recuperar o motivo vocal. Os gêneros mudam a bateria; suas edições vocais continuam preservadas.</p>
  <div class="beat-catalog" role="group" aria-label="Catálogo de batidas">
  <label for="beatCatalog">CATÁLOGO DE BATIDAS</label>
  <select id="beatCatalog" aria-label="Escolha uma levada para o BEAT">
@@ -612,14 +612,25 @@ const BEAT_PRESETS={
 let beatPresetId='mimi';
 function setBeatPreset(id,save=true){
  const preset=BEAT_PRESETS[id];if(!preset)return;
- // IMPORTANTE: não tocar nas quatro linhas vocais (0..3), suas durações e seus recortes.
+ // Limpar grade remove tudo; a próxima escolha de ritmo repõe apenas a célula vocal fixa.
+ // Se já houver alguma nota vocal, a escolha de gênero preserva todas as edições manuais.
+ const emptyVoices=pattern.slice(0,4).every(row=>row.every(value=>!value));
+ if(emptyVoices){
+  for(let tr=0;tr<4;tr++){
+   noteLengths[tr].fill(1);
+   notePitches[tr].fill(0);
+   for(const step of MIMI_VOCAL_BASE[tr])pattern[tr][step]=1;
+  }
+  selectedNote=null;
+ }
+ // A assinatura do gênero continua exclusivamente em bumbo, caixa e prato.
  for(let drum=0;drum<3;drum++){
   const track=drum+4;pattern[track].fill(0);
   for(const step of preset.drums[drum])if(step>=0&&step<STEPS)pattern[track][step]=1;
  }
  beatPresetId=id;
  $('beatCatalog').value=id;
- $('beatCatalogInfo').textContent=preset.info+' IH, ON, MI e MI não mudam de lugar.';
+ $('beatCatalogInfo').textContent=preset.info+(emptyVoices?' Motivo IH–ON–MI–MI restaurado.':' As vozes mantiveram suas posições.');
  repaint();updateNoteEditor();
  if(save)saveSequence();
 }
