@@ -183,7 +183,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 .mix-mini-title small{display:block;color:#bfb4d6;font-weight:500}
 #mixReset{margin-top:10px;border-color:#8f80af}
 @media(max-width:450px){.mix-controls,.mix-voices{grid-template-columns:1fr 1fr;gap:9px}.mix-pop>summary small{display:block;margin-left:0}}
-</style><link rel="stylesheet" href="./assets/studio-panorama.css?v=20261122-1"></head>
+</style><link rel="stylesheet" href="./assets/studio-panorama.css?v=20261123-lipfix"></head>
 <body><div class="wrap">
 <header class="top"><span class="stamp">MIMI • PLAYGROUND SONORO</span><a href="../laboratorio.html">← Voltar ao Hub</a></header><aside class="orientation-hint" role="note">↻ Melhor experiência: gire o celular para a horizontal. Na vertical tudo continua funcionando.</aside>
 <section class="hero">
@@ -518,11 +518,18 @@ const lipEvents=[];
 let lipFrame=0, lipEventSerial=0, lipCurrent='idle';
 // Lip sync: a única fonte de verdade são os disparos de voz do AudioContext.
 const LIP_MOUTHS=['idle','ih','on','m','i'];
+// Cada posição do spritesheet corresponde a UMA expressão real da boca.
+// Aplicar a posição diretamente ao elemento, com prioridade máxima, impede que
+// folhas CSS externas ou cache do iPhone prendam o rosto no primeiro quadro.
+const FACE_SPRITE_POS={idle:'0% 0%',ih:'100% 0%',on:'0% 50%',m:'100% 50%',i:'0% 100%'};
 function setLip(mouth){
  const state=LIP_MOUTHS.includes(mouth)?mouth:'idle';
  lipCurrent=state;
  const face=$('lipFace'),avatar=$('lipAvatar');
- if(face)face.dataset.mouth=state;
+ if(face){
+  face.dataset.mouth=state;
+  face.style.setProperty('background-position',FACE_SPRITE_POS[state]||'0% 0%','important');
+ }
  if(avatar)avatar.classList.toggle('speaking',state!=='idle');
 }
 function animateLip(){
