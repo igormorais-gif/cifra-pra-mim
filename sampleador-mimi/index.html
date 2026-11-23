@@ -764,8 +764,68 @@ function playPopSnare(at,vol,style,step=-1){
  src.connect(hp).connect(body).connect(crack).connect(lp).connect(comp).connect(amp).connect(ensurePopMix().drums);
  src.start(start);src.stop(start+duration+.006);registerSource(src);
 }
+
+/* BANCO DE AMOSTRAS: nove kits x bumbo/caixa/prato (27 one-shots originais).
+   Os efeitos de voz, a harmonia e o padrão fixo IH ON MI MI não são alterados. */
+const KIT_GENRES=['mimi','samba','funk','hiphop','pop','rock','house','reggae','bossa'];
+const KIT_PARTS=['kick','snare','hat'];
+const KIT_SLOT=.47;
+let drumKitBank=null,drumKitPromise=null;
+function loadDrumKitBank(){
+ if(drumKitPromise)return drumKitPromise;
+ drumKitPromise=fetch('./assets/kits/mimi-kits-9x3-v1.wav?v=e23040',{cache:'force-cache'})
+  .then(response=>{if(!response.ok)throw Error('HTTP '+response.status);return response.arrayBuffer();})
+  .then(bytes=>getAudio().decodeAudioData(bytes))
+  .then(decoded=>{
+   // Verificar o manifesto: 27 segmentos de 470 ms.
+   if(decoded.duration<KIT_GENRES.length*KIT_PARTS.length*KIT_SLOT-.04)throw Error('Banco de kits incompleto');
+   drumKitBank=decoded;return decoded;
+  })
+  .catch(err=>{console.warn('Kits de bateria indisponíveis; mantendo bateria anterior:',err.message);return null;});
+ return drumKitPromise;
+}
+function playGenreKitSample(name,at,step=-1){
+ if(!drumKitBank)return false;
+ const style=beatPresetId,genre=KIT_GENRES.indexOf(style),part=KIT_PARTS.indexOf(name);
+ if(genre<0||part<0)return false;
+ // As seleções manuais especiais continuam respeitadas como alternativas.
+ if(name==='kick'&&$('kickstyle').value==='wood')return false;
+ if(name==='snare'&&$('snarestyle').value==='rim'&&style!=='reggae'&&style!=='bossa')return false;
+ const c=getAudio(),g=grooveParams(name,step),start=grooveTime(c,at,g.offset);
+ const slotOffset=(genre*3+part)*KIT_SLOT;
+ const src=c.createBufferSource(),hp=c.createBiquadFilter(),lp=c.createBiquadFilter(),
+  comp=c.createDynamicsCompressor(),gain=c.createGain();
+ src.buffer=drumKitBank;
+ src.playbackRate.value=name==='hat'&&$('hatstyle').value==='open'?.84:1;
+ hp.type='highpass';hp.frequency.value=name==='kick'?28:name==='snare'?70:2200;hp.Q.value=.7;
+ lp.type='lowpass';lp.frequency.value=name==='kick'?5700:name==='snare'?11500:14000;lp.Q.value=.7;
+ comp.threshold.value=name==='snare'?-17:-10;
+ comp.ratio.value=name==='snare'?2.4:1.3;
+ comp.knee.value=8;comp.attack.value=.004;comp.release.value=.085;
+ const p=GROOVE_STYLES[style]||GROOVE_STYLES.mimi;
+ let amp=level('vdrum')*g.velocity;
+ if(name==='kick')amp*=1.13;
+ else if(name==='snare')amp*=1.18*p.snare.level;
+ else amp*=.79;
+ if(name==='hat'&&$('hatstyle').value==='light')amp*=.72;
+ if(name==='snare'&&$('snarestyle').value==='snap')amp*=1.08;
+ if(name==='kick'&&$('kickstyle').value==='dry')amp*=.90;
+ // Segurar a dinâmica original e controlar apenas os picos.
+ gain.gain.setValueAtTime(.0001,start);
+ gain.gain.linearRampToValueAtTime(Math.max(.0002,amp),start+.002);
+ const sourceDuration=KIT_SLOT-.013,realSeconds=sourceDuration/src.playbackRate.value;
+ gain.gain.setValueAtTime(Math.max(.0002,amp),start+Math.max(.003,realSeconds-.013));
+ gain.gain.exponentialRampToValueAtTime(.0001,start+realSeconds);
+ src.connect(hp).connect(lp).connect(comp).connect(gain).connect(ensurePopMix().drums);
+ src.start(start,slotOffset,sourceDuration);
+ src.stop(start+realSeconds+.005);
+ registerSource(src);
+ return true;
+}
+
 function drum(name,at,flashNow=false,step=-1){
  const c=getAudio(),v=level('vdrum');if(flashNow)flash(name);if(!v)return;
+ if(playGenreKitSample(name,at,step))return;
  const g=grooveParams(name,step),t=grooveTime(c,at,g.offset);
  if(name==='kick'){
   const style=$('kickstyle').value,vol=v*g.velocity;
@@ -1060,6 +1120,6 @@ $('resetcuts').onclick=()=>{cuts=ORIGINAL_CUTS.map(frase=>frase.map(pair=>pair.s
 document.addEventListener('keydown',e=>{if(e.repeat||/input|select|textarea/i.test(e.target.tagName))return;const map={'1':0,'2':1,'3':2,'4':3};if(map[e.key]!=null)syllable(map[e.key],getAudio().currentTime+.01);else if(e.code==='Space'){e.preventDefault();whole(getAudio().currentTime+.01);}});
 for(const id of Object.keys(POP_DEFAULTS))$(id).addEventListener('input',()=>{updatePopMix();saveSequence();});
 $('mixReset').onclick=()=>{for(const [id,value] of Object.entries(POP_DEFAULTS))$(id).value=String(value);updatePopMix();saveSequence();};
-buildTones();const lastTone=restoreSequence();updatePopMix();showOnlyPadToggle();buildGrid();updateNoteEditor();selectTone(lastTone);updateBpm();harmonyExample();padReadouts();startup();loadPopSnare();
+buildTones();const lastTone=restoreSequence();updatePopMix();showOnlyPadToggle();buildGrid();updateNoteEditor();selectTone(lastTone);updateBpm();harmonyExample();padReadouts();startup();loadPopSnare();loadDrumKitBank();
 })();
 </script></body></html>
