@@ -641,7 +641,7 @@ function ensurePadGraph(style=padGenreStyle()){
  if(padGraph&&padGraph.tail===tail&&padGraph.ctx===c)return padGraph;
  const master=c.createGain();
  // Pad intencionalmente atrás da voz e da bateria, inclusive em caixa Bluetooth.
- master.gain.value=.70;
+ master.gain.value=.88;
  master.connect(ensurePopMix().instruments);
  const convolver=c.createConvolver();convolver.normalize=true;
  convolver.buffer=buildPadImpulse(c,tail);
@@ -665,13 +665,20 @@ function playLofiPad(at,tone,gate=0,force=false){
  const beatSeconds=60/Math.max(45,Number($('bpm').value)||95);
  const notes=padMidiNotes(tone);
  const sources=[];
- const volume=Math.pow(.24,1.55)*style.level;
+ // O valor anterior (.24 elevado a 1.55, seguido de vários atenuadores)
+ // deixava o PAD praticamente inaudível. Este ganho é pré-calibrado,
+ // sem depender de sliders ocultos.
+ const volume=.84*style.level;
  const wet=style.wet;
  while(activePadNotes.length>=5){
   const old=activePadNotes.shift();
   for(const osc of old.sources){try{osc.stop(Math.max(c.currentTime+.004,start))}catch{}}
  }
- for(const beatOffset of style.offsets){
+ // Preview direto: todas as sonoridades precisam soar imediatamente
+ // ao ligar o PAD ou selecionar um gênero com o transporte parado.
+ // Durante o BEAT, manter contratempos específicos de house/reggae.
+ const pulses=force?[0]:style.offsets;
+ for(const beatOffset of pulses){
   const pulse=start+beatOffset*beatSeconds;
   const hold=style.hold,release=style.release;
   notes.forEach((midi,i)=>{
@@ -682,14 +689,14 @@ function playLofiPad(at,tone,gate=0,force=false){
    filter.frequency.setValueAtTime(style.low,on);
    filter.frequency.linearRampToValueAtTime(style.cutoff,on+filterRise);
    filter.frequency.setTargetAtTime(Math.max(320,style.cutoff*.75),on+Math.max(filterRise+.005,hold*.74),.12);
-   const amplitude=.062*volume*(i===0?1:.91)/(style.offsets.length>1?1.10:1);
+   const amplitude=.088*volume*(i===0?1:.91)/(pulses.length>1?1.10:1);
    const end=on+hold+release,attack=Math.max(.004,Math.min(style.attack,hold*.66));
    envelope.gain.setValueAtTime(.00001,on);
    envelope.gain.linearRampToValueAtTime(amplitude,on+attack);
    envelope.gain.setValueAtTime(amplitude,on+hold);
    envelope.gain.exponentialRampToValueAtTime(.00001,end);
    filter.connect(envelope);
-   const direct=c.createGain();direct.gain.value=.82;
+   const direct=c.createGain();direct.gain.value=.88;
    envelope.connect(direct).connect(graph.master);
    if(wet>0){
     const send=c.createGain();send.gain.value=wet*.57;
@@ -995,7 +1002,13 @@ function showOnlyPadToggle(){
  if(slot&&label){label.classList.add('pad-small');slot.appendChild(label);}
  // O PAD sempre acompanha o IH. Os parâmetros sonoros permanecem guardados.
  $('padTrigger').value='ih';
- $('padEnabled').addEventListener('change',()=>{if(!$('padEnabled').checked)stopPad();});
+ $('padEnabled').addEventListener('change',()=>{
+  if(!$('padEnabled').checked){stopPad();return;}
+  // Escuta de confirmação no próprio gesto de ligar, sem controles extras.
+  const c=getAudio();
+  lastAutomaticPadAt=-100;
+  playLofiPad(c.currentTime+.04,selectedTone,0,true);
+ });
 }
 function buildTones(){const el=$('tones');CHORDS.forEach((chord,i)=>{const b=document.createElement('button');b.className='tone'+(i===8?' synthetic':'');b.type='button';b.dataset.tone=i;b.setAttribute('aria-pressed',i===0?'true':'false');b.innerHTML=chord+'<small>'+(i===8?'derivado':'take '+String(i+1).padStart(2,'0'))+'</small>';b.onclick=()=>selectTone(i);el.append(b);});}
 function selectTone(index){const changed=selectedTone!==index;selectedTone=index;document.querySelectorAll('.tone').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));$('toneInfo').textContent=CHORDS[index]+' · '+(index===8?'8ª tomada, −1 semitom':'tomada original '+String(index+1).padStart(2,'0'));$('liveTone').textContent=CHORDS[index];if(beatRunning&&changed){stopPad();repaint();}renderCuts();tunedPreview(index);refreshPitchCaptions();harmonyExample();padReadouts();repaint();updateNoteEditor();saveSequence();}
@@ -1048,7 +1061,16 @@ function setBeatPreset(id,save=true){
  $('beatCatalog').value=id;
  padReadouts();
  $('beatCatalogInfo').textContent=preset.info+' Motivo vocal fixo restaurado.';
- repaint();updateNoteEditor();if(save)saveSequence();
+ repaint();updateNoteEditor();
+ if(save){
+  saveSequence();
+  // Prévia curta da nova cor harmônica somente com o BEAT parado.
+  if(!beatRunning&&$('padEnabled').checked){
+   const c=getAudio();
+   lastAutomaticPadAt=-100;
+   playLofiPad(c.currentTime+.04,selectedTone,0,true);
+  }
+ }
 }
 function defaultPattern(){
  pattern.forEach(row=>row.fill(0));pitches.fill(0);
