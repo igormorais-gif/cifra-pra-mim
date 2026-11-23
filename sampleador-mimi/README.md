@@ -188,3 +188,11 @@ A implementação utiliza osciladores, envelopes, filtros e convolução Web Aud
 A voz original continua na frente: o PAD é roteado ao barramento de instrumentos já existente, com ganho conservador, envelope por gênero, reverberação filtrada e limite de até cinco grupos simultâneos. O BPM só governa a distância entre os ataques duplicados de house/reggae, **nunca** a altura da nota nem a reprodução do sample vocal. A troca de gênero em reprodução aplica o próximo timbre automaticamente; não interrompe o sequenciador.
 
 Teste de integração: sintaxe do JavaScript validada, 8 configurações verificadas, notas E6 `[61,68,71]` confirmadas, 9 osciladores por ataque simples ou 18 em house/reggae, e verificação do encerramento completo dos osciladores. A qualidade final do timbre requer escuta no Safari/iPhone e na caixa de som.
+
+## Correção de audibilidade dos PADs por gênero (23/11/2026)
+
+A primeira síntese por gênero saiu com nível demasiadamente baixo: o ganho dos osciladores continha `Math.pow(.24,1.55)`, além de reduções em envelope, retorno direto, ônibus de instrumentos e master. A atualização de audibilidade remove a atenuação exponencial desnecessária, eleva de maneira conservadora o nível de entrada do PAD e preserva a proteção contra picos no master. A diferença nominal antes dos barramentos externos é de aproximadamente **+23,3 dB**; isso é uma comparação das constantes de ganho, não uma medição de loudness percebido.
+
+Sem acrescentar nenhum botão, ativar **PAD ligado** agora reproduz imediatamente uma demonstração curta do acorde 6–3–5. Escolher outro gênero com o BEAT parado também apresenta o timbre respectivo (quando o PAD estiver ligado). O preview ignora apenas os deslocamentos rítmicos especiais para ter som imediato, enquanto a execução normal do reggae e house continua sincronizada aos contratempos definidos para cada gênero. As notas, os kits de bateria, o beat, as gravações vocais e o MIDI não foram alterados. O volume dos PADs é fixado internamente: não foi reintroduzido o painel de mixagem.
+
+Verificação: 16 combinações de disparo em simulação de Web Audio (oito gêneros × automático/preview) conferiram quantidades de osciladores, três notas do voicing, envelopes com ganho não nulo, e ataques imediatos na escuta de confirmação. Ainda é necessária escuta na caixa de som real/Safari.
