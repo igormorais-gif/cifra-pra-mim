@@ -208,3 +208,19 @@ O único checkbox de acompanhamento passa a se chamar **PAD + BAIXO**: ao desati
 - **Audição imediata:** ligar o PAD ou escolher um gênero com o beat parado agora apresenta o acorde 6–3–5 e uma curta sequência de baixo **1→5**. Tocar um IH individualmente com o BEAT parado também apresenta o baixo. O STOP, a troca de tom e o desligamento do PAD encerram o baixo sem deixar notas pendentes.
 
 O seletor do gênero e os parâmetros do BPM continuam como antes, sem A/B, viradas ou controles extras. Testes de código confirmaram oito gêneros com linhas de baixo, transposições para os nove acordes, a quinta a sete semitons da fundamental, o roteamento ao master, a articulação/sidechain e o desligamento. O balanço final depende de escuta real no Safari/iPhone e na caixa de som.
+
+## Texturas vocais por sílaba, automáticas e sem pitching (23/11/2026)
+
+As quatro vozes originais passam a ter **camadas paralelas discretas**, derivadas do próprio sample original de cada sílaba, processadas inteiramente no Web Audio, sem gerar nenhuma voz nova, repetir consoantes, inserir notas ou modificar a afinação natural:
+- **IH:** dobramento muito macio, filtrado (passa-altas 420 Hz e passa-baixas 4,7 kHz), atrasado apenas 19 ms, com abertura lateral sutil (-0,16) e nível de send moderado. Não é uma segunda pronúncia de IH.
+- **ON:** calor na região grave-média, com filtro de 110 Hz–1,72 kHz, saturação suave em onda (tanh) e um pequeno componente paralelo centralizado. Não é um novo ON.
+- **MI 1:** reforço de ataque durante no máximo 62 ms, com filtro de 340 Hz–5,3 kHz e presença discreta na região de 1,05 kHz.
+- **MI 2:** reforço ainda mais curto durante no máximo 57 ms, com filtro de 390 Hz–5 kHz e presença em 1,25 kHz.
+
+O caminho principal de áudio permanece **intacto**: o tratamento é uma derivação do mesmo `AudioBufferSourceNode`, sem qualquer alteração no playbackRate. O sinal paralelo é misturado no barramento vocal já existente, antes da proteção do master, sem duplicar reverb geral nem aumentar o volume principal.
+
+No **piano roll**, o efeito só é disparado com o ataque original da nota principal. Se o usuário alongar um MI, os grãos de sustentação da vogal não recebem outro ataque de M: portanto, não criam o efeito `MIMIMIMIMI`. As harmonias opcionais de terça etc. não recebem essas camadas de textura, evitando embolar a inteligibilidade. No botão de **frase completa**, o áudio original permanece contínuo e pequenas camadas são colocadas nos momentos de cada sílaba, sem recortar nem rearticular a frase.
+
+**Interface:** nenhum novo seletor, controle ou painel. Todos os gêneros, o PAD, o baixo independente, o BPM e a mixagem pop anterior continuam como estavam.
+
+**Validação técnica:** verificação da sintaxe do JS; nós Web Audio usados por cada perfil (delay apenas em IH; saturação apenas em ON); 12 cenários de disparo (quatro sílabas em nota curta, nota longa e harmonia), incluindo apenas um disparo de textura mesmo quando há dezenas de grãos no prolongamento. Qualidade auditiva final e compatibilidade com Safari iOS ainda requerem escuta real.
