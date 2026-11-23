@@ -178,3 +178,13 @@ A escolha de articulação depende da **posição rítmica e do gênero**: caixa
 **Preservado:** IH/ON/MI/MI com suas notas e durações, seleção harmônica, MIDI/piano roll de 16 passos, mixagem pop interna aprovada, BPM, oito estilos, ausência do A/B e ausência de mixadores extras. Se os buffers humanizados não puderem ser preparados, o banco anterior permanece como fallback.
 
 **Testes concluídos:** sintaxe JavaScript; renderização simulada de 81 buffers distintos; três variantes com ataque/espectro/duração diferentes; 144 acionamentos simulados pelo motor Web Audio, cobrindo oito gêneros, três instrumentos e acentos distintos. A avaliação de naturalidade no Safari/iPhone e na caixa de som continua sendo uma verificação auditiva, não certificada por esses testes.
+
+## PAD harmônico por gênero — apenas liga/desliga (23/11/2026)
+
+O acompanhamento de sexta mantém em **todos os oito gêneros** o voicing fixo `6–3–5` da mão direita, sem introduzir fundamental, notas extras ou mudança de oitava. Ex.: E6 = Dó♯–Sol♯–Si. No Hub, o antigo painel visual de parâmetros/presets do PAD foi escondido; o único controle visível é o checkbox **PAD ligado**, junto aos botões IH–ON–MI–MI. Os IDs e valores legados internos foram mantidos para compatibilidade com projetos salvos, mas a síntese passa a ser comandada automaticamente pelo gênero; o disparo acompanha IH.
+
+A implementação utiliza osciladores, envelopes, filtros e convolução Web Audio (síntese original no navegador, sem alegar samples acústicos reais). Os estilos são: **samba** (teclado acústico estilizado, percussivo e curto), **funk carioca** (synth percussivo filtrado), **hip-hop** (Rhodes lo-fi macio e longo), **pop** (synth pad com ataque gradual), **rock** (órgão elétrico discreto), **house** (synth brilhante com dois ataques ritmicamente sincronizados ao BPM), **reggae** (órgão bubble em dois contratempos curtos) e **bossa nova** (piano elétrico delicado).
+
+A voz original continua na frente: o PAD é roteado ao barramento de instrumentos já existente, com ganho conservador, envelope por gênero, reverberação filtrada e limite de até cinco grupos simultâneos. O BPM só governa a distância entre os ataques duplicados de house/reggae, **nunca** a altura da nota nem a reprodução do sample vocal. A troca de gênero em reprodução aplica o próximo timbre automaticamente; não interrompe o sequenciador.
+
+Teste de integração: sintaxe do JavaScript validada, 8 configurações verificadas, notas E6 `[61,68,71]` confirmadas, 9 osciladores por ataque simples ou 18 em house/reggae, e verificação do encerramento completo dos osciladores. A qualidade final do timbre requer escuta no Safari/iPhone e na caixa de som.
