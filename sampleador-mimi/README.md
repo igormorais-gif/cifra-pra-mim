@@ -101,6 +101,8 @@ As levadas tradicionais aqui são estilizações simplificadas para três instru
 
 ## Motivo vocal do tempo 3 (atualização de 22/11/2026)
 
-A primeira metade do compasso continua com IH no passo 1, ON no passo 5, MI 1 no passo 7 e MI 2 no passo 8. A partir do **terceiro tempo**, a mesma ideia retorna: **IH no passo 9, ON no passo 13, MI 1 no passo 15 e MI 2 no passo 16**. Os dois MIs são consecutivos na resolução de semicolcheia.
+A primeira metade do compasso continua com IH no passo 1, ON no passo 5, MI 1 no passo 7 e MI 2 no passo 8. A partir do **terceiro tempo**, a mesma ideia retorna: **IH no passo 9, ON no passo 11 (tempo 3&), MI 1 no passo 15 e MI 2 no passo 16**. Os dois MIs são consecutivos na resolução de semicolcheia.
 
 Para instalações que já tinham o sequenciador salvo, há uma migração única que reorganiza **somente as quatro pistas vocais na segunda metade**, preservando integralmente a primeira metade e as três pistas de bateria. As modificações vocais feitas depois dessa atualização continuam editáveis e não são sobrescritas ao selecionar outro gênero. O catálogo segue alterando somente bumbo, caixa e prato.
+
+**Correção pela imagem IMG_6290:** o ON do segundo grupo está no passo 11 (posição interna 10), e não no passo 13. A migração desta correção só modifica a pista ON: remove o evento antigo do passo 13 e garante o do passo 11; preserva IH, MI 1, MI 2, primeira metade e bateria.
