@@ -118,3 +118,13 @@ O aplicativo agora dispõe de uma mesa **MIX POP**, recolhida por padrão logo d
 **Imagem e saída:** a voz principal recebe pan sutil próximo do centro (para compatibilidade mono); as harmonias recebem abertura estéreo moderada. Bateria, acordes e PAD chegam a um mesmo barramento de mixagem, com compressor rápido no master para controlar picos. Isso **não** constitui masterização final com loudness/true peak medidos; os valores são um ponto de partida conservador que precisa de avaliação auditiva em caixa de som real.
 
 A mesa inclui Presença/EQ, Compressão, Reverb, Abertura/PAN e trims de IH/ON/MI 1/MI 2, botão Restaurar mix pop e persistência no armazenamento local do navegador. Não há novos interruptores de pitch.
+
+## Caixa pop com mais corpo e mesa invisível (22/11/2026)
+
+Atendendo ao pedido de simplificação, a seção visual **MIX POP** foi completamente removida do aplicativo. Os filtros de EQ, compressores independentes, ajustes de panorama, reverb, trims por sílaba e compressor de saída **permanecem ativos internamente**, e os valores anteriores guardados no navegador são restaurados como antes. Não há sliders de mixagem novos na tela.
+
+A caixa padrão agora usa o arquivo original `assets/caixa-pop-encorpada.wav`, um one-shot de 390 ms/44,1 kHz mono criado para esta versão, combinando ataque estalado, corpo de membrana na região de aproximadamente 170–310 Hz e esteira com decaimento curto e reflexões iniciais. O áudio é pré-carregado e disparado por AudioBufferSourceNode para cada hit do beat. O timbre padrão passou de "Macia" para **"Pop encorpada"**, com reforços suaves em 195 Hz e 2,65 kHz. "Estalada" também aproveita a amostra com EQ mais incisivo; "Aro" mantém seu som diferenciado. Se a amostra não carregar, há um som alternativo com reforço de corpo.
+
+O one-shot é roteado ao barramento de bateria e pelo compressor de proteção do master, evitando bypass da mixagem aprovada. O volume geral de bateria continua independente. O padrão fixo IH (1,11), ON (5,13), MI 1 (7), MI 2 (8), os BPMs e o catálogo de gêneros não foram alterados.
+
+Esta é uma atualização de timbre e níveis de reprodução, não uma masterização final validada em caixa de som real.
