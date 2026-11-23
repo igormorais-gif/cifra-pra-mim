@@ -14,7 +14,12 @@ body{background:radial-gradient(850px 480px at 12% -12%,#46346e90,transparent 80
 .hero p{font-size:.87rem;margin:10px 0 0;color:#dcd1ed;max-width:460px;line-height:1.3}
 .mimi-avatar{position:relative;width:118px;height:118px;min-width:118px;flex-shrink:0;border-radius:24px;background:#29223a;border:3px solid #d9baf1;box-shadow:0 6px 0 #161126,0 8px 24px #0b071e87;transition:transform .11s}
 .mimi-avatar.speaking{transform:translateY(-1px) scale(1.025);box-shadow:0 0 0 4px #faca6a45,0 7px 20px #02040b90}
-.lip-face,.lip-face[data-mouth]{position:absolute;inset:0;width:100%;height:100%;background-image:url('./lipsync-rosto.webp')!important;background-size:200% 300%;background-position:0 0!important;transform:scale(1);border-radius:21px}
+.lip-face{position:absolute;inset:0;width:100%;height:100%;background-image:url('./rosto-lipsync-v2.webp')!important;background-size:200% 300%!important;background-repeat:no-repeat;transform:none;border-radius:21px}
+#lipFace[data-mouth="idle"]{background-position:0% 0%!important}
+#lipFace[data-mouth="ih"]{background-position:100% 0%!important}
+#lipFace[data-mouth="on"]{background-position:0% 50%!important}
+#lipFace[data-mouth="m"]{background-position:100% 50%!important}
+#lipFace[data-mouth="i"]{background-position:0% 100%!important}
 .lip-mouth{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 1px 1px #4b233b77)}
 .lip-mouth .viseme{opacity:0;transition:none}
 .lip-mouth[data-mouth="idle"] .viseme-idle,.lip-mouth[data-mouth="ih"] .viseme-ih,.lip-mouth[data-mouth="on"] .viseme-on,.lip-mouth[data-mouth="m"] .viseme-m,.lip-mouth[data-mouth="i"] .viseme-i,.lip-mouth[data-mouth="n"] .viseme-n{opacity:1}
