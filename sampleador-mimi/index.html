@@ -716,12 +716,126 @@ function playLofiPad(at,tone,gate=0,force=false){
  if(sources.length)sources[sources.length-1].onended=()=>{
   const idx=activePadNotes.indexOf(item);if(idx>=0)activePadNotes.splice(idx,1);
  };
+ if(force||!beatRunning)bassPreview(start,tone);
  return {notes:notes.map(padNoteName),at:start,duration:style.hold,genre:beatPresetId,voiceCount:sources.length};
 }
+
+/* BAIXO INTELIGENTE — ligado ao PAD; nenhum controle novo.
+   Fund. e quinta de acordo com CHORDS e ROOTS; o BPM define os instantes.
+   Todas as frequências de voz, ataques de IH/ON/MI e voicing 6–3–5 intactos. */
+const BASS_GENRES={
+ samba:{name:'baixo elétrico de samba',steps:[0,6,8,14],fifths:[6,14],notes:1.45,attack:.012,release:.090,cutoff:1170,level:.87,body:'triangle',edge:'sine',harmonic:.24,duck:.69},
+ funk:{name:'subgrave sincopado',steps:[0,3,6,8,11,14],fifths:[6,14],notes:1.15,attack:.006,release:.11,cutoff:740,level:1.05,body:'sine',edge:'triangle',harmonic:.27,duck:.49},
+ hiphop:{name:'baixo redondo e longo',steps:[0,7,10],fifths:[10],notes:3.2,attack:.018,release:.18,cutoff:870,level:1.00,body:'sine',edge:'triangle',harmonic:.31,duck:.64},
+ pop:{name:'synth-bass definido',steps:[0,4,8,12],fifths:[4,12],notes:1.75,attack:.008,release:.13,cutoff:1320,level:.90,body:'triangle',edge:'sawtooth',harmonic:.20,duck:.61},
+ rock:{name:'baixo elétrico com palheta',steps:[0,8,10],fifths:[10],notes:1.65,attack:.004,release:.12,cutoff:1760,level:.94,body:'triangle',edge:'sawtooth',harmonic:.28,duck:.74},
+ house:{name:'subgrave pulsante',steps:[0,4,8,12],fifths:[4,12],notes:1.92,attack:.008,release:.16,cutoff:1150,level:.93,body:'sine',edge:'triangle',harmonic:.28,duck:.43},
+ reggae:{name:'baixo profundo e espaçado',steps:[0,8],fifths:[8],notes:5.3,attack:.018,release:.23,cutoff:690,level:1.00,body:'sine',edge:'triangle',harmonic:.34,duck:.77},
+ bossa:{name:'baixo acústico delicado',steps:[0,4,8,12],fifths:[4,12],notes:2.05,attack:.012,release:.12,cutoff:1020,level:.64,body:'triangle',edge:'sine',harmonic:.18,duck:.77}
+};
+let bassGraph=null;
+const activeBassNotes=[];
+function bassStyle(){return BASS_GENRES[beatPresetId]||BASS_GENRES.pop;}
+function bassMidi(tone,fifth=false){
+ // ROOTS[0]=Mi3 (52): Mi2=40, Si2=47; transpõe em semitons com o acorde.
+ const root=ROOTS[Math.max(0,Math.min(ROOTS.length-1,tone))]-12;
+ return root+(fifth?7:0);
+}
+function bassEvent(step,bar=1){
+ const style=bassStyle();
+ if(!style.steps.includes(step))return null;
+ // Um groove editado continua dialogando com a bateria programada.
+ // Ataques regulares são ancorados nos bumbos presentes; reggae mantém seu
+ // antecipado e a bossa pode sustentar a quinta mesmo sem bumbo naquela casa.
+ const kick=!!pattern[4][step];
+ if(!kick&&beatPresetId!=='reggae'&&beatPresetId!=='bossa')return null;
+ const fifth=style.fifths.includes(step);
+ const accent=step===0||step===8;
+ return {midi:bassMidi(selectedTone,fifth),tone:selectedTone,step,bar,fifth,velocity:accent?1:.83};
+}
+function ensureBassGraph(){
+ const c=getAudio();
+ if(bassGraph&&bassGraph.ctx===c)return bassGraph;
+ const hp=c.createBiquadFilter(),lp=c.createBiquadFilter(),comp=c.createDynamicsCompressor(),duck=c.createGain();
+ hp.type='highpass';hp.frequency.value=31;hp.Q.value=.65;
+ lp.type='lowpass';lp.frequency.value=1700;lp.Q.value=.7;
+ comp.threshold.value=-17;comp.knee.value=10;comp.ratio.value=2.8;comp.attack.value=.009;comp.release.value=.14;
+ duck.gain.value=1;
+ hp.connect(lp).connect(comp).connect(duck).connect(ensurePopMix().instruments);
+ bassGraph={ctx:c,input:hp,lp,comp,duck};
+ return bassGraph;
+}
+function kickDucksBass(at){
+ if(!$('padEnabled').checked||!bassGraph)return;
+ const c=getAudio(),p=bassStyle(),gain=bassGraph.duck.gain;
+ const t=Math.max(c.currentTime+.003,at),before=Math.max(c.currentTime+.002,t-.002);
+ gain.cancelScheduledValues(before);
+ gain.setValueAtTime(1,before);
+ gain.setValueAtTime(p.duck,t);
+ gain.linearRampToValueAtTime(1,t+(beatPresetId==='house'?.17:.115));
+}
+function playBass(at,midi,velocity=1,preview=false){
+ if(!$('padEnabled').checked)return;
+ const style=bassStyle(),c=getAudio(),bus=ensureBassGraph();
+ const t=Math.max(c.currentTime+.003,at);
+ const stepSeconds=60/Math.max(50,Number($('bpm').value)||95)/4;
+ const hold=preview?Math.min(.50,style.notes*stepSeconds):Math.max(.075,style.notes*stepSeconds);
+ const end=t+hold+style.release,frequency=hz(midi);
+ // Salva headroom e dá peso através de harmônicos audíveis em caixas pequenas.
+ const color=c.createBiquadFilter(),envelope=c.createGain();
+ color.type='lowpass';color.Q.value=.7;
+ color.frequency.setValueAtTime(Math.min(360,style.cutoff*.43),t);
+ color.frequency.linearRampToValueAtTime(style.cutoff,t+Math.max(.012,Math.min(.085,hold*.32)));
+ color.frequency.setTargetAtTime(Math.max(320,style.cutoff*.67),t+hold*.65,.10);
+ const amp=.165*style.level*velocity;
+ envelope.gain.setValueAtTime(.00001,t);
+ envelope.gain.linearRampToValueAtTime(amp,t+style.attack);
+ envelope.gain.setValueAtTime(amp,t+Math.max(style.attack+.002,hold*.65));
+ envelope.gain.setTargetAtTime(.00001,t+hold,Math.max(.025,style.release*.23));
+ envelope.gain.setValueAtTime(.00001,end);
+ color.connect(envelope).connect(bus.input);
+ const sources=[];
+ for(const [wave,ratio,amount,detune] of [
+  [style.body,1,.84,0],
+  [style.edge,2,style.harmonic,0],
+  ['sine',3,style.harmonic*.17,0]
+ ]){
+  const osc=c.createOscillator(),gain=c.createGain();
+  osc.type=wave;osc.frequency.value=frequency*ratio;osc.detune.value=detune;
+  gain.gain.value=amount;osc.connect(gain).connect(color);
+  osc.start(t);osc.stop(end+.015);sources.push(osc);
+ }
+ const item={sources};
+ activeBassNotes.push(item);
+ sources[sources.length-1].onended=()=>{const idx=activeBassNotes.indexOf(item);if(idx>=0)activeBassNotes.splice(idx,1);};
+ while(activeBassNotes.length>16){
+  const old=activeBassNotes.shift();
+  for(const osc of old.sources)try{osc.stop(c.currentTime+.01)}catch{}
+ }
+ return {midi,genre:beatPresetId,at:t,duration:hold};
+}
+function bassPreview(at,tone){
+ // Escuta ligada/desligada do PAD ou IH avulso: uma fundamental e uma quinta curta.
+ if(!$('padEnabled').checked)return;
+ playBass(at,bassMidi(tone,false),.82,true);
+}
+function stopBass(){
+ const c=bassGraph?.ctx;
+ for(const item of activeBassNotes.splice(0)){
+  for(const osc of item.sources)try{osc.stop((c?.currentTime||0)+.006)}catch{}
+ }
+ if(bassGraph){
+  const g=bassGraph.duck.gain;
+  g.cancelScheduledValues(bassGraph.ctx.currentTime);
+  g.setValueAtTime(1,bassGraph.ctx.currentTime);
+ }
+}
+
 function maybePadWithVoice(syl,at,tone,gate){
  if(syl===0&&$('padEnabled').checked&&$('padTrigger').value==='ih')playLofiPad(at,tone,gate);
 }
 function stopPad(){
+ stopBass();
  for(const item of activePadNotes.splice(0)){for(const osc of item.sources){try{osc.stop()}catch{}}}
  if(padGraph){const graph=padGraph;padGraph=null;
   try{graph.master.gain.cancelScheduledValues(getAudio().currentTime);graph.master.gain.setTargetAtTime(0,getAudio().currentTime,.035);}catch{}
@@ -1198,7 +1312,16 @@ function tick(){if(!beatRunning)return;const c=getAudio(),id=runId;
  while(nextBeat<c.currentTime+.045){const idx=stepIndex%STEPS,bar=Math.floor(stepIndex/STEPS)+1,bpm=bpmAtStep();
  const duration=60/bpm/4,at=nextBeat;
  for(let tr=0;tr<4;tr++)if(pattern[tr][idx]){const len=noteLengths[tr][idx],gate=$('shortvoice').checked?Math.min(.14,duration*.9):(len>1?noteGate(stepIndex,len):Infinity);syllable(tr,at,selectedTone,gate);}
- ['kick','snare','hat'].forEach((name,tr)=>{if(pattern[tr+4][idx])drum(name,at,false,idx,bar);});
+ ['kick','snare','hat'].forEach((name,tr)=>{
+  if(pattern[tr+4][idx]){
+   if(name==='kick')kickDucksBass(at);
+   drum(name,at,false,idx,bar);
+  }
+ });
+ if($('padEnabled').checked){
+  const bass=bassEvent(idx,bar);
+  if(bass)playBass(at,bass.midi,bass.velocity,false);
+ }
  if(idx===0&&$('beatchord').checked){const tone=selectedTone;chord(at,tone);}
  if(idx===0&&$('padEnabled').checked&&$('padTrigger').value==='bar'){const tone=selectedTone;playLofiPad(at,tone,60/bpm*3.4);}
  const timer=setTimeout(()=>{visualTimers.delete(timer);if(beatRunning&&id===runId)visual(idx,bar,bpm);},Math.max(0,(at-c.currentTime)*1000));visualTimers.add(timer);
