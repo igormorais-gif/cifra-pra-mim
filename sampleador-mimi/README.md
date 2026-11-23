@@ -106,3 +106,15 @@ A primeira metade do compasso continua com IH no passo 1, ON no passo 5, MI 1 no
 Para instalações que já tinham o sequenciador salvo, há uma migração única que reorganiza **somente as quatro pistas vocais na segunda metade**, preservando integralmente a primeira metade e as três pistas de bateria. As modificações vocais feitas depois dessa atualização continuam editáveis e não são sobrescritas ao selecionar outro gênero. O catálogo segue alterando somente bumbo, caixa e prato.
 
 **Correção pela imagem IMG_6290:** o ON do segundo grupo está no passo 11 (posição interna 10), e não no passo 13. A migração desta correção só modifica a pista ON: remove o evento antigo do passo 13 e garante o do passo 11; preserva IH, MI 1, MI 2, primeira metade e bateria.
+
+## MIX POP — EQ, reverb, compressão e panorama (22/11/2026)
+
+O aplicativo agora dispõe de uma mesa **MIX POP**, recolhida por padrão logo depois de IH/ON/MI/MI. Ela foi criada pensando em reprodução em caixa de som e preserva o banco de vozes e todas as programações do beat. Os efeitos são de **reprodução ao vivo no navegador**; o original permanece intacto.
+
+**Cadeia por sílaba:** quatro canais independentes (IH, ON, MI 1, MI 2), cada um com correção automática conservadora de volume calculada do RMS das 32 tomadas (fator limitado a 0,76–1,34), trim manual de voz, pan discreto próximo ao centro, passa-altas de 95–120 Hz, corte de médio-graves em torno de 380 Hz, presença em 3 kHz, pequena redução acima de 6,9 kHz e compressor próprio. Os parâmetros padrão do compressor equivalem a aproximadamente -22,2 dB de threshold, 3,75:1, ataque de 10 ms e release de 135 ms. O EQ e a compressão têm ajustes globais rápidos na mesa, e cada voz tem um trim opcional.
+
+**Reverb:** reverberação curta de cerca de 1,05 s por convolução, com pré-delay de 19 ms e retorno filtrado (430 Hz–5,6 kHz), compartilhada pelas vozes sem repetir as consoantes. O valor padrão é discreto; seu controle não altera a altura das notas.
+
+**Imagem e saída:** a voz principal recebe pan sutil próximo do centro (para compatibilidade mono); as harmonias recebem abertura estéreo moderada. Bateria, acordes e PAD chegam a um mesmo barramento de mixagem, com compressor rápido no master para controlar picos. Isso **não** constitui masterização final com loudness/true peak medidos; os valores são um ponto de partida conservador que precisa de avaliação auditiva em caixa de som real.
+
+A mesa inclui Presença/EQ, Compressão, Reverb, Abertura/PAN e trims de IH/ON/MI 1/MI 2, botão Restaurar mix pop e persistência no armazenamento local do navegador. Não há novos interruptores de pitch.
