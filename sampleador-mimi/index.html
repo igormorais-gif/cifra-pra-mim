@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#19172b"><meta name="description" content="Sampleador MIMI: piano roll com duracao de notas, harmonias de voces, bateria e aceleramento.">
+<meta name="theme-color" content="#19172b"><meta name="description" content="Sampleador MIMI: piano roll, harmonias de vozes, kits de bateria por gênero e BPM manual.">
 <title>Sampleador MIMI — Estúdio musical</title>
 <style>
 :root{--bg:#171529;--panel:#25233b;--paper:#fff9ee;--muted:#aeadc2;--ink:#171529;--yellow:#ffdf6f;--blue:#75dcff;--pink:#ffa3c5;--green:#b2efaa;--outline:#77718b;--radius:20px}
@@ -213,11 +213,10 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
  <div class="beat-catalog" role="group" aria-label="Catálogo de batidas">
  <label for="beatCatalog">CATÁLOGO DE BATIDAS</label>
  <select id="beatCatalog" aria-label="Escolha uma levada para o BEAT">
-  <option value="mimi">MIMI clássico</option>
   <option value="samba">Samba</option>
   <option value="funk">Funk carioca</option>
   <option value="hiphop">Hip-hop</option>
-  <option value="pop">Pop</option>
+  <option value="pop" selected>Pop</option>
   <option value="rock">Rock</option>
   <option value="house">House</option>
   <option value="reggae">Reggae</option>
@@ -275,7 +274,17 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
  <div class="controls"><label>Volume dos MIMIs <input id="vharmony" type="range" min="0" max="100" value="55"><output id="vharmonyout">55%</output></label><label>Abertura estéreo <input id="hwidth" type="range" min="0" max="100" value="38"><output id="hwidthout">38%</output></label></div>
  <p class="soft">Terças e quintas mudam com a sílaba: E→G♯/C♯, D♯→F♯/B, C♯→E/A. O alongamento usa pequenas repetições suavizadas do trecho vocal (sustain granular): a altura não desce ao aumentar a duração. Sons muito esticados ou transpostos podem soar artificiais.</p>
 </section>
-<div class="columns"><section class="panel"><div class="bar-title"><h2>05 / Sons da bateria</h2><span class="sub">Toque ou programe</span></div><div class="drums"><button class="drumpad" data-drum="kick"><span class="emoji">🥁</span>BUMBO</button><button class="drumpad" data-drum="snare"><span class="emoji">🪘</span>CAIXA</button><button class="drumpad" data-drum="hat"><span class="emoji">✨</span>PRATO</button></div><div class="field"><label for="kickstyle">Bumbo</label><select id="kickstyle"><option value="round">Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select></div><div class="field"><label for="snarestyle">Caixa</label><select id="snarestyle"><option value="soft">Kit do gênero</option><option value="snap">Estalada</option><option value="rim">Aro</option></select></div><div class="field"><label for="hatstyle">Prato</label><select id="hatstyle"><option value="closed">Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select></div><div class="controls"><label>Volume da voz <input id="vvoice" type="range" min="0" max="100" value="95"></label><label>Volume bateria <input id="vdrum" type="range" min="0" max="100" value="56"></label><label>Volume harmonia <input id="vchord" type="range" min="0" max="100" value="35"></label></div><div hidden><input id="upload" type="file" accept="audio/*,.m4a"><div id="cutbox"></div><button id="resetcuts" type="button"></button><span id="studioStatus"></span></div></section></div>
+<div id="drumEngineControls" hidden aria-hidden="true">
+  <!-- Configurações internas do motor: sem painel redundante na interface. -->
+  <select id="kickstyle"><option value="round" selected>Redondo</option><option value="dry">Seco</option><option value="wood">Madeira</option></select>
+  <select id="snarestyle"><option value="soft" selected>Kit do gênero</option><option value="snap">Estalada</option><option value="rim">Aro</option></select>
+  <select id="hatstyle"><option value="closed" selected>Fechado</option><option value="open">Aberto</option><option value="light">Leve</option></select>
+  <input id="vvoice" type="range" min="0" max="100" value="95">
+  <input id="vdrum" type="range" min="0" max="100" value="56">
+  <input id="vchord" type="range" min="0" max="100" value="35">
+  <input id="upload" type="file" accept="audio/*,.m4a">
+  <div id="cutbox"></div><button id="resetcuts" type="button"></button><span id="studioStatus"></span>
+</div>
 <footer class="foot"><span>Sampleador MIMI · estúdio de brincar</span><span>Feito com a voz original · <a href="https://github.com/igormorais-gif/cifra-pra-mim">Cifra pra Mim</a></span></footer></div>
 <script type="text/plain" id="audio-inline"></script><script type="text/plain" id="studio-inline"></script>
 
@@ -903,7 +912,7 @@ const BEAT_PRESETS={
  reggae:{info:'Reggae estilizado: bumbo e caixa no terceiro tempo, prato marcando os contratempos.',drums:[[8],[8],[0,2,4,6,8,10,12,14]]},
  bossa:{info:'Bossa nova estilizada: baixo sincopado, aro/caixa leve e prato em colcheias.',drums:[[0,8,12],[3,7,10,14],[0,2,4,6,8,10,12,14]]}
 };
-let beatPresetId='mimi';
+let beatPresetId='pop';
 function setBeatPreset(id,save=true){
  const preset=BEAT_PRESETS[id];if(!preset)return;
  // A troca de ritmo sempre reinicia o padrão vocal; só a bateria diferencia o gênero.
@@ -922,7 +931,7 @@ function defaultPattern(){
  notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));
  applyFixedVoicePattern();
  try{localStorage.setItem(TIME3_LAYOUT_KEY,'yes');}catch{}
- setBeatPreset('mimi',false);
+ setBeatPreset('pop',false);
 }
 function clearPattern(){pattern.forEach(row=>row.fill(0));selectedNote=null;}
 function saveSequence(){try{localStorage.setItem(SEQKEY,JSON.stringify({pattern,notePitches,noteLengths,drawlen:defaultNoteLength,beatPreset:beatPresetId,mix:Object.fromEntries(Object.keys(POP_DEFAULTS).map(id=>[id,+$(id).value])),bpm:$('bpm').value,shortvoice:$('shortvoice').checked,beatchord:$('beatchord').checked,tone:selectedTone,mimisOn:$('mimisOn').checked,harmA:$('harmA').value,harmB:$('harmB').value,vharmony:$('vharmony').value,hwidth:$('hwidth').value,padEnabled:$('padEnabled').checked,padTrigger:$('padTrigger').value,padVoicing:$('padVoicing').value,padVolume:$('padVolume').value,padAttack:$('padAttack').value,padHold:$('padHold').value,padWet:$('padWet').value,padTail:$('padTail').value,padWarmth:$('padWarmth').value}));}catch{}}
@@ -957,7 +966,7 @@ function restoreSequence(){let saved,legacy=false;try{const current=localStorage
  if(!legacy&&[1,2,3,4,6,8,12,16].includes(Number(saved.drawlen)))$('drawlen').value=String(saved.drawlen);
  defaultNoteLength=Number($('drawlen').value);
  restoreTime3MotifOnce();
- beatPresetId=BEAT_PRESETS[saved.beatPreset]?saved.beatPreset:'mimi';$('beatCatalog').value=beatPresetId;$('beatCatalogInfo').textContent=BEAT_PRESETS[beatPresetId].info;
+ beatPresetId=saved.beatPreset!=='mimi'&&BEAT_PRESETS[saved.beatPreset]?saved.beatPreset:'pop';$('beatCatalog').value=beatPresetId;$('beatCatalogInfo').textContent=BEAT_PRESETS[beatPresetId].info;
  return Number.isInteger(saved.tone)&&saved.tone>=0&&saved.tone<=8?saved.tone:0;
 }
 function maxLength(tr,j){let k=j+1;while(k<STEPS&&!pattern[tr][k])k++;return Math.min(STEPS-j,k-j);}
