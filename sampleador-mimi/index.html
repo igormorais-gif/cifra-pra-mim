@@ -184,7 +184,7 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 <p class="status" id="status" role="status" data-status="loading">Preparando a voz original…</p></section>
 <section class="panel beat-feature" id="beatFeature" aria-label="Montador de BEAT">
  <div class="bar-title"><h2>03 / Monte seu BEAT</h2><span class="sub">16 passos · voz + bateria</span></div>
- <p class="seq-help">O <strong>IH → ON → MI 1 → MI 2</strong> se repete a partir do tempo 3. Após <strong>Limpar grade</strong>, escolha uma levada para recuperar o motivo vocal. Os gêneros mudam a bateria; suas edições vocais continuam preservadas.</p>
+ <p class="seq-help">A cada troca de ritmo as vozes retornam: <strong>IH 1 e 11 · ON 5 e 13 · MI 1 no 7 · MI 2 no 8</strong>. Os gêneros se distinguem pela bateria.</p>
  <div class="beat-catalog" role="group" aria-label="Catálogo de batidas">
  <label for="beatCatalog">CATÁLOGO DE BATIDAS</label>
  <select id="beatCatalog" aria-label="Escolha uma levada para o BEAT">
@@ -587,7 +587,15 @@ function selectTone(index){const changed=selectedTone!==index;selectedTone=index
 // Primeira metade preservada. A partir do tempo 3, repetimos o motivo na mesma ordem.
 const MIMI_FIRST_HALF=[[0],[4],[6],[7]];
 const MIMI_SECOND_HALF=[[8],[10],[14],[15]];
-const MIMI_VOCAL_BASE=MIMI_FIRST_HALF.map((steps,tr)=>[...steps,...MIMI_SECOND_HALF[tr]]);
+const MIMI_VOCAL_BASE=[[0,10],[4,12],[6],[7]];
+const FIXED_VOICE_PATTERN=MIMI_VOCAL_BASE;
+function applyFixedVoicePattern(){
+ for(let tr=0;tr<4;tr++){
+  pattern[tr].fill(0);noteLengths[tr].fill(1);notePitches[tr].fill(0);
+  for(const step of FIXED_VOICE_PATTERN[tr])pattern[tr][step]=1;
+ }
+ selectedNote=null;
+}
 const TIME3_LAYOUT_KEY='mimi-time3-on-step11-v2';
 function restoreTime3MotifOnce(){
  // Corrige somente ON da segunda metade: do passo 13 para o passo 11 (base zero: 12 -> 10).
@@ -612,34 +620,21 @@ const BEAT_PRESETS={
 let beatPresetId='mimi';
 function setBeatPreset(id,save=true){
  const preset=BEAT_PRESETS[id];if(!preset)return;
- // Limpar grade remove tudo; a próxima escolha de ritmo repõe apenas a célula vocal fixa.
- // Se já houver alguma nota vocal, a escolha de gênero preserva todas as edições manuais.
- const emptyVoices=pattern.slice(0,4).every(row=>row.every(value=>!value));
- if(emptyVoices){
-  for(let tr=0;tr<4;tr++){
-   noteLengths[tr].fill(1);
-   notePitches[tr].fill(0);
-   for(const step of MIMI_VOCAL_BASE[tr])pattern[tr][step]=1;
-  }
-  selectedNote=null;
- }
- // A assinatura do gênero continua exclusivamente em bumbo, caixa e prato.
+ // A troca de ritmo sempre reinicia o padrão vocal; só a bateria diferencia o gênero.
+ applyFixedVoicePattern();
  for(let drum=0;drum<3;drum++){
   const track=drum+4;pattern[track].fill(0);
   for(const step of preset.drums[drum])if(step>=0&&step<STEPS)pattern[track][step]=1;
  }
  beatPresetId=id;
  $('beatCatalog').value=id;
- $('beatCatalogInfo').textContent=preset.info+(emptyVoices?' Motivo IH–ON–MI–MI restaurado.':' As vozes mantiveram suas posições.');
- repaint();updateNoteEditor();
- if(save)saveSequence();
+ $('beatCatalogInfo').textContent=preset.info+' Motivo vocal fixo restaurado.';
+ repaint();updateNoteEditor();if(save)saveSequence();
 }
 function defaultPattern(){
- // Apenas a primeira composição ganha este arranjo vocal de partida.
  pattern.forEach(row=>row.fill(0));pitches.fill(0);
  notePitches.forEach(row=>row.fill(0));noteLengths.forEach(row=>row.fill(1));
- MIMI_VOCAL_BASE.forEach((steps,tr)=>steps.forEach(step=>{pattern[tr][step]=1;}));
- selectedNote=null;
+ applyFixedVoicePattern();
  try{localStorage.setItem(TIME3_LAYOUT_KEY,'yes');}catch{}
  setBeatPreset('mimi',false);
 }
