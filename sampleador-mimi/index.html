@@ -236,32 +236,23 @@ body{background:radial-gradient(800px 430px at 15% -5%,#503e72aa,transparent 85%
 
 </section>
 
-<section class="panel pad-panel" id="padStudio" aria-label="Teclado pad lo-fi harmonico">
-  <div class="bar-title"><h2>03 / 🎹 Teclado lo-fi · PAD de sexta</h2><label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD ligado</label></div>
-  <p class="seq-help">Um apoio discreto de teclado <strong>6–3–5</strong>, só no ataque do IH, com uma cauda curta. Não encobre a fala.</p>
-  <div class="pad-facts"><span id="padChord">E6 · Dó♯–Sol♯–Si (6–3–5)</span><span>Som de teclado · síntese suave</span><span>Reverb independente</span></div>
-  <div class="pad-fields">
-    <label for="padTrigger">Quando o PAD deve começar?
-      <select id="padTrigger">
-        <option value="ih" selected>A cada IH — acompanha o tom da nota</option>
-        <option value="bar">No começo de cada compasso do beat</option>
-        <option value="manual">Somente ao tocar o botão PAD</option>
-      </select>
-    </label>
-    <label for="padVoicing">Voicing fixo do pad
-      <select id="padVoicing"><option value="simple" selected>6–3–5 (sem fundamental)</option></select>
-    </label>
-  </div>
-  <div class="pad-knobs">
-    <label for="padVolume">Volume <output id="padVolumeOut">24%</output><input id="padVolume" type="range" min="0" max="100" value="24"></label>
-    <label for="padAttack">Ataque / Bloom <output id="padAttackOut">0,12 s</output><input id="padAttack" type="range" min="5" max="140" value="12"></label>
-    <label for="padHold">Sustentação mínima <output id="padHoldOut">0,6 s</output><input id="padHold" type="range" min="4" max="50" value="6"></label>
-    <label for="padWet">Reverb / espaço <output id="padWetOut">18%</output><input id="padWet" type="range" min="0" max="100" value="18"></label>
-    <label for="padTail">Cauda reverberada <output id="padTailOut">1,1 s</output><input id="padTail" type="range" min="10" max="80" value="11"></label>
-    <label for="padWarmth">Calor lo-fi <output id="padWarmthOut">55%</output><input id="padWarmth" type="range" min="0" max="100" value="55"></label>
-  </div>
-  <div class="actions"><button type="button" class="btn pad-button" id="previewPad">▶ OUVIR PAD</button><button type="button" class="btn secondary" id="padPresetCloud">◌ Pad um pouco mais espaçoso</button><button type="button" class="btn secondary" id="padPresetSoft">◌ Suave e próximo</button></div>
-  <p class="pad-note" id="padHint" role="status">Em E6, o teclado toca Dó♯–Sol♯–Si (6–3–5) por um instante, com cauda curta. O timbre é sintetizado; as vozes continuam sendo as gravações reais.</p>
+<!-- PAD: somente o checkbox é deslocado para perto dos botões vocais.
+     Parâmetros legados seguem internos para não quebrar projetos já salvos. -->
+<section id="padStudio" hidden aria-hidden="true">
+ <label class="check pad-on"><input type="checkbox" id="padEnabled" checked> PAD ligado</label>
+ <span id="padChord">E6 · Dó♯–Sol♯–Si (6–3–5)</span>
+ <span id="padHint"></span>
+ <select id="padTrigger"><option value="ih" selected>Acompanha IH</option><option value="bar">Compasso</option><option value="manual">Manual</option></select>
+ <select id="padVoicing"><option value="simple" selected>6–3–5</option></select>
+ <input type="hidden" id="padVolume" value="24"><output id="padVolumeOut"></output>
+ <input type="hidden" id="padAttack" value="12"><output id="padAttackOut"></output>
+ <input type="hidden" id="padHold" value="6"><output id="padHoldOut"></output>
+ <input type="hidden" id="padWet" value="18"><output id="padWetOut"></output>
+ <input type="hidden" id="padTail" value="11"><output id="padTailOut"></output>
+ <input type="hidden" id="padWarmth" value="55"><output id="padWarmthOut"></output>
+ <button id="previewPad" type="button"></button>
+ <button id="padPresetCloud" type="button"></button>
+ <button id="padPresetSoft" type="button"></button>
 </section>
 
 <section class="panel harmony-panel" id="harmonia" aria-label="Harmonizador de MIMIs">
@@ -600,15 +591,31 @@ function padMidiNotes(tone){
  return intervals.map(i=>root+i);
 }
 function padLabel(tone){return CHORDS[tone]+' · '+padMidiNotes(tone).map(padNoteName).join('–');}
+// Timbres e articulações automáticos por gênero. A harmonia é SEMPRE 6–3–5.
+// Sem controles de edição ou mudança manual de timbre na interface.
+const PAD_STYLE={
+ samba:{name:'teclado acústico curto',parts:[['triangle',.66,1,0],['sine',.19,2,0],['sine',.11,3,0]],attack:.008,hold:.17,release:.11,cutoff:2850,low:1550,wet:.09,tail:.65,level:.92,offsets:[0],stagger:.008},
+ funk:{name:'synth percussivo',parts:[['sawtooth',.46,1,0],['triangle',.42,1,-2],['sine',.12,2,0]],attack:.010,hold:.18,release:.12,cutoff:1100,low:500,wet:.055,tail:.55,level:.76,offsets:[0],stagger:0},
+ hiphop:{name:'Rhodes lo-fi aveludado',parts:[['sine',.65,1,0],['triangle',.27,1,2],['sine',.08,2,0]],attack:.018,hold:.58,release:.28,cutoff:1800,low:850,wet:.17,tail:1.20,level:.90,offsets:[0],stagger:.006},
+ pop:{name:'synth pad macio',parts:[['triangle',.76,1,0],['sawtooth',.14,1,2],['sine',.10,2,0]],attack:.115,hold:.64,release:.30,cutoff:2250,low:840,wet:.19,tail:1.14,level:.88,offsets:[0],stagger:0},
+ rock:{name:'órgão elétrico discreto',parts:[['sine',.55,1,0],['sine',.29,2,0],['triangle',.16,3,0]],attack:.018,hold:.33,release:.09,cutoff:3300,low:2600,wet:.075,tail:.69,level:.74,offsets:[0],stagger:0},
+ house:{name:'synth pulsante',parts:[['sawtooth',.48,1,0],['triangle',.37,1,-3],['sine',.15,2,0]],attack:.012,hold:.115,release:.095,cutoff:3000,low:550,wet:.11,tail:.78,level:.67,offsets:[0,.5],stagger:0},
+ reggae:{name:'órgão bubble staccato',parts:[['sine',.52,1,0],['sine',.31,2,0],['triangle',.17,3,0]],attack:.009,hold:.095,release:.075,cutoff:2250,low:1750,wet:.055,tail:.50,level:.79,offsets:[.5,1.5],stagger:0},
+ bossa:{name:'piano elétrico delicado',parts:[['sine',.64,1,0],['triangle',.29,1,0],['sine',.07,2,0]],attack:.012,hold:.27,release:.16,cutoff:2100,low:1200,wet:.105,tail:.84,level:.65,offsets:[0],stagger:.012}
+};
+function padGenreStyle(){return PAD_STYLE[beatPresetId]||PAD_STYLE.pop;}
+
 function padReadouts(){
- const values={padVolume:$('padVolume').value+'%',padAttack:(+$('padAttack').value/100).toFixed(2).replace('.',',')+' s',padHold:(+$('padHold').value/10).toFixed(1).replace('.',',')+' s',padWet:$('padWet').value+'%',padTail:(+$('padTail').value/10).toFixed(1).replace('.',',')+' s',padWarmth:$('padWarmth').value+'%'};
- for(const [id,val] of Object.entries(values))$(id+'Out').textContent=val;
+ const style=padGenreStyle();
+ // O toggle é o único elemento visível; a descrição do timbre é acessível ao toque longo.
+ const toggle=$('padEnabled');
+ toggle.setAttribute('aria-label','PAD '+style.name+' do gênero '+($('beatCatalog').selectedOptions[0]?.textContent||'Pop')+' · ligar ou desligar');
+ const parent=toggle.closest('label');
+ if(parent)parent.title='PAD 6–3–5 · '+style.name;
  $('padChord').textContent=padLabel(selectedTone);
- const mode=$('padTrigger').value;
- $('padHint').textContent=mode==='ih'
-  ?'No IH, o PAD faz um apoio rápido 6–3–5 na altura da tomada, sem prolongar desnecessariamente. A voz não é modificada.'
-  :mode==='bar'?'O PAD começa no primeiro passo de cada compasso do beat, seguindo o tom escolhido para aquele compasso. No modo manual, use OUVIR PAD.'
-  :'O PAD só toca quando você aperta OUVIR PAD, sem disparos automáticos na voz ou no beat.';
+ $('padHint').textContent='PAD 6–3–5: '+style.name+'. Timbre e duração acompanhando automaticamente a levada.';
+ const outputs=['padVolume','padAttack','padHold','padWet','padTail','padWarmth'];
+ for(const id of outputs){const output=$(id+'Out');if(output)output.textContent=$(id).value;}
 }
 function buildPadImpulse(c,seconds){
  const length=Math.max(1,Math.floor(c.sampleRate*seconds));
@@ -629,61 +636,79 @@ function buildPadImpulse(c,seconds){
  }
  return b;
 }
-function ensurePadGraph(){
- const c=getAudio(),tail=+$('padTail').value/10;
+function ensurePadGraph(style=padGenreStyle()){
+ const c=getAudio(),tail=style.tail;
  if(padGraph&&padGraph.tail===tail&&padGraph.ctx===c)return padGraph;
- // Ao mudar o tamanho da cauda, a resposta antiga continua ate acabar.
- const master=c.createGain();master.gain.value=.78;master.connect(ensurePopMix().instruments);
- const convolver=c.createConvolver();convolver.normalize=true;convolver.buffer=buildPadImpulse(c,tail);
- const wet=c.createGain();wet.gain.value=.35;convolver.connect(wet).connect(master);
+ const master=c.createGain();
+ // Pad intencionalmente atrás da voz e da bateria, inclusive em caixa Bluetooth.
+ master.gain.value=.70;
+ master.connect(ensurePopMix().instruments);
+ const convolver=c.createConvolver();convolver.normalize=true;
+ convolver.buffer=buildPadImpulse(c,tail);
+ const wet=c.createGain();wet.gain.value=.24;
+ convolver.connect(wet).connect(master);
  const graph={ctx:c,tail,master,convolver,wet};
- if(padGraph){const old=padGraph;setTimeout(()=>{try{old.master.disconnect();old.convolver.disconnect()}catch{}},Math.ceil((old.tail+2)*1000));}
+ if(padGraph){
+  const old=padGraph;
+  setTimeout(()=>{try{old.master.disconnect();old.convolver.disconnect()}catch{}},Math.ceil((old.tail+2)*1000));
+ }
  padGraph=graph;return graph;
 }
 function playLofiPad(at,tone,gate=0,force=false){
  if(!force&&!$('padEnabled').checked)return;
- if(+$('padVolume').value<=0)return;
  if(!force&&at-lastAutomaticPadAt<.42)return;
  if(!force)lastAutomaticPadAt=at;
- const graph=ensurePadGraph(),c=graph.ctx;
- const start=Math.max(c.currentTime+.002,at),
-  attack=+$('padAttack').value/100,
-  minimum=+$('padHold').value/10,
-  hold=Math.min(1.15,Math.max(minimum,Math.min(.72,Number.isFinite(gate)?gate:0))),
-  release=Math.max(.14,Math.min(.38,graph.tail*.2)),
-  end=start+hold+release,
-  notes=padMidiNotes(tone),wet=+$('padWet').value/100,
-  vol=Math.pow(+$('padVolume').value/100,1.55),
-  warmth=+$('padWarmth').value/100;
- // Evita acumulo descontrolado caso o IH apareca varias vezes em um beat rapido.
- while(activePadNotes.length>=5){const old=activePadNotes.shift();for(const osc of old.sources){try{osc.stop(Math.max(c.currentTime+.004,start))}catch{}}}
+ const style=padGenreStyle(),graph=ensurePadGraph(style),c=graph.ctx;
+ const start=Math.max(c.currentTime+.002,at);
+ // A mudança de BPM altera a distância dos ataques house/reggae;
+ // as alturas e a duração natural da voz NÃO são alteradas.
+ const beatSeconds=60/Math.max(45,Number($('bpm').value)||95);
+ const notes=padMidiNotes(tone);
  const sources=[];
- notes.forEach((midi,i)=>{
-  const frequency=hz(midi),filter=c.createBiquadFilter();
-  filter.type='lowpass';filter.Q.value=.58;
-  const cutoff=3400-warmth*2700;
-  filter.frequency.setValueAtTime(Math.max(280,cutoff*.65),start);
-  filter.frequency.linearRampToValueAtTime(cutoff,start+Math.min(.52,hold*.7));
-  filter.frequency.setTargetAtTime(Math.max(320,cutoff*.72),start+hold*.58,.5);
-  const envelope=c.createGain(),amplitude=.062*vol*(i===0?1.0:.92);
-  const attackTime=Math.min(attack,hold*.66);
-  envelope.gain.setValueAtTime(.00001,start);
-  envelope.gain.linearRampToValueAtTime(amplitude,start+Math.max(.025,attackTime));
-  envelope.gain.setValueAtTime(amplitude,start+hold);
-  envelope.gain.setTargetAtTime(.00001,start+hold,Math.max(.08,release*.18));
-  envelope.gain.setValueAtTime(.00001,end);
-  filter.connect(envelope);
-  const direct=c.createGain();direct.gain.value=.84-.1*wet;envelope.connect(direct).connect(graph.master);
-  if(wet>0){const send=c.createGain();send.gain.value=wet*.65;envelope.connect(send).connect(graph.convolver);}
-  for(const [type,mix,cents] of [['triangle',.84,-1.9],['sawtooth',.14,2.3]]){
-   const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=frequency;o.detune.value=cents;
-   g.gain.value=mix;o.connect(g).connect(filter);
-   o.start(start);o.stop(end+.02);sources.push(o);
-  }
- });
- const item={sources};activePadNotes.push(item);
- sources[0].onended=()=>{const i=activePadNotes.indexOf(item);if(i>=0)activePadNotes.splice(i,1);};
- return {notes:notes.map(padNoteName),at:start,duration:hold};
+ const volume=Math.pow(.24,1.55)*style.level;
+ const wet=style.wet;
+ while(activePadNotes.length>=5){
+  const old=activePadNotes.shift();
+  for(const osc of old.sources){try{osc.stop(Math.max(c.currentTime+.004,start))}catch{}}
+ }
+ for(const beatOffset of style.offsets){
+  const pulse=start+beatOffset*beatSeconds;
+  const hold=style.hold,release=style.release;
+  notes.forEach((midi,i)=>{
+   const on=pulse+i*style.stagger;
+   const frequency=hz(midi),filter=c.createBiquadFilter(),envelope=c.createGain();
+   filter.type='lowpass';filter.Q.value=.60;
+   filter.frequency.setValueAtTime(style.low,on);
+   filter.frequency.linearRampToValueAtTime(style.cutoff,on+Math.max(.018,Math.min(hold*.65,.20)));
+   filter.frequency.setTargetAtTime(Math.max(320,style.cutoff*.75),on+hold*.6,.12);
+   const amplitude=.062*volume*(i===0?1:.91)/(style.offsets.length>1?1.10:1);
+   const end=on+hold+release,attack=Math.max(.004,Math.min(style.attack,hold*.66));
+   envelope.gain.setValueAtTime(.00001,on);
+   envelope.gain.linearRampToValueAtTime(amplitude,on+attack);
+   envelope.gain.setValueAtTime(amplitude,on+hold);
+   envelope.gain.exponentialRampToValueAtTime(.00001,end);
+   filter.connect(envelope);
+   const direct=c.createGain();direct.gain.value=.82;
+   envelope.connect(direct).connect(graph.master);
+   if(wet>0){
+    const send=c.createGain();send.gain.value=wet*.57;
+    envelope.connect(send).connect(graph.convolver);
+   }
+   for(const [wave,mix,harmonic,cents] of style.parts){
+    const osc=c.createOscillator(),g=c.createGain();
+    osc.type=wave;osc.frequency.value=frequency*harmonic;osc.detune.value=cents;
+    g.gain.value=mix;
+    osc.connect(g).connect(filter);osc.start(on);osc.stop(end+.02);
+    sources.push(osc);
+   }
+  });
+ }
+ const item={sources};
+ activePadNotes.push(item);
+ if(sources.length)sources[0].onended=()=>{
+  const idx=activePadNotes.indexOf(item);if(idx>=0)activePadNotes.splice(idx,1);
+ };
+ return {notes:notes.map(padNoteName),at:start,duration:style.hold,genre:beatPresetId,voiceCount:sources.length};
 }
 function maybePadWithVoice(syl,at,tone,gate){
  if(syl===0&&$('padEnabled').checked&&$('padTrigger').value==='ih')playLofiPad(at,tone,gate);
@@ -1020,6 +1045,7 @@ function setBeatPreset(id,save=true){
  }
  beatPresetId=id;
  $('beatCatalog').value=id;
+ padReadouts();
  $('beatCatalogInfo').textContent=preset.info+' Motivo vocal fixo restaurado.';
  repaint();updateNoteEditor();if(save)saveSequence();
 }
